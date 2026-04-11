@@ -110,11 +110,46 @@ export const saveFreelancerBodySchema = z.object({
   freelancerProfileId: z.string().min(1)
 });
 
-export const createMessageThreadSchema = z.object({
-  type: z.enum(["DIRECT", "JOB", "CONTRACT"]),
-  jobId: z.string().min(1).optional(),
-  contractId: z.string().min(1).optional()
-});
+export const createMessageThreadSchema = z
+  .object({
+    type: z.enum(["DIRECT", "JOB", "CONTRACT"]),
+    /** Other party (user id). Required for DIRECT and JOB. */
+    withUserId: z.string().min(1).optional(),
+    jobId: z.string().min(1).optional(),
+    contractId: z.string().min(1).optional()
+  })
+  .superRefine((data, ctx) => {
+    if (data.type === "DIRECT") {
+      if (!data.withUserId) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["withUserId"],
+          message: "withUserId is required for DIRECT threads"
+        });
+      }
+    }
+    if (data.type === "JOB") {
+      if (!data.jobId) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["jobId"], message: "jobId is required for JOB threads" });
+      }
+      if (!data.withUserId) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["withUserId"],
+          message: "withUserId is required for JOB threads"
+        });
+      }
+    }
+    if (data.type === "CONTRACT") {
+      if (!data.contractId) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["contractId"],
+          message: "contractId is required for CONTRACT threads"
+        });
+      }
+    }
+  });
 
 export const postMessageSchema = z.object({
   body: z.string().min(1).max(20000)
