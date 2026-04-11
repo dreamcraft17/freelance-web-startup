@@ -43,15 +43,32 @@ export class SubscriptionService {
   }
 
   /**
+   * One DB read for plan tier + merged entitlements (keeps {@link QuotaService} consistent and efficient).
+   */
+  async resolveEffectivePlanContextForUser(userId: string): Promise<{
+    planKey: PlanKey;
+    entitlements: ResolvedPlanEntitlements;
+  }> {
+    const row = await this.findQualifyingSubscription(userId);
+    if (!row?.plan?.code) {
+      return {
+        planKey: PLAN_KEYS.FREE,
+        entitlements: resolvePlanEntitlements(PLAN_KEYS.FREE)
+      };
+    }
+    const planKey = planCodeToPlanKey(row.plan.code);
+    return {
+      planKey,
+      entitlements: resolvePlanEntitlements(planKey, row.plan.entitlements)
+    };
+  }
+
+  /**
    * Resolves the user's quota tier from their current {@link UserSubscription} and joined {@link SubscriptionPlan}.
    * When there is no qualifying row, returns {@link PLAN_KEYS.FREE}.
    */
   async resolveEffectivePlanKeyForUser(userId: string): Promise<PlanKey> {
-    const row = await this.findQualifyingSubscription(userId);
-    if (!row?.plan?.code) {
-      return PLAN_KEYS.FREE;
-    }
-    return planCodeToPlanKey(row.plan.code);
+    return (await this.resolveEffectivePlanContextForUser(userId)).planKey;
   }
 
   /**
@@ -59,12 +76,7 @@ export class SubscriptionService {
    * {@link SubscriptionPlan.entitlements} JSON when present.
    */
   async resolveEffectiveEntitlementsForUser(userId: string): Promise<ResolvedPlanEntitlements> {
-    const row = await this.findQualifyingSubscription(userId);
-    if (!row?.plan?.code) {
-      return resolvePlanEntitlements(PLAN_KEYS.FREE);
-    }
-    const planKey = planCodeToPlanKey(row.plan.code);
-    return resolvePlanEntitlements(planKey, row.plan.entitlements);
+    return (await this.resolveEffectivePlanContextForUser(userId)).entitlements;
   }
 
   /**
@@ -80,11 +92,7 @@ export class SubscriptionService {
   }
 
   async getActiveSubscriptionSummary(userId: string) {
-    const row = await this.findQualifyingSubscription(userId);
-    const planKey = row?.plan?.code ? planCodeToPlanKey(row.plan.code) : PLAN_KEYS.FREE;
-    const entitlements = row?.plan?.code
-      ? resolvePlanEntitlements(planKey, row.plan.entitlements)
-      : resolvePlanEntitlements(PLAN_KEYS.FREE);
+    const { planKey, entitlements } = await this.resolveEffectivePlanContextForUser(userId);
 
     return {
       userId,
