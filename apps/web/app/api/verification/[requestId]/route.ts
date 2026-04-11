@@ -6,15 +6,13 @@ import { jsonFail, jsonOk, withApiHandler } from "@/server/http/api-response";
 
 const verificationService = new VerificationService();
 
-type RouteContext =
-  | { params: Promise<{ requestId: string }> }
-  | { params: { requestId: string } };
+type RouteContext = { params: Promise<{ requestId: string }> };
 
 export async function GET(request: Request, context: RouteContext) {
   return withApiHandler(async () => {
     const gate = await protectAnyActiveUser(request);
     if (!gate.ok) return gate.response;
-    const params = await Promise.resolve(context.params);
+    const params = await context.params;
     const requestId = params.requestId?.trim();
     if (!requestId) return jsonFail("Invalid request id", 400, "INVALID_ID");
     const data = await verificationService.getRequestForActor(gate.actor, requestId);
@@ -26,7 +24,7 @@ export async function PATCH(request: Request, context: RouteContext) {
   return withApiHandler(async () => {
     const gate = await protectStaff(request);
     if (!gate.ok) return gate.response;
-    const params = await Promise.resolve(context.params);
+    const params = await context.params;
     const requestId = params.requestId?.trim();
     if (!requestId) return jsonFail("Invalid request id", 400, "INVALID_ID");
     const parsed = await parseJson(request, staffReviewVerificationSchema);

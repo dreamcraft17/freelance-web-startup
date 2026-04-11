@@ -2,6 +2,9 @@ import { PageHeader } from "@/features/shared/components/PageHeader";
 import { JobService } from "@/server/services/job.service";
 import { JobsBrowseGrid, type SerializableJobCard } from "@/features/saved/components/JobsBrowseGrid";
 
+/** Avoid build-time DB access (Vercel / CI); list is fetched on each request. */
+export const dynamic = "force-dynamic";
+
 function toSerializableJob(job: {
   id: string;
   title: string;

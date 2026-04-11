@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator";
 
 type PageProps = {
-  params: Promise<{ jobId: string }> | { jobId: string };
+  params: Promise<{ jobId: string }>;
 };
 
 function formatMoney(amount: unknown, currency: string): string {
@@ -59,7 +59,7 @@ function locationParts(
 }
 
 export default async function JobDetailPage({ params }: PageProps) {
-  const { jobId: rawId } = await Promise.resolve(params);
+  const { jobId: rawId } = await params;
   const jobId = rawId?.trim() ?? "";
   if (!jobId) notFound();
 
