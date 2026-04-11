@@ -244,7 +244,7 @@ Use **Root Directory = `apps/web`** so Vercel treats the folder as a normal Next
 | **Build Command** | **`cd ../.. && pnpm exec turbo run build --filter=@acme/web`** (same file) |
 | **Output Directory** | *(empty — framework default)* |
 
-If the Vercel project **Root Directory** stays the **repository root** instead, keep the root **`vercel.json`** `installCommand` / `buildCommand` only — **do not** set **`outputDirectory` to `apps/web/.next`**: that breaks Next’s asset pipeline and you get plain HTML (no CSS) because `/_next/static` responses get redirected.
+If the Vercel project **Root Directory** is the **repository root** (default for many imports), the root **`vercel.json`** must include **`"outputDirectory": "apps/web/.next"`** so Vercel finds the Next build output (otherwise deploy fails: *Next.js output directory ".next" was not found*). Middleware skips **`/_next`** so static CSS/JS are not redirected. Prefer **Root Directory = `apps/web`** long-term: then clear **Output Directory** in the dashboard and rely on **`apps/web/vercel.json`** only.
 
 **Prisma:** `@acme/database` runs **`postinstall`: `prisma generate`** — no DB connection required for generate.
 
