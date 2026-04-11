@@ -124,7 +124,7 @@ test("full marketplace flow (register → reviews & aggregates)", async () => {
   // 1) Register client + freelancer
   const regClient = await api("/api/auth/register", {
     method: "POST",
-    json: { email: clientEmail, password, role: "CLIENT" }
+    json: { fullName: "E2E Client", email: clientEmail, password, role: "CLIENT" }
   });
   assert.equal(regClient.res.status, 201, `register client: ${JSON.stringify(regClient.body)}`);
   assert.equal(regClient.body.success, true);
@@ -133,7 +133,7 @@ test("full marketplace flow (register → reviews & aggregates)", async () => {
 
   const regFl = await api("/api/auth/register", {
     method: "POST",
-    json: { email: freelancerEmail, password, role: "FREELANCER" }
+    json: { fullName: "E2E Freelancer", email: freelancerEmail, password, role: "FREELANCER" }
   });
   assert.equal(regFl.res.status, 201, `register freelancer: ${JSON.stringify(regFl.body)}`);
   let cookieFreelancer = sessionCookiePairFromResponse(regFl.res);
