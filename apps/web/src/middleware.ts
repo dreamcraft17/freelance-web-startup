@@ -25,6 +25,18 @@ function isAuthPublicPath(pathname: string): boolean {
  */
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Never touch Next/Vercel internals or public files — redirecting these breaks CSS/JS (unstyled /login).
+  if (
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/_vercel") ||
+    pathname === "/favicon.ico" ||
+    pathname === "/robots.txt" ||
+    pathname === "/sitemap.xml"
+  ) {
+    return NextResponse.next();
+  }
+
   const session = await getSessionFromRequest(request);
 
   if (isAuthPublicPath(pathname)) {
