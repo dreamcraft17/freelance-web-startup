@@ -1,5 +1,5 @@
 import type { CreateFreelancerProfileDto } from "@acme/validators";
-import { AvailabilityStatus, WorkMode } from "@acme/types";
+import { AvailabilityStatus, VerificationStatus, WorkMode } from "@acme/types";
 import type { FreelancerProfile } from "@acme/database";
 import { db } from "@acme/database";
 import type { AuthActor } from "@/server/domain/auth-actor";
@@ -27,6 +27,8 @@ export type FreelancerProfileView = {
   serviceRadiusKm: number | null;
   yearsExperience: number | null;
   verificationStatus: string;
+  /** UI-friendly slug for trust / verification badge (derived from `verificationStatus`). */
+  verificationBadge: "none" | "pending" | "verified" | "rejected" | "expired";
   profileCompleteness: number;
   isFeatured: boolean;
   isBoosted: boolean;
@@ -46,6 +48,21 @@ export type UpdateFreelancerProfileDto = Partial<
 function decimalToNumber(value: FreelancerProfile["hourlyRate"]): number | null {
   if (value === null || value === undefined) return null;
   return Number(value);
+}
+
+function verificationBadgeFromStatus(status: string): FreelancerProfileView["verificationBadge"] {
+  switch (status as VerificationStatus) {
+    case VerificationStatus.VERIFIED:
+      return "verified";
+    case VerificationStatus.PENDING:
+      return "pending";
+    case VerificationStatus.REJECTED:
+      return "rejected";
+    case VerificationStatus.EXPIRED:
+      return "expired";
+    default:
+      return "none";
+  }
 }
 
 function mapFreelancerProfile(row: FreelancerProfile): FreelancerProfileView {
@@ -70,6 +87,7 @@ function mapFreelancerProfile(row: FreelancerProfile): FreelancerProfileView {
     serviceRadiusKm: row.serviceRadiusKm,
     yearsExperience: row.yearsExperience,
     verificationStatus: row.verificationStatus,
+    verificationBadge: verificationBadgeFromStatus(row.verificationStatus),
     profileCompleteness: row.profileCompleteness,
     isFeatured: row.isFeatured,
     isBoosted: row.isBoosted,
