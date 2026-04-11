@@ -61,4 +61,24 @@ export class BidRepository {
       throw e;
     }
   }
+
+  /** Load bid with job owner and freelancer user for accept flow. */
+  async findBidForAccept(bidId: string) {
+    return db.bid.findFirst({
+      where: { id: bidId },
+      include: {
+        job: {
+          select: {
+            id: true,
+            title: true,
+            currency: true,
+            clientProfileId: true,
+            clientProfile: { select: { userId: true } }
+          }
+        },
+        freelancer: { select: { id: true, userId: true, fullName: true, username: true } },
+        contract: { select: { id: true } }
+      }
+    });
+  }
 }

@@ -3,8 +3,10 @@ import { AccountStatus, JobStatus } from "@acme/types";
 import type { AuthActor } from "../domain/auth-actor";
 import type { CreateMessageThreadDto, PostMessageDto } from "@acme/validators";
 import { NotFoundError, PolicyDeniedError } from "../errors/domain-errors";
+import { NotificationService } from "./notification.service";
 
 export class MessageService {
+  constructor(private readonly notifications = new NotificationService()) {}
   private async assertClientFreelancerPair(clientUserId: string, freelancerUserId: string) {
     const [clientUser, freelancerUser] = await Promise.all([
       db.user.findFirst({
@@ -347,6 +349,22 @@ export class MessageService {
       });
       return m;
     });
+
+    const recipients = await db.messageThreadParticipant.findMany({
+      where: { threadId, userId: { not: actor.userId } },
+      select: { userId: true }
+    });
+    const preview = input.body.length > 200 ? `${input.body.slice(0, 200)}…` : input.body;
+    await Promise.all(
+      recipients.map((r) =>
+        this.notifications.notifyNewMessage({
+          recipientUserId: r.userId,
+          threadId,
+          messageId: message.id,
+          preview
+        })
+      )
+    );
 
     return {
       id: message.id,
