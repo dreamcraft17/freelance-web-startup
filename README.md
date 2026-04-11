@@ -232,23 +232,23 @@ register → login → create job → submit bid
 
 **Commit `pnpm-lock.yaml`.** It must not be gitignored: without it, Turbo warns and Vercel can fall back to **npm** (~few dozen packages), which skips workspace linking and omits devDependencies your Next build needs (`tailwindcss`, Radix, etc.).
 
-**Recommended project settings**
+**Recommended project settings (fixes unstyled `/login` + `/_next/static` 307 on deploy)**
+
+Use **Root Directory = `apps/web`** so Vercel treats the folder as a normal Next app (correct `/_next` routing). Do **not** set a custom **Output Directory** for Next.js — use the framework default (see [Vercel + Turborepo](https://vercel.com/docs/monorepos/turborepo)).
 
 | Setting | Value |
 |--------|--------|
-| **Root Directory** | *(leave empty / repository root)* — **Do not** set `apps/web` unless you change install/build to `cd ../.. && …` (see below). |
-| **Framework Preset** | Next.js (auto from `vercel.json`) |
-| **Install Command** | **`pnpm install`** (set explicitly in root **`vercel.json`**) or default when **`"packageManager": "pnpm@9.15.9"`** is in the **root** `package.json`. Do **not** use `npm install -g pnpm`. |
-| **Build Command** | *(override only if needed)* `pnpm exec turbo run build --filter=@acme/web` (already in root **`vercel.json`**) |
-| **Output Directory** | `apps/web/.next` (set by **`vercel.json`**) |
+| **Root Directory** | **`apps/web`** (recommended) |
+| **Framework Preset** | Next.js |
+| **Install Command** | **`cd ../.. && pnpm install`** (already in **`apps/web/vercel.json`**) |
+| **Build Command** | **`cd ../.. && pnpm exec turbo run build --filter=@acme/web`** (same file) |
+| **Output Directory** | *(empty — framework default)* |
 
-Root **`vercel.json`** only sets **`buildCommand`** + **`outputDirectory`**; install stays **native pnpm**. Root **`package.json`** keeps **`next`** in `devDependencies` so Vercel’s Next.js version check passes; the built app is **`@acme/web`**.
+If the Vercel project **Root Directory** stays the **repository root** instead, keep the root **`vercel.json`** `installCommand` / `buildCommand` only — **do not** set **`outputDirectory` to `apps/web/.next`**: that breaks Next’s asset pipeline and you get plain HTML (no CSS) because `/_next/static` responses get redirected.
 
 **Prisma:** `@acme/database` runs **`postinstall`: `prisma generate`** — no DB connection required for generate.
 
 **Environment variables:** **`DATABASE_URL`**, **`SESSION_SECRET`** (≥16 chars), **`NEXT_PUBLIC_*`** as needed. Never commit secrets.
-
-**If you use Root Directory = `apps/web`:** Vercel’s default `pnpm install` would run in the wrong folder. Set **Install Command** to **`cd ../.. && pnpm install`** and **Build Command** to **`cd ../.. && pnpm exec turbo run build --filter=@acme/web`**, **Output Directory** to **`.next`**, and remove or ignore the repo-root `vercel.json` overrides as appropriate.
 
 **Registry errors (`ERR_INVALID_THIS` / `URLSearchParams`):** remove env **`ENABLE_EXPERIMENTAL_COREPACK`** from the Vercel project; keep **`engines.node`** as **`20.x`** in root `package.json`.
 🎯 Roadmap
