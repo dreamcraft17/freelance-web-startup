@@ -1,0 +1,35 @@
+import { postMessageSchema } from "@acme/validators";
+import { MessageService } from "@/server/services/message.service";
+import { parseJson } from "@/server/http/route-helpers";
+import { protectClientOrFreelancer } from "@/server/http/protect";
+import { jsonFail, jsonOk, withApiHandler } from "@/server/http/api-response";
+
+const messageService = new MessageService();
+
+type RouteContext = { params: Promise<{ threadId: string }> } | { params: { threadId: string } };
+
+export async function GET(request: Request, context: RouteContext) {
+  return withApiHandler(async () => {
+    const gate = protectClientOrFreelancer(request);
+    if (!gate.ok) return gate.response;
+    const params = await Promise.resolve(context.params);
+    const threadId = params.threadId?.trim();
+    if (!threadId) return jsonFail("Invalid thread id", 400, "INVALID_ID");
+    const data = await messageService.listMessagesForActor(gate.actor, threadId);
+    return jsonOk(data);
+  });
+}
+
+export async function POST(request: Request, context: RouteContext) {
+  return withApiHandler(async () => {
+    const gate = protectClientOrFreelancer(request);
+    if (!gate.ok) return gate.response;
+    const params = await Promise.resolve(context.params);
+    const threadId = params.threadId?.trim();
+    if (!threadId) return jsonFail("Invalid thread id", 400, "INVALID_ID");
+    const parsed = await parseJson(request, postMessageSchema);
+    if (!parsed.ok) return parsed.response;
+    const data = await messageService.postMessage(gate.actor, threadId, parsed.data);
+    return jsonOk(data, 201);
+  });
+}

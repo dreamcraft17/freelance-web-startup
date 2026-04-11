@@ -1,0 +1,21 @@
+{
+  "name": "@acme/types",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Shared domain enums, status types, and cross-package TypeScript contracts",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}

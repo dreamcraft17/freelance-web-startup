@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@acme/types": ["packages/types/src/index.ts"],
+      "@acme/types/*": ["packages/types/src/*"],
+      "@acme/utils": ["packages/utils/src/index.ts"],
+      "@acme/utils/*": ["packages/utils/src/*"],
+      "@acme/validators": ["packages/validators/src/index.ts"],
+      "@acme/validators/*": ["packages/validators/src/*"],
+      "@acme/config": ["packages/config/src/index.ts"],
+      "@acme/config/*": ["packages/config/src/*"],
+      "@acme/database": ["packages/database/src/index.ts"],
+      "@acme/database/*": ["packages/database/src/*"]
+    }
+  }
+}

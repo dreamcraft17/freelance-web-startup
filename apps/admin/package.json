@@ -1,0 +1,32 @@
+{
+  "name": "@acme/admin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Admin and operations application: API and moderation workflows (UI phase deferred)",
+  "scripts": {
+    "dev": "next dev -p 3001",
+    "build": "next build",
+    "start": "next start -p 3001",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf .next"
+  },
+  "dependencies": {
+    "@acme/database": "workspace:*",
+    "@acme/types": "workspace:*",
+    "@acme/utils": "workspace:*",
+    "@acme/validators": "workspace:*",
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.1",
+    "@types/react-dom": "^19.0.2",
+    "eslint": "^9.17.0",
+    "eslint-config-next": "^15.1.0",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.7.2"
+  }
+}

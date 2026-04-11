@@ -1,0 +1,775 @@
+// Production Prisma schema — freelance marketplace SaaS
+// Soft delete: filter `deletedAt IS NULL` in repositories/services for active records.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -----------------------------------------------------------------------------
+// Enums
+// -----------------------------------------------------------------------------
+
+enum UserRole {
+  ADMIN
+  CLIENT
+  FREELANCER
+  AGENCY_OWNER
+  AGENCY_MANAGER
+  AGENCY_MEMBER
+  SUPPORT_ADMIN
+  FINANCE_ADMIN
+  MODERATOR
+}
+
+enum AccountStatus {
+  ACTIVE
+  PENDING_VERIFICATION
+  SUSPENDED
+  BANNED
+  DELETED
+}
+
+enum WorkMode {
+  REMOTE
+  ONSITE
+  HYBRID
+}
+
+enum AvailabilityStatus {
+  AVAILABLE
+  LIMITED
+  UNAVAILABLE
+  ON_LEAVE
+}
+
+enum VerificationStatus {
+  NOT_VERIFIED
+  PENDING
+  VERIFIED
+  REJECTED
+  EXPIRED
+}
+
+enum JobStatus {
+  DRAFT
+  OPEN
+  IN_REVIEW
+  PAUSED
+  CLOSED
+  CANCELLED
+  ARCHIVED
+}
+
+enum JobVisibility {
+  PUBLIC
+  PRIVATE
+  INVITE_ONLY
+}
+
+enum BudgetType {
+  FIXED
+  HOURLY
+  RANGE
+  REQUEST_QUOTE
+}
+
+enum BidStatus {
+  DRAFT
+  SUBMITTED
+  SHORTLISTED
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+  EXPIRED
+  CANCELLED
+}
+
+enum ContractStatus {
+  PENDING
+  ACTIVE
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  DISPUTED
+  ARCHIVED
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  EXPIRED
+}
+
+enum BillingCycle {
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
+enum NotificationType {
+  BID_SUBMITTED
+  BID_SHORTLISTED
+  BID_ACCEPTED
+  CONTRACT_STARTED
+  NEW_MESSAGE
+  REVIEW_RECEIVED
+  VERIFICATION_UPDATED
+  BILLING_UPDATED
+  ADMIN_MODERATION_EVENT
+}
+
+enum MessageThreadType {
+  DIRECT
+  JOB
+  CONTRACT
+}
+
+enum ReviewTargetType {
+  CLIENT
+  FREELANCER
+}
+
+enum VerificationType {
+  IDENTITY
+  BUSINESS
+  ADDRESS
+  CERTIFICATION
+  PAYMENT_METHOD
+}
+
+// -----------------------------------------------------------------------------
+// User & profiles (soft delete on User + profiles)
+// -----------------------------------------------------------------------------
+
+model User {
+  id            String        @id @default(cuid())
+  email         String        @unique
+  passwordHash  String?
+  role          UserRole
+  accountStatus AccountStatus @default(ACTIVE)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  freelancerProfile FreelancerProfile?
+  clientProfile     ClientProfile?
+
+  subscriptions UserSubscription[]
+  notifications Notification[]
+
+  sentMessages Message[] @relation("MessageSender")
+
+  verificationRequests VerificationRequest[] @relation("VerificationRequestSubject")
+  verificationReviews  VerificationRequest[] @relation("VerificationRequestReviewer")
+
+  reviewsGiven Review[] @relation("ReviewAuthor")
+
+  reviewsReceivedAsClient     Review[] @relation("ReviewTargetClientUser")
+  reviewsReceivedAsFreelancer Review[] @relation("ReviewTargetFreelancerUser")
+
+  savedJobs        SavedJob[]
+  savedFreelancers SavedFreelancer[]
+
+  contractsAsFreelancer Contract[] @relation("FreelancerContract")
+  contractsAsClient     Contract[] @relation("ClientContract")
+
+  auditLogsAsActor AuditLog[] @relation("AuditLogActor")
+
+  @@index([role, accountStatus])
+  @@index([email, deletedAt])
+  @@index([deletedAt])
+}
+
+model FreelancerProfile {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  username String @unique
+  fullName String
+  headline String?
+  bio      String? @db.Text
+
+  avatarUrl          String?
+  hourlyRate         Decimal? @db.Decimal(12, 2)
+  fixedStartingPrice Decimal? @db.Decimal(12, 2)
+
+  workMode           WorkMode           @default(REMOTE)
+  availabilityStatus AvailabilityStatus @default(AVAILABLE)
+
+  city    String?
+  region  String?
+  country String?
+  lat     Decimal? @db.Decimal(10, 7)
+  lng     Decimal? @db.Decimal(10, 7)
+  serviceRadiusKm Int?
+
+  yearsExperience    Int?
+  verificationStatus VerificationStatus @default(NOT_VERIFIED)
+  profileCompleteness Int               @default(0)
+  isFeatured         Boolean            @default(false)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  bids           Bid[]
+  portfolioItems PortfolioItem[]
+  skills         FreelancerSkill[]
+
+  reviewsReceived Review[] @relation("ReviewTargetFreelancerProfile")
+
+  savedByUsers SavedFreelancer[] @relation("SavedFreelancerTarget")
+
+  @@index([userId, deletedAt])
+  @@index([username, deletedAt])
+  @@index([city, country, deletedAt])
+  @@index([workMode, availabilityStatus, deletedAt])
+  @@index([lat, lng])
+}
+
+model ClientProfile {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  displayName String
+  companyName String?
+  industry    String?
+
+  city    String?
+  region  String?
+  country String?
+
+  verificationStatus VerificationStatus @default(NOT_VERIFIED)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  jobs Job[]
+
+  reviewsReceived Review[] @relation("ReviewTargetClientProfile")
+
+  @@index([userId, deletedAt])
+  @@index([displayName])
+}
+
+// -----------------------------------------------------------------------------
+// Taxonomy
+// -----------------------------------------------------------------------------
+
+model Category {
+  id           String  @id @default(cuid())
+  slug         String  @unique
+  name         String
+  isActive     Boolean @default(true)
+  displayOrder Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  subcategories Subcategory[]
+  skills        Skill[]
+  jobs          Job[]
+
+  @@index([isActive, displayOrder])
+}
+
+model Subcategory {
+  id         String @id @default(cuid())
+  categoryId String
+  slug       String @unique
+  name       String
+
+  metadataSchema Json?
+  isActive       Boolean @default(true)
+  displayOrder   Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  jobs     Job[]
+  skills   Skill[]
+
+  @@index([categoryId, isActive])
+}
+
+model Skill {
+  id            String  @id @default(cuid())
+  slug          String  @unique
+  name          String
+  categoryId    String?
+  subcategoryId String?
+  isActive      Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  category Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  subcategory Subcategory? @relation(fields: [subcategoryId], references: [id], onDelete: SetNull)
+
+  freelancerSkills FreelancerSkill[]
+  jobSkills        JobSkill[]
+
+  @@index([categoryId, subcategoryId])
+  @@index([isActive])
+}
+
+model FreelancerSkill {
+  id                  String @id @default(cuid())
+  freelancerProfileId String
+  skillId             String
+  years               Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  freelancerProfile FreelancerProfile @relation(fields: [freelancerProfileId], references: [id], onDelete: Cascade)
+  skill             Skill             @relation(fields: [skillId], references: [id], onDelete: Restrict)
+
+  @@unique([freelancerProfileId, skillId])
+  @@index([skillId])
+}
+
+// -----------------------------------------------------------------------------
+// Jobs
+// -----------------------------------------------------------------------------
+
+model Job {
+  id              String @id @default(cuid())
+  clientProfileId String
+  categoryId      String
+  subcategoryId   String?
+
+  title       String
+  slug        String @unique
+  description String @db.Text
+
+  budgetType BudgetType
+  budgetMin  Decimal?   @db.Decimal(12, 2)
+  budgetMax  Decimal?   @db.Decimal(12, 2)
+  currency   String     @db.VarChar(3)
+
+  workMode WorkMode
+
+  city    String?
+  region  String?
+  country String?
+  lat     Decimal? @db.Decimal(10, 7)
+  lng     Decimal? @db.Decimal(10, 7)
+
+  onsiteAddress String? @db.Text
+
+  bidDeadline DateTime?
+
+  visibility JobVisibility @default(PUBLIC)
+  status     JobStatus     @default(DRAFT)
+
+  requiredVerification VerificationStatus?
+  portfolioRequired    Boolean           @default(false)
+
+  metadata Json?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  clientProfile ClientProfile @relation(fields: [clientProfileId], references: [id], onDelete: Restrict)
+  category      Category      @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  subcategory   Subcategory?  @relation(fields: [subcategoryId], references: [id], onDelete: SetNull)
+
+  bids        Bid[]
+  skills      JobSkill[]
+  attachments JobAttachment[]
+
+  messageThreads MessageThread[] @relation("ThreadJob")
+  savedByUsers   SavedJob[]
+
+  @@index([clientProfileId, status, deletedAt])
+  @@index([categoryId, subcategoryId])
+  @@index([workMode, city, country, deletedAt])
+  @@index([status, bidDeadline])
+  @@index([visibility, status])
+  @@index([createdAt])
+}
+
+model JobSkill {
+  id      String @id @default(cuid())
+  jobId   String
+  skillId String
+
+  createdAt DateTime @default(now())
+
+  job   Job   @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Restrict)
+
+  @@unique([jobId, skillId])
+  @@index([skillId])
+}
+
+model JobAttachment {
+  id       String @id @default(cuid())
+  jobId    String
+  fileUrl  String
+  fileName String
+  mimeType String
+  sizeBytes Int?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  job Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([jobId, deletedAt])
+}
+
+// -----------------------------------------------------------------------------
+// Bids & contracts
+// -----------------------------------------------------------------------------
+
+model Bid {
+  id           String @id @default(cuid())
+  jobId        String
+  freelancerId String
+
+  status BidStatus @default(SUBMITTED)
+
+  bidAmount     Decimal @db.Decimal(12, 2)
+  coverLetter   String  @db.Text
+  estimatedDays Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  job        Job               @relation(fields: [jobId], references: [id], onDelete: Restrict)
+  freelancer FreelancerProfile @relation(fields: [freelancerId], references: [id], onDelete: Restrict)
+
+  contract Contract?
+
+  @@unique([jobId, freelancerId])
+  @@index([freelancerId, status])
+  @@index([jobId, status])
+  @@index([createdAt])
+}
+
+model Contract {
+  id String @id @default(cuid())
+
+  bidId String @unique
+
+  freelancerUserId String
+  clientUserId     String
+
+  amount   Decimal? @db.Decimal(12, 2)
+  currency String?  @db.VarChar(3)
+
+  startDate DateTime?
+  endDate   DateTime?
+
+  status ContractStatus @default(PENDING)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  bid Bid @relation(fields: [bidId], references: [id], onDelete: Restrict)
+
+  freelancerUser User @relation("FreelancerContract", fields: [freelancerUserId], references: [id], onDelete: Restrict)
+  clientUser     User @relation("ClientContract", fields: [clientUserId], references: [id], onDelete: Restrict)
+
+  reviews        Review[]
+  messageThreads MessageThread[] @relation("ThreadContract")
+
+  @@index([freelancerUserId, status, deletedAt])
+  @@index([clientUserId, status, deletedAt])
+  @@index([status, createdAt])
+}
+
+// -----------------------------------------------------------------------------
+// Subscriptions (plan entitlements as JSON on plan; snapshot on subscription)
+// -----------------------------------------------------------------------------
+
+model SubscriptionPlan {
+  id String @id @default(cuid())
+
+  code String @unique
+  name String
+
+  billingCycle BillingCycle
+  priceCents   Int
+  currency     String       @db.VarChar(3)
+
+  /// Key-value style entitlements embedded for simplicity (e.g. maxActiveBids). Normalize later if needed.
+  entitlements Json?
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  subscriptions UserSubscription[]
+
+  @@index([isActive, code])
+}
+
+model UserSubscription {
+  id     String @id @default(cuid())
+  userId String
+  planId String
+
+  status SubscriptionStatus
+
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+
+  cancelAtPeriodEnd Boolean @default(false)
+
+  /// Immutable-ish snapshot of plan + entitlements at purchase/renewal for audit disputes.
+  snapshot Json
+
+  externalSubscriptionId String?
+  externalCustomerId     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan SubscriptionPlan @relation(fields: [planId], references: [id], onDelete: Restrict)
+
+  @@index([userId, status])
+  @@index([planId])
+  @@index([externalSubscriptionId])
+  @@index([currentPeriodEnd])
+}
+
+// -----------------------------------------------------------------------------
+// Reviews
+// -----------------------------------------------------------------------------
+
+model Review {
+  id String @id @default(cuid())
+
+  contractId   String
+  authorUserId String
+
+  targetType ReviewTargetType
+
+  targetClientUserId        String?
+  targetFreelancerUserId    String?
+  targetClientProfileId     String?
+  targetFreelancerProfileId String?
+
+  rating  Int
+  comment String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Restrict)
+  author   User     @relation("ReviewAuthor", fields: [authorUserId], references: [id], onDelete: Restrict)
+
+  targetClientUser     User? @relation("ReviewTargetClientUser", fields: [targetClientUserId], references: [id], onDelete: SetNull)
+  targetFreelancerUser User? @relation("ReviewTargetFreelancerUser", fields: [targetFreelancerUserId], references: [id], onDelete: SetNull)
+
+  targetClientProfile     ClientProfile?     @relation("ReviewTargetClientProfile", fields: [targetClientProfileId], references: [id], onDelete: SetNull)
+  targetFreelancerProfile FreelancerProfile? @relation("ReviewTargetFreelancerProfile", fields: [targetFreelancerProfileId], references: [id], onDelete: SetNull)
+
+  @@unique([contractId, authorUserId, targetType])
+  @@index([contractId])
+  @@index([targetFreelancerProfileId])
+  @@index([targetClientProfileId])
+  @@index([rating, createdAt])
+}
+
+// -----------------------------------------------------------------------------
+// Portfolio
+// -----------------------------------------------------------------------------
+
+model PortfolioItem {
+  id                  String @id @default(cuid())
+  freelancerProfileId String
+
+  title       String
+  description String? @db.Text
+  mediaUrl    String
+  mediaType   String? @db.VarChar(64)
+
+  displayOrder Int @default(0)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  freelancerProfile FreelancerProfile @relation(fields: [freelancerProfileId], references: [id], onDelete: Cascade)
+
+  @@index([freelancerProfileId, deletedAt, displayOrder])
+}
+
+// -----------------------------------------------------------------------------
+// Verification
+// -----------------------------------------------------------------------------
+
+model VerificationRequest {
+  id     String @id @default(cuid())
+  userId String
+
+  type   VerificationType
+  status VerificationStatus @default(PENDING)
+
+  note     String? @db.Text
+  evidence Json?
+
+  reviewedByUserId String?
+  reviewedAt       DateTime?
+  reviewNote       String?   @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation("VerificationRequestSubject", fields: [userId], references: [id], onDelete: Cascade)
+
+  reviewer User? @relation("VerificationRequestReviewer", fields: [reviewedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([userId, status])
+  @@index([type, status, createdAt])
+  @@index([reviewedByUserId])
+}
+
+// -----------------------------------------------------------------------------
+// Saved items
+// -----------------------------------------------------------------------------
+
+model SavedJob {
+  id     String @id @default(cuid())
+  userId String
+  jobId  String
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job  Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobId])
+  @@index([userId, createdAt])
+}
+
+model SavedFreelancer {
+  id                  String @id @default(cuid())
+  userId              String
+  freelancerProfileId String
+
+  createdAt DateTime @default(now())
+
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  freelancerProfile FreelancerProfile @relation("SavedFreelancerTarget", fields: [freelancerProfileId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, freelancerProfileId])
+  @@index([userId, createdAt])
+}
+
+// -----------------------------------------------------------------------------
+// Messaging (participants derived from job/contract context in app layer for DIRECT threads)
+// -----------------------------------------------------------------------------
+
+model MessageThread {
+  id String @id @default(cuid())
+
+  type MessageThreadType
+
+  jobId      String?
+  contractId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  job      Job?      @relation("ThreadJob", fields: [jobId], references: [id], onDelete: SetNull)
+  contract Contract? @relation("ThreadContract", fields: [contractId], references: [id], onDelete: SetNull)
+
+  messages Message[]
+
+  @@index([type, updatedAt])
+  @@index([jobId])
+  @@index([contractId])
+}
+
+model Message {
+  id String @id @default(cuid())
+
+  threadId String
+  senderId String
+
+  body     String  @db.Text
+  isSystem Boolean @default(false)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  thread MessageThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  sender User          @relation("MessageSender", fields: [senderId], references: [id], onDelete: Restrict)
+
+  @@index([threadId, createdAt])
+  @@index([senderId])
+  @@index([deletedAt])
+}
+
+// -----------------------------------------------------------------------------
+// Notifications & audit
+// -----------------------------------------------------------------------------
+
+model Notification {
+  id String @id @default(cuid())
+
+  userId String
+  type   NotificationType
+
+  title String
+  body  String @db.Text
+
+  payload Json?
+
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  /// Optional soft hide without deleting history
+  dismissedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt, createdAt])
+  @@index([userId, dismissedAt])
+  @@index([type, createdAt])
+}
+
+model AuditLog {
+  id String @id @default(cuid())
+
+  actorId String?
+
+  action     String
+  targetType String
+  targetId   String
+
+  metadata Json?
+
+  createdAt DateTime @default(now())
+
+  actor User? @relation("AuditLogActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([targetType, targetId, createdAt])
+  @@index([actorId, createdAt])
+  @@index([action, createdAt])
+}
