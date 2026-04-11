@@ -9,6 +9,41 @@ const savableJobWhere = {
   visibility: JobVisibility.PUBLIC
 } as const;
 
+/** Row shape returned by {@link SavedItemsService.listSavedJobs} (for UI typing). */
+export type SavedJobListItem = {
+  savedAt: string;
+  job: {
+    id: string;
+    title: string;
+    slug: string;
+    description: string;
+    budgetType: string;
+    budgetMin: unknown;
+    budgetMax: unknown;
+    currency: string;
+    workMode: string;
+    city: string | null;
+    status: string;
+    visibility: string;
+    deletedAt: Date | null;
+  };
+};
+
+/** Row shape returned by {@link SavedItemsService.listSavedFreelancers} (for UI typing). */
+export type SavedFreelancerListItem = {
+  savedAt: string;
+  freelancer: {
+    id: string;
+    username: string;
+    fullName: string;
+    headline: string | null;
+    workMode: string;
+    city: string | null;
+    country: string | null;
+    deletedAt: Date | null;
+  };
+};
+
 export class SavedItemsService {
   private async requireSavableJob(jobId: string) {
     const job = await db.job.findFirst({
@@ -80,7 +115,7 @@ export class SavedItemsService {
     return { freelancerProfileIds: rows.map((r) => r.freelancerProfileId) };
   }
 
-  async listSavedJobs(actor: AuthActor) {
+  async listSavedJobs(actor: AuthActor): Promise<{ items: SavedJobListItem[] }> {
     const rows = await db.savedJob.findMany({
       where: { userId: actor.userId },
       orderBy: { createdAt: "desc" },
@@ -109,11 +144,11 @@ export class SavedItemsService {
       items: rows.map((row) => ({
         savedAt: row.createdAt.toISOString(),
         job: row.job
-      }))
+      })) satisfies SavedJobListItem[]
     };
   }
 
-  async listSavedFreelancers(actor: AuthActor) {
+  async listSavedFreelancers(actor: AuthActor): Promise<{ items: SavedFreelancerListItem[] }> {
     const rows = await db.savedFreelancer.findMany({
       where: { userId: actor.userId },
       orderBy: { createdAt: "desc" },
@@ -137,7 +172,7 @@ export class SavedItemsService {
       items: rows.map((row) => ({
         savedAt: row.createdAt.toISOString(),
         freelancer: row.freelancerProfile
-      }))
+      })) satisfies SavedFreelancerListItem[]
     };
   }
 }

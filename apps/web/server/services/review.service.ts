@@ -88,7 +88,7 @@ export class ReviewService {
     const targetIsFreelancer = input.targetType === ReviewTargetType.FREELANCER;
 
     try {
-      const review = await db.$transaction(async (tx) => {
+      const review = await db.$transaction(async (tx: Prisma.TransactionClient) => {
         const row = await tx.review.create({
           data: {
             contractId: contract.id,

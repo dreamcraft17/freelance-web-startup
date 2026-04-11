@@ -1,4 +1,4 @@
-import { db } from "@acme/database";
+import { db, type Prisma } from "@acme/database";
 import { AccountStatus, JobStatus } from "@acme/types";
 import type { AuthActor } from "../domain/auth-actor";
 import type { CreateMessageThreadDto, PostMessageDto } from "@acme/validators";
@@ -65,7 +65,7 @@ export class MessageService {
       },
       include: { _count: { select: { participants: true } } }
     });
-    return threads.find((t) => t._count.participants === 2) ?? null;
+    return threads.find((t: (typeof threads)[number]) => t._count.participants === 2) ?? null;
   }
 
   async createThread(actor: AuthActor, input: CreateMessageThreadDto) {
@@ -111,7 +111,7 @@ export class MessageService {
         return { threadId: existing.id, created: false as const };
       }
 
-      const thread = await db.$transaction(async (tx) => {
+      const thread = await db.$transaction(async (tx: Prisma.TransactionClient) => {
         const t = await tx.messageThread.create({
           data: { type: "DIRECT", jobId: null, contractId: null }
         });
@@ -166,7 +166,7 @@ export class MessageService {
         return { threadId: existing.id, created: false as const };
       }
 
-      const thread = await db.$transaction(async (tx) => {
+      const thread = await db.$transaction(async (tx: Prisma.TransactionClient) => {
         const t = await tx.messageThread.create({
           data: { type: "JOB", jobId, contractId: null }
         });
@@ -207,7 +207,7 @@ export class MessageService {
         return { threadId: existing.id, created: false as const };
       }
 
-      const thread = await db.$transaction(async (tx) => {
+      const thread = await db.$transaction(async (tx: Prisma.TransactionClient) => {
         const t = await tx.messageThread.create({
           data: { type: "CONTRACT", jobId: null, contractId }
         });
@@ -269,11 +269,13 @@ export class MessageService {
     };
 
     return {
-      items: rows.map(({ thread }) => {
+      items: rows.map((row: (typeof rows)[number]) => {
+        const { thread } = row;
         const last = thread.messages[0];
+        type ParticipantRow = (typeof thread.participants)[number];
         const peers = thread.participants
-          .filter((p) => p.userId !== actor.userId)
-          .map((p) => ({
+          .filter((p: ParticipantRow) => p.userId !== actor.userId)
+          .map((p: ParticipantRow) => ({
             userId: p.userId,
             displayName: labelFor(p.user)
           }));
@@ -314,7 +316,7 @@ export class MessageService {
 
     return {
       threadId,
-      items: messages.map((m) => ({
+      items: messages.map((m: (typeof messages)[number]) => ({
         id: m.id,
         body: m.body,
         createdAt: m.createdAt.toISOString(),
@@ -327,7 +329,7 @@ export class MessageService {
   async postMessage(actor: AuthActor, threadId: string, input: PostMessageDto) {
     await this.assertParticipant(actor, threadId);
 
-    const message = await db.$transaction(async (tx) => {
+    const message = await db.$transaction(async (tx: Prisma.TransactionClient) => {
       const m = await tx.message.create({
         data: {
           threadId,
@@ -356,7 +358,7 @@ export class MessageService {
     });
     const preview = input.body.length > 200 ? `${input.body.slice(0, 200)}…` : input.body;
     await Promise.all(
-      recipients.map((r) =>
+      recipients.map((r: (typeof recipients)[number]) =>
         this.notifications.notifyNewMessage({
           recipientUserId: r.userId,
           threadId,
