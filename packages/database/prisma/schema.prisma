@@ -218,6 +218,10 @@ model FreelancerProfile {
   profileCompleteness Int               @default(0)
   isFeatured         Boolean            @default(false)
 
+  /// Denormalized from reviews where this profile is the freelancer target.
+  reviewCount          Int    @default(0)
+  averageReviewRating  Float?
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
@@ -252,6 +256,10 @@ model ClientProfile {
   country String?
 
   verificationStatus VerificationStatus @default(NOT_VERIFIED)
+
+  /// Denormalized from reviews where this profile is the client target.
+  reviewCount         Int    @default(0)
+  averageReviewRating Float?
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
