@@ -6,5 +6,6 @@ export const utilityNavItems: DashboardNavItem[] = [
   { href: "/client", label: "Client home" },
   { href: "/messages", label: "Messages" },
   { href: "/notifications", label: "Notifications" },
+  { href: "/settings#saved-jobs", label: "Saved" },
   { href: "/settings", label: "Settings" }
 ];

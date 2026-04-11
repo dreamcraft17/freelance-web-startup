@@ -1,19 +1,43 @@
+import { notFound } from "next/navigation";
+import { db } from "@acme/database";
 import { PageHeader } from "@/features/shared/components/PageHeader";
-import { EmptyStateCard } from "@/features/shared/components/EmptyStateCard";
+import { SaveFreelancerButton } from "@/features/saved/components/SaveFreelancerButton";
 
 type PageProps = {
   params: Promise<{ username: string }> | { username: string };
 };
 
 export default async function FreelancerPublicProfilePage({ params }: PageProps) {
-  const { username } = await Promise.resolve(params);
+  const { username: raw } = await Promise.resolve(params);
+  const username = raw?.trim() ?? "";
+  if (!username) notFound();
+
+  const profile = await db.freelancerProfile.findFirst({
+    where: { username, deletedAt: null },
+    select: {
+      id: true,
+      username: true,
+      fullName: true,
+      headline: true,
+      workMode: true,
+      city: true,
+      country: true
+    }
+  });
+
+  if (!profile) notFound();
+
+  const meta = [profile.workMode, profile.city, profile.country].filter(Boolean).join(" · ");
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 md:px-6">
       <PageHeader
-        title={`@${username}`}
-        description="Public profile content is loaded outside this presentational shell."
+        title={`@${profile.username}`}
+        description={profile.headline ?? profile.fullName}
+        actions={<SaveFreelancerButton freelancerProfileId={profile.id} />}
       />
-      <EmptyStateCard title="Portfolio & reviews" description="Compose from freelancer profile and review APIs." />
+
+      <p className="text-muted-foreground text-sm">{meta || "Freelancer profile"}</p>
     </div>
   );
 }

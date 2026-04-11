@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/features/shared/components/PageHeader";
+import { SaveJobButton } from "@/features/saved/components/SaveJobButton";
 import { JobService } from "@/server/services/job.service";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -95,6 +96,7 @@ export default async function JobDetailPage({ params }: PageProps) {
         description={
           [categoryLabel, job.workMode, jobLocation].filter(Boolean).join(" · ") || "Open role"
         }
+        actions={<SaveJobButton jobId={job.id} />}
       />
 
       <div className="mt-8 space-y-6">
