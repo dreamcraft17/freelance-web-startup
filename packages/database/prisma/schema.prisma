@@ -178,6 +178,8 @@ model User {
   savedJobs        SavedJob[]
   savedFreelancers SavedFreelancer[]
 
+  messageThreadParticipants MessageThreadParticipant[]
+
   contractsAsFreelancer Contract[] @relation("FreelancerContract")
   contractsAsClient     Contract[] @relation("ClientContract")
 
@@ -698,11 +700,26 @@ model MessageThread {
   job      Job?      @relation("ThreadJob", fields: [jobId], references: [id], onDelete: SetNull)
   contract Contract? @relation("ThreadContract", fields: [contractId], references: [id], onDelete: SetNull)
 
-  messages Message[]
+  messages     Message[]
+  participants MessageThreadParticipant[]
 
   @@index([type, updatedAt])
   @@index([jobId])
   @@index([contractId])
+}
+
+model MessageThreadParticipant {
+  id       String @id @default(cuid())
+  threadId String
+  userId   String
+
+  createdAt DateTime @default(now())
+
+  thread MessageThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  user   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([threadId, userId])
+  @@index([userId, createdAt])
 }
 
 model Message {
