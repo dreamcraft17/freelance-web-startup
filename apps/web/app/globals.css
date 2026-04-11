@@ -1,3 +1,4 @@
+/* App Router root layout imports this file — required for Tailwind utilities site-wide. */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
