@@ -10,6 +10,14 @@ import {
 import { SubscriptionStatus } from "@acme/types";
 import { db } from "@acme/database";
 
+/** Placeholder USD cents / durations — not enforced; checkout integration comes later. */
+export const MONETIZATION_PRICING_PLACEHOLDER = {
+  jobFeaturedUsdCents: 4_999,
+  jobFeaturedDefaultDays: 14,
+  freelancerBoostUsdCents: 2_499,
+  freelancerBoostDefaultDays: 14
+} as const;
+
 const SUBSCRIPTION_STATUSES_WITH_ACCESS: SubscriptionStatus[] = [
   SubscriptionStatus.ACTIVE,
   SubscriptionStatus.TRIALING,

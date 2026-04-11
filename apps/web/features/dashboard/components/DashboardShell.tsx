@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Route } from "next";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
@@ -31,7 +32,7 @@ export function DashboardShell({ navItems, children, className, topBanner }: Das
           {navItems.map((item) => (
             <Link
               key={item.href}
-              href={item.href}
+              href={item.href as Route}
               className="whitespace-nowrap rounded-md px-3 py-1.5 text-muted-foreground hover:bg-accent hover:text-accent-foreground"
             >
               {item.label}
@@ -48,7 +49,7 @@ export function DashboardShell({ navItems, children, className, topBanner }: Das
             {navItems.map((item) => (
               <Link
                 key={item.href}
-                href={item.href}
+                href={item.href as Route}
                 className={cn(
                   "rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors",
                   "hover:bg-accent hover:text-accent-foreground"

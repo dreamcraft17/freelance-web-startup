@@ -1,5 +1,4 @@
-import { Prisma } from "@prisma/client";
-import { db } from "@acme/database";
+import { db, Prisma } from "@acme/database";
 
 export type RecordDonationInput = {
   userId?: string | null;

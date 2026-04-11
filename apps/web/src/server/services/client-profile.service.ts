@@ -1,5 +1,5 @@
 import type { CreateClientProfileDto } from "@acme/validators";
-import type { ClientProfile } from "@prisma/client";
+import type { ClientProfile } from "@acme/database";
 import { db } from "@acme/database";
 import type { AuthActor } from "@/server/domain/auth-actor";
 import { JobPolicy } from "@/server/policies/job.policy";
