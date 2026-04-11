@@ -21,7 +21,7 @@ export async function GET(_request: Request, context: RouteContext) {
 
 export async function PATCH(request: Request, context: RouteContext) {
   return withApiHandler(async () => {
-    const gate = protectClient(request);
+    const gate = await protectClient(request);
     if (!gate.ok) return gate.response;
     const params = await Promise.resolve(context.params);
     const jobId = params.jobId?.trim();

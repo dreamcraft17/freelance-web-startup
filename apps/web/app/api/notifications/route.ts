@@ -6,7 +6,7 @@ const notificationService = new NotificationService();
 
 export async function GET(request: Request) {
   return withApiHandler(async () => {
-    const gate = protectAnyActiveUser(request);
+    const gate = await protectAnyActiveUser(request);
     if (!gate.ok) return gate.response;
     const data = await notificationService.listForActor(gate.actor);
     return jsonOk(data);

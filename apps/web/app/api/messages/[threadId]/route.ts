@@ -10,7 +10,7 @@ type RouteContext = { params: Promise<{ threadId: string }> } | { params: { thre
 
 export async function GET(request: Request, context: RouteContext) {
   return withApiHandler(async () => {
-    const gate = protectClientOrFreelancer(request);
+    const gate = await protectClientOrFreelancer(request);
     if (!gate.ok) return gate.response;
     const params = await Promise.resolve(context.params);
     const threadId = params.threadId?.trim();
@@ -22,7 +22,7 @@ export async function GET(request: Request, context: RouteContext) {
 
 export async function POST(request: Request, context: RouteContext) {
   return withApiHandler(async () => {
-    const gate = protectClientOrFreelancer(request);
+    const gate = await protectClientOrFreelancer(request);
     if (!gate.ok) return gate.response;
     const params = await Promise.resolve(context.params);
     const threadId = params.threadId?.trim();

@@ -24,6 +24,12 @@ export function sessionToActor(session: SessionPayload): AuthActor {
   };
 }
 
+/** Same session JWT as middleware / `protect()` — no headers, no dev fallbacks. */
+export async function resolveActorFromRequest(request: Request): Promise<AuthActor | null> {
+  const session = await getSessionFromRequest(request);
+  return session ? sessionToActor(session) : null;
+}
+
 /** Server-only: load session from cookies, then enforce auth + optional role + active account. */
 export async function requireAuthenticatedSession(options?: {
   roles?: UserRole[];

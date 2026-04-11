@@ -8,7 +8,7 @@ const subscriptionService = new SubscriptionService();
 
 export async function GET(request: Request) {
   return withApiHandler(async () => {
-    const gate = protectAnyActiveUser(request);
+    const gate = await protectAnyActiveUser(request);
     if (!gate.ok) return gate.response;
     const data = await subscriptionService.getActiveSubscriptionSummary(gate.actor.userId);
     return jsonOk(data);
@@ -17,7 +17,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   return withApiHandler(async () => {
-    const gate = protectAnyActiveUser(request);
+    const gate = await protectAnyActiveUser(request);
     if (!gate.ok) return gate.response;
     const parsed = await parseJson(request, createSubscriptionSchema);
     if (!parsed.ok) return parsed.response;

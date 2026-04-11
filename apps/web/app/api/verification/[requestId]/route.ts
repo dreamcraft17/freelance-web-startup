@@ -12,7 +12,7 @@ type RouteContext =
 
 export async function GET(request: Request, context: RouteContext) {
   return withApiHandler(async () => {
-    const gate = protectAnyActiveUser(request);
+    const gate = await protectAnyActiveUser(request);
     if (!gate.ok) return gate.response;
     const params = await Promise.resolve(context.params);
     const requestId = params.requestId?.trim();
@@ -24,7 +24,7 @@ export async function GET(request: Request, context: RouteContext) {
 
 export async function PATCH(request: Request, context: RouteContext) {
   return withApiHandler(async () => {
-    const gate = protectStaff(request);
+    const gate = await protectStaff(request);
     if (!gate.ok) return gate.response;
     const params = await Promise.resolve(context.params);
     const requestId = params.requestId?.trim();

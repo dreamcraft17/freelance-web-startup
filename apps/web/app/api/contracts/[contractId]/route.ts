@@ -8,7 +8,7 @@ type RouteContext = { params: Promise<{ contractId: string }> } | { params: { co
 
 export async function GET(request: Request, context: RouteContext) {
   return withApiHandler(async () => {
-    const gate = protectAnyActiveUser(request);
+    const gate = await protectAnyActiveUser(request);
     if (!gate.ok) return gate.response;
     const params = await Promise.resolve(context.params);
     const contractId = params.contractId?.trim();

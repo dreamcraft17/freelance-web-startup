@@ -8,7 +8,7 @@ const savedItemsService = new SavedItemsService();
 
 export async function GET(request: Request) {
   return withApiHandler(async () => {
-    const gate = protectAnyActiveUser(request);
+    const gate = await protectAnyActiveUser(request);
     if (!gate.ok) return gate.response;
     const data = await savedItemsService.listSavedJobs(gate.actor);
     return jsonOk(data);
@@ -17,7 +17,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   return withApiHandler(async () => {
-    const gate = protectAnyActiveUser(request);
+    const gate = await protectAnyActiveUser(request);
     if (!gate.ok) return gate.response;
     const parsed = await parseJson(request, saveJobBodySchema);
     if (!parsed.ok) return parsed.response;
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
 
 export async function DELETE(request: Request) {
   return withApiHandler(async () => {
-    const gate = protectAnyActiveUser(request);
+    const gate = await protectAnyActiveUser(request);
     if (!gate.ok) return gate.response;
     const parsed = await parseJson(request, saveJobBodySchema);
     if (!parsed.ok) return parsed.response;

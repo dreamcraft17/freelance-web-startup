@@ -8,7 +8,7 @@ const messageService = new MessageService();
 
 export async function GET(request: Request) {
   return withApiHandler(async () => {
-    const gate = protectClientOrFreelancer(request);
+    const gate = await protectClientOrFreelancer(request);
     if (!gate.ok) return gate.response;
     const data = await messageService.listThreadsForActor(gate.actor);
     return jsonOk(data);
@@ -17,7 +17,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   return withApiHandler(async () => {
-    const gate = protectClientOrFreelancer(request);
+    const gate = await protectClientOrFreelancer(request);
     if (!gate.ok) return gate.response;
     const parsed = await parseJson(request, createMessageThreadSchema);
     if (!parsed.ok) return parsed.response;

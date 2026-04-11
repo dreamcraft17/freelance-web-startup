@@ -6,7 +6,7 @@ const quotaService = new QuotaService();
 
 export async function GET(request: Request) {
   return withApiHandler(async () => {
-    const gate = protectFreelancer(request);
+    const gate = await protectFreelancer(request);
     if (!gate.ok) return gate.response;
     const data = await quotaService.getFreelancerQuotaUsage(gate.actor);
     return jsonOk(data);

@@ -8,7 +8,7 @@ const reviewService = new ReviewService();
 
 export async function POST(request: Request) {
   return withApiHandler(async () => {
-    const gate = protectClientOrFreelancer(request);
+    const gate = await protectClientOrFreelancer(request);
     if (!gate.ok) return gate.response;
     const parsed = await parseJson(request, createReviewSchema);
     if (!parsed.ok) return parsed.response;

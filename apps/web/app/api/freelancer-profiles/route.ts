@@ -21,7 +21,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   return withApiHandler(async () => {
-    const gate = protectFreelancer(request);
+    const gate = await protectFreelancer(request);
     if (!gate.ok) return gate.response;
     const parsed = await parseJson(request, createFreelancerProfileSchema);
     if (!parsed.ok) return parsed.response;

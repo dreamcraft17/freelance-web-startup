@@ -18,7 +18,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   return withApiHandler(async () => {
-    const gate = protectClient(request);
+    const gate = await protectClient(request);
     if (!gate.ok) return gate.response;
     const parsed = await parseJson(request, createJobSchema);
     if (!parsed.ok) return parsed.response;
