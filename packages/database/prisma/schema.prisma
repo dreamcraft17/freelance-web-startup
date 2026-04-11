@@ -185,6 +185,8 @@ model User {
 
   auditLogsAsActor AuditLog[] @relation("AuditLogActor")
 
+  donations Donation[]
+
   @@index([role, accountStatus])
   @@index([email, deletedAt])
   @@index([deletedAt])
@@ -563,6 +565,22 @@ model UserSubscription {
   @@index([planId])
   @@index([externalSubscriptionId])
   @@index([currentPeriodEnd])
+}
+
+/// Optional platform support payment (mock provider today; swap for Stripe/Midtrans/Xendit).
+model Donation {
+  id        String   @id @default(cuid())
+  userId    String?
+  amount    Decimal  @db.Decimal(14, 2)
+  currency  String   @default("USD") @db.VarChar(3)
+  message   String?
+  provider  String   @default("MOCK") @db.VarChar(32)
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([createdAt])
 }
 
 // -----------------------------------------------------------------------------

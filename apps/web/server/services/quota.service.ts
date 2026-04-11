@@ -1,4 +1,8 @@
-import { PLAN_ENTITLEMENTS, type PlanKey } from "@acme/config";
+import {
+  shouldBypassQuotaEnforcement,
+  type PlanKey,
+  type ResolvedPlanEntitlements
+} from "@acme/config";
 import type { AuthActor } from "../domain/auth-actor";
 import { QuotaRepository } from "../repositories/quota.repository";
 import { FreelancerRepository } from "../repositories/freelancer.repository";
@@ -9,7 +13,12 @@ import { QuotaExceededError } from "../errors/domain-errors";
 export type FreelancerQuotaUsage = {
   limits: { activeBids: number; activeContracts: number };
   usage: { activeBids: number; activeContracts: number };
+  remaining: { activeBids: number | null; activeContracts: number | null };
   planKey: PlanKey;
+  /** Plan-derived caps merged with optional DB overrides; same source as enforcement. */
+  entitlements: ResolvedPlanEntitlements;
+  /** When true, UI should show "no cap" for remaining; counts still reflect real usage. */
+  quotasUnlimited: boolean;
 };
 
 /**
@@ -32,24 +41,37 @@ export class QuotaService {
 
   async getUsageForFreelancerUser(userId: string): Promise<FreelancerQuotaUsage> {
     const freelancerProfileId = await this.freelancerRepo.requireProfileIdForUser(userId);
+    const entitlements = await this.subscriptionService.resolveEffectiveEntitlementsForUser(userId);
     const planKey = await this.subscriptionService.resolveEffectivePlanKeyForUser(userId);
-    const entitlements = PLAN_ENTITLEMENTS[planKey];
+    const unlimited = shouldBypassQuotaEnforcement();
 
     const [activeBids, activeContracts] = await Promise.all([
       this.quotaRepo.countActiveBids(freelancerProfileId),
       this.quotaRepo.countActiveAcceptedContracts(userId)
     ]);
 
+    const limits = {
+      activeBids: entitlements.maxActiveBids,
+      activeContracts: entitlements.maxActiveContracts
+    };
+
+    const remaining = unlimited
+      ? { activeBids: null as number | null, activeContracts: null as number | null }
+      : {
+          activeBids: Math.max(0, limits.activeBids - activeBids),
+          activeContracts: Math.max(0, limits.activeContracts - activeContracts)
+        };
+
     return {
       planKey,
-      limits: {
-        activeBids: entitlements.maxActiveBids,
-        activeContracts: entitlements.maxActiveAcceptedContracts
-      },
+      entitlements,
+      quotasUnlimited: unlimited,
+      limits,
       usage: {
         activeBids,
         activeContracts
-      }
+      },
+      remaining
     };
   }
 
@@ -60,11 +82,16 @@ export class QuotaService {
     userId: string;
     freelancerProfileId: string;
   }): Promise<void> {
+    if (shouldBypassQuotaEnforcement()) {
+      return;
+    }
+    const entitlements = await this.subscriptionService.resolveEffectiveEntitlementsForUser(params.userId);
     const planKey = await this.subscriptionService.resolveEffectivePlanKeyForUser(params.userId);
     await this.assertFreelancerCanTakeNewBid({
       freelancerProfileId: params.freelancerProfileId,
       freelancerUserId: params.userId,
-      planKey
+      planKey,
+      entitlements
     });
   }
 
@@ -72,23 +99,22 @@ export class QuotaService {
     freelancerProfileId: string;
     freelancerUserId: string;
     planKey: PlanKey;
+    entitlements: ResolvedPlanEntitlements;
   }): Promise<void> {
-    const entitlements = PLAN_ENTITLEMENTS[input.planKey];
-
     const [activeBids, activeContracts] = await Promise.all([
       this.quotaRepo.countActiveBids(input.freelancerProfileId),
       this.quotaRepo.countActiveAcceptedContracts(input.freelancerUserId)
     ]);
 
-    if (activeBids >= entitlements.maxActiveBids) {
+    if (activeBids >= input.entitlements.maxActiveBids) {
       throw new QuotaExceededError(
-        `Active bids quota reached (${entitlements.maxActiveBids}) for plan ${input.planKey}`
+        `Active bids quota reached (${input.entitlements.maxActiveBids}) for plan ${input.planKey}`
       );
     }
 
-    if (activeContracts >= entitlements.maxActiveAcceptedContracts) {
+    if (activeContracts >= input.entitlements.maxActiveContracts) {
       throw new QuotaExceededError(
-        `Active contracts quota reached (${entitlements.maxActiveAcceptedContracts}) for plan ${input.planKey}`
+        `Active contracts quota reached (${input.entitlements.maxActiveContracts}) for plan ${input.planKey}`
       );
     }
   }

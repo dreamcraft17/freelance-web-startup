@@ -1,5 +1,12 @@
 import type { CreateSubscriptionDto } from "@acme/validators";
-import { PLAN_KEYS, type PlanKey } from "@acme/config";
+import {
+  PLAN_KEYS,
+  getPublicMonetizationFlags,
+  resolvePlanEntitlements,
+  shouldBypassQuotaEnforcement,
+  type PlanKey,
+  type ResolvedPlanEntitlements
+} from "@acme/config";
 import { SubscriptionStatus } from "@acme/types";
 import { db } from "@acme/database";
 
@@ -22,14 +29,9 @@ function planCodeToPlanKey(code: string): PlanKey {
  * Billing provider integration for checkout lives here later. Plan resolution feeds {@link QuotaService}.
  */
 export class SubscriptionService {
-  /**
-   * Resolves the user's quota tier from their current {@link UserSubscription} and joined {@link SubscriptionPlan}.
-   * When there is no qualifying row, returns {@link PLAN_KEYS.FREE}.
-   */
-  async resolveEffectivePlanKeyForUser(userId: string): Promise<PlanKey> {
+  private async findQualifyingSubscription(userId: string) {
     const now = new Date();
-
-    const row = await db.userSubscription.findFirst({
+    return db.userSubscription.findFirst({
       where: {
         userId,
         status: { in: SUBSCRIPTION_STATUSES_WITH_ACCESS },
@@ -38,12 +40,31 @@ export class SubscriptionService {
       orderBy: { currentPeriodEnd: "desc" },
       include: { plan: true }
     });
+  }
 
+  /**
+   * Resolves the user's quota tier from their current {@link UserSubscription} and joined {@link SubscriptionPlan}.
+   * When there is no qualifying row, returns {@link PLAN_KEYS.FREE}.
+   */
+  async resolveEffectivePlanKeyForUser(userId: string): Promise<PlanKey> {
+    const row = await this.findQualifyingSubscription(userId);
     if (!row?.plan?.code) {
       return PLAN_KEYS.FREE;
     }
-
     return planCodeToPlanKey(row.plan.code);
+  }
+
+  /**
+   * Effective entitlements for quota and future monetization UI: static plan defaults merged with
+   * {@link SubscriptionPlan.entitlements} JSON when present.
+   */
+  async resolveEffectiveEntitlementsForUser(userId: string): Promise<ResolvedPlanEntitlements> {
+    const row = await this.findQualifyingSubscription(userId);
+    if (!row?.plan?.code) {
+      return resolvePlanEntitlements(PLAN_KEYS.FREE);
+    }
+    const planKey = planCodeToPlanKey(row.plan.code);
+    return resolvePlanEntitlements(planKey, row.plan.entitlements);
   }
 
   /**
@@ -59,7 +80,21 @@ export class SubscriptionService {
   }
 
   async getActiveSubscriptionSummary(userId: string) {
-    const planKey = await this.resolveEffectivePlanKeyForUser(userId);
-    return { userId, planKey };
+    const row = await this.findQualifyingSubscription(userId);
+    const planKey = row?.plan?.code ? planCodeToPlanKey(row.plan.code) : PLAN_KEYS.FREE;
+    const entitlements = row?.plan?.code
+      ? resolvePlanEntitlements(planKey, row.plan.entitlements)
+      : resolvePlanEntitlements(PLAN_KEYS.FREE);
+
+    return {
+      userId,
+      planKey,
+      entitlements,
+      launch: {
+        earlyAccessUnlimitedQuotas: shouldBypassQuotaEnforcement(),
+        paidFeaturesEnabled: getPublicMonetizationFlags().isPaidFeatureEnabled
+      },
+      featureFlags: getPublicMonetizationFlags()
+    };
   }
 }

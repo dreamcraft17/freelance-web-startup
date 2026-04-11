@@ -12,13 +12,15 @@ type DashboardShellProps = {
   children: ReactNode;
   /** Optional class on main content area */
   className?: string;
+  /** Optional banner above page content (e.g. early access + quota hints). */
+  topBanner?: ReactNode;
 };
 
 /**
  * Shared responsive shell for freelancer/client/utility app sections.
  * Navigation is configuration-driven (pass `navItems` from route layout).
  */
-export function DashboardShell({ navItems, children, className }: DashboardShellProps) {
+export function DashboardShell({ navItems, children, className, topBanner }: DashboardShellProps) {
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur md:hidden">
@@ -57,7 +59,10 @@ export function DashboardShell({ navItems, children, className }: DashboardShell
             ))}
           </nav>
         </aside>
-        <main className={cn("flex-1 p-4 md:p-8", className)}>{children}</main>
+        <main className={cn("flex-1 p-4 md:p-8", className)}>
+          {topBanner ? <div className="mb-6">{topBanner}</div> : null}
+          {children}
+        </main>
       </div>
     </div>
   );
