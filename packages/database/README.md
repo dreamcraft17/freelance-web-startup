@@ -1,0 +1,54 @@
+# @acme/database
+
+PostgreSQL access via **Prisma**: schema, migrations, and generated client.
+
+## Prerequisites
+
+- PostgreSQL 14+ (or compatible)
+- `DATABASE_URL` pointing at your database, for example:
+
+```bash
+export DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/freelance_dev"
+```
+
+For local setup, copy `env.example.txt` to `.env` in this package (or set `DATABASE_URL` in the monorepo root `.env` when your tooling loads it). Files matching `.env*` are gitignored by the monorepo.
+
+## Bootstrap (reproducible)
+
+From the **monorepo root**:
+
+```bash
+pnpm install
+pnpm db:generate
+pnpm db:migrate:deploy
+```
+
+- **`pnpm db:generate`** — runs `prisma generate` in `@acme/database` (updates the Prisma Client from `prisma/schema.prisma`).
+- **`pnpm db:migrate:deploy`** — runs `prisma migrate deploy`, applying every migration under `prisma/migrations/` that is not yet recorded in `_prisma_migrations`. Use this in **CI and production** so the schema matches the repo.
+
+From **this package** (`packages/database`) you can use the same commands via `pnpm exec prisma …` or the npm scripts in `package.json`.
+
+## Local development (new migrations)
+
+When you change `prisma/schema.prisma` and need a **new** migration:
+
+```bash
+cd packages/database
+pnpm db:migrate
+```
+
+(`db:migrate` → `prisma migrate dev` — creates a migration from schema drift and applies it to the database pointed to by `DATABASE_URL`.)
+
+## Initial migration
+
+The folder `prisma/migrations/20260412120000_init/` contains the **baseline** SQL for the current schema (generated with `prisma migrate diff --from-empty --to-schema-datamodel`). New environments apply it with `migrate deploy` after `DATABASE_URL` is set.
+
+## Useful scripts (package)
+
+| Script | Command |
+|--------|---------|
+| `db:generate` | `prisma generate` |
+| `db:migrate` | `prisma migrate dev` |
+| `db:migrate:deploy` | `prisma migrate deploy` |
+| `db:studio` | `prisma studio` |
+| `db:push` | `prisma db push` (prototyping only; prefer migrations for shared environments) |

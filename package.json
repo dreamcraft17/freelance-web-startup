@@ -15,6 +15,7 @@
     "clean": "turbo run clean && rimraf node_modules",
     "db:generate": "pnpm --filter @acme/database db:generate",
     "db:migrate": "pnpm --filter @acme/database db:migrate",
+    "db:migrate:deploy": "pnpm --filter @acme/database db:migrate:deploy",
     "db:studio": "pnpm --filter @acme/database db:studio"
   },
   "devDependencies": {
