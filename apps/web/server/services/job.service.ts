@@ -18,7 +18,7 @@ export class JobService {
   async createDraftJob(actor: AuthActor, dto: CreateJobDto) {
     JobPolicy.assertActorMayPerformClientWrites(actor);
     const clientProfileId = await this.clientRepo.requireClientProfileIdForUser(actor.userId);
-    return this.jobRepo.createDraftJob(clientProfileId, dto);
+    return this.jobRepo.createOpenJob(clientProfileId, dto);
   }
 
   async closeJob(actor: AuthActor, jobId: string) {

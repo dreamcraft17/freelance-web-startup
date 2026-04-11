@@ -15,7 +15,7 @@ function slugifyTitle(title: string): string {
 export class JobRepository {
   async requireOpenJobForBid(jobId: string) {
     const job = await db.job.findFirst({
-      where: { id: jobId, deletedAt: null },
+      where: { id: jobId, deletedAt: null, status: JobStatus.OPEN },
       select: {
         id: true,
         status: true,
@@ -28,7 +28,7 @@ export class JobRepository {
 
     return {
       id: job.id,
-      status: job.status,
+      status: job.status as JobStatus,
       workMode: job.workMode as WorkMode,
       bidDeadline: job.bidDeadline
     };
@@ -62,7 +62,8 @@ export class JobRepository {
     return job.clientProfile.userId;
   }
 
-  async createDraftJob(clientProfileId: string, dto: CreateJobDto) {
+  /** Persists a new listing immediately visible for bidding (`OPEN`). */
+  async createOpenJob(clientProfileId: string, dto: CreateJobDto) {
     const slug = `${slugifyTitle(dto.title)}-${Date.now().toString(36)}`;
 
     return db.job.create({
@@ -80,7 +81,7 @@ export class JobRepository {
         workMode: dto.workMode,
         city: dto.city,
         bidDeadline: dto.bidDeadline ? new Date(dto.bidDeadline) : undefined,
-        status: JobStatus.DRAFT
+        status: JobStatus.OPEN
       }
     });
   }

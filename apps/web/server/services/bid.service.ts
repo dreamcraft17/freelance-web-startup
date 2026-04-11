@@ -21,8 +21,9 @@ export class BidService {
     BidPolicy.assertActorMayPerformFreelancerWrites(actor);
 
     const profile = await this.freelancerRepo.requireProfileByUserId(actor.userId);
-    const job = await this.jobRepo.requireOpenJobForBid(dto.jobId);
+    BidPolicy.assertProfileMatchesActor(profile, actor);
 
+    const job = await this.jobRepo.requireOpenJobForBid(dto.jobId);
     BidPolicy.assertFreelancerEligibleForJob(profile, job);
 
     const hasExisting = await this.bidRepo.hasSubmittedToJob(dto.jobId, profile.id);
