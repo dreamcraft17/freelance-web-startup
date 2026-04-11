@@ -149,7 +149,7 @@ Semua di bawah prefix **`/api`**. Respons sukses umumnya `{ "success": true, "da
 ## 10. Pengujian & otomasi
 
 - **`pnpm test:e2e`** — menjalankan **`scripts/e2e-marketplace-flow.mjs`**: alur register (klien + freelancer), login/sesi, PATCH bio, job, bid, notifikasi, accept, pesan kontrak, complete kontrak, review silang, agregat, penolakan duplikat.
-- **Syarat:** `DATABASE_URL`, `SESSION_SECRET` (≥16), migrasi DB, server **`pnpm --filter @acme/web dev`** (atau `start`); opsional **`BASE_URL`**.
+- **Syarat:** `DATABASE_URL`, `SESSION_SECRET` (≥16), migrasi DB, server **`pnpm --filter @acme/web dev`** (atau `start`). **`BASE_URL`** default **`http://127.0.0.1:3000`** — samakan dengan host di banner Next; override jika perlu (mis. `http://localhost:3000` hanya jika tidak memicu loop redirect).
 
 ---
 

@@ -108,7 +108,7 @@ Masih ada **placeholder / TODO** di beberapa area produk (mis. **VerificationSer
 
 - **`pnpm exec tsc --noEmit`** di **`apps/web`** — **lulus** (pagination: perbaikan `ZodType<Output, _, Input>` di `route-helpers` + schema `paginationSchema.extend`).
 - **`pnpm typecheck`** di root (turbo) — memvalidasi seluruh paket workspace yang dikonfigurasi.
-- **Uji HTTP alur marketplace** — **`pnpm test:e2e`** menjalankan **`scripts/e2e-marketplace-flow.mjs`** (`node:test` + `fetch`). **Syarat:** server Next aktif (mis. `pnpm --filter @acme/web dev`), **`DATABASE_URL`**, **`SESSION_SECRET`** (≥16), migrasi DB. Opsional **`BASE_URL`**. Tanpa server yang merespons, tes gagal dengan **`fetch failed`**.
+- **Uji HTTP alur marketplace** — **`pnpm test:e2e`** menjalankan **`scripts/e2e-marketplace-flow.mjs`** (`node:test` + `fetch` + redirect manual dengan deteksi siklus). **Syarat:** server Next aktif (mis. `pnpm --filter @acme/web dev`), **`DATABASE_URL`**, **`SESSION_SECRET`** (≥16), migrasi DB. **`BASE_URL`** default **`http://127.0.0.1:3000`** (hindari loop redirect `localhost` ↔ `127.0.0.1` di Windows/Undici). Tanpa server yang merespons, tes gagal dengan **`fetch failed`**.
 
 ---
 
