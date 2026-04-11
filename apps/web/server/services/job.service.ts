@@ -28,6 +28,7 @@ export class JobService {
     return this.jobRepo.updateStatus(jobId, JobStatus.CLOSED);
   }
 
+  /** Open, public-visibility job with category, subcategory, and client summary for listing/detail UIs. */
   async getJobByIdForPublic(jobId: string) {
     return this.jobRepo.findByIdPublic(jobId);
   }

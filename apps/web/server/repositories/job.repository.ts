@@ -1,6 +1,6 @@
 import { db } from "@acme/database";
 import type { CreateJobDto, UpdateJobDto } from "@acme/validators";
-import { JobStatus, WorkMode } from "@acme/types";
+import { JobStatus, JobVisibility, WorkMode } from "@acme/types";
 import { NotFoundError } from "../errors/domain-errors";
 
 function slugifyTitle(title: string): string {
@@ -86,23 +86,61 @@ export class JobRepository {
     });
   }
 
+  /** Open, public-visibility listing suitable for the job board and public detail page. */
   async findByIdPublic(jobId: string) {
     return db.job.findFirst({
-      where: { id: jobId, deletedAt: null }
+      where: {
+        id: jobId,
+        deletedAt: null,
+        status: JobStatus.OPEN,
+        visibility: JobVisibility.PUBLIC
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        budgetType: true,
+        budgetMin: true,
+        budgetMax: true,
+        currency: true,
+        workMode: true,
+        city: true,
+        country: true,
+        bidDeadline: true,
+        createdAt: true,
+        category: {
+          select: { id: true, name: true, slug: true }
+        },
+        subcategory: {
+          select: { id: true, name: true, slug: true }
+        },
+        clientProfile: {
+          select: {
+            displayName: true,
+            companyName: true,
+            industry: true,
+            city: true,
+            country: true
+          }
+        }
+      }
     });
   }
 
   async listPublicPaginated(params: { skip: number; take: number }) {
+    const where = {
+      deletedAt: null,
+      status: JobStatus.OPEN,
+      visibility: JobVisibility.PUBLIC
+    } as const;
     const [items, total] = await Promise.all([
       db.job.findMany({
-        where: { deletedAt: null, status: JobStatus.OPEN },
+        where,
         orderBy: { createdAt: "desc" },
         skip: params.skip,
         take: params.take
       }),
-      db.job.count({
-        where: { deletedAt: null, status: JobStatus.OPEN }
-      })
+      db.job.count({ where })
     ]);
     return { items, total };
   }
