@@ -88,7 +88,9 @@ export const searchJobsSchema = paginationSchema.extend({
 
 export const createVerificationRequestSchema = z.object({
   type: z.enum(["IDENTITY", "BUSINESS", "ADDRESS", "CERTIFICATION", "PAYMENT_METHOD"]),
-  note: z.string().max(1000).optional()
+  note: z.string().max(1000).optional(),
+  /** Optional structured metadata (e.g. document URLs, refs). Stored as JSON; not a file upload. */
+  evidence: z.record(z.string(), z.unknown()).optional()
 });
 
 export const createReviewSchema = z.object({

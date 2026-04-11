@@ -114,6 +114,29 @@ export class NotificationService {
     };
   }
 
+  async notifyVerificationOutcome(params: {
+    subjectUserId: string;
+    decision: "APPROVED" | "REJECTED";
+    requestType: string;
+    staffNote?: string | null;
+  }) {
+    const title =
+      params.decision === "APPROVED" ? "Verification approved" : "Verification decision";
+    const body =
+      params.decision === "APPROVED"
+        ? `Your ${params.requestType} verification was approved.`
+        : `Your ${params.requestType} verification was rejected.${
+            params.staffNote?.trim() ? ` ${params.staffNote.trim()}` : ""
+          }`;
+    await this.createForUser({
+      userId: params.subjectUserId,
+      type: NotificationType.VERIFICATION_UPDATED,
+      title,
+      body,
+      payload: { decision: params.decision, type: params.requestType }
+    });
+  }
+
   async markNotificationAsRead(actor: AuthActor, notificationId: string) {
     const existing = await db.notification.findFirst({
       where: { id: notificationId, userId: actor.userId, dismissedAt: null },
