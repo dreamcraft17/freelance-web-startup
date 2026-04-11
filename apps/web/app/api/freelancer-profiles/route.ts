@@ -1,6 +1,7 @@
 import {
   createFreelancerProfileSchema,
-  freelancerProfileUsernameQuerySchema
+  freelancerProfileUsernameQuerySchema,
+  updateFreelancerProfileSchema
 } from "@acme/validators";
 import { FreelancerProfileService } from "@/server/services/freelancer-profile.service";
 import { parseJson, parseSearchParams } from "@/server/http/route-helpers";
@@ -27,5 +28,16 @@ export async function POST(request: Request) {
     if (!parsed.ok) return parsed.response;
     const data = await service.createProfile(gate.actor, parsed.data);
     return jsonOk(data, 201);
+  });
+}
+
+export async function PATCH(request: Request) {
+  return withApiHandler(async () => {
+    const gate = await protectFreelancer(request);
+    if (!gate.ok) return gate.response;
+    const parsed = await parseJson(request, updateFreelancerProfileSchema);
+    if (!parsed.ok) return parsed.response;
+    const data = await service.updateProfile(gate.actor, parsed.data);
+    return jsonOk(data);
   });
 }

@@ -1,3 +1,4 @@
+import { AvailabilityStatus } from "@acme/types";
 import { z } from "zod";
 
 /** Use `.extend()` (not object spread) so Zod keeps `page` / `limit` required on output. */
@@ -21,6 +22,23 @@ export const createFreelancerProfileSchema = z.object({
   bio: z.string().max(3000).optional(),
   workMode: z.enum(["REMOTE", "ONSITE", "HYBRID"])
 });
+
+/** Authenticated freelancer profile update (at least one field). */
+export const updateFreelancerProfileSchema = createFreelancerProfileSchema
+  .partial()
+  .extend({
+    availabilityStatus: z.nativeEnum(AvailabilityStatus).optional()
+  })
+  .superRefine((data, ctx) => {
+    const keys = Object.keys(data).filter((k) => (data as Record<string, unknown>)[k] !== undefined);
+    if (keys.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "At least one field is required",
+        path: []
+      });
+    }
+  });
 
 export const createClientProfileSchema = z.object({
   displayName: z.string().min(2).max(120),
@@ -186,6 +204,7 @@ export type SubmitBidDto = z.infer<typeof submitBidSchema>;
 export type CreateJobDto = z.infer<typeof createJobSchema>;
 export type UpdateJobDto = z.infer<typeof updateJobSchema>;
 export type CreateFreelancerProfileDto = z.infer<typeof createFreelancerProfileSchema>;
+export type UpdateFreelancerProfileBodyDto = z.infer<typeof updateFreelancerProfileSchema>;
 export type CreateClientProfileDto = z.infer<typeof createClientProfileSchema>;
 export type CreateSubscriptionDto = z.infer<typeof createSubscriptionSchema>;
 export type CreateDonationDto = z.infer<typeof createDonationSchema>;

@@ -11,7 +11,7 @@ Proyek ini adalah **marketplace freelance SaaS** berbasis Next.js 15 (App Router
 
 **Kesiapan monetisasi (awal / tanpa paywall):** `packages/config` memuat **feature flags** + **`resolvePlanEntitlements`**; **QuotaService** membaca entitlement plan (merge opsional JSON plan) dengan mode **early access** (bypass enforcement lewat flag, tetap melaporkan pemakaian); **SubscriptionService** mengekspor ringkasan langganan + flag publik dan **`MONETIZATION_PRICING_PLACEHOLDER`** (harga/durasi placeholder, belum ditagih). **Donasi** — model **`Donation`**, **`DonationService`**, **`POST /api/donations`** (mock, `userId` opsional dari sesi). **Listing & pencarian:** job punya **`isFeatured` / `featuredUntil`**, profil freelancer **`isBoosted` / `boostedUntil`**; **SearchService** mengurutkan featured/boost aktif di atas hasil lain (SQL mentah + expiry). **JobService.listOpenJobs** memakai listing publik terurut itu dan mengekspor hook **`isFeatured` / `featuredUntil`** pada item; strip **early access** ringan di layout freelancer (kuota, teks upgrade opsional, CTA donasi).
 
-Masih ada **placeholder / TODO** di beberapa area produk (mis. **VerificationService**, **checkout subscription** nyata, transisi kontrak **COMPLETED** untuk review, UI directory freelancer). **Tidak ada lagi duplikasi handler `/api/v1`** — diganti redirect ke `/api`.
+Masih ada **placeholder / TODO** di beberapa area produk (mis. **VerificationService**, **checkout subscription** nyata, UI directory freelancer). **Penyelesaian kontrak** — `POST /api/contracts/[contractId]/complete` mengeset **COMPLETED** (gate review); idempotent **409** `ALREADY_COMPLETED`. **Tidak ada lagi duplikasi handler `/api/v1`** — diganti redirect ke `/api`.
 
 **Kesiapan production:** memerlukan `DATABASE_URL`, `SESSION_SECRET`, migrasi `deploy` (termasuk migrasi setelah baseline: participant thread pesan, agregat review profil, dll.), serta peninjauan klien API (`credentials: 'include'` untuk cookie).
 
@@ -67,7 +67,7 @@ Masih ada **placeholder / TODO** di beberapa area produk (mis. **VerificationSer
 - **BidService / BidRepository** — bid **SUBMITTED**, policy + kuota + unik `(jobId, freelancerId)`; **accept bid** → kontrak **PENDING** + notifikasi **BID_ACCEPTED**; notifikasi **BID_SUBMITTED** ke pemilik job.
 - **QuotaService** — entitlement efektif via **SubscriptionService**; enforcement dapat dilewati lewat **`shouldBypassQuotaEnforcement()`**; respons kuota menyertakan **`remaining`**, **`quotasUnlimited`**, snapshot entitlement.
 - **SubscriptionService** — **`resolveEffectivePlanContextForUser`** (satu baca DB: `planKey` + entitlement merge JSON plan), ringkasan aktif + **`getPublicMonetizationFlags`**, harga placeholder **`MONETIZATION_PRICING_PLACEHOLDER`**.
-- **FreelancerProfileService / ClientProfileService** — CRUD Prisma + view types; view freelancer menyertakan **`isBoosted` / `boostedUntil`** (hook UI, bukan gate).
+- **FreelancerProfileService / ClientProfileService** — Prisma + view types; **GET publik** `?username=`, **`GET /api/freelancer-profiles/me`** (sesi freelancer), **`POST` buat profil**, **`PATCH /api/freelancer-profiles`** (partial: bio, headline, workMode, availability, dll.) — **wajib** untuk melengkapi **`bio`** setelah register agar **BidPolicy** (`isComplete`) mengizinkan bid; view freelancer menyertakan **`isBoosted` / `boostedUntil`** (hook UI, bukan gate).
 - **SearchService** — pencarian job & freelancer dengan **`$queryRaw`** terparameter: filter + pagination + **urutan featured/boost aktif** (expiry dipertimbangkan), lalu recency; **`listPublicOpenJobsPaginated`** untuk board publik.
 - **DonationService** — **`POST /api/donations`**, provider **MOCK**, amount + pesan opsional.
 - **SavedItemsService** — `SavedJob` / `SavedFreelancer`, ownership `userId`, upsert + list + `idsOnly` untuk UI.
@@ -84,7 +84,7 @@ Masih ada **placeholder / TODO** di beberapa area produk (mis. **VerificationSer
 | **SubscriptionService** | `initiateSubscriptionCheckout` — `checkoutUrl: null` (billing/pembayaran belum). Harga/feature tier sudah di-*placeholder*; penagihan & gate fitur belum diaktifkan. |
 | **Donasi** | Hanya persistensi + respons sukses; **belum** gateway (Stripe/Midtrans/Xendit). |
 | **Featured / boost** | Flag & ranking ada; **belum** alur pembelian/pembaruan otomatis atau cron pembersihan expiry (bisa ditambah). |
-| **ContractService** | Baca kontrak ada; transisi status (mis. **COMPLETED** untuk review) & pembayaran TODO. |
+| **ContractService** | **Selesai:** `completeContract` → **COMPLETED** + policy peserta; pembayaran escrow nyata tetap TODO. |
 | **UI publik** | Directory freelancer masih ringan; beberapa halaman settings placeholder. |
 
 ---
@@ -100,13 +100,15 @@ Masih ada **placeholder / TODO** di beberapa area produk (mis. **VerificationSer
 - **Freelancer `(app)`** — banner early access (kuota, label upgrade opsional, CTA donasi) di **`DashboardShell.topBanner`**.
 - **Saved** — tombol simpan di browse/detail job & profil freelancer publik; daftar di **Settings** + nav **Saved**.
 - **Notifikasi** — API list + PATCH read; event dari bid & pesan.
+- **Freelancer profil** — **`PATCH /api/freelancer-profiles`**, **`GET /api/freelancer-profiles/me`** (lihat §5).
 
 ---
 
-## 7. Build & typecheck
+## 7. Build, typecheck & E2E
 
 - **`pnpm exec tsc --noEmit`** di **`apps/web`** — **lulus** (pagination: perbaikan `ZodType<Output, _, Input>` di `route-helpers` + schema `paginationSchema.extend`).
 - **`pnpm typecheck`** di root (turbo) — memvalidasi seluruh paket workspace yang dikonfigurasi.
+- **Uji HTTP alur marketplace** — **`pnpm test:e2e`** menjalankan **`scripts/e2e-marketplace-flow.mjs`** (`node:test` + `fetch`). **Syarat:** server Next aktif (mis. `pnpm --filter @acme/web dev`), **`DATABASE_URL`**, **`SESSION_SECRET`** (≥16), migrasi DB. Opsional **`BASE_URL`**. Tanpa server yang merespons, tes gagal dengan **`fetch failed`**.
 
 ---
 
@@ -124,10 +126,10 @@ Masih ada **placeholder / TODO** di beberapa area produk (mis. **VerificationSer
 
 ## 9. Rekomendasi prioritas
 
-1. **Kontrak** — alur menyelesaikan kontrak (**COMPLETED**) agar review konsisten dengan policy.  
+1. ~~**Kontrak** — alur **COMPLETED**~~ — **Sudah:** `POST …/complete` + gate review; lanjutkan **pembayaran / escrow** bila produk memerlukan.  
 2. **Pembayaran** — checkout subscription + integrasi provider; donasi (PSP) + penjualan featured/boost bila produk memerlukan.  
 3. **VerificationService** — persistensi & UI staff.  
-4. **Uji E2E** — register → login → cookie → job → bid → accept → pesan → notifikasi → (setelah COMPLETED) review.  
+4. **Uji E2E** — **Skrip ada:** `scripts/e2e-marketplace-flow.mjs` + `pnpm test:e2e`; pertimbangkan **CI** (services DB + `next start` + env) agar lari otomatis.  
 5. **SEO / konten** — halaman marketing & directory freelancer bila produk memerlukan.  
 6. **Monetisasi lanjutan** — cron / webhook untuk **`featuredUntil` / `boostedUntil`**; selaraskan **`GET /api/search/jobs`** dengan filter **PUBLIC** bila ingin identik dengan board publik.
 
@@ -135,4 +137,4 @@ Masih ada **placeholder / TODO** di beberapa area produk (mis. **VerificationSer
 
 ## 10. Kesimpulan
 
-Repo berada pada titik **MVP backend yang jauh lebih lengkap**: **taxonomy**, **saved items**, **messaging dengan participant**, **notifikasi**, **review + agregat profil**, **detail job publik**, **persiapan monetisasi (flag, entitlement, kuota, donasi, ranking featured/boost)**, dan **middleware app** terhubung. **Typecheck web** bersih. Utang utama bergeser ke **billing nyata**, **verifikasi**, **transisi siklus hidup kontrak**, **otomasi expiry promosi**, dan **kilasan UI** tertentu. File ini dapat diperbarui setelah setiap rilis besar.
+Repo berada pada titik **MVP backend yang jauh lebih lengkap**: **taxonomy**, **saved items**, **messaging dengan participant**, **notifikasi**, **review + agregat profil**, **detail job publik**, **penyelesaian kontrak (COMPLETED)**, **update profil freelancer (PATCH) + profil “me”**, **persiapan monetisasi (flag, entitlement, kuota, donasi, ranking featured/boost)**, **skrip uji E2E HTTP**, dan **middleware app** terhubung. **Typecheck web** bersih. Utang utama bergeser ke **billing nyata**, **verifikasi**, **otomasi expiry promosi**, dan **kilasan UI** tertentu. Ringkasan fitur untuk non-audit: **`features.md`**. File ini dapat diperbarui setelah setiap rilis besar.
