@@ -16,7 +16,8 @@
     "db:generate": "pnpm --filter @acme/database db:generate",
     "db:migrate": "pnpm --filter @acme/database db:migrate",
     "db:migrate:deploy": "pnpm --filter @acme/database db:migrate:deploy",
-    "db:studio": "pnpm --filter @acme/database db:studio"
+    "db:studio": "pnpm --filter @acme/database db:studio",
+    "test:e2e": "node --test scripts/e2e-marketplace-flow.mjs"
   },
   "devDependencies": {
     "rimraf": "^6.0.1",
