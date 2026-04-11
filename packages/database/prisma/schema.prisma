@@ -113,6 +113,19 @@ enum BillingCycle {
   YEARLY
 }
 
+enum PaymentIntentKind {
+  SUBSCRIPTION_PLAN
+  JOB_FEATURED
+  FREELANCER_BOOST
+}
+
+enum PaymentIntentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  CANCELED
+}
+
 enum NotificationType {
   BID_SUBMITTED
   BID_SHORTLISTED
@@ -185,7 +198,8 @@ model User {
 
   auditLogsAsActor AuditLog[] @relation("AuditLogActor")
 
-  donations Donation[]
+  donations        Donation[]
+  paymentIntents   PaymentIntent[]
 
   @@index([role, accountStatus])
   @@index([email, deletedAt])
@@ -573,6 +587,31 @@ model UserSubscription {
   @@index([planId])
   @@index([externalSubscriptionId])
   @@index([currentPeriodEnd])
+}
+
+/// Pending / completed payment attempts (PSP-agnostic; provider MOCK until real checkout).
+model PaymentIntent {
+  id     String @id @default(cuid())
+  userId String
+
+  kind   PaymentIntentKind
+  status PaymentIntentStatus @default(PENDING)
+
+  provider String @default("MOCK") @db.VarChar(32)
+  currency String @db.VarChar(3)
+  amountCents Int
+
+  checkoutUrl String @db.Text
+
+  metadata Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([status, createdAt])
 }
 
 /// Optional platform support payment (mock provider today; swap for Stripe/Midtrans/Xendit).

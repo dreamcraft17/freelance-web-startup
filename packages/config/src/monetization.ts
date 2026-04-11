@@ -8,6 +8,14 @@ function readBoolEnv(name: string, fallback: boolean): boolean {
   return v === "1" || v.toLowerCase() === "true" || v.toLowerCase() === "yes";
 }
 
+/** Placeholder USD cents / default durations — checkout uses these for non-plan line items until PSP wiring. */
+export const MONETIZATION_PRICING_PLACEHOLDER = {
+  jobFeaturedUsdCents: 4_999,
+  jobFeaturedDefaultDays: 14,
+  freelancerBoostUsdCents: 2_499,
+  freelancerBoostDefaultDays: 14
+} as const;
+
 /**
  * Central toggles for early access vs paid launch. Override via env in deployment without code edits.
  *

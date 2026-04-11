@@ -7,6 +7,7 @@ export {
 } from "./plans";
 
 export {
+  MONETIZATION_PRICING_PLACEHOLDER,
   monetizationFlags,
   shouldBypassQuotaEnforcement,
   getPublicMonetizationFlags,

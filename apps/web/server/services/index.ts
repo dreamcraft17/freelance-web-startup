@@ -7,6 +7,7 @@ export { BidService } from "./bid.service";
 export { JobService } from "./job.service";
 export { QuotaService } from "./quota.service";
 export { SubscriptionService } from "./subscription.service";
+export { PaymentService } from "./payment.service";
 export { GeoService } from "./geo.service";
 export { SearchService } from "./search.service";
 export { ReviewService } from "./review.service";
