@@ -71,7 +71,7 @@ export class AuthService {
     const passwordHash = await bcrypt.hash(input.password, 12);
     const email = input.email.toLowerCase();
     const role = input.role === "CLIENT" ? UserRole.CLIENT : UserRole.FREELANCER;
-    const display = emailLocalPart(email);
+    const profileName = input.fullName.trim();
     const username = uniqueUsernameStub(email);
 
     const user = await db.$transaction(async (tx: Prisma.TransactionClient) => {
@@ -87,7 +87,7 @@ export class AuthService {
         await tx.clientProfile.create({
           data: {
             userId: u.id,
-            displayName: display
+            displayName: profileName
           }
         });
       } else {
@@ -95,7 +95,7 @@ export class AuthService {
           data: {
             userId: u.id,
             username,
-            fullName: display
+            fullName: profileName
           }
         });
       }

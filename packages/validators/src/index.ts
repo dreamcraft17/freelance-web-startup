@@ -119,6 +119,7 @@ export const createReviewSchema = z.object({
 });
 
 export const registerSchema = z.object({
+  fullName: z.string().min(2).max(120),
   email: z.string().email().max(320),
   password: z.string().min(8).max(128),
   role: z.enum(["CLIENT", "FREELANCER"])
