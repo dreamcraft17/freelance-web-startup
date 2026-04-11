@@ -7,6 +7,7 @@ import { useCallback, useId, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import type { UserRole } from "@acme/types";
 import { homePathForSessionRole, sanitizeReturnUrl } from "@src/lib/return-url";
+import { readApiBody } from "@/features/auth/lib/read-api-body";
 
 type LoginApiSuccess = {
   success: true;
@@ -53,8 +54,13 @@ export function LoginForm({ returnUrl }: LoginFormProps) {
           credentials: "same-origin"
         });
 
-        const body = (await res.json()) as LoginApiSuccess | LoginApiError;
+        const parsed = await readApiBody<LoginApiSuccess | LoginApiError>(res);
+        if (!parsed.ok) {
+          setError(parsed.message);
+          return;
+        }
 
+        const body = parsed.data;
         if (!res.ok || !body.success) {
           const msg =
             !body.success && typeof body.error === "string" && body.error.length > 0
@@ -69,8 +75,13 @@ export function LoginForm({ returnUrl }: LoginFormProps) {
         const next = sanitizeReturnUrl(returnUrl ?? null, fallback);
         router.replace(next as Route);
         router.refresh();
-      } catch {
-        setError("Network error. Check your connection and try again.");
+      } catch (err) {
+        const msg = err instanceof Error && err.message ? err.message : "Request failed";
+        setError(
+          /failed to fetch|networkerror|load failed/i.test(msg)
+            ? "Could not reach the server. Check your connection, VPN, or ad blockers, then try again."
+            : `Something went wrong: ${msg}`
+        );
       } finally {
         setLoading(false);
       }
