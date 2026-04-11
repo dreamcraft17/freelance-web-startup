@@ -66,6 +66,7 @@ export class ReviewService {
       status: contract.status as ContractStatus
     };
 
+    /** Must match contract lifecycle: reviews only after {@link ContractService.completeContract}. */
     ReviewPolicy.assertContractEligibleForReview(participants);
     ReviewPolicy.assertActorIsContractParticipant(actor.userId, participants);
     ReviewPolicy.assertTargetTypeMatchesParticipant(actor.userId, participants, input.targetType);
