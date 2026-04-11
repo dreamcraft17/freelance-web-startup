@@ -1,13 +1,19 @@
 import { cookies } from "next/headers";
 import type { AuthActor } from "@/server/domain/auth-actor";
-import { getSessionFromRequest, verifySessionToken, SESSION_COOKIE_NAME } from "@src/lib/session";
+import {
+  getSessionFromRequest,
+  verifySessionToken,
+  SESSION_COOKIE_NAME,
+  sanitizeReturnUrl,
+  homePathForSessionRole
+} from "@src/lib/session";
 import type { SessionPayload } from "@src/lib/session";
 import { requireActiveAccount, requireAuth, requireRole } from "@src/server/policies/access.policy";
 import type { UserRole } from "@acme/types";
 
 export type { SessionPayload };
 
-export { getSessionFromRequest, requireAuth, requireRole, requireActiveAccount };
+export { getSessionFromRequest, requireAuth, requireRole, requireActiveAccount, sanitizeReturnUrl, homePathForSessionRole };
 
 export async function getSessionFromCookies(): Promise<SessionPayload | null> {
   const jar = await cookies();
