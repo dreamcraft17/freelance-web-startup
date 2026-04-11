@@ -3,8 +3,8 @@ import type { NextRequest } from "next/server";
 import { getSessionFromRequest } from "@src/lib/session";
 
 /**
- * Authenticated areas only. Public routes (/ , /jobs , /freelancers , etc.) are not matched.
- * Session is read from the signed session cookie only — no header fallbacks.
+ * Authenticated areas only. Public marketing and discovery routes (/ , /jobs , /freelancers , …)
+ * are not matched. Session is read from the signed session cookie only — no header fallbacks.
  */
 export default async function middleware(request: NextRequest) {
   const session = await getSessionFromRequest(request);
@@ -19,5 +19,11 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/client/:path*", "/freelancer/:path*"]
+  matcher: [
+    "/client/:path*",
+    "/freelancer/:path*",
+    "/messages/:path*",
+    "/notifications/:path*",
+    "/settings/:path*"
+  ]
 };

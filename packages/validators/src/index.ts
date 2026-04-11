@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+/** Use `.extend()` (not object spread) so Zod keeps `page` / `limit` required on output. */
 export const paginationSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20)

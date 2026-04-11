@@ -1,10 +1,14 @@
 import { NextResponse } from "next/server";
-import type { ZodSchema } from "zod";
+import type { ZodType, ZodTypeDef } from "zod";
 import type { AuthActor } from "@/server/domain/auth-actor";
 
 export type { AuthActor };
 
-export function parseSearchParams<T>(url: URL, schema: ZodSchema<T>) {
+/** `ZodSchema<T>` sets Input = Output and widens `.default()` fields; `ZodType<Out, _, In>` preserves parsed output. */
+export function parseSearchParams<Output, Input>(
+  url: URL,
+  schema: ZodType<Output, ZodTypeDef, Input>
+) {
   const parsed = schema.safeParse(Object.fromEntries(url.searchParams.entries()));
   if (!parsed.success) {
     return {
@@ -18,7 +22,7 @@ export function parseSearchParams<T>(url: URL, schema: ZodSchema<T>) {
   return { ok: true as const, data: parsed.data };
 }
 
-export async function parseJson<T>(request: Request, schema: ZodSchema<T>) {
+export async function parseJson<Output, Input>(request: Request, schema: ZodType<Output, ZodTypeDef, Input>) {
   const json = await request.json();
   const parsed = schema.safeParse(json);
   if (!parsed.success) {

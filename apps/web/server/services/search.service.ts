@@ -1,5 +1,5 @@
 import type { SearchFreelancersQueryDto, SearchJobsQueryDto } from "@acme/validators";
-import { JobStatus, WorkMode } from "@acme/types";
+import { AvailabilityStatus, JobStatus, WorkMode } from "@acme/types";
 import type { Prisma } from "@acme/database";
 import { db } from "@acme/database";
 import { clampLimit, clampPage, offsetFromPage } from "@acme/utils";
@@ -31,9 +31,32 @@ export type FreelancerSearchItem = {
   city: string | null;
   country: string | null;
   hourlyRate: number | null;
-  availabilityStatus: string;
+  availabilityStatus: AvailabilityStatus;
   createdAt: string;
 };
+
+function parseWorkMode(value: string): WorkMode {
+  switch (value) {
+    case WorkMode.REMOTE:
+    case WorkMode.ONSITE:
+    case WorkMode.HYBRID:
+      return value;
+    default:
+      throw new Error(`Unexpected workMode: ${value}`);
+  }
+}
+
+function parseAvailabilityStatus(value: string): AvailabilityStatus {
+  switch (value) {
+    case AvailabilityStatus.AVAILABLE:
+    case AvailabilityStatus.LIMITED:
+    case AvailabilityStatus.UNAVAILABLE:
+    case AvailabilityStatus.ON_LEAVE:
+      return value;
+    default:
+      throw new Error(`Unexpected availabilityStatus: ${value}`);
+  }
+}
 
 function num(v: { toString(): string } | null | undefined): number | null {
   if (v == null) return null;
@@ -65,7 +88,7 @@ function mapJob(row: {
     budgetMin: num(row.budgetMin),
     budgetMax: num(row.budgetMax),
     currency: row.currency,
-    workMode: row.workMode as WorkMode,
+    workMode: parseWorkMode(row.workMode),
     city: row.city,
     categoryId: row.categoryId,
     subcategoryId: row.subcategoryId,
@@ -93,11 +116,11 @@ function mapFreelancer(row: {
     username: row.username,
     fullName: row.fullName,
     headline: row.headline,
-    workMode: row.workMode as WorkMode,
+    workMode: parseWorkMode(row.workMode),
     city: row.city,
     country: row.country,
     hourlyRate: num(row.hourlyRate),
-    availabilityStatus: row.availabilityStatus,
+    availabilityStatus: parseAvailabilityStatus(row.availabilityStatus),
     createdAt: row.createdAt.toISOString()
   };
 }
