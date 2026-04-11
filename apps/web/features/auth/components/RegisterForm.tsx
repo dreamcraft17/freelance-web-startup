@@ -7,6 +7,7 @@ import { useCallback, useId, useState } from "react";
 import { Briefcase, Eye, EyeOff, UserRound } from "lucide-react";
 import type { UserRole } from "@acme/types";
 import { homePathForSessionRole } from "@src/lib/return-url";
+import { readApiBody } from "@/features/auth/lib/read-api-body";
 
 type RegisterApiSuccess = {
   success: true;
@@ -71,8 +72,13 @@ export function RegisterForm() {
           credentials: "same-origin"
         });
 
-        const body = (await res.json()) as RegisterApiSuccess | RegisterApiError;
+        const parsed = await readApiBody<RegisterApiSuccess | RegisterApiError>(res);
+        if (!parsed.ok) {
+          setError(parsed.message);
+          return;
+        }
 
+        const body = parsed.data;
         if (!res.ok || !body.success) {
           const msg =
             !body.success && typeof body.error === "string" && body.error.length > 0
@@ -85,8 +91,13 @@ export function RegisterForm() {
         const next = homePathForSessionRole(body.data.session.role);
         router.replace(next as Route);
         router.refresh();
-      } catch {
-        setError("Network error. Check your connection and try again.");
+      } catch (err) {
+        const msg = err instanceof Error && err.message ? err.message : "Request failed";
+        setError(
+          /failed to fetch|networkerror|load failed/i.test(msg)
+            ? "Could not reach the server. Check your connection, VPN, or ad blockers, then try again."
+            : `Something went wrong: ${msg}`
+        );
       } finally {
         setLoading(false);
       }
