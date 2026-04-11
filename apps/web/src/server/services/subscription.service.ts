@@ -8,15 +8,11 @@ import {
   type ResolvedPlanEntitlements
 } from "@acme/config";
 import { SubscriptionStatus } from "@acme/types";
-import { db } from "@acme/database";
+import { db, PaymentIntentKind } from "@acme/database";
+import { DomainError, NotFoundError } from "@/server/errors/domain-errors";
+import { PaymentService } from "@/server/services/payment.service";
 
-/** Placeholder USD cents / durations — not enforced; checkout integration comes later. */
-export const MONETIZATION_PRICING_PLACEHOLDER = {
-  jobFeaturedUsdCents: 4_999,
-  jobFeaturedDefaultDays: 14,
-  freelancerBoostUsdCents: 2_499,
-  freelancerBoostDefaultDays: 14
-} as const;
+export { MONETIZATION_PRICING_PLACEHOLDER } from "@acme/config";
 
 const SUBSCRIPTION_STATUSES_WITH_ACCESS: SubscriptionStatus[] = [
   SubscriptionStatus.ACTIVE,
@@ -37,6 +33,8 @@ function planCodeToPlanKey(code: string): PlanKey {
  * Billing provider integration for checkout lives here later. Plan resolution feeds {@link QuotaService}.
  */
 export class SubscriptionService {
+  constructor(private readonly payments = new PaymentService()) {}
+
   private async findQualifyingSubscription(userId: string) {
     const now = new Date();
     return db.userSubscription.findFirst({
@@ -88,14 +86,47 @@ export class SubscriptionService {
   }
 
   /**
-   * TODO: create hosted checkout session with payment provider; return redirect URL.
+   * Creates a **PENDING** {@link PaymentIntent} (MOCK provider) and returns `checkoutUrl` to the mock checkout page.
    */
   async initiateSubscriptionCheckout(userId: string, input: CreateSubscriptionDto) {
+    const normalizedCode = input.planCode.trim().toUpperCase();
+    const plan = await db.subscriptionPlan.findFirst({
+      where: { code: normalizedCode, isActive: true },
+      select: { id: true, code: true, billingCycle: true, priceCents: true, currency: true }
+    });
+    if (!plan) {
+      throw new NotFoundError("Subscription plan not found");
+    }
+    if (plan.billingCycle !== input.billingCycle) {
+      throw new DomainError(
+        "Selected billing cycle does not match this plan",
+        "BILLING_CYCLE_MISMATCH",
+        400
+      );
+    }
+
+    const session = await this.payments.createPendingCheckoutSession({
+      userId,
+      kind: PaymentIntentKind.SUBSCRIPTION_PLAN,
+      amountCents: plan.priceCents,
+      currency: plan.currency,
+      metadata: {
+        planId: plan.id,
+        planCode: plan.code,
+        billingCycle: input.billingCycle
+      }
+    });
+
     return {
       userId,
-      planCode: input.planCode,
+      planCode: plan.code,
       billingCycle: input.billingCycle,
-      checkoutUrl: null as string | null
+      paymentIntentId: session.paymentIntentId,
+      checkoutUrl: session.checkoutUrl,
+      provider: session.provider,
+      amountCents: session.amountCents,
+      currency: session.currency,
+      status: session.status
     };
   }
 
