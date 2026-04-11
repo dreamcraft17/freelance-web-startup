@@ -64,6 +64,13 @@ export const createSubscriptionSchema = z.object({
   billingCycle: z.enum(["MONTHLY", "QUARTERLY", "YEARLY"])
 });
 
+/** Mock-friendly donation intent; swap handler body for a real PSP later. */
+export const createDonationSchema = z.object({
+  amount: z.number().positive().max(1_000_000),
+  currency: z.string().length(3).default("USD"),
+  message: z.string().max(500).optional()
+});
+
 export const searchFreelancersSchema = paginationSchema.extend({
   keyword: z.string().optional(),
   city: z.string().optional(),
@@ -179,6 +186,7 @@ export type UpdateJobDto = z.infer<typeof updateJobSchema>;
 export type CreateFreelancerProfileDto = z.infer<typeof createFreelancerProfileSchema>;
 export type CreateClientProfileDto = z.infer<typeof createClientProfileSchema>;
 export type CreateSubscriptionDto = z.infer<typeof createSubscriptionSchema>;
+export type CreateDonationDto = z.infer<typeof createDonationSchema>;
 export type SearchFreelancersQueryDto = z.infer<typeof searchFreelancersSchema>;
 export type SearchJobsQueryDto = z.infer<typeof searchJobsSchema>;
 export type CreateVerificationRequestDto = z.infer<typeof createVerificationRequestSchema>;

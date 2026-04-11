@@ -13,3 +13,4 @@ export { ReviewService } from "./review.service";
 export { VerificationService } from "./verification.service";
 export { NotificationService } from "./notification.service";
 export { ContractService } from "./contract.service";
+export { DonationService } from "./donation.service";

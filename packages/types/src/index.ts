@@ -122,6 +122,10 @@ export enum VerificationType {
   PAYMENT_METHOD = "PAYMENT_METHOD"
 }
 
+/**
+ * Canonical plan caps per tier. Merge with `SubscriptionPlan.entitlements` in the app layer, then pass through
+ * `resolvePlanEntitlements` from `@acme/config` for derived fields (`maxActiveContracts`, `canBoostProfile`, …).
+ */
 export type PlanEntitlements = {
   maxActiveBids: number;
   maxActiveAcceptedContracts: number;
