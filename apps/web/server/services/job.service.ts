@@ -6,6 +6,7 @@ import { ClientRepository } from "../repositories/client.repository";
 import { JobPolicy } from "../policies/job.policy";
 import type { JobSearchItem } from "./search.service";
 import { SearchService } from "./search.service";
+import { PaymentService } from "./payment.service";
 
 export { MONETIZATION_PRICING_PLACEHOLDER } from "./subscription.service";
 
@@ -55,7 +56,8 @@ export class JobService {
   constructor(
     private readonly jobRepo = new JobRepository(),
     private readonly clientRepo = new ClientRepository(),
-    private readonly searchService = new SearchService()
+    private readonly searchService = new SearchService(),
+    private readonly payments = new PaymentService()
   ) {}
 
   async createDraftJob(actor: AuthActor, dto: CreateJobDto) {
@@ -86,5 +88,20 @@ export class JobService {
     const ownerUserId = await this.jobRepo.getOwnerUserId(jobId);
     JobPolicy.assertClientOwnsJob(actor, ownerUserId);
     return this.jobRepo.updatePartial(jobId, dto);
+  }
+
+  /**
+   * Client purchases featured placement for their job (mock payment: intent **SUCCEEDED** immediately).
+   * Duration defaults from `@acme/config` **MONETIZATION_PRICING_PLACEHOLDER.jobFeaturedDefaultDays** (optional override param for future API).
+   */
+  async purchaseFeaturedJob(actor: AuthActor, jobId: string, durationDays?: number) {
+    JobPolicy.assertActorMayPerformClientWrites(actor);
+    const ownerUserId = await this.jobRepo.getOwnerUserId(jobId);
+    JobPolicy.assertClientOwnsJob(actor, ownerUserId);
+    return this.payments.simulateSuccessfulJobFeaturedPurchase({
+      payerUserId: actor.userId,
+      jobId,
+      durationDays
+    });
   }
 }

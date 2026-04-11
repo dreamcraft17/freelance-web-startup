@@ -6,6 +6,8 @@ import type { AuthActor } from "@/server/domain/auth-actor";
 import { BidPolicy } from "@/server/policies/bid.policy";
 import { DomainError, NotFoundError } from "@/server/errors/domain-errors";
 import { isFreelancerBoostActiveAt } from "@/server/lib/promotion-expiry";
+import type { SimulatedFreelancerBoostPurchaseResult } from "@/server/services/payment.service";
+import { PaymentService } from "@/server/services/payment.service";
 
 export type FreelancerProfileView = {
   id: string;
@@ -105,6 +107,8 @@ function assertUpdatePayload(dto: UpdateFreelancerProfileDto): void {
 }
 
 export class FreelancerProfileService {
+  constructor(private readonly payments = new PaymentService()) {}
+
   async getProfileByUserId(userId: string): Promise<FreelancerProfileView> {
     const row = await db.freelancerProfile.findFirst({
       where: { userId, deletedAt: null }
@@ -199,5 +203,36 @@ export class FreelancerProfileService {
 
   async updateAvailability(actor: AuthActor, availabilityStatus: AvailabilityStatus): Promise<FreelancerProfileView> {
     return this.updateProfile(actor, { availabilityStatus });
+  }
+
+  /**
+   * Freelancer purchases profile boost (mock payment: intent **SUCCEEDED** immediately).
+   * Window extends from current `boostedUntil` if still active, else from now.
+   */
+  async purchaseProfileBoost(
+    actor: AuthActor,
+    durationDays?: number
+  ): Promise<{ purchase: SimulatedFreelancerBoostPurchaseResult; profile: FreelancerProfileView }> {
+    BidPolicy.assertActorMayPerformFreelancerWrites(actor);
+
+    const current = await db.freelancerProfile.findFirst({
+      where: { userId: actor.userId, deletedAt: null },
+      select: { id: true }
+    });
+    if (!current) {
+      throw new NotFoundError("Freelancer profile not found");
+    }
+
+    const purchase = await this.payments.simulateSuccessfulFreelancerBoostPurchase({
+      payerUserId: actor.userId,
+      freelancerProfileId: current.id,
+      durationDays
+    });
+
+    const row = await db.freelancerProfile.findFirstOrThrow({
+      where: { id: current.id, deletedAt: null }
+    });
+
+    return { purchase, profile: mapFreelancerProfile(row) };
   }
 }
