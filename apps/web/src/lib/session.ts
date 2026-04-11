@@ -79,49 +79,7 @@ export async function getSessionFromRequest(request: Request | NextRequest): Pro
   return verifySessionToken(token);
 }
 
-const MAX_RETURN_URL_LEN = 2048;
-
-/** Paths that must never be used as post-login return targets (prevents /login → /login loops). */
-function isDisallowedReturnPath(pathOnly: string): boolean {
-  const p = pathOnly.toLowerCase();
-  return (
-    p === "/login" ||
-    p.startsWith("/login/") ||
-    p === "/register" ||
-    p.startsWith("/register/") ||
-    p === "/forgot-password" ||
-    p.startsWith("/forgot-password/")
-  );
-}
-
-/**
- * Same-origin relative return URL only. Rejects open redirects, auth pages, and oversized values.
- */
-export function sanitizeReturnUrl(raw: string | null | undefined, fallback: string): string {
-  if (raw == null) return fallback;
-  const trimmed = raw.trim();
-  if (!trimmed || trimmed.length > MAX_RETURN_URL_LEN) return fallback;
-  if (!trimmed.startsWith("/") || trimmed.startsWith("//")) return fallback;
-  if (trimmed.includes("@") || trimmed.includes("\\") || trimmed.includes("\0")) return fallback;
-
-  const q = trimmed.indexOf("?");
-  const pathOnly = (q === -1 ? trimmed : trimmed.slice(0, q)) || "/";
-  if (isDisallowedReturnPath(pathOnly)) return fallback;
-
-  return trimmed;
-}
-
-/** Default app home after sign-in when no safe returnUrl is provided. */
-export function homePathForSessionRole(role: UserRole): string {
-  switch (role) {
-    case UserRole.FREELANCER:
-      return "/freelancer";
-    case UserRole.CLIENT:
-      return "/client";
-    default:
-      return "/client";
-  }
-}
+export { sanitizeReturnUrl, homePathForSessionRole } from "./return-url";
 
 export function sessionCookieMaxAgeSec(): number {
   return SESSION_MAX_AGE_SEC;
