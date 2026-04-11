@@ -230,13 +230,15 @@ register → login → create job → submit bid
 
 ### Vercel (monorepo → `apps/web`)
 
+**Commit `pnpm-lock.yaml`.** It must not be gitignored: without it, Turbo warns and Vercel can fall back to **npm** (~few dozen packages), which skips workspace linking and omits devDependencies your Next build needs (`tailwindcss`, Radix, etc.).
+
 **Recommended project settings**
 
 | Setting | Value |
 |--------|--------|
-| **Root Directory** | *(leave empty / repository root)* |
+| **Root Directory** | *(leave empty / repository root)* — **Do not** set `apps/web` unless you change install/build to `cd ../.. && …` (see below). |
 | **Framework Preset** | Next.js (auto from `vercel.json`) |
-| **Install Command** | *(leave default)* — Vercel runs **`pnpm install`** when root **`package.json`** has **`"packageManager": "pnpm@9.15.9"`** (Corepack). Do **not** set `npm install -g pnpm`. |
+| **Install Command** | **`pnpm install`** (set explicitly in root **`vercel.json`**) or default when **`"packageManager": "pnpm@9.15.9"`** is in the **root** `package.json`. Do **not** use `npm install -g pnpm`. |
 | **Build Command** | *(override only if needed)* `pnpm exec turbo run build --filter=@acme/web` (already in root **`vercel.json`**) |
 | **Output Directory** | `apps/web/.next` (set by **`vercel.json`**) |
 
