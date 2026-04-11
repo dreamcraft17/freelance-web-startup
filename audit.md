@@ -120,7 +120,7 @@ Masih ada **placeholder / TODO** di beberapa area produk (mis. **VerificationSer
 | Set **`DATABASE_URL`**; jalankan **`pnpm db:migrate:deploy`** sebelum app (semua migrasi). Opsional: set env **`FEATURE_*`** (lihat `packages/config/src/monetization.ts`) untuk uji coba bypass kuota / flag produk. |
 | Pastikan **HTTPS** di production agar flag **Secure** pada cookie sesi efektif. |
 | **pnpm approve-builds** — build script Prisma/sharp mungkin perlu disetujui di CI. |
-| **Vercel + pnpm** — `vercel.json` memakai `npm i -g pnpm@9.15.9` sebelum install (hindari `ERR_INVALID_THIS` / Corepack eksperimental); **`engines.node`: `20.x`**; jangan set **`ENABLE_EXPERIMENTAL_COREPACK`** kecuali diperlukan. |
+| **Vercel + pnpm** — **`packageManager`: `pnpm@9.15.9`**, install default Vercel (`pnpm install`); **`engines.node`: `20.x`**; tanpa `npm install -g pnpm`; jangan set **`ENABLE_EXPERIMENTAL_COREPACK`** jika memicu `ERR_INVALID_THIS` pada registry. |
 | Tinjau **matcher middleware** bila area `(app)` baru perlu wajib login di edge. |
 
 ---

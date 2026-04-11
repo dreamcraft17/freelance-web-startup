@@ -1,4 +1,4 @@
-import { db } from "@acme/database";
+import { db, type Prisma } from "@acme/database";
 import type { SubmitBidDto } from "@acme/validators";
 import { BidStatus, ContractStatus, UserRole } from "@acme/types";
 import type { AuthActor } from "../domain/auth-actor";
@@ -90,7 +90,7 @@ export class BidService {
       throw new PolicyDeniedError("You do not own this job");
     }
 
-    const contract = await db.$transaction(async (tx) => {
+    const contract = await db.$transaction(async (tx: Prisma.TransactionClient) => {
       const c = await tx.contract.create({
         data: {
           bidId: bid.id,

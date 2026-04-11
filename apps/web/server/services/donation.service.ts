@@ -1,4 +1,4 @@
-import { db, Prisma } from "@acme/database";
+import { db, Decimal } from "@acme/database";
 
 export type RecordDonationInput = {
   userId?: string | null;
@@ -18,7 +18,7 @@ export class DonationService {
     const row = await db.donation.create({
       data: {
         userId: input.userId ?? null,
-        amount: new Prisma.Decimal(capped.toFixed(2)),
+        amount: new Decimal(capped.toFixed(2)),
         currency: input.currency.trim().toUpperCase().slice(0, 3),
         message: input.message?.trim() ? input.message.trim().slice(0, 500) : null,
         provider: (input.provider ?? "MOCK").slice(0, 32)

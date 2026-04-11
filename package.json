@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "description": "Monorepo for a category-agnostic, geo-aware freelance marketplace SaaS platform",
-  "packageManager": "pnpm@10.6.0",
+  "packageManager": "pnpm@9.15.9",
   "engines": {
     "node": "20.x"
   },

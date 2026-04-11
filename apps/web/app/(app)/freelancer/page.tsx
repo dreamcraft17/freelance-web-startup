@@ -6,6 +6,21 @@ import { getSessionFromCookies } from "@src/lib/auth";
 import { db } from "@acme/database";
 import { JobService } from "@/server/services/job.service";
 
+type FreelancerDashboardBid = {
+  id: string;
+  status: string;
+  bidAmount: unknown;
+  estimatedDays: number | null;
+  job: {
+    id: string;
+    title: string;
+    slug: string;
+    status: string;
+    workMode: string;
+    currency: string;
+  };
+};
+
 function money(amount: unknown, currency: string): string {
   const n = amount != null && typeof (amount as { toString?: () => string }).toString === "function" ? Number(amount) : NaN;
   if (!Number.isFinite(n)) return "—";
@@ -27,7 +42,7 @@ export default async function FreelancerDashboardPage() {
     select: { id: true, username: true, fullName: true }
   });
 
-  const bids = profile
+  const bids: FreelancerDashboardBid[] = profile
     ? await db.bid.findMany({
         where: { freelancerId: profile.id },
         orderBy: { createdAt: "desc" },

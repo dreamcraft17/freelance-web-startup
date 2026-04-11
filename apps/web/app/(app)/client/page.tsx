@@ -5,6 +5,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { getSessionFromCookies } from "@src/lib/auth";
 import { db } from "@acme/database";
 
+type ClientDashboardJob = {
+  id: string;
+  title: string;
+  slug: string;
+  status: string;
+  workMode: string;
+  city: string | null;
+  createdAt: Date;
+  _count: { bids: number };
+};
+
 export default async function ClientDashboardPage() {
   const session = await getSessionFromCookies();
   if (!session) {
@@ -16,7 +27,7 @@ export default async function ClientDashboardPage() {
     select: { id: true, displayName: true }
   });
 
-  const jobs = clientProfile
+  const jobs: ClientDashboardJob[] = clientProfile
     ? await db.job.findMany({
         where: { clientProfileId: clientProfile.id, deletedAt: null },
         orderBy: { createdAt: "desc" },

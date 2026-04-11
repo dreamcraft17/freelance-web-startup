@@ -72,7 +72,7 @@ export class PaymentService {
     const meta =
       input.metadata === undefined ? undefined : (input.metadata as Prisma.InputJsonValue);
 
-    const row = await db.$transaction(async (tx) => {
+    const row = await db.$transaction(async (tx: Prisma.TransactionClient) => {
       const created = await tx.paymentIntent.create({
         data: {
           userId: input.userId,
@@ -162,7 +162,7 @@ export class PaymentService {
     const amountCents = MONETIZATION_PRICING_PLACEHOLDER.jobFeaturedUsdCents;
     const currency = "USD";
 
-    return db.$transaction(async (tx) => {
+    return db.$transaction(async (tx: Prisma.TransactionClient) => {
       const job = await tx.job.findFirst({
         where: { id: input.jobId, deletedAt: null },
         select: {
@@ -238,7 +238,7 @@ export class PaymentService {
     const amountCents = MONETIZATION_PRICING_PLACEHOLDER.freelancerBoostUsdCents;
     const currency = "USD";
 
-    return db.$transaction(async (tx) => {
+    return db.$transaction(async (tx: Prisma.TransactionClient) => {
       const profile = await tx.freelancerProfile.findFirst({
         where: { id: input.freelancerProfileId, deletedAt: null },
         select: {

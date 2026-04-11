@@ -112,7 +112,7 @@ export class VerificationService {
       evidenceJson = input.evidence as Prisma.InputJsonValue;
     }
 
-    const row = await db.$transaction(async (tx) => {
+    const row = await db.$transaction(async (tx: Prisma.TransactionClient) => {
       const created = await tx.verificationRequest.create({
         data: {
           userId: actor.userId,
@@ -209,7 +209,7 @@ export class VerificationService {
     const nextProfileStatus =
       input.decision === "APPROVED" ? VerificationStatus.VERIFIED : VerificationStatus.REJECTED;
 
-    const updated = await db.$transaction(async (tx) => {
+    const updated = await db.$transaction(async (tx: Prisma.TransactionClient) => {
       const u = await tx.verificationRequest.update({
         where: { id: row.id },
         data: {

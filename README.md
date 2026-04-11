@@ -228,15 +228,27 @@ Before deploying:
  Test end-to-end flow:
 register → login → create job → submit bid
 
-### Vercel (monorepo)
+### Vercel (monorepo → `apps/web`)
 
-The app lives in **`apps/web`**. The repo root **`vercel.json`** tells Vercel to use **Next.js**, install with **pnpm** from the monorepo root, run **`turbo run build --filter=@acme/web`**, and take output from **`apps/web/.next`**. Root **`package.json`** includes **`next`** in `devDependencies` so Vercel’s framework detector sees a Next version while the real app stays in `apps/web`.
+**Recommended project settings**
 
-**Project env (Vercel → Settings → Environment Variables):** set at least **`DATABASE_URL`** (for serverless/runtime if used), **`SESSION_SECRET`** (≥16 characters), and any **`NEXT_PUBLIC_*`** you need. **`pnpm install`** runs **`prisma generate`** via `@acme/database` `postinstall` (no live DB required for generate).
+| Setting | Value |
+|--------|--------|
+| **Root Directory** | *(leave empty / repository root)* |
+| **Framework Preset** | Next.js (auto from `vercel.json`) |
+| **Install Command** | *(leave default)* — Vercel runs **`pnpm install`** when root **`package.json`** has **`"packageManager": "pnpm@9.15.9"`** (Corepack). Do **not** set `npm install -g pnpm`. |
+| **Build Command** | *(override only if needed)* `pnpm exec turbo run build --filter=@acme/web` (already in root **`vercel.json`**) |
+| **Output Directory** | `apps/web/.next` (set by **`vercel.json`**) |
 
-**Alternative:** instead of the root `vercel.json` layout, you can set **Root Directory** to **`apps/web`** in the Vercel project and use an **Install Command** like `cd ../.. && corepack enable pnpm && pnpm install` so `workspace:*` resolves from the monorepo root.
+Root **`vercel.json`** only sets **`buildCommand`** + **`outputDirectory`**; install stays **native pnpm**. Root **`package.json`** keeps **`next`** in `devDependencies` so Vercel’s Next.js version check passes; the built app is **`@acme/web`**.
 
-**If `pnpm install` fails with `ERR_INVALID_THIS` / `URLSearchParams` on the registry:** the root `vercel.json` uses **`npm install -g pnpm@9.15.9`** before `pnpm install` so the build does not rely on Corepack’s pnpm shim (which can break on some Node + `ENABLE_EXPERIMENTAL_COREPACK` combinations). In Vercel → Project → **Environment Variables**, **remove `ENABLE_EXPERIMENTAL_COREPACK`** unless you explicitly need it. **`engines.node`** is pinned to **`20.x`** so the runtime matches a well-tested Node line for Next + pnpm.
+**Prisma:** `@acme/database` runs **`postinstall`: `prisma generate`** — no DB connection required for generate.
+
+**Environment variables:** **`DATABASE_URL`**, **`SESSION_SECRET`** (≥16 chars), **`NEXT_PUBLIC_*`** as needed. Never commit secrets.
+
+**If you use Root Directory = `apps/web`:** Vercel’s default `pnpm install` would run in the wrong folder. Set **Install Command** to **`cd ../.. && pnpm install`** and **Build Command** to **`cd ../.. && pnpm exec turbo run build --filter=@acme/web`**, **Output Directory** to **`.next`**, and remove or ignore the repo-root `vercel.json` overrides as appropriate.
+
+**Registry errors (`ERR_INVALID_THIS` / `URLSearchParams`):** remove env **`ENABLE_EXPERIMENTAL_COREPACK`** from the Vercel project; keep **`engines.node`** as **`20.x`** in root `package.json`.
 🎯 Roadmap
 Phase 1 (Core Stabilization)
 Fix typecheck

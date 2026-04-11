@@ -39,10 +39,10 @@ export async function SavedListsSection() {
 
   const actor = sessionToActor(session);
   const savedItems = new SavedItemsService();
-  const [jobsPayload, freelancersPayload] = await Promise.all([
-    savedItems.listSavedJobs(actor),
-    savedItems.listSavedFreelancers(actor)
-  ]);
+  const [jobsPayload, freelancersPayload]: [
+    Awaited<ReturnType<SavedItemsService["listSavedJobs"]>>,
+    Awaited<ReturnType<SavedItemsService["listSavedFreelancers"]>>
+  ] = await Promise.all([savedItems.listSavedJobs(actor), savedItems.listSavedFreelancers(actor)]);
 
   return (
     <div className="grid gap-10 md:grid-cols-2">
