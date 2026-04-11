@@ -4,17 +4,71 @@
  * Prerequisites:
  *   - `DATABASE_URL`, `SESSION_SECRET` (>=16 chars) set for the web app
  *   - Migrations applied: `pnpm db:migrate`
- *   - Web dev or prod server: `pnpm --filter @acme/web dev` (default base http://localhost:3000)
+ *   - Web dev or prod server: `pnpm --filter @acme/web dev` (default base http://127.0.0.1:3000)
  *
  * Run: `pnpm test:e2e` or `node --test scripts/e2e-marketplace-flow.mjs`
- * Override base URL: `BASE_URL=http://127.0.0.1:3000 pnpm test:e2e`
+ * Override base URL: `BASE_URL=http://localhost:3000 pnpm test:e2e`
+ *
+ * If you see "redirect count exceeded" or "Redirect cycle", use 127.0.0.1 (default) or the exact
+ * host shown in the Next dev banner; avoid http↔https or localhost↔127.0.0.1 mismatch loops.
  */
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-const BASE_URL = (process.env.BASE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+const BASE_URL = (process.env.BASE_URL ?? "http://127.0.0.1:3000").replace(/\/$/, "");
 const SESSION = "acme_session";
+
+const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
+
+/**
+ * Undici "redirect: follow" can hit the default redirect cap if something bounces between hosts
+ * (e.g. localhost ↔ 127.0.0.1). Follow manually with a small hop limit and cycle detection.
+ */
+async function fetchWithRedirects(url, init, { maxHops = 15 } = {}) {
+  let currentUrl = url;
+  let method = init.method ?? "GET";
+  let body = init.body;
+  const headers = new Headers(init.headers ?? {});
+  const chain = [];
+
+  for (let hop = 0; hop < maxHops; hop++) {
+    if (chain.includes(currentUrl)) {
+      throw new Error(
+        `Redirect cycle (hop ${hop}): ${chain.join(" → ")} → ${currentUrl}. ` +
+          `Set BASE_URL to the same origin Next prints (try http://127.0.0.1:3000).`
+      );
+    }
+    chain.push(currentUrl);
+
+    const res = await fetch(currentUrl, {
+      method,
+      headers,
+      body,
+      redirect: "manual"
+    });
+
+    if (REDIRECT_STATUSES.has(res.status)) {
+      const loc = res.headers.get("location");
+      if (!loc) {
+        throw new Error(`HTTP ${res.status} from ${currentUrl} without Location header`);
+      }
+      currentUrl = new URL(loc, currentUrl).href;
+
+      // 301/302/303: many clients drop POST body on redirect (not 307/308).
+      if (res.status === 303 || res.status === 302 || res.status === 301) {
+        method = "GET";
+        body = undefined;
+        headers.delete("Content-Type");
+      }
+      continue;
+    }
+
+    return res;
+  }
+
+  throw new Error(`Too many redirects (>${maxHops}). Chain started at ${url}: ${chain.join(" → ")}`);
+}
 
 function getSetCookieLines(res) {
   if (typeof res.headers.getSetCookie === "function") {
@@ -52,7 +106,7 @@ async function api(path, { method = "GET", cookie = null, json = undefined } = {
   if (json !== undefined) {
     headers["Content-Type"] = "application/json";
   }
-  const res = await fetch(`${BASE_URL}${path}`, {
+  const res = await fetchWithRedirects(`${BASE_URL}${path}`, {
     method,
     headers,
     body: json !== undefined ? JSON.stringify(json) : undefined
