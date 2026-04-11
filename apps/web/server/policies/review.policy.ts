@@ -8,7 +8,10 @@ export type ContractParticipants = {
   status: ContractStatus;
 };
 
-/** Review creation rules. No I/O. */
+/**
+ * Review creation rules. No I/O.
+ * **`COMPLETED`** is set only via {@link ContractService.completeContract} / repository atomic update — keep in sync when changing completion rules.
+ */
 export const ReviewPolicy = {
   assertActorMayWriteReview(actor: AuthActor): void {
     if (actor.role !== UserRole.CLIENT && actor.role !== UserRole.FREELANCER && actor.role !== UserRole.ADMIN) {
