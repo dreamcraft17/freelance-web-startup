@@ -41,8 +41,7 @@ export class QuotaService {
 
   async getUsageForFreelancerUser(userId: string): Promise<FreelancerQuotaUsage> {
     const freelancerProfileId = await this.freelancerRepo.requireProfileIdForUser(userId);
-    const entitlements = await this.subscriptionService.resolveEffectiveEntitlementsForUser(userId);
-    const planKey = await this.subscriptionService.resolveEffectivePlanKeyForUser(userId);
+    const { planKey, entitlements } = await this.subscriptionService.resolveEffectivePlanContextForUser(userId);
     const unlimited = shouldBypassQuotaEnforcement();
 
     const [activeBids, activeContracts] = await Promise.all([
@@ -85,8 +84,9 @@ export class QuotaService {
     if (shouldBypassQuotaEnforcement()) {
       return;
     }
-    const entitlements = await this.subscriptionService.resolveEffectiveEntitlementsForUser(params.userId);
-    const planKey = await this.subscriptionService.resolveEffectivePlanKeyForUser(params.userId);
+    const { planKey, entitlements } = await this.subscriptionService.resolveEffectivePlanContextForUser(
+      params.userId
+    );
     await this.assertFreelancerCanTakeNewBid({
       freelancerProfileId: params.freelancerProfileId,
       freelancerUserId: params.userId,
