@@ -108,6 +108,8 @@ export class JobRepository {
         country: true,
         bidDeadline: true,
         createdAt: true,
+        isFeatured: true,
+        featuredUntil: true,
         category: {
           select: { id: true, name: true, slug: true }
         },

@@ -1,6 +1,6 @@
 import type { CreateFreelancerProfileDto } from "@acme/validators";
 import { AvailabilityStatus, WorkMode } from "@acme/types";
-import type { FreelancerProfile } from "@prisma/client";
+import type { FreelancerProfile } from "@acme/database";
 import { db } from "@acme/database";
 import type { AuthActor } from "@/server/domain/auth-actor";
 import { BidPolicy } from "@/server/policies/bid.policy";
@@ -28,6 +28,8 @@ export type FreelancerProfileView = {
   verificationStatus: string;
   profileCompleteness: number;
   isFeatured: boolean;
+  isBoosted: boolean;
+  boostedUntil: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -66,6 +68,8 @@ function mapFreelancerProfile(row: FreelancerProfile): FreelancerProfileView {
     verificationStatus: row.verificationStatus,
     profileCompleteness: row.profileCompleteness,
     isFeatured: row.isFeatured,
+    isBoosted: row.isBoosted,
+    boostedUntil: row.boostedUntil?.toISOString() ?? null,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString()
   };

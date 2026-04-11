@@ -4,7 +4,46 @@ import { JobStatus } from "@acme/types";
 import { JobRepository } from "../repositories/job.repository";
 import { ClientRepository } from "../repositories/client.repository";
 import { JobPolicy } from "../policies/job.policy";
-import { clampLimit, clampPage, offsetFromPage } from "@acme/utils";
+import type { JobSearchItem } from "./search.service";
+import { SearchService } from "./search.service";
+
+export { MONETIZATION_PRICING_PLACEHOLDER } from "./subscription.service";
+
+/** Legacy list row shape (Decimal-like budget fields) for pages that still expect Prisma-style numbers. */
+export type OpenJobListItem = {
+  id: string;
+  title: string;
+  description: string;
+  budgetType: string;
+  budgetMin: { toString(): string } | null;
+  budgetMax: { toString(): string } | null;
+  currency: string;
+  workMode: string;
+  city: string | null;
+  isFeatured: boolean;
+  featuredUntil: Date | null;
+};
+
+function decShim(n: number | null): { toString(): string } | null {
+  if (n == null || !Number.isFinite(n)) return null;
+  return { toString: () => String(n) };
+}
+
+function jobSearchItemToOpenListItem(j: JobSearchItem): OpenJobListItem {
+  return {
+    id: j.id,
+    title: j.title,
+    description: j.description,
+    budgetType: j.budgetType,
+    budgetMin: decShim(j.budgetMin),
+    budgetMax: decShim(j.budgetMax),
+    currency: j.currency,
+    workMode: j.workMode,
+    city: j.city,
+    isFeatured: j.isFeatured,
+    featuredUntil: j.featuredUntil ? new Date(j.featuredUntil) : null
+  };
+}
 
 /**
  * Job lifecycle orchestration. Authorization via {@link JobPolicy} only.
@@ -12,7 +51,8 @@ import { clampLimit, clampPage, offsetFromPage } from "@acme/utils";
 export class JobService {
   constructor(
     private readonly jobRepo = new JobRepository(),
-    private readonly clientRepo = new ClientRepository()
+    private readonly clientRepo = new ClientRepository(),
+    private readonly searchService = new SearchService()
   ) {}
 
   async createDraftJob(actor: AuthActor, dto: CreateJobDto) {
@@ -33,11 +73,9 @@ export class JobService {
     return this.jobRepo.findByIdPublic(jobId);
   }
 
-  async listOpenJobs(query: SearchJobsQueryDto) {
-    const page = clampPage(query.page);
-    const limit = clampLimit(query.limit);
-    const skip = offsetFromPage({ page, limit });
-    return this.jobRepo.listPublicPaginated({ skip, take: limit });
+  async listOpenJobs(query: SearchJobsQueryDto): Promise<{ items: OpenJobListItem[]; total: number }> {
+    const { items, total } = await this.searchService.listPublicOpenJobsPaginated(query);
+    return { items: items.map(jobSearchItemToOpenListItem), total };
   }
 
   async updateJob(actor: AuthActor, jobId: string, dto: UpdateJobDto) {

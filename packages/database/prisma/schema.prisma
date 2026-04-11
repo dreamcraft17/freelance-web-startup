@@ -220,6 +220,10 @@ model FreelancerProfile {
   profileCompleteness Int               @default(0)
   isFeatured         Boolean            @default(false)
 
+  /// Search boost (optional expiry). Ranking only; not a paywall.
+  isBoosted    Boolean   @default(false)
+  boostedUntil DateTime?
+
   /// Denormalized from reviews where this profile is the freelancer target.
   reviewCount          Int    @default(0)
   averageReviewRating  Float?
@@ -391,6 +395,10 @@ model Job {
 
   requiredVerification VerificationStatus?
   portfolioRequired    Boolean           @default(false)
+
+  /// Promoted listing (optional expiry). Ranking only; not a paywall.
+  isFeatured    Boolean   @default(false)
+  featuredUntil DateTime?
 
   metadata Json?
 

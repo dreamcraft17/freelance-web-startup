@@ -1,1 +1,1 @@
-export { SubscriptionService } from "../../src/server/services/subscription.service";
+export { SubscriptionService, MONETIZATION_PRICING_PLACEHOLDER } from "../../src/server/services/subscription.service";
