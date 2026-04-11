@@ -79,10 +79,10 @@ export function LoginForm({ returnUrl }: LoginFormProps) {
   );
 
   return (
-    <div className="space-y-8 text-zinc-900">
-      <div className="space-y-1.5 text-left">
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-900 sm:text-[1.75rem]">Welcome back</h1>
-        <p className="text-sm text-zinc-500">Log in to your account to continue</p>
+    <div className="space-y-8 text-slate-900">
+      <div className="space-y-2 text-left">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Welcome back</h1>
+        <p className="text-sm text-slate-500">Log in to your account to continue</p>
       </div>
 
       <form className="space-y-6" onSubmit={submit} aria-busy={loading}>
@@ -96,7 +96,7 @@ export function LoginForm({ returnUrl }: LoginFormProps) {
         ) : null}
 
         <div className="space-y-2">
-          <label htmlFor={emailId} className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
+          <label htmlFor={emailId} className="text-xs font-semibold uppercase tracking-wide text-slate-500">
             Email address
           </label>
           <input
@@ -107,13 +107,13 @@ export function LoginForm({ returnUrl }: LoginFormProps) {
             required
             placeholder="name@company.com"
             disabled={loading}
-            className="flex h-11 w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm outline-none transition-colors placeholder:text-zinc-400 focus-visible:border-indigo-400 focus-visible:ring-2 focus-visible:ring-indigo-500/25 disabled:cursor-not-allowed disabled:opacity-60"
+            className="block w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-900 shadow-sm outline-none transition-colors placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-60"
           />
         </div>
 
         <div className="space-y-2">
           <div className="flex items-center justify-between gap-2">
-            <label htmlFor={passwordId} className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
+            <label htmlFor={passwordId} className="text-xs font-semibold uppercase tracking-wide text-slate-500">
               Password
             </label>
             <Link href="/forgot-password" className="text-xs font-medium text-indigo-600 hover:text-indigo-700">
@@ -128,7 +128,7 @@ export function LoginForm({ returnUrl }: LoginFormProps) {
               autoComplete="current-password"
               required
               disabled={loading}
-              className="flex h-11 w-full rounded-lg border border-zinc-200 bg-white py-2 pl-3 pr-11 text-sm text-zinc-900 shadow-sm outline-none transition-colors focus-visible:border-indigo-400 focus-visible:ring-2 focus-visible:ring-indigo-500/25 disabled:cursor-not-allowed disabled:opacity-60"
+              className="block w-full rounded-lg border border-slate-200 bg-white py-3 pl-3 pr-11 text-sm text-slate-900 shadow-sm outline-none transition-colors focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-60"
             />
             <button
               type="button"
@@ -136,7 +136,7 @@ export function LoginForm({ returnUrl }: LoginFormProps) {
               disabled={loading}
               aria-pressed={showPassword}
               aria-label={showPassword ? "Hide password" : "Show password"}
-              className="absolute right-1 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-md text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 disabled:pointer-events-none disabled:opacity-50"
+              className="absolute right-1 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 disabled:pointer-events-none disabled:opacity-50"
             >
               {showPassword ? <EyeOff className="h-4 w-4" aria-hidden /> : <Eye className="h-4 w-4" aria-hidden />}
             </button>
@@ -146,7 +146,7 @@ export function LoginForm({ returnUrl }: LoginFormProps) {
         <button
           type="submit"
           disabled={loading}
-          className="flex h-11 w-full items-center justify-center rounded-lg bg-indigo-600 text-sm font-semibold text-white shadow-md shadow-indigo-600/25 transition-colors hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:pointer-events-none disabled:opacity-60"
+          className="flex w-full items-center justify-center rounded-lg bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-md transition-colors hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:pointer-events-none disabled:opacity-60"
         >
           {loading ? "Signing in…" : "Log in"}
         </button>
@@ -154,9 +154,9 @@ export function LoginForm({ returnUrl }: LoginFormProps) {
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center" aria-hidden>
-          <span className="w-full border-t border-zinc-200" />
+          <span className="w-full border-t border-slate-200" />
         </div>
-        <div className="relative flex justify-center text-xs font-medium uppercase tracking-wide text-zinc-400">
+        <div className="relative flex justify-center text-xs font-medium uppercase tracking-wide text-slate-400">
           <span className="bg-white px-3">or</span>
         </div>
       </div>
@@ -164,7 +164,7 @@ export function LoginForm({ returnUrl }: LoginFormProps) {
       <button
         type="button"
         disabled={loading}
-        className="flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-zinc-200 bg-white text-sm font-medium text-zinc-800 shadow-sm transition-colors hover:bg-zinc-50 disabled:pointer-events-none disabled:opacity-60"
+        className="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 shadow-sm transition-colors hover:bg-slate-50 disabled:pointer-events-none disabled:opacity-60"
         title="Coming soon"
         aria-label="Continue with Google (coming soon)"
       >
@@ -172,7 +172,7 @@ export function LoginForm({ returnUrl }: LoginFormProps) {
         Continue with Google
       </button>
 
-      <p className="text-center text-sm text-zinc-500">
+      <p className="text-center text-sm text-slate-500">
         Don&apos;t have an account?{" "}
         <Link href="/register" className="font-semibold text-indigo-600 hover:text-indigo-700">
           Sign up
