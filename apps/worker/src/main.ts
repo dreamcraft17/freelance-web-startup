@@ -1,13 +1,24 @@
+import { clearExpiredPromotionFlags } from "./promotionSweep";
+
+const DEFAULT_SWEEP_MS = 6 * 60 * 60 * 1000;
+const sweepIntervalMs = Number(process.env.PROMOTION_SWEEP_INTERVAL_MS);
+const intervalMs =
+  Number.isFinite(sweepIntervalMs) && sweepIntervalMs > 0 ? sweepIntervalMs : DEFAULT_SWEEP_MS;
+
 async function runWorker() {
-  // Placeholder startup for queue consumers and cron jobs.
-  // Planned modules:
-  // - billing jobs
-  // - notification fanout
-  // - quota recalculation
-  // - ranking refresh
-  // - search indexing
-  // - cleanup routines
-  console.log("Worker started");
+  const sweep = async () => {
+    try {
+      const result = await clearExpiredPromotionFlags();
+      console.log("[promotionSweep]", new Date().toISOString(), result);
+    } catch (error) {
+      console.error("[promotionSweep] failed", error);
+    }
+  };
+
+  await sweep();
+  setInterval(sweep, intervalMs);
+
+  console.log(`Worker started; promotion expiry sweep every ${intervalMs}ms (set PROMOTION_SWEEP_INTERVAL_MS to override)`);
 }
 
 runWorker().catch((error) => {

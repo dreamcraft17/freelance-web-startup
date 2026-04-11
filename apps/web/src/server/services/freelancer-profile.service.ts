@@ -5,6 +5,7 @@ import { db } from "@acme/database";
 import type { AuthActor } from "@/server/domain/auth-actor";
 import { BidPolicy } from "@/server/policies/bid.policy";
 import { DomainError, NotFoundError } from "@/server/errors/domain-errors";
+import { isFreelancerBoostActiveAt } from "@/server/lib/promotion-expiry";
 
 export type FreelancerProfileView = {
   id: string;
@@ -30,6 +31,8 @@ export type FreelancerProfileView = {
   isFeatured: boolean;
   isBoosted: boolean;
   boostedUntil: string | null;
+  /** Matches search ranking: true only while `boostedUntil` is unset or in the future. */
+  isBoostedActive: boolean;
   createdAt: string;
   updatedAt: string;
 };
@@ -46,6 +49,7 @@ function decimalToNumber(value: FreelancerProfile["hourlyRate"]): number | null 
 }
 
 function mapFreelancerProfile(row: FreelancerProfile): FreelancerProfileView {
+  const now = new Date();
   return {
     id: row.id,
     userId: row.userId,
@@ -70,6 +74,7 @@ function mapFreelancerProfile(row: FreelancerProfile): FreelancerProfileView {
     isFeatured: row.isFeatured,
     isBoosted: row.isBoosted,
     boostedUntil: row.boostedUntil?.toISOString() ?? null,
+    isBoostedActive: isFreelancerBoostActiveAt(now, row.isBoosted, row.boostedUntil),
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString()
   };

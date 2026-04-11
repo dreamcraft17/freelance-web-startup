@@ -2,6 +2,7 @@ import type { SearchFreelancersQueryDto, SearchJobsQueryDto } from "@acme/valida
 import { AvailabilityStatus, JobStatus, WorkMode } from "@acme/types";
 import { db, Prisma } from "@acme/database";
 import { clampLimit, clampPage, offsetFromPage } from "@acme/utils";
+import { isFreelancerBoostActiveAt, isJobFeaturedActiveAt } from "../lib/promotion-expiry";
 
 export type JobSearchItem = {
   id: string;
@@ -20,6 +21,8 @@ export type JobSearchItem = {
   createdAt: string;
   isFeatured: boolean;
   featuredUntil: string | null;
+  /** True only when featured promotion is still within `featuredUntil` (if set). Matches ranking. */
+  isFeaturedActive: boolean;
 };
 
 export type FreelancerSearchItem = {
@@ -37,6 +40,8 @@ export type FreelancerSearchItem = {
   isFeatured: boolean;
   isBoosted: boolean;
   boostedUntil: string | null;
+  /** True only when boost is still within `boostedUntil` (if set). Matches ranking. */
+  isBoostedActive: boolean;
 };
 
 function parseWorkMode(value: string): WorkMode {
@@ -67,24 +72,28 @@ function num(v: { toString(): string } | null | undefined): number | null {
   return Number(v);
 }
 
-function mapJob(row: {
-  id: string;
-  title: string;
-  slug: string;
-  description: string;
-  budgetType: string;
-  budgetMin: { toString(): string } | null;
-  budgetMax: { toString(): string } | null;
-  currency: string;
-  workMode: string;
-  city: string | null;
-  categoryId: string;
-  subcategoryId: string | null;
-  bidDeadline: Date | null;
-  createdAt: Date;
-  isFeatured: boolean;
-  featuredUntil: Date | null;
-}): JobSearchItem {
+function mapJob(
+  row: {
+    id: string;
+    title: string;
+    slug: string;
+    description: string;
+    budgetType: string;
+    budgetMin: { toString(): string } | null;
+    budgetMax: { toString(): string } | null;
+    currency: string;
+    workMode: string;
+    city: string | null;
+    categoryId: string;
+    subcategoryId: string | null;
+    bidDeadline: Date | null;
+    createdAt: Date;
+    isFeatured: boolean;
+    featuredUntil: Date | null;
+  },
+  now: Date
+): JobSearchItem {
+  const featuredUntilIso = row.featuredUntil?.toISOString() ?? null;
   return {
     id: row.id,
     title: row.title,
@@ -101,26 +110,30 @@ function mapJob(row: {
     bidDeadline: row.bidDeadline?.toISOString() ?? null,
     createdAt: row.createdAt.toISOString(),
     isFeatured: row.isFeatured,
-    featuredUntil: row.featuredUntil?.toISOString() ?? null
+    featuredUntil: featuredUntilIso,
+    isFeaturedActive: isJobFeaturedActiveAt(now, row.isFeatured, row.featuredUntil)
   };
 }
 
-function mapFreelancer(row: {
-  id: string;
-  userId: string;
-  username: string;
-  fullName: string;
-  headline: string | null;
-  workMode: string;
-  city: string | null;
-  country: string | null;
-  hourlyRate: { toString(): string } | null;
-  availabilityStatus: string;
-  createdAt: Date;
-  isFeatured: boolean;
-  isBoosted: boolean;
-  boostedUntil: Date | null;
-}): FreelancerSearchItem {
+function mapFreelancer(
+  row: {
+    id: string;
+    userId: string;
+    username: string;
+    fullName: string;
+    headline: string | null;
+    workMode: string;
+    city: string | null;
+    country: string | null;
+    hourlyRate: { toString(): string } | null;
+    availabilityStatus: string;
+    createdAt: Date;
+    isFeatured: boolean;
+    isBoosted: boolean;
+    boostedUntil: Date | null;
+  },
+  now: Date
+): FreelancerSearchItem {
   return {
     id: row.id,
     userId: row.userId,
@@ -135,7 +148,8 @@ function mapFreelancer(row: {
     createdAt: row.createdAt.toISOString(),
     isFeatured: row.isFeatured,
     isBoosted: row.isBoosted,
-    boostedUntil: row.boostedUntil?.toISOString() ?? null
+    boostedUntil: row.boostedUntil?.toISOString() ?? null,
+    isBoostedActive: isFreelancerBoostActiveAt(now, row.isBoosted, row.boostedUntil)
   };
 }
 
@@ -234,6 +248,7 @@ export class SearchService {
         FROM "Job" j
         WHERE ${whereSql}
         ORDER BY
+          -- Expired featured (until <= now) sort as 0; mirrors isJobFeaturedActiveAt()
           (
             CASE
               WHEN j."isFeatured" = true
@@ -254,13 +269,14 @@ export class SearchService {
 
     const total = Number(countRows[0]?.count ?? 0n);
     return {
-      items: rows.map(mapJob),
+      items: rows.map((r) => mapJob(r, now)),
       total
     };
   }
 
   /**
    * Freelancer directory: active boost first, then legacy featured flag, then recency.
+   * Boost expiry uses `boostedUntil` vs `now` in SQL (same rules as {@link isFreelancerBoostActiveAt}).
    */
   async searchFreelancers(
     input: SearchFreelancersQueryDto
@@ -344,6 +360,7 @@ export class SearchService {
         FROM "FreelancerProfile" fp
         WHERE ${whereSql}
         ORDER BY
+          -- Expired boost sorts as 0; mirrors isFreelancerBoostActiveAt()
           (
             CASE
               WHEN fp."isBoosted" = true
@@ -365,7 +382,7 @@ export class SearchService {
 
     const total = Number(countRows[0]?.count ?? 0n);
     return {
-      items: rows.map(mapFreelancer),
+      items: rows.map((r) => mapFreelancer(r, now)),
       total
     };
   }

@@ -22,6 +22,8 @@ export type OpenJobListItem = {
   city: string | null;
   isFeatured: boolean;
   featuredUntil: Date | null;
+  /** Matches search ranking: true only while `featuredUntil` is unset or in the future. */
+  isFeaturedActive: boolean;
 };
 
 function decShim(n: number | null): { toString(): string } | null {
@@ -41,7 +43,8 @@ function jobSearchItemToOpenListItem(j: JobSearchItem): OpenJobListItem {
     workMode: j.workMode,
     city: j.city,
     isFeatured: j.isFeatured,
-    featuredUntil: j.featuredUntil ? new Date(j.featuredUntil) : null
+    featuredUntil: j.featuredUntil ? new Date(j.featuredUntil) : null,
+    isFeaturedActive: j.isFeaturedActive
   };
 }
 
