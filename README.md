@@ -235,6 +235,8 @@ The app lives in **`apps/web`**. The repo root **`vercel.json`** tells Vercel to
 **Project env (Vercel → Settings → Environment Variables):** set at least **`DATABASE_URL`** (for serverless/runtime if used), **`SESSION_SECRET`** (≥16 characters), and any **`NEXT_PUBLIC_*`** you need. **`pnpm install`** runs **`prisma generate`** via `@acme/database` `postinstall` (no live DB required for generate).
 
 **Alternative:** instead of the root `vercel.json` layout, you can set **Root Directory** to **`apps/web`** in the Vercel project and use an **Install Command** like `cd ../.. && corepack enable pnpm && pnpm install` so `workspace:*` resolves from the monorepo root.
+
+**If `pnpm install` fails with `ERR_INVALID_THIS` / `URLSearchParams` on the registry:** the root `vercel.json` uses **`npm install -g pnpm@9.15.9`** before `pnpm install` so the build does not rely on Corepack’s pnpm shim (which can break on some Node + `ENABLE_EXPERIMENTAL_COREPACK` combinations). In Vercel → Project → **Environment Variables**, **remove `ENABLE_EXPERIMENTAL_COREPACK`** unless you explicitly need it. **`engines.node`** is pinned to **`20.x`** so the runtime matches a well-tested Node line for Next + pnpm.
 🎯 Roadmap
 Phase 1 (Core Stabilization)
 Fix typecheck
