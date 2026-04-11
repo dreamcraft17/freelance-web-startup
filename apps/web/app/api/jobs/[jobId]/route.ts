@@ -6,11 +6,11 @@ import { jsonFail, jsonOk, withApiHandler } from "@/server/http/api-response";
 
 const jobService = new JobService();
 
-type RouteContext = { params: Promise<{ jobId: string }> } | { params: { jobId: string } };
+type RouteContext = { params: Promise<{ jobId: string }> };
 
 export async function GET(_request: Request, context: RouteContext) {
   return withApiHandler(async () => {
-    const params = await Promise.resolve(context.params);
+    const params = await context.params;
     const jobId = params.jobId?.trim();
     if (!jobId) return jsonFail("Invalid job id", 400, "INVALID_ID");
     const data = await jobService.getJobByIdForPublic(jobId);
@@ -23,7 +23,7 @@ export async function PATCH(request: Request, context: RouteContext) {
   return withApiHandler(async () => {
     const gate = await protectClient(request);
     if (!gate.ok) return gate.response;
-    const params = await Promise.resolve(context.params);
+    const params = await context.params;
     const jobId = params.jobId?.trim();
     if (!jobId) return jsonFail("Invalid job id", 400, "INVALID_ID");
     const parsed = await parseJson(request, updateJobSchema);

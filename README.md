@@ -227,6 +227,14 @@ Before deploying:
  Fix TypeScript errors
  Test end-to-end flow:
 register → login → create job → submit bid
+
+### Vercel (monorepo)
+
+The app lives in **`apps/web`**. The repo root **`vercel.json`** tells Vercel to use **Next.js**, install with **pnpm** from the monorepo root, run **`turbo run build --filter=@acme/web`**, and take output from **`apps/web/.next`**. Root **`package.json`** includes **`next`** in `devDependencies` so Vercel’s framework detector sees a Next version while the real app stays in `apps/web`.
+
+**Project env (Vercel → Settings → Environment Variables):** set at least **`DATABASE_URL`** (for serverless/runtime if used), **`SESSION_SECRET`** (≥16 characters), and any **`NEXT_PUBLIC_*`** you need. **`pnpm install`** runs **`prisma generate`** via `@acme/database` `postinstall` (no live DB required for generate).
+
+**Alternative:** instead of the root `vercel.json` layout, you can set **Root Directory** to **`apps/web`** in the Vercel project and use an **Install Command** like `cd ../.. && corepack enable pnpm && pnpm install` so `workspace:*` resolves from the monorepo root.
 🎯 Roadmap
 Phase 1 (Core Stabilization)
 Fix typecheck

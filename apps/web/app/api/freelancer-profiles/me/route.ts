@@ -5,7 +5,7 @@ import { jsonOk, withApiHandler } from "@/server/http/api-response";
 const service = new FreelancerProfileService();
 
 /** Current freelancer’s profile (includes `id` and `username` for reviews and public links). */
-export async function GET(_request: Request) {
+export async function GET(request: Request) {
   return withApiHandler(async () => {
     const gate = await protectFreelancer(request);
     if (!gate.ok) return gate.response;

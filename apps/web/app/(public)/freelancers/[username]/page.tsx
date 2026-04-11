@@ -4,11 +4,11 @@ import { PageHeader } from "@/features/shared/components/PageHeader";
 import { SaveFreelancerButton } from "@/features/saved/components/SaveFreelancerButton";
 
 type PageProps = {
-  params: Promise<{ username: string }> | { username: string };
+  params: Promise<{ username: string }>;
 };
 
 export default async function FreelancerPublicProfilePage({ params }: PageProps) {
-  const { username: raw } = await Promise.resolve(params);
+  const { username: raw } = await params;
   const username = raw?.trim() ?? "";
   if (!username) notFound();
 

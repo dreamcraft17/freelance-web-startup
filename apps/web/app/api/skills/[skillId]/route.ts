@@ -3,11 +3,11 @@ import { jsonFail, jsonOk, withApiHandler } from "@/server/http/api-response";
 
 const service = new SkillService();
 
-type RouteContext = { params: Promise<{ skillId: string }> } | { params: { skillId: string } };
+type RouteContext = { params: Promise<{ skillId: string }> };
 
 export async function GET(_request: Request, context: RouteContext) {
   return withApiHandler(async () => {
-    const params = await Promise.resolve(context.params);
+    const params = await context.params;
     const skillId = params.skillId?.trim();
     if (!skillId) {
       return jsonFail("Invalid skill id", 400, "INVALID_ID");

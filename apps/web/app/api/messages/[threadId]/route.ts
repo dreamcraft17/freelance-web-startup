@@ -6,13 +6,13 @@ import { jsonFail, jsonOk, withApiHandler } from "@/server/http/api-response";
 
 const messageService = new MessageService();
 
-type RouteContext = { params: Promise<{ threadId: string }> } | { params: { threadId: string } };
+type RouteContext = { params: Promise<{ threadId: string }> };
 
 export async function GET(request: Request, context: RouteContext) {
   return withApiHandler(async () => {
     const gate = await protectClientOrFreelancer(request);
     if (!gate.ok) return gate.response;
-    const params = await Promise.resolve(context.params);
+    const params = await context.params;
     const threadId = params.threadId?.trim();
     if (!threadId) return jsonFail("Invalid thread id", 400, "INVALID_ID");
     const data = await messageService.listMessagesForActor(gate.actor, threadId);
@@ -24,7 +24,7 @@ export async function POST(request: Request, context: RouteContext) {
   return withApiHandler(async () => {
     const gate = await protectClientOrFreelancer(request);
     if (!gate.ok) return gate.response;
-    const params = await Promise.resolve(context.params);
+    const params = await context.params;
     const threadId = params.threadId?.trim();
     if (!threadId) return jsonFail("Invalid thread id", 400, "INVALID_ID");
     const parsed = await parseJson(request, postMessageSchema);
