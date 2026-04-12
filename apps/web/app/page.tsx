@@ -1,13 +1,10 @@
 import { LandingPage } from "@/components/marketing/LandingPage";
-import { MarketingNavBar } from "@/components/marketing/MarketingNavBar";
-import { MarketingSiteFooter } from "@/components/marketing/MarketingSiteFooter";
+import { MarketingShell } from "@/components/marketing/MarketingShell";
 
 export default function HomePage() {
   return (
-    <>
-      <MarketingNavBar />
+    <MarketingShell>
       <LandingPage />
-      <MarketingSiteFooter />
-    </>
+    </MarketingShell>
   );
 }

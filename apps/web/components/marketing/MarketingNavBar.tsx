@@ -8,8 +8,16 @@ import { useState } from "react";
 const navLinks = [
   { href: "/jobs", label: "Find jobs" },
   { href: "/freelancers", label: "Find freelancers" },
-  { href: "/how-it-works", label: "How it works" }
+  { href: "/how-it-works", label: "How it works" },
+  { href: "/pricing", label: "Pricing" },
+  { href: "/early-access", label: "Early access" },
+  { href: "/help", label: "Help" }
 ] as const;
+
+function isActive(pathname: string, href: string): boolean {
+  if (href === "/help") return pathname === "/help" || pathname.startsWith("/help/");
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export function MarketingNavBar() {
   const pathname = usePathname();
@@ -17,18 +25,18 @@ export function MarketingNavBar() {
 
   return (
     <header className="fixed top-0 z-50 w-full bg-white/80 backdrop-blur-xl">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-8">
-        <div className="flex min-w-0 items-center gap-5 md:gap-8">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:gap-4 sm:px-8">
+        <div className="flex min-w-0 flex-1 items-center gap-4 md:gap-6 lg:gap-8">
           <Link
             href="/"
-            className="shrink-0 text-xl font-bold tracking-tight text-indigo-800 outline-none ring-offset-2 focus-visible:ring-2 focus-visible:ring-[#3525cd] sm:text-2xl"
+            className="shrink-0 text-lg font-bold tracking-tight text-indigo-800 outline-none ring-offset-2 focus-visible:ring-2 focus-visible:ring-[#3525cd] sm:text-2xl"
             onClick={() => setOpen(false)}
           >
             NearWork
           </Link>
-          <div className="hidden min-w-0 items-center gap-5 lg:gap-6 md:flex">
+          <div className="hidden min-w-0 flex-wrap items-center gap-x-3 gap-y-1 md:flex md:gap-x-4 lg:gap-x-5">
             {navLinks.map(({ href, label }) => {
-              const active = pathname === href || pathname.startsWith(`${href}/`);
+              const active = isActive(pathname, href);
               return (
                 <Link
                   key={href}
@@ -46,13 +54,19 @@ export function MarketingNavBar() {
           </div>
         </div>
 
-        <div className="hidden shrink-0 items-center gap-4 md:flex">
+        <div className="hidden shrink-0 items-center gap-2 sm:gap-3 md:flex">
           <Link href="/login" className="text-sm font-medium text-slate-600 hover:text-indigo-600">
             Log in
           </Link>
           <Link
             href="/register"
-            className="rounded-lg bg-[#3525cd] px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4f46e5] active:scale-[0.98]"
+            className="hidden text-sm font-medium text-slate-600 hover:text-indigo-600 sm:inline"
+          >
+            Register
+          </Link>
+          <Link
+            href="/early-access"
+            className="rounded-lg bg-[#3525cd] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4f46e5] active:scale-[0.98] sm:px-6"
           >
             Early access
           </Link>
@@ -96,6 +110,13 @@ export function MarketingNavBar() {
             </Link>
             <Link
               href="/register"
+              className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+              onClick={() => setOpen(false)}
+            >
+              Register
+            </Link>
+            <Link
+              href="/early-access"
               className="mt-1 rounded-lg bg-[#3525cd] px-3 py-2.5 text-center text-sm font-semibold text-white hover:bg-[#4f46e5]"
               onClick={() => setOpen(false)}
             >
