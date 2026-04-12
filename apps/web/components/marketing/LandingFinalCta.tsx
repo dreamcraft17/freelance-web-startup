@@ -22,24 +22,23 @@ export function LandingFinalCta() {
 
         <div className="relative z-10 max-w-xl">
           <h2 className="mb-4 text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
-            Open NearWork when you are ready to hire—not before.
+            Start local, go remote if you want—same place.
           </h2>
           <p className="mb-8 text-base leading-relaxed text-indigo-100 sm:text-lg">
-            Accounts are free while we are in early access. Browse jobs and freelancers first; post when you have a
-            scope and a budget in mind.
+            Early access is free. Search your city, skim portfolios, then post when you are ready to collect real bids.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
             <Link
               href="/freelancers"
               className="inline-flex w-fit items-center justify-center rounded-xl bg-white px-6 py-3.5 text-sm font-bold text-[#3525cd] shadow-lg transition hover:bg-indigo-50 sm:text-base"
             >
-              Start finding freelancers
+              Find freelancers near you
             </Link>
             <Link
-              href="/register"
+              href="/jobs"
               className="inline-flex w-fit items-center justify-center rounded-xl border border-white/35 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/15 sm:text-base"
             >
-              Post a job
+              Start searching now
             </Link>
           </div>
         </div>
