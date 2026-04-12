@@ -25,7 +25,8 @@ export function LandingFinalCta() {
             Start local, go remote if you want—same place.
           </h2>
           <p className="mb-8 text-base leading-relaxed text-indigo-100 sm:text-lg">
-            Early access is free. Search your city, skim portfolios, then post when you are ready to collect real bids.
+            Early access is free—browse first, post when you have a budget. We are not here to flood you with generic
+            pitches.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
             <Link

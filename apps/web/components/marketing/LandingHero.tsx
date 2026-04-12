@@ -30,12 +30,24 @@ export function LandingHero() {
             Currently in early access
           </div>
 
-          <p className="mx-auto mb-6 flex max-w-lg flex-wrap items-center justify-center gap-x-1.5 gap-y-1 text-sm leading-snug text-slate-600">
+          <p className="mx-auto mb-4 flex max-w-lg flex-wrap items-center justify-center gap-x-1.5 gap-y-1 text-sm leading-snug text-slate-600">
             <MapPin className="h-4 w-4 shrink-0 text-indigo-600" aria-hidden />
             <span className="font-semibold text-slate-800">Freelancers near Jakarta</span>
             <span className="text-slate-500">·</span>
-            <span>Showing nearby talent when you add a city</span>
+            <span>Nearby is a real filter—not just a buzzword</span>
           </p>
+          <div className="mx-auto mb-6 flex flex-wrap items-center justify-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-200/80 bg-white/90 px-3 py-1 text-xs font-medium text-indigo-950 shadow-sm">
+              <span aria-hidden className="text-[13px] leading-none">
+                📍
+              </span>
+              Jakarta
+              <span className="font-normal text-indigo-600/80">~10 km</span>
+            </span>
+            <span className="rounded-full bg-slate-100/90 px-3 py-1 text-xs font-medium text-slate-600">
+              Distance shown when freelancers share an area
+            </span>
+          </div>
 
           <h1 className="mb-5 text-balance text-4xl font-bold leading-[1.12] tracking-tight text-[#191c1e] sm:text-5xl md:text-[2.65rem] md:leading-[1.1]">
             Find nearby or remote freelancers{" "}
@@ -55,7 +67,7 @@ export function LandingHero() {
         <form
           action="/freelancers"
           method="get"
-          className="mx-auto mt-8 flex w-full max-w-2xl flex-col gap-2 rounded-xl bg-white/90 p-2 shadow-[0_20px_40px_-12px_rgba(53,37,205,0.12)] outline outline-1 outline-[#c7c4d8]/30 backdrop-blur-sm sm:mt-10 sm:flex-row sm:items-center"
+          className="mx-auto mt-8 flex w-full max-w-2xl flex-col gap-2 rounded-xl bg-white/90 p-2 shadow-[0_20px_40px_-12px_rgba(53,37,205,0.12)] ring-1 ring-slate-200/55 backdrop-blur-sm sm:mt-10 sm:flex-row sm:items-center"
         >
           <label className="flex min-h-[3rem] flex-1 cursor-text items-center gap-3 border-b border-[#c7c4d8]/20 px-4 py-2.5 sm:border-b-0 sm:border-r sm:py-2">
             <span className="sr-only">Search</span>
