@@ -6,9 +6,9 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 
 const navLinks = [
-  { href: "/jobs", label: "Marketplace" },
-  { href: "/pricing", label: "Solutions" },
-  { href: "/how-it-works", label: "About" }
+  { href: "/jobs", label: "Find jobs" },
+  { href: "/freelancers", label: "Find freelancers" },
+  { href: "/how-it-works", label: "How it works" }
 ] as const;
 
 export function MarketingNavBar() {
@@ -18,15 +18,15 @@ export function MarketingNavBar() {
   return (
     <header className="fixed top-0 z-50 w-full bg-white/80 backdrop-blur-xl">
       <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-8">
-        <div className="flex items-center gap-6 md:gap-8">
+        <div className="flex min-w-0 items-center gap-5 md:gap-8">
           <Link
             href="/"
-            className="text-xl font-bold tracking-tight text-indigo-800 outline-none ring-offset-2 focus-visible:ring-2 focus-visible:ring-[#3525cd] sm:text-2xl"
+            className="shrink-0 text-xl font-bold tracking-tight text-indigo-800 outline-none ring-offset-2 focus-visible:ring-2 focus-visible:ring-[#3525cd] sm:text-2xl"
             onClick={() => setOpen(false)}
           >
             NearWork
           </Link>
-          <div className="hidden items-center gap-6 md:flex">
+          <div className="hidden min-w-0 items-center gap-5 lg:gap-6 md:flex">
             {navLinks.map(({ href, label }) => {
               const active = pathname === href || pathname.startsWith(`${href}/`);
               return (
@@ -35,8 +35,8 @@ export function MarketingNavBar() {
                   href={href}
                   className={
                     active
-                      ? "border-b-2 border-indigo-600 py-1 text-sm font-semibold text-indigo-700"
-                      : "py-1 text-sm font-medium text-slate-600 transition-colors hover:text-indigo-600"
+                      ? "whitespace-nowrap border-b-2 border-indigo-600 py-1 text-sm font-semibold text-indigo-700"
+                      : "whitespace-nowrap py-1 text-sm font-medium text-slate-600 transition-colors hover:text-indigo-600"
                   }
                 >
                   {label}
@@ -46,7 +46,7 @@ export function MarketingNavBar() {
           </div>
         </div>
 
-        <div className="hidden items-center gap-4 md:flex">
+        <div className="hidden shrink-0 items-center gap-4 md:flex">
           <Link href="/login" className="text-sm font-medium text-slate-600 hover:text-indigo-600">
             Log in
           </Link>
@@ -60,7 +60,7 @@ export function MarketingNavBar() {
 
         <button
           type="button"
-          className="inline-flex rounded-lg border border-slate-200 bg-white p-2 text-indigo-800 shadow-sm md:hidden"
+          className="inline-flex shrink-0 rounded-lg border border-slate-200 bg-white p-2 text-indigo-800 shadow-sm md:hidden"
           aria-expanded={open}
           aria-controls="marketing-mobile-nav"
           onClick={() => setOpen((v) => !v)}
