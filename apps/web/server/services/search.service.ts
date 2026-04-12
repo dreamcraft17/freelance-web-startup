@@ -31,11 +31,15 @@ export type FreelancerSearchItem = {
   username: string;
   fullName: string;
   headline: string | null;
+  /** First active skill category name (display order), for directory cards. */
+  primaryCategoryName: string | null;
   workMode: WorkMode;
   city: string | null;
   country: string | null;
   hourlyRate: number | null;
   availabilityStatus: AvailabilityStatus;
+  reviewCount: number;
+  averageReviewRating: number | null;
   createdAt: string;
   isFeatured: boolean;
   isBoosted: boolean;
@@ -122,11 +126,14 @@ function mapFreelancer(
     username: string;
     fullName: string;
     headline: string | null;
+    primaryCategoryName: string | null;
     workMode: string;
     city: string | null;
     country: string | null;
     hourlyRate: { toString(): string } | null;
     availabilityStatus: string;
+    reviewCount: number | bigint;
+    averageReviewRating: number | { toString(): string } | null;
     createdAt: Date;
     isFeatured: boolean;
     isBoosted: boolean;
@@ -134,17 +141,27 @@ function mapFreelancer(
   },
   now: Date
 ): FreelancerSearchItem {
+  const rc = typeof row.reviewCount === "bigint" ? Number(row.reviewCount) : row.reviewCount;
+  const ar =
+    row.averageReviewRating == null
+      ? null
+      : typeof row.averageReviewRating === "number"
+        ? row.averageReviewRating
+        : Number(row.averageReviewRating);
   return {
     id: row.id,
     userId: row.userId,
     username: row.username,
     fullName: row.fullName,
     headline: row.headline,
+    primaryCategoryName: row.primaryCategoryName,
     workMode: parseWorkMode(row.workMode),
     city: row.city,
     country: row.country,
     hourlyRate: num(row.hourlyRate),
     availabilityStatus: parseAvailabilityStatus(row.availabilityStatus),
+    reviewCount: Number.isFinite(rc) ? rc : 0,
+    averageReviewRating: ar != null && Number.isFinite(ar) ? ar : null,
     createdAt: row.createdAt.toISOString(),
     isFeatured: row.isFeatured,
     isBoosted: row.isBoosted,
@@ -331,11 +348,14 @@ export class SearchService {
           username: string;
           fullName: string;
           headline: string | null;
+          primaryCategoryName: string | null;
           workMode: string;
           city: string | null;
           country: string | null;
           hourlyRate: { toString(): string } | null;
           availabilityStatus: string;
+          reviewCount: number | bigint;
+          averageReviewRating: number | { toString(): string } | null;
           createdAt: Date;
           isFeatured: boolean;
           isBoosted: boolean;
@@ -348,11 +368,22 @@ export class SearchService {
           fp."username",
           fp."fullName",
           fp."headline",
+          (
+            SELECT c."name"
+            FROM "FreelancerSkill" fs
+            INNER JOIN "Skill" s ON s."id" = fs."skillId" AND s."isActive" = true
+            INNER JOIN "Category" c ON c."id" = s."categoryId" AND c."isActive" = true
+            WHERE fs."freelancerProfileId" = fp."id"
+            ORDER BY c."displayOrder" ASC, c."slug" ASC
+            LIMIT 1
+          ) AS "primaryCategoryName",
           fp."workMode"::text AS "workMode",
           fp."city",
           fp."country",
           fp."hourlyRate",
           fp."availabilityStatus"::text AS "availabilityStatus",
+          fp."reviewCount",
+          fp."averageReviewRating",
           fp."createdAt",
           fp."isFeatured",
           fp."isBoosted",

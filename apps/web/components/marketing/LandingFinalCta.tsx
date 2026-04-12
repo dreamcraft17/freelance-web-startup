@@ -36,7 +36,7 @@ export function LandingFinalCta() {
               Find freelancers near you
             </Link>
             <Link
-              href="/jobs"
+              href="/freelancers"
               className="inline-flex w-fit items-center justify-center rounded-xl border border-white/35 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/15 sm:text-base"
             >
               Start searching now

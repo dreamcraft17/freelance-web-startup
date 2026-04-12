@@ -1,11 +1,6 @@
 import type { ReactNode } from "react";
-import { PublicSiteHeader } from "@/features/public/components/PublicSiteHeader";
+import { MarketingShell } from "@/components/marketing/MarketingShell";
 
 export default function PublicBrowseLayout({ children }: { children: ReactNode }) {
-  return (
-    <div className="flex min-h-screen flex-col">
-      <PublicSiteHeader />
-      <div className="flex-1">{children}</div>
-    </div>
-  );
+  return <MarketingShell>{children}</MarketingShell>;
 }
