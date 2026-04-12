@@ -2,48 +2,46 @@ import Link from "next/link";
 
 export function LandingFinalCta() {
   return (
-    <section className="mt-20 px-4 sm:mt-32 sm:px-8">
-      <div className="relative mx-auto max-w-5xl overflow-hidden rounded-[2.5rem] bg-[#3525cd] px-8 py-14 text-center text-white shadow-xl sm:rounded-[3rem] sm:px-12 sm:py-16 md:py-20">
+    <section className="mt-16 px-4 sm:mt-24 sm:px-8">
+      <div className="relative mx-auto max-w-5xl overflow-hidden rounded-[2rem] bg-[#3525cd] px-7 py-12 text-left text-white shadow-xl sm:rounded-[2.5rem] sm:px-10 sm:py-14 md:px-14 md:py-16 lg:rounded-r-[3rem] lg:rounded-tl-[2rem]">
         <div
-          className="pointer-events-none absolute inset-0 opacity-[0.14]"
+          className="pointer-events-none absolute inset-0 opacity-[0.12]"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`
           }}
           aria-hidden
         />
         <div
-          className="pointer-events-none absolute -right-20 top-0 h-72 w-72 rounded-full bg-white/10 blur-3xl"
+          className="pointer-events-none absolute -right-16 top-0 h-64 w-64 rounded-full bg-white/10 blur-3xl"
           aria-hidden
         />
         <div
-          className="pointer-events-none absolute -bottom-24 -left-16 h-80 w-80 rounded-full bg-indigo-400/20 blur-3xl"
+          className="pointer-events-none absolute bottom-0 left-0 h-48 w-48 rounded-full bg-indigo-400/15 blur-2xl"
           aria-hidden
         />
-        <div className="pointer-events-none absolute inset-0 opacity-[0.08]" aria-hidden>
-          <svg className="h-full w-full" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="nw-cta-grid" width="32" height="32" patternUnits="userSpaceOnUse">
-                <path d="M 32 0 L 0 0 0 32" fill="none" stroke="white" strokeWidth="0.5" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#nw-cta-grid)" />
-          </svg>
-        </div>
 
-        <div className="relative z-10">
-          <h2 className="mb-5 text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-            Be one of the first to try NearWork.
+        <div className="relative z-10 max-w-xl">
+          <h2 className="mb-4 text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
+            Open NearWork when you are ready to hire—not before.
           </h2>
-          <p className="mx-auto mb-10 max-w-2xl text-lg opacity-90 sm:text-xl">
-            We are building a simpler way to hire. Join a calmer marketplace for transparent, accessible freelance
-            connections.
+          <p className="mb-8 text-base leading-relaxed text-indigo-100 sm:text-lg">
+            Accounts are free while we are in early access. Browse jobs and freelancers first; post when you have a
+            scope and a budget in mind.
           </p>
-          <Link
-            href="/register"
-            className="inline-flex rounded-xl bg-white px-10 py-4 text-lg font-bold text-[#3525cd] shadow-xl transition hover:scale-[1.02] active:scale-[0.98]"
-          >
-            Start exploring NearWork
-          </Link>
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+            <Link
+              href="/freelancers"
+              className="inline-flex w-fit items-center justify-center rounded-xl bg-white px-6 py-3.5 text-sm font-bold text-[#3525cd] shadow-lg transition hover:bg-indigo-50 sm:text-base"
+            >
+              Start finding freelancers
+            </Link>
+            <Link
+              href="/register"
+              className="inline-flex w-fit items-center justify-center rounded-xl border border-white/35 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/15 sm:text-base"
+            >
+              Post a job
+            </Link>
+          </div>
         </div>
       </div>
     </section>
