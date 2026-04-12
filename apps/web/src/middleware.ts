@@ -18,10 +18,17 @@ function isAuthPublicPath(pathname: string): boolean {
   );
 }
 
+/** Marketing home — must never send anonymous users to /login (see matcher). */
+function isPublicLandingPath(pathname: string): boolean {
+  return pathname === "/" || pathname === "";
+}
+
 /**
  * Authenticated areas: /client, /freelancer, /messages, /notifications, /settings.
  * Auth routes (/login, /register, /forgot-password) are matched so we never redirect them to /login
  * (avoids returnUrl=/login?returnUrl=… loops when session is missing).
+ *
+ * "/" is matched explicitly so the root landing page is always a public entry point (no session required).
  */
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -34,6 +41,10 @@ export default async function middleware(request: NextRequest) {
     pathname === "/robots.txt" ||
     pathname === "/sitemap.xml"
   ) {
+    return NextResponse.next();
+  }
+
+  if (isPublicLandingPath(pathname)) {
     return NextResponse.next();
   }
 
@@ -66,6 +77,7 @@ export default async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
+    "/",
     "/login",
     "/login/:path*",
     "/register",
