@@ -1,47 +1,66 @@
 import Link from "next/link";
-import { Rocket } from "lucide-react";
+import { ArrowRight, BadgeCheck, MapPin, Search } from "lucide-react";
 
 export function LandingHero() {
   return (
-    <section className="relative overflow-hidden px-4 pb-24 pt-28 sm:px-6 sm:pb-32 sm:pt-36 md:pb-40 md:pt-40">
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute right-0 top-0 h-96 w-96 max-w-full translate-x-1/4 rounded-full bg-[#3525cd]/5 blur-[100px]" />
-        <div className="absolute bottom-0 left-0 h-96 w-96 max-w-full -translate-x-1/4 rounded-full bg-orange-100/40 blur-[100px]" />
+    <section className="mx-auto flex max-w-4xl flex-col items-center px-4 pb-16 pt-8 text-center sm:px-8 sm:pb-20 sm:pt-10">
+      <div className="mb-8 inline-flex items-center gap-2 rounded-full bg-indigo-100 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-[#3f465c]">
+        <BadgeCheck className="h-4 w-4 shrink-0 text-indigo-600" aria-hidden />
+        Currently in early access
       </div>
 
-      <div className="mx-auto max-w-4xl text-center">
-        <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#3323cc]">
-          <Rocket className="h-3.5 w-3.5" aria-hidden />
-          Now in early access
-        </div>
+      <h1 className="mb-6 text-4xl font-bold leading-[1.1] tracking-tight text-[#191c1e] sm:text-5xl md:text-6xl lg:text-6xl">
+        Find nearby or remote freelancers{" "}
+        <span className="font-medium italic text-[#3525cd]">without the hassle</span>
+      </h1>
 
-        <h1 className="mb-6 text-4xl font-bold leading-[1.1] tracking-tight text-slate-900 sm:text-5xl md:text-6xl lg:text-7xl">
-          Find nearby or remote freelancers{" "}
-          <span className="bg-gradient-to-r from-[#3525cd] to-indigo-600 bg-clip-text italic text-transparent">
-            without the hassle
-          </span>
-        </h1>
+      <p className="mb-10 max-w-2xl text-lg leading-relaxed text-[#464555] sm:text-xl">
+        From photographers to designers to local services—all in one place. We are simplifying how talent connects
+        with opportunity.
+      </p>
 
-        <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-slate-600 md:text-xl">
-          From design and photography to editing, tutoring, marketing, and local services—hire in your area or
-          anywhere. One marketplace for scoped work, clear bids, and real collaboration.
-        </p>
+      <form
+        action="/freelancers"
+        method="get"
+        className="mb-8 flex w-full max-w-3xl flex-col items-stretch gap-2 rounded-xl bg-white p-2 shadow-[0_25px_50px_-12px_rgba(53,37,205,0.12)] outline outline-1 outline-[#c7c4d8]/30 sm:flex-row sm:items-center"
+      >
+        <label className="flex flex-1 cursor-text items-center gap-3 border-b border-[#c7c4d8]/25 px-4 py-3 sm:border-b-0 sm:border-r sm:py-2">
+          <span className="sr-only">Search</span>
+          <Search className="h-5 w-5 shrink-0 text-[#777587]" aria-hidden />
+          <input
+            name="q"
+            type="search"
+            placeholder="Search services…"
+            className="min-w-0 flex-1 border-0 bg-transparent text-base text-[#191c1e] placeholder:text-[#777587] focus:outline-none focus:ring-0"
+            autoComplete="off"
+          />
+        </label>
+        <label className="flex flex-1 cursor-text items-center gap-3 px-4 py-3 sm:py-2">
+          <span className="sr-only">City</span>
+          <MapPin className="h-5 w-5 shrink-0 text-[#777587]" aria-hidden />
+          <input
+            name="city"
+            type="text"
+            placeholder="City"
+            className="min-w-0 flex-1 border-0 bg-transparent text-base text-[#191c1e] placeholder:text-[#777587] focus:outline-none focus:ring-0"
+            autoComplete="address-level2"
+          />
+        </label>
+        <button
+          type="submit"
+          className="w-full shrink-0 rounded-lg bg-[#3525cd] px-8 py-3 text-sm font-semibold text-white transition hover:bg-[#4f46e5] active:scale-[0.98] sm:w-auto"
+        >
+          Find freelancers
+        </button>
+      </form>
 
-        <div className="flex w-full flex-col items-stretch justify-center gap-4 sm:w-auto sm:flex-row sm:items-center">
-          <Link
-            href="/freelancers"
-            className="inline-flex items-center justify-center rounded-xl bg-gradient-to-br from-[#3525cd] to-indigo-600 px-8 py-4 text-lg font-semibold text-white shadow-[0_24px_48px_-16px_rgba(53,37,205,0.35)] transition hover:opacity-95 active:scale-[0.98]"
-          >
-            Find freelancers
-          </Link>
-          <Link
-            href="/register"
-            className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-8 py-4 text-lg font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50 active:scale-[0.98]"
-          >
-            Post a job free
-          </Link>
-        </div>
-      </div>
+      <Link
+        href="/register"
+        className="group inline-flex items-center gap-1 font-semibold text-[#3525cd] transition hover:underline"
+      >
+        Post a job free
+        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden />
+      </Link>
     </section>
   );
 }

@@ -1,18 +1,14 @@
 import { LandingHero } from "@/components/marketing/LandingHero";
-import { LandingFeaturesBento } from "@/components/marketing/LandingFeaturesBento";
-import { LandingHowItWorks } from "@/components/marketing/LandingHowItWorks";
-import { LandingCategoriesGrid } from "@/components/marketing/LandingCategoriesGrid";
-import { LandingSpotlight } from "@/components/marketing/LandingSpotlight";
+import { LandingUseCases } from "@/components/marketing/LandingUseCases";
+import { LandingCategoryChips } from "@/components/marketing/LandingCategoryChips";
 import { LandingFinalCta } from "@/components/marketing/LandingFinalCta";
 
 export function LandingPage() {
   return (
-    <main className="bg-[#f7f9fb] text-slate-900 antialiased">
+    <main className="bg-[#f7f9fb] pb-8 pt-28 text-[#191c1e] antialiased selection:bg-indigo-100 selection:text-indigo-950 sm:pt-32">
       <LandingHero />
-      <LandingFeaturesBento />
-      <LandingHowItWorks />
-      <LandingCategoriesGrid />
-      <LandingSpotlight />
+      <LandingUseCases />
+      <LandingCategoryChips />
       <LandingFinalCta />
     </main>
   );
