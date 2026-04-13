@@ -1,0 +1,11 @@
+---
+description: NearWork UI—Tailwind, real data, landing consistency, product dashboards
+alwaysApply: true
+---
+
+# NearWork product UI (dashboards, marketing, app shell)
+
+- **Styling**: Use the existing Tailwind setup only; match **NearWork landing** patterns (typography, spacing, indigo brand `#3525cd`, calm neutrals).
+- **Data**: Keep **backend and loaders as-is** unless the task explicitly requires API changes. **Do not invent fake business data**—use real queries/services or honest empty states.
+- **Empty states**: When data is missing, use **polished empty states** (icon, heading, short copy, CTA)—not plain text-only placeholders.
+- **Feel**: Ship a **product dashboard** (clear hierarchy, grouped sections, intentional CTAs), not a raw internal admin panel.
