@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { DashboardNav } from "./DashboardNav";
-import { SignOutButton } from "./SignOutButton";
+import { AuthUserMenu } from "./AuthUserMenu";
+import { SidebarAccountActions } from "./SidebarAccountActions";
 import type { DashboardNavItem } from "../nav-types";
 
 export type { DashboardNavItem };
@@ -28,7 +29,7 @@ export function DashboardShell({ navItems, children, className, topBanner }: Das
             <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#3525cd]">NearWork</p>
             <p className="mt-0.5 text-[11px] text-slate-500">Workspace</p>
           </div>
-          <SignOutButton compact className="shrink-0" />
+          <AuthUserMenu compact />
         </div>
         <DashboardNav items={navItems} variant="mobile" />
       </header>
@@ -41,15 +42,16 @@ export function DashboardShell({ navItems, children, className, topBanner }: Das
           <div className="min-h-0 flex-1 overflow-y-auto">
             <DashboardNav items={navItems} variant="sidebar" />
           </div>
-          <div className="border-t border-slate-100/90 px-3 py-3">
-            <SignOutButton />
-          </div>
+          <SidebarAccountActions />
         </aside>
 
         <main className={cn("relative flex min-h-0 min-w-0 flex-1 flex-col", className)}>
           <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white/80 to-transparent md:h-40" aria-hidden />
 
           <div className="relative mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-10">
+            <div className="mb-5 hidden justify-end md:flex">
+              <AuthUserMenu />
+            </div>
             {topBanner ? (
               <div className="mb-8 lg:mb-10">
                 <div className="overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-sm shadow-slate-900/[0.04] ring-1 ring-slate-900/[0.02]">
