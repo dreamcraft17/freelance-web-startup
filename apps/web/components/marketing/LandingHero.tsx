@@ -73,7 +73,7 @@ export function LandingHero() {
             <span className="sr-only">Search</span>
             <Search className="h-5 w-5 shrink-0 text-[#777587]" aria-hidden />
             <input
-              name="q"
+              name="keyword"
               type="search"
               placeholder="e.g. event photographer, reel edit"
               className="min-w-0 flex-1 border-0 bg-transparent text-left text-base text-[#191c1e] placeholder:text-[#777587] focus:outline-none focus:ring-0"
@@ -103,12 +103,20 @@ export function LandingHero() {
           Add a city to bias toward people who can show up nearby; leave it empty to include remote too.
         </p>
 
-        <div className="mx-auto mt-8 flex max-w-xl flex-col items-center justify-center gap-4 sm:mt-9 sm:flex-row sm:flex-wrap sm:gap-x-8 sm:gap-y-3">
+        <div className="mx-auto mt-8 flex max-w-xl flex-col items-center justify-center gap-4 sm:mt-9 sm:flex-row sm:flex-wrap sm:gap-x-6 sm:gap-y-3">
           <Link
             href="/freelancers"
             className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#3525cd] transition hover:underline"
           >
             Start searching now
+            <ArrowRight className="h-4 w-4" aria-hidden />
+          </Link>
+          <span className="hidden h-4 w-px bg-slate-200 sm:block" aria-hidden />
+          <Link
+            href="/jobs"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#3525cd] transition hover:underline"
+          >
+            Browse open jobs
             <ArrowRight className="h-4 w-4" aria-hidden />
           </Link>
           <span className="hidden h-4 w-px bg-slate-200 sm:block" aria-hidden />

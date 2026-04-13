@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { MapPin } from "lucide-react";
 
 const examples = [
@@ -67,13 +68,23 @@ export function LandingProductPreview() {
         ))}
       </ul>
 
-      <p className="mt-4 text-center text-[11px] leading-relaxed text-slate-400 sm:text-left">
-        <span className="font-medium text-slate-500">No spam bids</span>
-        <span className="mx-2 text-slate-300">·</span>
-        <span className="font-medium text-slate-500">Simple hiring</span>
-        <span className="mx-2 text-slate-300">·</span>
-        <span className="font-medium text-slate-500">Built for real work</span>
-      </p>
+      <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4">
+        <p className="text-center text-[11px] leading-relaxed text-slate-400 sm:text-left">
+          <span className="font-medium text-slate-500">No spam bids</span>
+          <span className="mx-2 text-slate-300">·</span>
+          <span className="font-medium text-slate-500">Simple hiring</span>
+          <span className="mx-2 text-slate-300">·</span>
+          <span className="font-medium text-slate-500">Built for real work</span>
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm font-semibold">
+          <Link href="/freelancers" className="text-[#3525cd] transition hover:underline">
+            Live freelancers →
+          </Link>
+          <Link href="/jobs" className="text-[#3525cd] transition hover:underline">
+            Live jobs →
+          </Link>
+        </div>
+      </div>
     </section>
   );
 }

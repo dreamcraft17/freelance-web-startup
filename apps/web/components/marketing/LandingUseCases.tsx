@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { MapPin } from "lucide-react";
 
 export function LandingUseCases() {
@@ -42,6 +43,18 @@ export function LandingUseCases() {
             Same flow: post scope, get bids, pick someone in another city when the work ships online.
           </p>
         </article>
+      </div>
+
+      <div className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm">
+        <Link href="/freelancers" className="font-semibold text-[#3525cd] transition hover:underline">
+          Find freelancers
+        </Link>
+        <Link href="/jobs" className="font-semibold text-[#3525cd] transition hover:underline">
+          Browse jobs
+        </Link>
+        <Link href="/how-it-works" className="font-semibold text-slate-600 transition hover:text-[#3525cd] hover:underline">
+          How it works
+        </Link>
       </div>
     </section>
   );
