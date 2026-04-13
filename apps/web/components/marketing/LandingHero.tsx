@@ -121,7 +121,7 @@ export function LandingHero() {
           </Link>
           <span className="hidden h-4 w-px bg-slate-200 sm:block" aria-hidden />
           <Link
-            href="/register"
+            href="/client/jobs/new"
             className="group inline-flex items-center gap-1.5 text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 transition hover:text-[#3525cd] hover:decoration-[#3525cd]/40"
           >
             Post a brief and collect bids
