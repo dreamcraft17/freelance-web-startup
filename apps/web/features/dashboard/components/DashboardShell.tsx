@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { DashboardNav } from "./DashboardNav";
+import { SignOutButton } from "./SignOutButton";
 import type { DashboardNavItem } from "../nav-types";
 
 export type { DashboardNavItem };
@@ -22,19 +23,27 @@ export function DashboardShell({ navItems, children, className, topBanner }: Das
   return (
     <div className="min-h-screen bg-[#f4f4f5]">
       <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 shadow-[0_1px_0_rgba(15,23,42,0.04)] backdrop-blur-md md:hidden">
-        <div className="border-b border-slate-100/80 px-3 pb-2.5 pt-3">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#3525cd]">NearWork</p>
-          <p className="mt-0.5 text-[11px] text-slate-500">Workspace</p>
+        <div className="flex items-start justify-between gap-3 border-b border-slate-100/80 px-3 pb-2.5 pt-3">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#3525cd]">NearWork</p>
+            <p className="mt-0.5 text-[11px] text-slate-500">Workspace</p>
+          </div>
+          <SignOutButton compact className="shrink-0" />
         </div>
         <DashboardNav items={navItems} variant="mobile" />
       </header>
 
       <div className="flex min-h-[100dvh] min-h-screen">
         <aside
-          className="sticky top-0 z-20 hidden h-[100dvh] max-h-screen w-[15.5rem] shrink-0 overflow-y-auto border-r border-slate-200/80 bg-white md:block"
+          className="sticky top-0 z-20 hidden h-[100dvh] max-h-screen w-[15.5rem] shrink-0 border-r border-slate-200/80 bg-white md:flex md:flex-col"
           aria-label="Sidebar navigation"
         >
-          <DashboardNav items={navItems} variant="sidebar" />
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            <DashboardNav items={navItems} variant="sidebar" />
+          </div>
+          <div className="border-t border-slate-100/90 px-3 py-3">
+            <SignOutButton />
+          </div>
         </aside>
 
         <main className={cn("relative flex min-h-0 min-w-0 flex-1 flex-col", className)}>
