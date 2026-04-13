@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import { LogOut, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -12,7 +11,6 @@ type SignOutButtonProps = {
 };
 
 export function SignOutButton({ compact = false, className }: SignOutButtonProps) {
-  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -26,8 +24,8 @@ export function SignOutButton({ compact = false, className }: SignOutButtonProps
           setError("Could not sign out");
           return;
         }
-        router.replace("/");
-        router.refresh();
+        // Hard navigation guarantees protected UI unmounts immediately.
+        window.location.assign("/");
       } catch {
         setError("Could not sign out");
       }
@@ -42,8 +40,10 @@ export function SignOutButton({ compact = false, className }: SignOutButtonProps
         disabled={isPending}
         variant={compact ? "ghost" : "outline"}
         className={cn(
-          "w-full justify-start gap-2 text-slate-700 hover:text-slate-900",
-          compact ? "h-8 px-2.5 text-xs font-semibold" : "h-9 rounded-lg border-slate-200 bg-white"
+          "w-full justify-start gap-2",
+          compact
+            ? "h-9 rounded-lg border-l-[3px] border-l-transparent px-3 text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-rose-700"
+            : "h-9 rounded-lg border-slate-200 bg-white text-slate-700 hover:text-slate-900"
         )}
       >
         {isPending ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <LogOut className="h-4 w-4" aria-hidden />}
