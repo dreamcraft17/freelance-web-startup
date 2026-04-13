@@ -2,7 +2,9 @@
 // Soft delete: filter `deletedAt IS NULL` in repositories/services for active records.
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  // Vercel / AWS Lambda (Node 20) use OpenSSL 3 — include alongside local dev "native"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
