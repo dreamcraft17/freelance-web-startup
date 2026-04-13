@@ -7,6 +7,7 @@ import { useCallback, useId, useMemo, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import type { UserRole } from "@acme/types";
 import { homePathForSessionRole, sanitizeReturnUrl } from "@src/lib/return-url";
+import { buildLoginToRegisterHref, loginIntentMessage, type AuthIntent } from "@/features/auth/lib/auth-intent";
 import { readApiBody } from "@/features/auth/lib/read-api-body";
 
 type LoginApiSuccess = {
@@ -24,9 +25,10 @@ type LoginApiError = {
 
 export type LoginFormProps = {
   returnUrl?: string | null;
+  intent?: AuthIntent;
 };
 
-export function LoginForm({ returnUrl }: LoginFormProps) {
+export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
   const router = useRouter();
   const formId = useId();
   const emailId = `${formId}-email`;
@@ -37,14 +39,30 @@ export function LoginForm({ returnUrl }: LoginFormProps) {
   const [error, setError] = useState<string | null>(null);
 
   const signUpHref = useMemo(() => {
-    if (!returnUrl) return "/register";
-    const safe = sanitizeReturnUrl(returnUrl, "/");
-    const next = encodeURIComponent(safe);
-    if (safe.startsWith("/client/")) return `/register?role=client&next=${next}`;
-    if (safe.startsWith("/freelancer/") || safe.startsWith("/jobs/")) {
-      return `/register?role=freelancer&next=${next}`;
+    return buildLoginToRegisterHref({ returnUrl, intent });
+  }, [intent, returnUrl]);
+
+  const contextMessage = useMemo(() => {
+    const direct = loginIntentMessage(intent);
+    if (direct) return direct;
+
+    const safe = sanitizeReturnUrl(returnUrl ?? null, "/");
+    if (safe === "/") return null;
+    if (safe === "/client" || safe.startsWith("/client/")) return "Log in to continue to your client dashboard.";
+    if (safe === "/freelancer" || safe.startsWith("/freelancer/")) {
+      return "Log in to continue to your freelancer dashboard.";
     }
-    return `/register?next=${next}`;
+    if (safe === "/messages" || safe.startsWith("/messages/")) return "Log in to continue to your messages.";
+    if (safe === "/notifications" || safe.startsWith("/notifications/")) {
+      return "Log in to continue to your notifications.";
+    }
+    if (safe === "/settings" || safe.startsWith("/settings/")) return "Log in to continue to your settings.";
+    return "Log in to continue.";
+  }, [intent, returnUrl]);
+
+  const destinationHint = useMemo(() => {
+    const safe = sanitizeReturnUrl(returnUrl ?? null, "/");
+    return safe !== "/" ? safe : null;
   }, [returnUrl]);
 
   const submit = useCallback(
@@ -103,8 +121,22 @@ export function LoginForm({ returnUrl }: LoginFormProps) {
   return (
     <div className="space-y-8 text-slate-900">
       <div className="space-y-2 text-left">
+        <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+          Secure sign in
+        </span>
         <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Welcome back</h1>
         <p className="text-sm text-slate-500">Log in to your account to continue</p>
+        {contextMessage ? (
+          <p className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs leading-relaxed text-slate-600">
+            {contextMessage}
+          </p>
+        ) : null}
+        {destinationHint ? (
+          <p className="text-xs text-slate-500">
+            After sign in, you&apos;ll continue to{" "}
+            <span className="font-medium text-slate-700">{destinationHint}</span>.
+          </p>
+        ) : null}
       </div>
 
       <form className="space-y-6" onSubmit={submit} aria-busy={loading}>

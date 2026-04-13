@@ -56,8 +56,10 @@ export default async function middleware(request: NextRequest) {
   const session = await getSessionFromRequest(request);
 
   if (isAuthPublicPath(pathname)) {
-    if (pathname.toLowerCase() === "/login" && session) {
-      const rawReturn = request.nextUrl.searchParams.get("returnUrl");
+    const authPath = pathname.toLowerCase();
+    if ((authPath === "/login" || authPath === "/register") && session) {
+      const rawReturn =
+        request.nextUrl.searchParams.get("returnUrl") ?? request.nextUrl.searchParams.get("next");
       const fallback = homePathForSessionRole(session.role);
       const target = sanitizeReturnUrl(rawReturn, fallback);
       return NextResponse.redirect(new URL(target, request.url));
@@ -75,6 +77,7 @@ export default async function middleware(request: NextRequest) {
       if (safe !== "/") {
         url.searchParams.set("returnUrl", safe);
       }
+      url.searchParams.set("intent", "protected");
       return NextResponse.redirect(url);
     }
     return NextResponse.next();

@@ -1,16 +1,18 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { Briefcase, Globe, Moon } from "lucide-react";
+import { parseAuthIntent } from "@/features/auth/lib/auth-intent";
 import { LoginForm } from "@/features/auth/components/LoginForm";
 
 type PageProps = {
-  searchParams: Promise<{ returnUrl?: string; next?: string }>;
+  searchParams: Promise<{ returnUrl?: string; next?: string; intent?: string }>;
 };
 
 /** Public auth page — uses root layout + globals.css (Tailwind). */
 export default async function LoginPage({ searchParams }: PageProps) {
   const sp = await searchParams;
   const returnUrl = sp.returnUrl ?? sp.next;
+  const intent = parseAuthIntent(sp.intent);
   const year = new Date().getFullYear();
 
   return (
@@ -27,7 +29,7 @@ export default async function LoginPage({ searchParams }: PageProps) {
             <span className="text-xl font-bold tracking-tight text-[#3525cd]">NearWork</span>
           </Link>
 
-          <LoginForm returnUrl={returnUrl} />
+          <LoginForm returnUrl={returnUrl} intent={intent} />
 
           <nav
             aria-label="Legal"

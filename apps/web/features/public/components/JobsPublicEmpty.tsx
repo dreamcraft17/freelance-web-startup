@@ -1,6 +1,6 @@
 import type { Route } from "next";
 import Link from "next/link";
-import { REGISTER_CLIENT_POST_JOB } from "@/features/auth/lib/register-intents";
+import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
 
 type JobsPublicEmptyProps = {
   /** True when user narrowed by category */
@@ -25,9 +25,15 @@ export function JobsPublicEmpty({ categorySelected, hasFilters }: JobsPublicEmpt
           >
             Browse all open jobs
           </Link>
-          <Link href={REGISTER_CLIENT_POST_JOB as Route} className="text-sm font-semibold text-[#3525cd] hover:underline">
+          <AuthAwareCtaLink
+            href={"/client/jobs/new" as Route}
+            intent="post-job"
+            unauthenticatedTo="register"
+            registerRoleHint="client"
+            className="text-sm font-semibold text-[#3525cd] hover:underline"
+          >
             Post a job →
-          </Link>
+          </AuthAwareCtaLink>
         </div>
       </div>
     );
@@ -64,12 +70,15 @@ export function JobsPublicEmpty({ categorySelected, hasFilters }: JobsPublicEmpt
         will show up here first.
       </p>
       <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-        <Link
-          href={REGISTER_CLIENT_POST_JOB as Route}
+        <AuthAwareCtaLink
+          href={"/client/jobs/new" as Route}
+          intent="post-job"
+          unauthenticatedTo="register"
+          registerRoleHint="client"
           className="rounded-lg bg-[#3525cd] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4f46e5]"
         >
           Post the first job
-        </Link>
+        </AuthAwareCtaLink>
         <Link href="/freelancers" className="text-sm font-semibold text-[#3525cd] hover:underline">
           Browse freelancers →
         </Link>

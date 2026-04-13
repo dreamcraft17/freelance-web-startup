@@ -38,7 +38,12 @@ export function homePathForSessionRole(role: UserRole): string {
       return "/freelancer";
     case UserRole.CLIENT:
       return "/client";
+    case UserRole.ADMIN:
+    case UserRole.SUPPORT_ADMIN:
+    case UserRole.FINANCE_ADMIN:
+    case UserRole.MODERATOR:
+      return "/settings";
     default:
-      return "/client";
+      return "/settings";
   }
 }
