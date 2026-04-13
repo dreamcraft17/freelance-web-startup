@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { sanitizeReturnUrl } from "@src/lib/return-url";
+import { hasActiveSession } from "@/features/auth/lib/client-auth-actions";
 import { parseAuthIntent, roleHintFromIntent, type AuthIntent } from "@/features/auth/lib/auth-intent";
 import { cn } from "@/lib/utils";
 
@@ -67,8 +68,8 @@ export function AuthAwareCtaLink({
     event.preventDefault();
     setBusy(true);
     try {
-      const res = await fetch("/api/auth/session", { method: "GET", credentials: "same-origin" });
-      if (res.ok) {
+      const hasSession = await hasActiveSession();
+      if (hasSession) {
         router.push(href as Route);
         return;
       }
