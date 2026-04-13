@@ -5,11 +5,11 @@ import { buildSessionClearCookieHeader } from "@src/lib/session";
 
 const authService = new AuthService();
 
-export async function POST(_request: Request) {
+export async function POST(request: Request) {
   return withApiHandler(async () => {
     await authService.logout();
     const res = new NextResponse(null, { status: 204 });
-    res.headers.append("Set-Cookie", buildSessionClearCookieHeader());
+    res.headers.append("Set-Cookie", buildSessionClearCookieHeader(request));
     return res;
   });
 }

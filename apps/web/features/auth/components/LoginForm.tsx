@@ -2,7 +2,6 @@
 
 import type { Route } from "next";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useCallback, useId, useMemo, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import type { UserRole } from "@acme/types";
@@ -29,7 +28,6 @@ export type LoginFormProps = {
 };
 
 export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
-  const router = useRouter();
   const formId = useId();
   const emailId = `${formId}-email`;
   const passwordId = `${formId}-password`;
@@ -102,8 +100,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
         const role = body.data.session.role;
         const fallback = homePathForSessionRole(role);
         const next = sanitizeReturnUrl(returnUrl ?? null, fallback);
-        router.replace(next as Route);
-        router.refresh();
+        window.location.assign(next);
       } catch (err) {
         const msg = err instanceof Error && err.message ? err.message : "Request failed";
         setError(
@@ -115,7 +112,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
         setLoading(false);
       }
     },
-    [returnUrl, router]
+    [returnUrl]
   );
 
   return (

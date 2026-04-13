@@ -2,7 +2,7 @@
 
 import type { Route } from "next";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useId, useMemo, useState } from "react";
 import { Briefcase, Eye, EyeOff, UserRound } from "lucide-react";
 import type { UserRole } from "@acme/types";
@@ -31,7 +31,6 @@ type RegisterFormInnerProps = {
 };
 
 function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "continue" }: RegisterFormInnerProps) {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const id = useId();
   const nameId = `${id}-name`;
@@ -117,8 +116,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
         const fallback = homePathForSessionRole(body.data.session.role);
         const rawNext = searchParams.get("next");
         const target = sanitizeReturnUrl(rawNext, fallback);
-        router.replace(target as Route);
-        router.refresh();
+        window.location.assign(target);
       } catch (err) {
         const msg = err instanceof Error && err.message ? err.message : "Request failed";
         setError(
@@ -130,7 +128,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
         setLoading(false);
       }
     },
-    [router, role, searchParams]
+    [role, searchParams]
   );
 
   const signUpContext =
