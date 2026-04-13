@@ -85,27 +85,46 @@ export function sessionCookieMaxAgeSec(): number {
   return SESSION_MAX_AGE_SEC;
 }
 
-export function buildSessionSetCookieHeader(token: string): string {
-  const secure = process.env.NODE_ENV === "production";
+function shouldUseSecureCookies(request?: Request): boolean {
+  if (process.env.NODE_ENV !== "production") return false;
+  if (!request) return true;
+
+  const proto = request.headers.get("x-forwarded-proto")?.split(",")[0]?.trim().toLowerCase();
+  if (proto) return proto === "https";
+
+  try {
+    const url = new URL(request.url);
+    const host = url.hostname.toLowerCase();
+    if (host === "localhost" || host === "127.0.0.1" || host === "::1") return false;
+    return url.protocol === "https:";
+  } catch {
+    return true;
+  }
+}
+
+export function buildSessionSetCookieHeader(token: string, request?: Request): string {
+  const secure = shouldUseSecureCookies(request);
   const parts = [
     `${SESSION_COOKIE_NAME}=${encodeURIComponent(token)}`,
     "Path=/",
     "HttpOnly",
     "SameSite=Lax",
-    `Max-Age=${SESSION_MAX_AGE_SEC}`
+    `Max-Age=${SESSION_MAX_AGE_SEC}`,
+    `Expires=${new Date(Date.now() + SESSION_MAX_AGE_SEC * 1000).toUTCString()}`
   ];
   if (secure) parts.push("Secure");
   return parts.join("; ");
 }
 
-export function buildSessionClearCookieHeader(): string {
-  const secure = process.env.NODE_ENV === "production";
+export function buildSessionClearCookieHeader(request?: Request): string {
+  const secure = shouldUseSecureCookies(request);
   const parts = [
     `${SESSION_COOKIE_NAME}=`,
     "Path=/",
     "HttpOnly",
     "SameSite=Lax",
-    "Max-Age=0"
+    "Max-Age=0",
+    "Expires=Thu, 01 Jan 1970 00:00:00 GMT"
   ];
   if (secure) parts.push("Secure");
   return parts.join("; ");

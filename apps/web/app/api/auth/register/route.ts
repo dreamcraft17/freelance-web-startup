@@ -12,7 +12,7 @@ export async function POST(request: Request) {
     if (!parsed.ok) return parsed.response;
     const { token, session } = await authService.register(parsed.data);
     const res = jsonOk({ session }, 201);
-    res.headers.append("Set-Cookie", buildSessionSetCookieHeader(token));
+    res.headers.append("Set-Cookie", buildSessionSetCookieHeader(token, request));
     return res;
   });
 }
