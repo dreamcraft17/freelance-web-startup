@@ -18,35 +18,19 @@ function isAuthPublicPath(pathname: string): boolean {
   );
 }
 
-/** Marketing home — must never send anonymous users to /login (see matcher). */
-function isPublicLandingPath(pathname: string): boolean {
-  return pathname === "/" || pathname === "";
-}
-
 /**
- * Authenticated areas: /client, /freelancer, /messages, /notifications, /settings.
- * Auth routes (/login, /register, /forgot-password) are matched so we never redirect them to /login
- * (avoids returnUrl=/login?returnUrl=… loops when session is missing).
+ * Matcher is limited to auth pages and authenticated workspaces only.
  *
- * "/" is matched explicitly so the root landing page is always a public entry point (no session required).
+ * Not matched (middleware never runs → never redirected to /login):
+ * - /, /jobs, /jobs/[id], /freelancers, /freelancers/[username]
+ * - /how-it-works, /pricing, /early-access, /help, /privacy, /terms, /contact, etc.
+ * - /api/*, static assets (not listed here)
+ *
+ * Matched → session required except for /login, /register, /forgot-password:
+ * - /client/*, /freelancer/*, /messages/*, /notifications/*, /settings/*
  */
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-
-  // Never touch Next/Vercel internals or public files — redirecting these breaks CSS/JS (unstyled /login).
-  if (
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/_vercel") ||
-    pathname === "/favicon.ico" ||
-    pathname === "/robots.txt" ||
-    pathname === "/sitemap.xml"
-  ) {
-    return NextResponse.next();
-  }
-
-  if (isPublicLandingPath(pathname)) {
-    return NextResponse.next();
-  }
 
   const session = await getSessionFromRequest(request);
 
@@ -77,17 +61,21 @@ export default async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/",
     "/login",
     "/login/:path*",
     "/register",
     "/register/:path*",
     "/forgot-password",
     "/forgot-password/:path*",
+    "/client",
     "/client/:path*",
+    "/freelancer",
     "/freelancer/:path*",
+    "/messages",
     "/messages/:path*",
+    "/notifications",
     "/notifications/:path*",
+    "/settings",
     "/settings/:path*"
   ]
 };

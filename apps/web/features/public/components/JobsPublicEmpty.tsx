@@ -23,7 +23,7 @@ export function JobsPublicEmpty({ categorySelected, hasFilters }: JobsPublicEmpt
           >
             Browse all open jobs
           </Link>
-          <Link href="/register" className="text-sm font-semibold text-[#3525cd] hover:underline">
+          <Link href="/client/jobs/new" className="text-sm font-semibold text-[#3525cd] hover:underline">
             Post a job →
           </Link>
         </div>
@@ -63,7 +63,7 @@ export function JobsPublicEmpty({ categorySelected, hasFilters }: JobsPublicEmpt
       </p>
       <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
         <Link
-          href="/register"
+          href="/client/jobs/new"
           className="rounded-lg bg-[#3525cd] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4f46e5]"
         >
           Post the first job
