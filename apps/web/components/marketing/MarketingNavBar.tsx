@@ -30,7 +30,7 @@ export function MarketingNavBar() {
         <div className="flex min-w-0 flex-1 items-center gap-4 md:gap-6 lg:gap-8">
           <BrandLogo
             className="shrink-0"
-            imageClassName="h-7 w-auto sm:h-8"
+            imageClassName="h-10 w-auto sm:h-11"
             alt="NearWork logo"
           />
           <div className="hidden min-w-0 flex-wrap items-center gap-x-3 gap-y-1 md:flex md:gap-x-4 lg:gap-x-5">
