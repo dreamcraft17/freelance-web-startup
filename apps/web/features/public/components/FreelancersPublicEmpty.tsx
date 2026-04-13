@@ -1,4 +1,6 @@
+import type { Route } from "next";
 import Link from "next/link";
+import { REGISTER_FREELANCER_PROFILE } from "@/features/auth/lib/register-intents";
 
 type FreelancersPublicEmptyProps = {
   categorySelected: boolean;
@@ -61,7 +63,7 @@ export function FreelancersPublicEmpty({ categorySelected, hasFilters }: Freelan
       </p>
       <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
         <Link
-          href="/freelancer/profile"
+          href={REGISTER_FREELANCER_PROFILE as Route}
           className="rounded-lg bg-[#3525cd] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4f46e5]"
         >
           Create a freelancer profile

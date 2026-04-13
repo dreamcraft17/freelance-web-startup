@@ -2,11 +2,11 @@
 
 import type { Route } from "next";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useCallback, useId, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useCallback, useEffect, useId, useMemo, useState } from "react";
 import { Briefcase, Eye, EyeOff, UserRound } from "lucide-react";
 import type { UserRole } from "@acme/types";
-import { homePathForSessionRole } from "@src/lib/return-url";
+import { homePathForSessionRole, sanitizeReturnUrl } from "@src/lib/return-url";
 import { readApiBody } from "@/features/auth/lib/read-api-body";
 
 type RegisterApiSuccess = {
@@ -23,8 +23,9 @@ type RegisterApiError = {
   details?: unknown;
 };
 
-export function RegisterForm() {
+function RegisterFormInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const id = useId();
   const nameId = `${id}-name`;
   const emailId = `${id}-email`;
@@ -37,6 +38,20 @@ export function RegisterForm() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const nextDest = searchParams.get("next");
+
+  useEffect(() => {
+    const r = searchParams.get("role")?.toLowerCase();
+    if (r === "client") setRole("CLIENT");
+    else if (r === "freelancer") setRole("FREELANCER");
+  }, [searchParams]);
+
+  const loginHref = useMemo(() => {
+    if (!nextDest) return "/login";
+    const safe = sanitizeReturnUrl(nextDest, "/");
+    return `/login?returnUrl=${encodeURIComponent(safe)}`;
+  }, [nextDest]);
 
   const submit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
@@ -88,8 +103,10 @@ export function RegisterForm() {
           return;
         }
 
-        const next = homePathForSessionRole(body.data.session.role);
-        router.replace(next as Route);
+        const fallback = homePathForSessionRole(body.data.session.role);
+        const rawNext = searchParams.get("next");
+        const target = sanitizeReturnUrl(rawNext, fallback);
+        router.replace(target as Route);
         router.refresh();
       } catch (err) {
         const msg = err instanceof Error && err.message ? err.message : "Request failed";
@@ -102,8 +119,16 @@ export function RegisterForm() {
         setLoading(false);
       }
     },
-    [router, role]
+    [router, role, searchParams]
   );
+
+  const signUpContext =
+    nextDest && sanitizeReturnUrl(nextDest, "/") !== "/" ? (
+      <p className="text-xs leading-relaxed text-slate-500">
+        After you create your account, we&apos;ll take you back to{" "}
+        <span className="font-medium text-slate-700">{sanitizeReturnUrl(nextDest, "/")}</span>.
+      </p>
+    ) : null;
 
   const inputClass =
     "block w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-900 shadow-sm outline-none transition-colors placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-60";
@@ -113,6 +138,7 @@ export function RegisterForm() {
       <div className="space-y-2 text-left">
         <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Create your account</h1>
         <p className="text-sm text-slate-500">Join NearWork to hire or get hired</p>
+        {signUpContext}
       </div>
 
       <form className="space-y-6" onSubmit={submit} aria-busy={loading}>
@@ -327,11 +353,21 @@ export function RegisterForm() {
 
       <p className="text-center text-sm text-slate-500">
         Already have an account?{" "}
-        <Link href="/login" className="font-semibold text-indigo-600 hover:text-indigo-700">
+        <Link href={loginHref as Route} className="font-semibold text-indigo-600 hover:text-indigo-700">
           Log in
         </Link>
       </p>
     </div>
+  );
+}
+
+export function RegisterForm() {
+  return (
+    <Suspense
+      fallback={<p className="text-center text-sm text-slate-500">Loading signup…</p>}
+    >
+      <RegisterFormInner />
+    </Suspense>
   );
 }
 

@@ -26,6 +26,8 @@ function isAuthPublicPath(pathname: string): boolean {
  * - /how-it-works, /pricing, /early-access, /help, /privacy, /terms, /contact, etc.
  * - /api/*, static assets (not listed here)
  *
+ * `/register` stays public even with `?role=` and `?next=` (post-signup redirect is handled in RegisterForm).
+ *
  * Matched → session required except for /login, /register, /forgot-password:
  * - /client/*, /freelancer/*, /messages/*, /notifications/*, /settings/*
  */
