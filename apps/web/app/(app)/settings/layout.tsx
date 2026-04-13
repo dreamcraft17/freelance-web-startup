@@ -3,5 +3,9 @@ import { DashboardShell } from "@/features/dashboard/components/DashboardShell";
 import { utilityNavItems } from "@/features/dashboard/nav/utility-nav";
 
 export default function SettingsLayout({ children }: { children: ReactNode }) {
-  return <DashboardShell navItems={utilityNavItems}>{children}</DashboardShell>;
+  return (
+    <DashboardShell navItems={utilityNavItems} className="bg-[#fafafa]">
+      {children}
+    </DashboardShell>
+  );
 }
