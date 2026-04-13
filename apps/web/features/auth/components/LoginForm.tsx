@@ -3,7 +3,7 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useId, useState } from "react";
+import { useCallback, useId, useMemo, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import type { UserRole } from "@acme/types";
 import { homePathForSessionRole, sanitizeReturnUrl } from "@src/lib/return-url";
@@ -35,6 +35,17 @@ export function LoginForm({ returnUrl }: LoginFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const signUpHref = useMemo(() => {
+    if (!returnUrl) return "/register";
+    const safe = sanitizeReturnUrl(returnUrl, "/");
+    const next = encodeURIComponent(safe);
+    if (safe.startsWith("/client/")) return `/register?role=client&next=${next}`;
+    if (safe.startsWith("/freelancer/") || safe.startsWith("/jobs/")) {
+      return `/register?role=freelancer&next=${next}`;
+    }
+    return `/register?next=${next}`;
+  }, [returnUrl]);
 
   const submit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
@@ -185,7 +196,7 @@ export function LoginForm({ returnUrl }: LoginFormProps) {
 
       <p className="text-center text-sm text-slate-500">
         Don&apos;t have an account?{" "}
-        <Link href="/register" className="font-semibold text-indigo-600 hover:text-indigo-700">
+        <Link href={signUpHref as Route} className="font-semibold text-indigo-600 hover:text-indigo-700">
           Sign up
         </Link>
       </p>

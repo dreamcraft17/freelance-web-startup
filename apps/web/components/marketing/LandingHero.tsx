@@ -1,5 +1,7 @@
+import type { Route } from "next";
 import Link from "next/link";
 import { ArrowRight, BadgeCheck, MapPin, Search } from "lucide-react";
+import { REGISTER_CLIENT_POST_JOB } from "@/features/auth/lib/register-intents";
 
 export function LandingHero() {
   return (
@@ -121,7 +123,7 @@ export function LandingHero() {
           </Link>
           <span className="hidden h-4 w-px bg-slate-200 sm:block" aria-hidden />
           <Link
-            href="/client/jobs/new"
+            href={REGISTER_CLIENT_POST_JOB as Route}
             className="group inline-flex items-center gap-1.5 text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 transition hover:text-[#3525cd] hover:decoration-[#3525cd]/40"
           >
             Post a brief and collect bids

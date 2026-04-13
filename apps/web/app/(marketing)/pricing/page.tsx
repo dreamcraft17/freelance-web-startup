@@ -1,4 +1,6 @@
+import type { Route } from "next";
 import Link from "next/link";
+import { REGISTER_CLIENT_POST_JOB } from "@/features/auth/lib/register-intents";
 
 export default function PricingPage() {
   return (
@@ -56,8 +58,14 @@ export default function PricingPage() {
         </p>
         <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:flex-wrap sm:items-center">
           <Link
-            href="/register"
+            href={REGISTER_CLIENT_POST_JOB as Route}
             className="inline-flex justify-center rounded-lg bg-white px-6 py-3 text-sm font-semibold text-[#3525cd] transition hover:bg-indigo-50"
+          >
+            Post a job free
+          </Link>
+          <Link
+            href="/register"
+            className="inline-flex justify-center rounded-lg border border-white/40 bg-transparent px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
           >
             Create an account
           </Link>

@@ -1,5 +1,7 @@
+import type { Route } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { loginReturnTo, registerFreelancerReturnToJob } from "@/features/auth/lib/register-intents";
 import { PageHeader } from "@/features/shared/components/PageHeader";
 import { SaveJobButton } from "@/features/saved/components/SaveJobButton";
 import { JobService } from "@/server/services/job.service";
@@ -81,6 +83,8 @@ export default async function JobDetailPage({ params }: PageProps) {
       ? new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(job.bidDeadline)
       : null;
 
+  const returnToThisJob = `/jobs/${job.id}`;
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 md:px-6">
       <nav className="text-muted-foreground mb-6 text-sm">
@@ -131,6 +135,30 @@ export default async function JobDetailPage({ params }: PageProps) {
             {!job.clientProfile.industry && !clientLocation ? (
               <p className="text-muted-foreground/80">No additional client details.</p>
             ) : null}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Submit a bid</CardTitle>
+            <CardDescription>
+              Bidding requires a signed-in freelancer account. Browse this page freely; sign in or register when you are
+              ready to propose.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+            <Link
+              href={loginReturnTo(returnToThisJob) as Route}
+              className="inline-flex justify-center rounded-lg bg-[#3525cd] px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-[#4f46e5]"
+            >
+              Sign in to submit a bid
+            </Link>
+            <Link
+              href={registerFreelancerReturnToJob(job.id) as Route}
+              className="inline-flex justify-center rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-center text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
+            >
+              Register as freelancer
+            </Link>
           </CardContent>
         </Card>
 

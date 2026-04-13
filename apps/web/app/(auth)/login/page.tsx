@@ -3,12 +3,12 @@ import { Briefcase, Globe, Moon } from "lucide-react";
 import { LoginForm } from "@/features/auth/components/LoginForm";
 
 type PageProps = {
-  searchParams: Promise<{ returnUrl?: string }>;
+  searchParams: Promise<{ returnUrl?: string; next?: string }>;
 };
 
 export default async function LoginPage({ searchParams }: PageProps) {
   const sp = await searchParams;
-  const returnUrl = sp.returnUrl;
+  const returnUrl = sp.returnUrl ?? sp.next;
   const year = new Date().getFullYear();
 
   return (
