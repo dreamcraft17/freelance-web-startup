@@ -129,7 +129,7 @@ export function LoginForm({ returnUrl }: LoginFormProps) {
             required
             placeholder="name@company.com"
             disabled={loading}
-            className="block w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-900 shadow-sm outline-none transition-colors placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-60"
+            className="block w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-900 shadow-sm outline-none transition-colors placeholder:text-slate-400 focus:border-[#3525cd] focus:ring-2 focus:ring-[#3525cd]/35 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-60"
           />
         </div>
 
@@ -138,7 +138,10 @@ export function LoginForm({ returnUrl }: LoginFormProps) {
             <label htmlFor={passwordId} className="text-xs font-semibold uppercase tracking-wide text-slate-500">
               Password
             </label>
-            <Link href="/forgot-password" className="text-xs font-medium text-indigo-600 hover:text-indigo-700">
+            <Link
+              href={"/forgot-password" as Route}
+              className="text-xs font-medium text-[#3525cd] hover:text-[#4f46e5]"
+            >
               Forgot password?
             </Link>
           </div>
@@ -150,7 +153,7 @@ export function LoginForm({ returnUrl }: LoginFormProps) {
               autoComplete="current-password"
               required
               disabled={loading}
-              className="block w-full rounded-lg border border-slate-200 bg-white py-3 pl-3 pr-11 text-sm text-slate-900 shadow-sm outline-none transition-colors focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-60"
+              className="block w-full rounded-lg border border-slate-200 bg-white py-3 pl-3 pr-11 text-sm text-slate-900 shadow-sm outline-none transition-colors focus:border-[#3525cd] focus:ring-2 focus:ring-[#3525cd]/35 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-60"
             />
             <button
               type="button"
@@ -168,7 +171,7 @@ export function LoginForm({ returnUrl }: LoginFormProps) {
         <button
           type="submit"
           disabled={loading}
-          className="flex w-full items-center justify-center rounded-lg bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-md transition-colors hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:pointer-events-none disabled:opacity-60"
+          className="flex w-full items-center justify-center rounded-lg bg-[#3525cd] px-4 py-3 text-sm font-semibold text-white shadow-md transition-colors hover:bg-[#4f46e5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3525cd] disabled:pointer-events-none disabled:opacity-60"
         >
           {loading ? "Signing in…" : "Log in"}
         </button>
@@ -196,7 +199,7 @@ export function LoginForm({ returnUrl }: LoginFormProps) {
 
       <p className="text-center text-sm text-slate-500">
         Don&apos;t have an account?{" "}
-        <Link href={signUpHref as Route} className="font-semibold text-indigo-600 hover:text-indigo-700">
+        <Link href={signUpHref as Route} className="font-semibold text-[#3525cd] hover:text-[#4f46e5]">
           Sign up
         </Link>
       </p>
