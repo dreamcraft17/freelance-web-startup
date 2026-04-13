@@ -148,7 +148,7 @@ export default async function JobDetailPage({ params }: PageProps) {
           </CardHeader>
           <CardContent className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
             <Link
-              href={loginReturnTo(returnToThisJob) as Route}
+              href={loginReturnTo(returnToThisJob, "submit-bid") as Route}
               className="inline-flex justify-center rounded-lg bg-[#3525cd] px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-[#4f46e5]"
             >
               Sign in to submit a bid

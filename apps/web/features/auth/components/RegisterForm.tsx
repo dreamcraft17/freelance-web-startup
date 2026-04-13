@@ -7,6 +7,7 @@ import { Suspense, useCallback, useEffect, useId, useMemo, useState } from "reac
 import { Briefcase, Eye, EyeOff, UserRound } from "lucide-react";
 import type { UserRole } from "@acme/types";
 import { homePathForSessionRole, sanitizeReturnUrl } from "@src/lib/return-url";
+import { parseAuthIntent, registerIntentMessage, roleHintFromIntent, type AuthIntent } from "@/features/auth/lib/auth-intent";
 import { readApiBody } from "@/features/auth/lib/read-api-body";
 
 type RegisterApiSuccess = {
@@ -23,7 +24,13 @@ type RegisterApiError = {
   details?: unknown;
 };
 
-function RegisterFormInner() {
+type RegisterFormInnerProps = {
+  initialNext?: string | null;
+  initialRoleHint?: string | null;
+  initialIntent?: AuthIntent;
+};
+
+function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "continue" }: RegisterFormInnerProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = useId();
@@ -39,19 +46,23 @@ function RegisterFormInner() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const nextDest = searchParams.get("next");
+  const nextDest = searchParams.get("next") ?? initialNext ?? null;
+  const intent = parseAuthIntent(searchParams.get("intent") ?? initialIntent);
 
   useEffect(() => {
-    const r = searchParams.get("role")?.toLowerCase();
+    const r = (searchParams.get("role") ?? initialRoleHint ?? roleHintFromIntent(intent))?.toLowerCase();
     if (r === "client") setRole("CLIENT");
     else if (r === "freelancer") setRole("FREELANCER");
-  }, [searchParams]);
+  }, [initialRoleHint, intent, searchParams]);
 
   const loginHref = useMemo(() => {
-    if (!nextDest) return "/login";
+    const q = new URLSearchParams();
+    if (intent !== "continue") q.set("intent", intent);
+    if (!nextDest) return q.toString() ? `/login?${q.toString()}` : "/login";
     const safe = sanitizeReturnUrl(nextDest, "/");
-    return `/login?returnUrl=${encodeURIComponent(safe)}`;
-  }, [nextDest]);
+    q.set("returnUrl", safe);
+    return `/login?${q.toString()}`;
+  }, [intent, nextDest]);
 
   const submit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
@@ -129,6 +140,16 @@ function RegisterFormInner() {
         <span className="font-medium text-slate-700">{sanitizeReturnUrl(nextDest, "/")}</span>.
       </p>
     ) : null;
+  const intentMessage = registerIntentMessage(intent);
+  const roleOutcome = role === "CLIENT"
+    ? {
+        title: "Client workspace next",
+        bullets: ["Post jobs in minutes", "Receive bids from freelancers", "Shortlist and message talent"]
+      }
+    : {
+        title: "Freelancer workspace next",
+        bullets: ["Set up your profile", "Apply to open jobs", "Message clients and track proposals"]
+      };
 
   const inputClass =
     "block w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-900 shadow-sm outline-none transition-colors placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-60";
@@ -136,8 +157,16 @@ function RegisterFormInner() {
   return (
     <div className="space-y-8 text-slate-900">
       <div className="space-y-2 text-left">
+        <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+          Start onboarding
+        </span>
         <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Create your account</h1>
         <p className="text-sm text-slate-500">Join NearWork to hire or get hired</p>
+        {intentMessage ? (
+          <p className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs leading-relaxed text-slate-600">
+            {intentMessage}
+          </p>
+        ) : null}
         {signUpContext}
       </div>
 
@@ -197,7 +226,7 @@ function RegisterFormInner() {
             <label
               className={`flex flex-1 cursor-pointer gap-3 rounded-xl border px-4 py-3 transition-all focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 sm:border-0 sm:py-3 ${
                 role === "FREELANCER"
-                  ? "border-indigo-600 bg-white shadow-md ring-1 ring-indigo-200 sm:bg-white sm:shadow-sm sm:ring-0"
+                  ? "border-[#3525cd] bg-white shadow-md ring-1 ring-[#3525cd]/20 sm:bg-white sm:shadow-sm sm:ring-0"
                   : "border-slate-200 bg-white hover:border-slate-300 sm:bg-transparent sm:hover:bg-white/70"
               }`}
             >
@@ -215,22 +244,24 @@ function RegisterFormInner() {
               <span className="min-w-0 flex-1">
                 <span className="flex items-center gap-2">
                   <UserRound
-                    className={`h-5 w-5 shrink-0 ${role === "FREELANCER" ? "text-indigo-600" : "text-slate-500"}`}
+                    className={`h-5 w-5 shrink-0 ${role === "FREELANCER" ? "text-[#3525cd]" : "text-slate-500"}`}
                     aria-hidden
                   />
                   <span
-                    className={`text-sm font-semibold ${role === "FREELANCER" ? "text-indigo-900" : "text-slate-900"}`}
+                    className={`text-sm font-semibold ${role === "FREELANCER" ? "text-[#221a80]" : "text-slate-900"}`}
                   >
                     Freelancer
                   </span>
                 </span>
-                <span className="mt-1 block text-xs leading-snug text-slate-500">Find work and send proposals</span>
+                <span className="mt-1 block text-xs leading-snug text-slate-500">
+                  Create a profile and apply to jobs
+                </span>
               </span>
             </label>
             <label
               className={`flex flex-1 cursor-pointer gap-3 rounded-xl border px-4 py-3 transition-all focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 sm:border-0 sm:py-3 ${
                 role === "CLIENT"
-                  ? "border-indigo-600 bg-white shadow-md ring-1 ring-indigo-200 sm:bg-white sm:shadow-sm sm:ring-0"
+                  ? "border-[#3525cd] bg-white shadow-md ring-1 ring-[#3525cd]/20 sm:bg-white sm:shadow-sm sm:ring-0"
                   : "border-slate-200 bg-white hover:border-slate-300 sm:bg-transparent sm:hover:bg-white/70"
               }`}
             >
@@ -248,20 +279,32 @@ function RegisterFormInner() {
               <span className="min-w-0 flex-1">
                 <span className="flex items-center gap-2">
                   <Briefcase
-                    className={`h-5 w-5 shrink-0 ${role === "CLIENT" ? "text-indigo-600" : "text-slate-500"}`}
+                    className={`h-5 w-5 shrink-0 ${role === "CLIENT" ? "text-[#3525cd]" : "text-slate-500"}`}
                     aria-hidden
                   />
                   <span
-                    className={`text-sm font-semibold ${role === "CLIENT" ? "text-indigo-900" : "text-slate-900"}`}
+                    className={`text-sm font-semibold ${role === "CLIENT" ? "text-[#221a80]" : "text-slate-900"}`}
                   >
                     Client
                   </span>
                 </span>
-                <span className="mt-1 block text-xs leading-snug text-slate-500">Post jobs and hire talent</span>
+                <span className="mt-1 block text-xs leading-snug text-slate-500">Post jobs and receive bids</span>
               </span>
             </label>
           </div>
         </fieldset>
+
+        <div className="rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-3">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{roleOutcome.title}</p>
+          <ul className="mt-2 space-y-1.5 text-xs leading-relaxed text-slate-600">
+            {roleOutcome.bullets.map((item) => (
+              <li key={item} className="flex gap-2">
+                <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#3525cd]/60" aria-hidden />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
 
         <div className="space-y-2">
           <label htmlFor={passwordId} className="text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -325,7 +368,7 @@ function RegisterFormInner() {
         <button
           type="submit"
           disabled={loading}
-          className="flex w-full items-center justify-center rounded-lg bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-md transition-colors hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:pointer-events-none disabled:opacity-60"
+          className="flex w-full items-center justify-center rounded-lg bg-[#3525cd] px-4 py-3 text-sm font-semibold text-white shadow-md transition-colors hover:bg-[#4f46e5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3525cd] disabled:pointer-events-none disabled:opacity-60"
         >
           {loading ? "Creating account…" : "Create account"}
         </button>
@@ -353,7 +396,7 @@ function RegisterFormInner() {
 
       <p className="text-center text-sm text-slate-500">
         Already have an account?{" "}
-        <Link href={loginHref as Route} className="font-semibold text-indigo-600 hover:text-indigo-700">
+        <Link href={loginHref as Route} className="font-semibold text-[#3525cd] hover:text-[#4f46e5]">
           Log in
         </Link>
       </p>
@@ -361,12 +404,18 @@ function RegisterFormInner() {
   );
 }
 
-export function RegisterForm() {
+type RegisterFormProps = {
+  initialNext?: string | null;
+  initialRoleHint?: string | null;
+  initialIntent?: AuthIntent;
+};
+
+export function RegisterForm({ initialNext, initialRoleHint, initialIntent }: RegisterFormProps) {
   return (
     <Suspense
       fallback={<p className="text-center text-sm text-slate-500">Loading signup…</p>}
     >
-      <RegisterFormInner />
+      <RegisterFormInner initialNext={initialNext} initialRoleHint={initialRoleHint} initialIntent={initialIntent} />
     </Suspense>
   );
 }

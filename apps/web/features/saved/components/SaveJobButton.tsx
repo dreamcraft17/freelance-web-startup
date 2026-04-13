@@ -78,7 +78,7 @@ export function SaveJobButton({
           body: JSON.stringify({ jobId })
         });
         if (res.status === 401) {
-          window.location.href = `/login?returnUrl=${encodeURIComponent(pathname || "/jobs")}`;
+          window.location.href = `/login?intent=save-job&returnUrl=${encodeURIComponent(pathname || "/jobs")}`;
           return;
         }
         const body = await readJson<ApiOk<{ saved: true }> | ApiErr>(res);
@@ -91,7 +91,7 @@ export function SaveJobButton({
           body: JSON.stringify({ jobId })
         });
         if (res.status === 401) {
-          window.location.href = `/login?returnUrl=${encodeURIComponent(pathname || "/jobs")}`;
+          window.location.href = `/login?intent=save-job&returnUrl=${encodeURIComponent(pathname || "/jobs")}`;
           return;
         }
         const body = await readJson<ApiOk<{ saved: false }> | ApiErr>(res);

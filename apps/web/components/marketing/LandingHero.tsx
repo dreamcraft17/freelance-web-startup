@@ -1,7 +1,7 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { ArrowRight, BadgeCheck, MapPin, Search } from "lucide-react";
-import { REGISTER_CLIENT_POST_JOB } from "@/features/auth/lib/register-intents";
+import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
 
 export function LandingHero() {
   return (
@@ -122,13 +122,16 @@ export function LandingHero() {
             <ArrowRight className="h-4 w-4" aria-hidden />
           </Link>
           <span className="hidden h-4 w-px bg-slate-200 sm:block" aria-hidden />
-          <Link
-            href={REGISTER_CLIENT_POST_JOB as Route}
+          <AuthAwareCtaLink
+            href={"/client/jobs/new" as Route}
+            intent="post-job"
+            unauthenticatedTo="register"
+            registerRoleHint="client"
             className="group inline-flex items-center gap-1.5 text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 transition hover:text-[#3525cd] hover:decoration-[#3525cd]/40"
           >
             Post a brief and collect bids
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
-          </Link>
+          </AuthAwareCtaLink>
         </div>
       </div>
     </section>

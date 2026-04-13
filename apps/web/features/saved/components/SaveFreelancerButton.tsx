@@ -77,7 +77,7 @@ export function SaveFreelancerButton({
           body: JSON.stringify({ freelancerProfileId })
         });
         if (res.status === 401) {
-          window.location.href = `/login?returnUrl=${encodeURIComponent(pathname || "/freelancers")}`;
+          window.location.href = `/login?intent=save-freelancer&returnUrl=${encodeURIComponent(pathname || "/freelancers")}`;
           return;
         }
         const body = await readJson<ApiOk<{ saved: true }> | ApiErr>(res);
@@ -90,7 +90,7 @@ export function SaveFreelancerButton({
           body: JSON.stringify({ freelancerProfileId })
         });
         if (res.status === 401) {
-          window.location.href = `/login?returnUrl=${encodeURIComponent(pathname || "/freelancers")}`;
+          window.location.href = `/login?intent=save-freelancer&returnUrl=${encodeURIComponent(pathname || "/freelancers")}`;
           return;
         }
         const body = await readJson<ApiOk<{ saved: false }> | ApiErr>(res);
