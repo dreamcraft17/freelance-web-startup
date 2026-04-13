@@ -5,15 +5,13 @@
   "description": "Marketplace application: App Router UI + API",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "pnpm --filter @acme/database exec prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "clean": "rimraf .next"
   },
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "jose": "^5.9.6",
     "@acme/config": "workspace:*",
     "@acme/database": "workspace:*",
     "@acme/types": "workspace:*",
@@ -22,8 +20,10 @@
     "@radix-ui/react-label": "^2.1.1",
     "@radix-ui/react-separator": "^1.1.1",
     "@radix-ui/react-slot": "^1.1.1",
+    "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "jose": "^5.9.6",
     "lucide-react": "^0.468.0",
     "next": "^15.1.0",
     "react": "^19.0.0",
@@ -32,6 +32,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@prisma/nextjs-monorepo-workaround-plugin": "5.22.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.1",
