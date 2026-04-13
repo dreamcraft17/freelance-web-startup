@@ -11,6 +11,7 @@ export default async function FreelancerDashboardLayout({ children }: { children
     <DashboardShell
       navItems={freelancerNavItems}
       topBanner={session ? <FreelancerLaunchStrip userId={session.userId} /> : null}
+      className="bg-gradient-to-b from-slate-50/90 via-white to-slate-50/80"
     >
       {children}
     </DashboardShell>
