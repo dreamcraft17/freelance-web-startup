@@ -5,6 +5,7 @@ import type { Route } from "next";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { BrandLogo } from "@/features/shared/components/BrandLogo";
 import { getActiveNavHref } from "../lib/dashboard-nav-active";
 import type { DashboardNavItem } from "../nav-types";
 
@@ -54,7 +55,7 @@ export function DashboardNav({ items, variant }: DashboardNavProps) {
   return (
     <nav className="flex flex-col gap-0.5 px-3 py-4" aria-label="Workspace">
       <div className="mb-2 border-b border-slate-100/90 px-2 pb-4">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#3525cd]">NearWork</p>
+        <BrandLogo imageClassName="h-6 w-auto" alt="NearWork logo" />
         <p className="mt-1 text-xs leading-snug text-slate-500">Workspace</p>
       </div>
       {items.map((item, index) => {
