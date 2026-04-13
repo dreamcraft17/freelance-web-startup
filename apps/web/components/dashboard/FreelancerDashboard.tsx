@@ -56,7 +56,6 @@ type ActivityItem =
 
 type FreelancerDashboardProps = {
   displayName: string;
-  /** First word of fullName for welcome, or null */
   greetingName: string | null;
   hasProfile: boolean;
   username: string | null;
@@ -102,6 +101,18 @@ function buildActivity(bids: FreelancerDashboardBid[], contracts: FreelancerDash
   return items.slice(0, 8);
 }
 
+function sectionLabel(title: string, subtitle?: string) {
+  return (
+    <div className="min-w-0">
+      <h2 className="text-xs font-medium uppercase tracking-wide text-slate-500">{title}</h2>
+      {subtitle ? <p className="mt-1 text-sm leading-snug text-slate-600">{subtitle}</p> : null}
+    </div>
+  );
+}
+
+const linkClass =
+  "text-sm font-medium text-[#3525cd] underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/25 focus-visible:ring-offset-2 rounded-sm";
+
 export function FreelancerDashboard({
   displayName,
   greetingName,
@@ -118,19 +129,23 @@ export function FreelancerDashboard({
   const activity = buildActivity(recentBids, recentContracts);
   const welcomeLine = greetingName ? `Welcome back, ${greetingName}` : "Welcome back";
   const subline = hasProfile
-    ? `You are signed in as ${displayName}${username ? ` (@${username})` : ""}. Here is a snapshot of your NearWork activity.`
-    : "Set up your freelancer profile to bid on jobs, track proposals, and manage contracts in one place.";
+    ? `${displayName}${username ? ` · @${username}` : ""}`
+    : "Finish setup to bid on jobs and track work in one place.";
 
   return (
     <div className="mx-auto max-w-6xl space-y-10">
       <header className="space-y-2">
-        <p className="text-sm font-semibold uppercase tracking-wider text-[#3525cd]">Freelancer dashboard</p>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">{welcomeLine}</h1>
-        <p className="max-w-2xl text-base leading-relaxed text-slate-600">{subline}</p>
+        <p className="text-xs font-medium text-slate-500">Freelancer</p>
+        <h1 className="text-2xl font-semibold tracking-tight text-slate-900 md:text-[1.75rem] md:leading-tight">
+          {welcomeLine}
+        </h1>
+        <p className="max-w-xl text-sm leading-relaxed text-slate-600">{subline}</p>
       </header>
 
-      <section aria-label="Summary">
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section aria-label="Overview" className="rounded-lg border border-slate-200 bg-white p-6 md:p-8">
+        {sectionLabel("Overview", "Live counts from your plan and profile.")}
+
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <DashboardStatCard label="Active bids" value={stats.activeBids} icon={Target} />
           <DashboardStatCard label="Active contracts" value={stats.activeContracts} icon={Briefcase} />
           <DashboardStatCard
@@ -146,57 +161,51 @@ export function FreelancerDashboard({
             icon={UserRound}
           />
         </div>
-      </section>
 
-      {showStrongProfileCard ? (
-        <section aria-label="Profile setup">
-          <div className="overflow-hidden rounded-2xl border border-indigo-200/80 bg-gradient-to-br from-indigo-50 via-white to-violet-50/60 p-6 shadow-sm ring-1 ring-indigo-100 md:p-8">
-            <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-              <div className="flex gap-4">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#3525cd] text-white shadow-md">
-                  <Sparkles className="h-6 w-6" aria-hidden />
+        {showStrongProfileCard ? (
+          <div className="mt-8 border-t border-slate-100 pt-8">
+            <div className="flex flex-col gap-4 rounded-lg border border-slate-200 border-l-[3px] border-l-[#3525cd] bg-slate-50/60 p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+              <div className="flex min-w-0 gap-3.5">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white text-[#3525cd] ring-1 ring-slate-200/80">
+                  <Sparkles className="h-4 w-4" strokeWidth={1.75} aria-hidden />
                 </span>
                 <div className="min-w-0">
-                  <h2 className="text-lg font-semibold text-slate-900">
+                  <h3 className="text-sm font-semibold text-slate-900">
                     {hasProfile ? "Strengthen your profile" : "Complete your freelancer profile"}
-                  </h2>
-                  <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-600">
+                  </h3>
+                  <p className="mt-1 text-sm leading-relaxed text-slate-600">
                     {hasProfile
-                      ? `Your profile is about ${profileCompleteness ?? 0}% complete. A detailed profile helps clients trust you and improves how you show up in search.`
-                      : "Add your skills, work preferences, and portfolio so you can submit proposals and unlock your full dashboard."}
+                      ? `${profileCompleteness ?? 0}% complete—clients see a fuller story when you add headline, bio, and rates.`
+                      : "Add skills, work mode, and a short bio to unlock proposals and quota details."}
                   </p>
                 </div>
               </div>
               <Link
                 href={"/freelancer/profile" as Route}
-                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#3525cd] px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-[#4f46e5]"
+                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-md bg-[#3525cd] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#2d1fb0]"
               >
                 Complete profile
-                <ArrowRight className="h-4 w-4" aria-hidden />
+                <ArrowRight className="h-4 w-4 opacity-90" aria-hidden />
               </Link>
             </div>
           </div>
-        </section>
-      ) : null}
+        ) : null}
 
-      <section aria-label="Quick actions">
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm ring-1 ring-slate-100">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Quick actions</h2>
-          <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-8 border-t border-slate-100 pt-8">
+          <h3 className="text-xs font-medium uppercase tracking-wide text-slate-500">Quick actions</h3>
+          <ul className="mt-4 flex flex-col gap-1 sm:flex-row sm:flex-wrap">
             {[
               { label: "Complete profile", href: "/freelancer/profile" as Route, icon: UserRound },
               { label: "Browse jobs", href: "/jobs" as Route, icon: Compass },
               { label: "View proposals", href: "/freelancer/proposals" as Route, icon: FileText },
               { label: "Update availability", href: "/freelancer/profile" as Route, icon: CalendarClock }
             ].map((item) => (
-              <li key={item.label}>
+              <li key={item.label} className="sm:mr-1">
                 <Link
                   href={item.href}
-                  className="flex items-center gap-3 rounded-xl border border-slate-200/90 bg-slate-50/50 px-4 py-3 text-sm font-semibold text-slate-800 transition hover:border-indigo-200 hover:bg-white hover:text-[#3525cd]"
+                  className="flex items-center gap-2.5 rounded-md px-2 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 hover:text-slate-900 sm:px-3"
                 >
-                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white shadow-sm ring-1 ring-slate-200/80">
-                    <item.icon className="h-4 w-4 text-[#3525cd]" aria-hidden />
-                  </span>
+                  <item.icon className="h-4 w-4 text-slate-400" strokeWidth={1.5} aria-hidden />
                   {item.label}
                 </Link>
               </li>
@@ -205,18 +214,12 @@ export function FreelancerDashboard({
         </div>
       </section>
 
-      <div className="grid gap-10 lg:grid-cols-5 lg:gap-8">
-        <section className="lg:col-span-3" aria-label="Recent activity">
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm ring-1 ring-slate-100">
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <div>
-                <h2 className="text-lg font-semibold text-slate-900">Recent activity</h2>
-                <p className="mt-1 text-sm text-slate-500">Latest proposals and contract updates</p>
-              </div>
-              <Link
-                href={"/freelancer/proposals" as Route}
-                className="text-sm font-semibold text-[#3525cd] hover:underline"
-              >
+      <div className="grid gap-8 lg:grid-cols-12 lg:items-start">
+        <section className="lg:col-span-7" aria-label="Recent activity">
+          <div className="rounded-lg border border-slate-200 bg-white p-6 md:p-8">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              {sectionLabel("Recent activity", "Proposals and contract updates")}
+              <Link href={"/freelancer/proposals" as Route} className={linkClass}>
                 View all
               </Link>
             </div>
@@ -224,18 +227,20 @@ export function FreelancerDashboard({
             {!hasProfile && activity.length === 0 ? (
               <div className="mt-6">
                 <DashboardEmptyState
+                  kicker="Profile"
                   icon={ClipboardList}
-                  title="No activity yet"
-                  description="Create your freelancer profile to submit proposals and see them listed here."
+                  title="Your workspace timeline starts after setup"
+                  description="Create your freelancer profile to send proposals and see every update in one place—no more hunting through email."
                   action={{ label: "Complete profile", href: "/freelancer/profile" }}
                 />
               </div>
             ) : hasProfile && activity.length === 0 ? (
               <div className="mt-6">
                 <DashboardEmptyState
+                  kicker="Timeline"
                   icon={Inbox}
-                  title="Nothing recent"
-                  description="When you send proposals or your contracts change status, they will appear in this timeline."
+                  title="Nothing new here yet"
+                  description="When you bid or a contract moves, it lands here automatically so you always know what changed."
                   action={{ label: "Browse open jobs", href: "/jobs" }}
                   secondaryAction={{ label: "View proposals", href: "/freelancer/proposals" }}
                 />
@@ -244,32 +249,32 @@ export function FreelancerDashboard({
               <ul className="mt-6 divide-y divide-slate-100">
                 {!hasProfile ? (
                   <li className="pb-4">
-                    <div className="rounded-xl border border-amber-200/80 bg-amber-50/80 px-4 py-3 text-sm text-amber-950">
-                      <span className="font-semibold">Finish your profile</span>
-                      <span className="text-amber-900/90">
-                        {" "}
-                        to submit new proposals. Contract updates below will keep appearing here.
-                      </span>
+                    <div className="rounded-md border border-amber-200/80 bg-amber-50/50 px-3 py-2.5 text-xs leading-relaxed text-amber-950">
+                      <span className="font-medium">Profile required for new bids.</span>{" "}
+                      <span className="text-amber-900/90">Contract updates still appear below.</span>
                     </div>
                   </li>
                 ) : null}
                 {activity.map((item) =>
                   item.kind === "bid" ? (
-                    <li key={`bid-${item.bid.id}`} className="flex flex-wrap items-start justify-between gap-3 py-4 first:pt-0">
+                    <li
+                      key={`bid-${item.bid.id}`}
+                      className="flex flex-wrap items-start justify-between gap-3 py-4 first:pt-0"
+                    >
                       <div className="min-w-0">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Proposal</p>
+                        <p className="text-xs font-medium text-slate-500">Proposal</p>
                         <Link
                           href={`/jobs/${item.bid.job.id}` as Route}
-                          className="mt-1 block font-medium text-slate-900 hover:text-[#3525cd]"
+                          className="mt-1 block text-sm font-medium text-slate-900 hover:text-[#3525cd]"
                         >
                           {item.bid.job.title}
                         </Link>
-                        <p className="mt-1 text-sm text-slate-600">
+                        <p className="mt-1 text-xs leading-relaxed text-slate-600">
                           {item.bid.status.replace(/_/g, " ")} · {money(item.bid.bidAmount, item.bid.job.currency)}
                           {item.bid.estimatedDays != null ? ` · ~${item.bid.estimatedDays}d` : null}
                         </p>
                       </div>
-                      <time className="shrink-0 text-xs text-slate-400" dateTime={item.at.toISOString()}>
+                      <time className="shrink-0 text-xs tabular-nums text-slate-400" dateTime={item.at.toISOString()}>
                         {formatShortDate(item.at)}
                       </time>
                     </li>
@@ -279,18 +284,18 @@ export function FreelancerDashboard({
                       className="flex flex-wrap items-start justify-between gap-3 py-4 first:pt-0"
                     >
                       <div className="min-w-0">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Contract</p>
+                        <p className="text-xs font-medium text-slate-500">Contract</p>
                         <Link
                           href={`/jobs/${item.contract.bid.job.id}` as Route}
-                          className="mt-1 block font-medium text-slate-900 hover:text-[#3525cd]"
+                          className="mt-1 block text-sm font-medium text-slate-900 hover:text-[#3525cd]"
                         >
                           {item.contract.bid.job.title}
                         </Link>
-                        <p className="mt-1 text-sm text-slate-600">
-                          Status: {item.contract.status.replace(/_/g, " ")}
+                        <p className="mt-1 text-xs leading-relaxed text-slate-600">
+                          {item.contract.status.replace(/_/g, " ")}
                         </p>
                       </div>
-                      <time className="shrink-0 text-xs text-slate-400" dateTime={item.at.toISOString()}>
+                      <time className="shrink-0 text-xs tabular-nums text-slate-400" dateTime={item.at.toISOString()}>
                         {formatShortDate(item.at)}
                       </time>
                     </li>
@@ -301,14 +306,11 @@ export function FreelancerDashboard({
           </div>
         </section>
 
-        <section className="lg:col-span-2" aria-label="Open jobs">
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm ring-1 ring-slate-100">
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <div>
-                <h2 className="text-lg font-semibold text-slate-900">Open jobs</h2>
-                <p className="mt-1 text-sm text-slate-500">{openTotal} role{openTotal === 1 ? "" : "s"} available</p>
-              </div>
-              <Link href={"/jobs" as Route} className="text-sm font-semibold text-[#3525cd] hover:underline">
+        <section className="lg:col-span-5" aria-label="Open jobs">
+          <div className="rounded-lg border border-slate-200 bg-white p-6 md:p-8">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              {sectionLabel("Open jobs", `${openTotal} role${openTotal === 1 ? "" : "s"} on the board`)}
+              <Link href={"/jobs" as Route} className={linkClass}>
                 See all
               </Link>
             </div>
@@ -316,22 +318,23 @@ export function FreelancerDashboard({
             {openJobs.length === 0 ? (
               <div className="mt-6">
                 <DashboardEmptyState
+                  kicker="Job board"
                   icon={Briefcase}
-                  title="No open listings"
-                  description="Check back soon or widen your search on the jobs board."
-                  action={{ label: "Browse jobs", href: "/jobs" }}
+                  title="No listings in this snapshot"
+                  description="The public board refreshes as clients post work. Open the full board to search and filter roles that fit you."
+                  action={{ label: "Open job board", href: "/jobs" }}
                 />
               </div>
             ) : (
-              <ul className="mt-6 space-y-3">
+              <ul className="mt-6 space-y-0.5">
                 {openJobs.map((job) => (
                   <li key={job.id}>
                     <Link
                       href={`/jobs/${job.id}` as Route}
-                      className="block rounded-xl border border-slate-200/90 bg-slate-50/40 p-4 transition hover:border-indigo-200 hover:bg-white hover:shadow-sm"
+                      className="-mx-2 block rounded-md px-2 py-2.5 transition hover:bg-slate-50"
                     >
-                      <p className="font-medium leading-snug text-slate-900">{job.title}</p>
-                      <p className="mt-1 text-xs text-slate-500">
+                      <p className="text-sm font-medium leading-snug text-slate-900">{job.title}</p>
+                      <p className="mt-0.5 text-xs text-slate-500">
                         {job.workMode}
                         {job.city ? ` · ${job.city}` : ""}
                       </p>
