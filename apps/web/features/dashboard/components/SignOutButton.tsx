@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { LogOut, Loader2 } from "lucide-react";
+import { signOutCurrentSession } from "@/features/auth/lib/client-auth-actions";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -18,17 +19,13 @@ export function SignOutButton({ compact = false, className }: SignOutButtonProps
     if (isPending) return;
     setError(null);
     startTransition(async () => {
-      try {
-        const res = await fetch("/api/auth/logout", { method: "POST" });
-        if (!res.ok) {
-          setError("Could not sign out");
-          return;
-        }
+      const result = await signOutCurrentSession();
+      if (!result.ok) {
+        setError("Could not sign out");
+        return;
+      }
         // Hard navigation guarantees protected UI unmounts immediately.
         window.location.assign("/");
-      } catch {
-        setError("Could not sign out");
-      }
     });
   };
 

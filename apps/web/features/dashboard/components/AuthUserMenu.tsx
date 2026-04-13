@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { ChevronDown, Loader2, LogOut, Settings, User } from "lucide-react";
+import { getSessionSnapshot, signOutCurrentSession } from "@/features/auth/lib/client-auth-actions";
 import { cn } from "@/lib/utils";
 
 type SessionDto = {
@@ -41,18 +42,9 @@ export function AuthUserMenu({ compact = false }: AuthUserMenuProps) {
   useEffect(() => {
     let active = true;
     (async () => {
-      try {
-        const res = await fetch("/api/auth/session", { method: "GET" });
-        if (!active) return;
-        if (!res.ok) {
-          setSession(null);
-          return;
-        }
-        const json = (await res.json()) as { success?: boolean; data?: SessionDto };
-        setSession(json.success && json.data ? json.data : null);
-      } catch {
-        if (active) setSession(null);
-      }
+      const snapshot = await getSessionSnapshot();
+      if (!active) return;
+      setSession(snapshot.ok && snapshot.data ? snapshot.data : null);
     })();
     return () => {
       active = false;
@@ -82,18 +74,14 @@ export function AuthUserMenu({ compact = false }: AuthUserMenuProps) {
     if (isPending) return;
     setError(null);
     startTransition(async () => {
-      try {
-        const res = await fetch("/api/auth/logout", { method: "POST" });
-        if (!res.ok) {
-          setError("Could not sign out");
-          return;
-        }
-        setOpen(false);
-        // Hard redirect prevents lingering protected-route UI after cookie clear.
-        window.location.assign("/");
-      } catch {
+      const result = await signOutCurrentSession();
+      if (!result.ok) {
         setError("Could not sign out");
+        return;
       }
+      setOpen(false);
+      // Hard redirect prevents lingering protected-route UI after cookie clear.
+      window.location.assign("/");
     });
   };
 
