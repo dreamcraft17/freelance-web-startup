@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { BrandLogo } from "@/features/shared/components/BrandLogo";
 import { DashboardNav } from "./DashboardNav";
 import { AuthUserMenu } from "./AuthUserMenu";
 import { SidebarAccountActions } from "./SidebarAccountActions";
@@ -26,7 +27,7 @@ export function DashboardShell({ navItems, children, className, topBanner }: Das
       <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 shadow-[0_1px_0_rgba(15,23,42,0.04)] backdrop-blur-md md:hidden">
         <div className="flex items-start justify-between gap-3 border-b border-slate-100/80 px-3 pb-2.5 pt-3">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#3525cd]">NearWork</p>
+            <BrandLogo imageClassName="h-5 w-auto" alt="NearWork logo" />
             <p className="mt-0.5 text-[11px] text-slate-500">Workspace</p>
           </div>
           <AuthUserMenu compact />

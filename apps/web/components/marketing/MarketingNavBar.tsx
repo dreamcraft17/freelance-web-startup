@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import { BrandLogo } from "@/features/shared/components/BrandLogo";
 
 const navLinks = [
   { href: "/jobs", label: "Find jobs" },
@@ -27,13 +28,11 @@ export function MarketingNavBar() {
     <header className="fixed top-0 z-50 w-full bg-white/80 backdrop-blur-xl">
       <nav className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:gap-4 sm:px-8">
         <div className="flex min-w-0 flex-1 items-center gap-4 md:gap-6 lg:gap-8">
-          <Link
-            href="/"
-            className="shrink-0 text-lg font-bold tracking-tight text-indigo-800 outline-none ring-offset-2 focus-visible:ring-2 focus-visible:ring-[#3525cd] sm:text-2xl"
-            onClick={() => setOpen(false)}
-          >
-            NearWork
-          </Link>
+          <BrandLogo
+            className="shrink-0"
+            imageClassName="h-7 w-auto sm:h-8"
+            alt="NearWork logo"
+          />
           <div className="hidden min-w-0 flex-wrap items-center gap-x-3 gap-y-1 md:flex md:gap-x-4 lg:gap-x-5">
             {navLinks.map(({ href, label }) => {
               const active = isActive(pathname, href);
