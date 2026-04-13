@@ -36,6 +36,8 @@ export type FreelancerSearchItem = {
   workMode: WorkMode;
   city: string | null;
   country: string | null;
+  lat: number | null;
+  lng: number | null;
   hourlyRate: number | null;
   availabilityStatus: AvailabilityStatus;
   reviewCount: number;
@@ -130,6 +132,8 @@ function mapFreelancer(
     workMode: string;
     city: string | null;
     country: string | null;
+    lat: { toString(): string } | null;
+    lng: { toString(): string } | null;
     hourlyRate: { toString(): string } | null;
     availabilityStatus: string;
     reviewCount: number | bigint;
@@ -158,6 +162,8 @@ function mapFreelancer(
     workMode: parseWorkMode(row.workMode),
     city: row.city,
     country: row.country,
+    lat: num(row.lat),
+    lng: num(row.lng),
     hourlyRate: num(row.hourlyRate),
     availabilityStatus: parseAvailabilityStatus(row.availabilityStatus),
     reviewCount: Number.isFinite(rc) ? rc : 0,
@@ -352,6 +358,8 @@ export class SearchService {
           workMode: string;
           city: string | null;
           country: string | null;
+          lat: { toString(): string } | null;
+          lng: { toString(): string } | null;
           hourlyRate: { toString(): string } | null;
           availabilityStatus: string;
           reviewCount: number | bigint;
@@ -380,6 +388,8 @@ export class SearchService {
           fp."workMode"::text AS "workMode",
           fp."city",
           fp."country",
+          fp."lat",
+          fp."lng",
           fp."hourlyRate",
           fp."availabilityStatus"::text AS "availabilityStatus",
           fp."reviewCount",

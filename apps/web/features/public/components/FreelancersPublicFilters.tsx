@@ -1,4 +1,10 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { Loader2, MapPin, Navigation, X } from "lucide-react";
+import { useBrowserLocation } from "@/features/public/hooks/useBrowserLocation";
 
 type WorkMode = "" | "REMOTE" | "ONSITE" | "HYBRID";
 
@@ -10,6 +16,9 @@ type FreelancersPublicFiltersProps = {
   workMode: WorkMode;
   categoryId: string;
   categories: FreelancersFilterCategory[];
+  lat?: number | null;
+  lng?: number | null;
+  radiusKm?: number;
 };
 
 const workModes: { value: WorkMode; label: string }[] = [
@@ -24,11 +33,104 @@ export function FreelancersPublicFilters({
   city,
   workMode,
   categoryId,
-  categories
+  categories,
+  lat = null,
+  lng = null,
+  radiusKm = 50
 }: FreelancersPublicFiltersProps) {
+  const router = useRouter();
+  const [radius, setRadius] = useState<number>(radiusKm);
+  const { state, coords, error, request, clear, setCoords, setState } = useBrowserLocation();
+
+  const activeCoords = useMemo(() => {
+    if (coords) return coords;
+    if (lat != null && lng != null && Number.isFinite(lat) && Number.isFinite(lng)) {
+      return { lat, lng };
+    }
+    return null;
+  }, [coords, lat, lng]);
+
+  const locationState = useMemo(() => {
+    if (state === "requesting") return "requesting";
+    if (state === "denied") return "denied";
+    if (activeCoords) return "granted";
+    return "idle";
+  }, [activeCoords, state]);
+
+  function buildQuery(next: {
+    keyword: string;
+    city: string;
+    workMode: WorkMode;
+    categoryId: string;
+    lat?: number | null;
+    lng?: number | null;
+    radiusKm?: number;
+  }) {
+    const q = new URLSearchParams();
+    if (next.keyword.trim()) q.set("keyword", next.keyword.trim());
+    if (next.city.trim()) q.set("city", next.city.trim());
+    if (next.workMode) q.set("workMode", next.workMode);
+    if (next.categoryId.trim()) q.set("categoryId", next.categoryId.trim());
+    if (next.lat != null && next.lng != null) {
+      q.set("lat", String(next.lat));
+      q.set("lng", String(next.lng));
+      q.set("radiusKm", String(next.radiusKm ?? radius));
+    }
+    return q.toString();
+  }
+
+  const onUseLocation = () => {
+    request();
+  };
+
+  const onClearLocation = () => {
+    clear();
+    setCoords(null);
+    setState("idle");
+    const query = buildQuery({ keyword, city, workMode, categoryId, lat: null, lng: null });
+    router.push(query ? `/freelancers?${query}` : "/freelancers");
+  };
+
+  const onApplyLocation = () => {
+    if (!activeCoords) return;
+    const query = buildQuery({
+      keyword,
+      city,
+      workMode,
+      categoryId,
+      lat: activeCoords.lat,
+      lng: activeCoords.lng,
+      radiusKm: radius
+    });
+    router.push(`/freelancers?${query}`);
+  };
+
+  useEffect(() => {
+    if (!coords || state !== "granted") return;
+    const query = buildQuery({
+      keyword,
+      city,
+      workMode,
+      categoryId,
+      lat: coords.lat,
+      lng: coords.lng,
+      radiusKm: radius
+    });
+    router.push(`/freelancers?${query}`);
+    // only react when browser-granted coordinates arrive
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [coords]);
+
   return (
     <div className="mb-10 rounded-2xl bg-white/90 p-4 shadow-[0_2px_20px_-4px_rgba(53,37,205,0.08)] ring-1 ring-slate-200/60 sm:p-5">
       <form method="get" action="/freelancers" className="flex flex-col gap-4 xl:flex-row xl:flex-wrap xl:items-end">
+        {activeCoords ? (
+          <>
+            <input type="hidden" name="lat" value={String(activeCoords.lat)} />
+            <input type="hidden" name="lng" value={String(activeCoords.lng)} />
+            <input type="hidden" name="radiusKm" value={String(radius)} />
+          </>
+        ) : null}
         <div className="min-w-0 flex-1 xl:max-w-[220px]">
           <label htmlFor="fl-kw" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
             Keyword
@@ -116,6 +218,71 @@ export function FreelancersPublicFilters({
           </Link>
         </div>
       </form>
+
+      <div className="mt-4 rounded-xl border border-slate-200/80 bg-slate-50/70 p-3.5">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex min-w-0 items-center gap-2">
+            <Navigation className="h-4 w-4 shrink-0 text-[#3525cd]" aria-hidden />
+            <p className="text-sm font-medium text-slate-800">Find nearby talent</p>
+            {locationState === "granted" ? (
+              <span className="inline-flex items-center rounded-full bg-[#3525cd]/10 px-2 py-0.5 text-[11px] font-semibold text-[#3525cd] ring-1 ring-[#3525cd]/15">
+                Nearby active
+              </span>
+            ) : null}
+          </div>
+          <button
+            type="button"
+            onClick={onUseLocation}
+            disabled={locationState === "requesting"}
+            className="inline-flex items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-70"
+          >
+            {locationState === "requesting" ? <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden /> : <MapPin className="h-3.5 w-3.5" aria-hidden />}
+            {locationState === "requesting" ? "Requesting..." : "Use my location"}
+          </button>
+        </div>
+
+        {locationState === "granted" && activeCoords ? (
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <label className="text-xs font-medium text-slate-600" htmlFor="nearby-radius">
+              Radius
+            </label>
+            <select
+              id="nearby-radius"
+              value={String(radius)}
+              onChange={(e) => setRadius(Number(e.target.value))}
+              className="rounded-md border border-slate-200 bg-white px-2 py-1 text-xs text-slate-700"
+            >
+              {[10, 25, 50, 75, 100, 150].map((r) => (
+                <option key={r} value={r}>
+                  {r} km
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              onClick={onApplyLocation}
+              className="rounded-md bg-[#3525cd] px-2.5 py-1.5 text-xs font-semibold text-white transition hover:bg-[#4f46e5]"
+            >
+              Apply nearby
+            </button>
+            <button
+              type="button"
+              onClick={onClearLocation}
+              className="inline-flex items-center gap-1 rounded-md px-2 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100"
+            >
+              <X className="h-3.5 w-3.5" aria-hidden />
+              Clear location
+            </button>
+          </div>
+        ) : null}
+
+        {locationState === "idle" ? (
+          <p className="mt-2 text-xs text-slate-500">
+            Optional: allow browser location to prioritize freelancers close to you. City search remains available.
+          </p>
+        ) : null}
+        {locationState === "denied" && error ? <p className="mt-2 text-xs text-amber-700">{error}</p> : null}
+      </div>
     </div>
   );
 }

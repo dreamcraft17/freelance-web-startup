@@ -5,6 +5,7 @@ import { FreelancersBrowseList, type PublicFreelancerCard } from "@/features/pub
 import { FreelancersPublicEmpty } from "@/features/public/components/FreelancersPublicEmpty";
 import { FreelancersPublicFilters } from "@/features/public/components/FreelancersPublicFilters";
 import { CategoryService } from "@/server/services/category.service";
+import { GeoService } from "@/server/services/geo.service";
 import type { FreelancerSearchItem } from "@/server/services/search.service";
 import { SearchService } from "@/server/services/search.service";
 
@@ -38,6 +39,11 @@ function toPublicCard(f: FreelancerSearchItem): PublicFreelancerCard {
   };
 }
 
+function clampRadius(n: number): number {
+  if (!Number.isFinite(n)) return 50;
+  return Math.min(150, Math.max(10, Math.round(n)));
+}
+
 function freelancersQueryString(args: {
   keyword: string;
   city: string;
@@ -67,6 +73,10 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
     skillId: raw.skillId
   });
   const query = parsed.success ? parsed.data : { page: 1, limit: 24 as const };
+  const rawLat = Number(raw.lat ?? "");
+  const rawLng = Number(raw.lng ?? "");
+  const hasGeoCenter = Number.isFinite(rawLat) && Number.isFinite(rawLng);
+  const radiusKm = clampRadius(Number(raw.radiusKm ?? 50));
 
   let categories: { id: string; name: string }[] = [];
   try {
@@ -79,15 +89,31 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
   }
 
   const search = new SearchService();
-  const { items, total } = await search.searchFreelancers(query);
-  const freelancers = items.map(toPublicCard);
+  const geoQuery = hasGeoCenter ? { ...query, page: 1 as const, limit: 120 as const } : query;
+  const { items, total } = await search.searchFreelancers(geoQuery);
+
+  const geo = new GeoService();
+  const geoItems = hasGeoCenter
+    ? items
+        .map((f) => ({
+          row: f,
+          distanceKm:
+            f.lat != null && f.lng != null ? geo.haversineKm(rawLat, rawLng, f.lat, f.lng) : Number.POSITIVE_INFINITY
+        }))
+        .filter((x) => x.distanceKm <= radiusKm)
+        .sort((a, b) => a.distanceKm - b.distanceKm)
+        .slice(0, 24)
+        .map((x) => x.row)
+    : items;
+  const freelancers = geoItems.map(toPublicCard);
 
   const keyword = query.keyword ?? "";
   const city = query.city ?? "";
   const workMode = (query.workMode ?? "") as "" | "REMOTE" | "ONSITE" | "HYBRID";
   const categoryId = query.categoryId ?? "";
   const page = query.page;
-  const totalPages = Math.max(1, Math.ceil(total / query.limit));
+  const nearbyTotal = hasGeoCenter ? geoItems.length : total;
+  const totalPages = hasGeoCenter ? 1 : Math.max(1, Math.ceil(total / query.limit));
 
   const hasFilters =
     Boolean(keyword.trim()) ||
@@ -114,9 +140,17 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
         workMode={workMode}
         categoryId={categoryId}
         categories={categories}
+        lat={hasGeoCenter ? rawLat : null}
+        lng={hasGeoCenter ? rawLng : null}
+        radiusKm={radiusKm}
       />
 
-      {city.trim() ? (
+      {hasGeoCenter ? (
+        <p className="mb-6 rounded-xl bg-emerald-50/80 px-4 py-3 text-sm leading-relaxed text-emerald-900 ring-1 ring-emerald-100">
+          Showing freelancers near you within <span className="font-semibold">{radiusKm} km</span>. You can still refine
+          by city and work mode.
+        </p>
+      ) : city.trim() ? (
         <p className="mb-6 rounded-xl bg-indigo-50/80 px-4 py-3 text-sm leading-relaxed text-slate-700 ring-1 ring-indigo-100">
           Showing freelancers whose listed city matches{" "}
           <span className="font-semibold text-slate-900">&ldquo;{city.trim()}&rdquo;</span>—pair with work mode to
@@ -124,9 +158,9 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
         </p>
       ) : null}
 
-      {total > 0 ? (
+      {nearbyTotal > 0 ? (
         <p className="mb-6 text-sm text-slate-600">
-          {total === 1 ? "One profile matches your search." : `${total} profiles match your search.`}
+          {nearbyTotal === 1 ? "One profile matches your search." : `${nearbyTotal} profiles match your search.`}
         </p>
       ) : null}
 
@@ -136,7 +170,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
         <FreelancersBrowseList freelancers={freelancers} activeCityFilter={city.trim() || undefined} />
       )}
 
-      {totalPages > 1 ? (
+      {!hasGeoCenter && totalPages > 1 ? (
         <nav
           className="mt-10 flex items-center justify-between border-t border-slate-200/80 pt-6 text-sm"
           aria-label="Pagination"
