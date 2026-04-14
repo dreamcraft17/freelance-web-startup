@@ -12,7 +12,6 @@ import {
   primaryActionForRole,
   secondaryActionForRole
 } from "@/features/public/lib/auth-nav";
-import { BrandLogo } from "@/features/shared/components/BrandLogo";
 
 const navLinks = [
   { href: "/jobs", label: "Find jobs" },
@@ -38,11 +37,18 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
   const secondary = authSession ? secondaryActionForRole(authSession.role) : null;
 
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-slate-200/90 bg-white/95 shadow-[0_1px_0_rgba(15,23,42,0.04)] backdrop-blur-xl">
-      <nav className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 sm:px-6 lg:px-8">
-        <div className="flex min-w-0 shrink-0 items-center gap-3 pr-2">
-          <BrandLogo className="shrink-0" imageClassName="h-14 w-[220px] object-contain object-left sm:w-[250px]" alt="NearWork logo" />
-        </div>
+    <header className="fixed top-0 z-50 w-full border-b border-black/[0.05] bg-white/95 shadow-sm backdrop-blur-xl">
+      <nav className="mx-auto flex max-w-7xl items-center gap-4 px-7 py-3 sm:px-10 lg:px-12">
+        <Link href={"/" as Route} className="flex min-w-0 shrink-0 items-center gap-3.5 pr-3">
+          <span className="relative inline-flex h-14 w-14 overflow-hidden rounded-xl border border-[#433C93]/15 bg-white shadow-[0_4px_18px_-10px_rgba(67,60,147,0.45)]">
+            <img
+              src="/logo/logo.svg"
+              alt="NearWork"
+              className="h-full w-[236px] max-w-none object-cover object-left"
+            />
+          </span>
+          <span className="text-[1.55rem] font-bold leading-none tracking-[0.01em] text-[#231E59]">NearWork</span>
+        </Link>
 
         <div className="hidden min-w-0 flex-1 items-center justify-center md:flex">
           <div className="flex min-w-0 items-center gap-6 lg:gap-7">
@@ -54,8 +60,8 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
                   href={href}
                   className={
                     active
-                      ? "whitespace-nowrap border-b-2 border-[#433C93] py-1 text-sm font-semibold text-[#433C93]"
-                      : "whitespace-nowrap border-b-2 border-transparent py-1 text-sm font-medium text-slate-600 transition-all duration-200 hover:border-slate-300 hover:text-slate-900 hover:opacity-90"
+                      ? "whitespace-nowrap border-b-2 border-[#433C93]/45 py-1 text-sm font-medium text-slate-700"
+                      : "whitespace-nowrap border-b-2 border-transparent py-1 text-sm font-medium text-slate-600/90 transition-all duration-200 hover:border-[#433C93]/35 hover:text-[#433C93]"
                   }
                 >
                   {label}
@@ -104,7 +110,7 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
             </Link>
             <Link
               href="/early-access"
-              className="rounded-md bg-[#433C93] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#4d45a5]"
+              className="rounded-md bg-[#3A3288] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_20px_-12px_rgba(58,50,136,0.9)] transition-all duration-200 hover:scale-[1.02] hover:brightness-110"
             >
               Early access
             </Link>
@@ -191,7 +197,7 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
                 </Link>
                 <Link
                   href="/early-access"
-                  className="mt-1 rounded-lg bg-[#433C93] px-3 py-2.5 text-center text-sm font-semibold text-white hover:bg-[#4d45a5]"
+                  className="mt-1 rounded-lg bg-[#3A3288] px-4 py-2.5 text-center text-sm font-semibold text-white shadow-[0_8px_20px_-12px_rgba(58,50,136,0.9)] transition-all duration-200 hover:scale-[1.01] hover:brightness-110"
                   onClick={() => setOpen(false)}
                 >
                   Early access
