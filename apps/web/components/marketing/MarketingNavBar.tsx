@@ -1,9 +1,17 @@
 "use client";
 
+import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import type { SessionPayload } from "@src/lib/session";
+import { AuthUserMenu } from "@/features/dashboard/components/AuthUserMenu";
+import {
+  type PublicSessionLite,
+  primaryActionForRole,
+  secondaryActionForRole
+} from "@/features/public/lib/auth-nav";
 import { BrandLogo } from "@/features/shared/components/BrandLogo";
 
 const navLinks = [
@@ -20,9 +28,14 @@ function isActive(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function MarketingNavBar() {
+export function MarketingNavBar({ session }: { session: SessionPayload | null }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const authSession: PublicSessionLite | null = session
+    ? { userId: session.userId, role: session.role, accountStatus: session.accountStatus }
+    : null;
+  const primary = authSession ? primaryActionForRole(authSession.role) : null;
+  const secondary = authSession ? secondaryActionForRole(authSession.role) : null;
 
   return (
     <header className="fixed top-0 z-50 w-full bg-white/80 backdrop-blur-xl">
@@ -53,23 +66,40 @@ export function MarketingNavBar() {
           </div>
         </div>
 
-        <div className="hidden shrink-0 items-center gap-2 sm:gap-3 md:flex">
-          <Link href="/login" className="text-sm font-medium text-slate-600 hover:text-indigo-600">
-            Log in
-          </Link>
-          <Link
-            href="/register"
-            className="hidden text-sm font-medium text-slate-600 hover:text-indigo-600 sm:inline"
-          >
-            Register
-          </Link>
-          <Link
-            href="/early-access"
-            className="rounded-lg bg-[#3525cd] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4f46e5] active:scale-[0.98] sm:px-6"
-          >
-            Early access
-          </Link>
-        </div>
+        {authSession && primary ? (
+          <div className="hidden shrink-0 items-center gap-2 sm:gap-3 md:flex">
+            {secondary ? (
+              <Link href={secondary.href as Route} className="text-sm font-medium text-slate-600 hover:text-indigo-600">
+                {secondary.label}
+              </Link>
+            ) : null}
+            <Link
+              href={primary.href as Route}
+              className="rounded-lg bg-[#3525cd] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#4f46e5] active:scale-[0.98]"
+            >
+              {primary.label}
+            </Link>
+            <AuthUserMenu compact />
+          </div>
+        ) : (
+          <div className="hidden shrink-0 items-center gap-2 sm:gap-3 md:flex">
+            <Link href="/login" className="text-sm font-medium text-slate-600 hover:text-indigo-600">
+              Log in
+            </Link>
+            <Link
+              href="/register"
+              className="hidden text-sm font-medium text-slate-600 hover:text-indigo-600 sm:inline"
+            >
+              Register
+            </Link>
+            <Link
+              href="/early-access"
+              className="rounded-lg bg-[#3525cd] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4f46e5] active:scale-[0.98] sm:px-6"
+            >
+              Early access
+            </Link>
+          </div>
+        )}
 
         <button
           type="button"
@@ -100,27 +130,50 @@ export function MarketingNavBar() {
               </Link>
             ))}
             <hr className="my-2 border-slate-100" />
-            <Link
-              href="/login"
-              className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
-              onClick={() => setOpen(false)}
-            >
-              Log in
-            </Link>
-            <Link
-              href="/register"
-              className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
-              onClick={() => setOpen(false)}
-            >
-              Register
-            </Link>
-            <Link
-              href="/early-access"
-              className="mt-1 rounded-lg bg-[#3525cd] px-3 py-2.5 text-center text-sm font-semibold text-white hover:bg-[#4f46e5]"
-              onClick={() => setOpen(false)}
-            >
-              Early access
-            </Link>
+            {authSession && primary ? (
+              <>
+                {secondary ? (
+                  <Link
+                    href={secondary.href as Route}
+                    className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                    onClick={() => setOpen(false)}
+                  >
+                    {secondary.label}
+                  </Link>
+                ) : null}
+                <Link
+                  href={primary.href as Route}
+                  className="rounded-lg bg-[#3525cd] px-3 py-2.5 text-center text-sm font-semibold text-white hover:bg-[#4f46e5]"
+                  onClick={() => setOpen(false)}
+                >
+                  {primary.label}
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                  onClick={() => setOpen(false)}
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/register"
+                  className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                  onClick={() => setOpen(false)}
+                >
+                  Register
+                </Link>
+                <Link
+                  href="/early-access"
+                  className="mt-1 rounded-lg bg-[#3525cd] px-3 py-2.5 text-center text-sm font-semibold text-white hover:bg-[#4f46e5]"
+                  onClick={() => setOpen(false)}
+                >
+                  Early access
+                </Link>
+              </>
+            )}
           </div>
         </div>
       ) : null}
