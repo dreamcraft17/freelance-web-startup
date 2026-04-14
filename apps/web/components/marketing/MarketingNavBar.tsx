@@ -41,7 +41,7 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
     <header className="fixed top-0 z-50 w-full border-b border-slate-200/90 bg-white/95 shadow-[0_1px_0_rgba(15,23,42,0.04)] backdrop-blur-xl">
       <nav className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <div className="flex min-w-0 shrink-0 items-center gap-3 pr-2">
-          <BrandLogo className="shrink-0" imageClassName="h-11 w-auto" alt="NearWork logo" />
+          <BrandLogo className="shrink-0" imageClassName="h-14 w-[220px] object-contain object-left sm:w-[250px]" alt="NearWork logo" />
         </div>
 
         <div className="hidden min-w-0 flex-1 items-center justify-center md:flex">
@@ -54,7 +54,7 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
                   href={href}
                   className={
                     active
-                      ? "whitespace-nowrap border-b-2 border-[#3525cd] py-1 text-sm font-semibold text-[#2d1fa8]"
+                      ? "whitespace-nowrap border-b-2 border-[#433C93] py-1 text-sm font-semibold text-[#433C93]"
                       : "whitespace-nowrap border-b-2 border-transparent py-1 text-sm font-medium text-slate-600 transition-all duration-200 hover:border-slate-300 hover:text-slate-900 hover:opacity-90"
                   }
                 >
@@ -88,7 +88,7 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
             </Link>
             <Link
               href={primary.href as Route}
-              className="rounded-md bg-[#3525cd] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#4f46e5]"
+              className="rounded-md bg-[#433C93] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#4d45a5]"
             >
               {primary.label}
             </Link>
@@ -104,7 +104,7 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
             </Link>
             <Link
               href="/early-access"
-              className="rounded-md bg-[#3525cd] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#4f46e5]"
+              className="rounded-md bg-[#433C93] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#4d45a5]"
             >
               Early access
             </Link>
@@ -167,7 +167,7 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
                 </Link>
                 <Link
                   href={primary.href as Route}
-                  className="rounded-lg bg-[#3525cd] px-3 py-2.5 text-center text-sm font-semibold text-white hover:bg-[#4f46e5]"
+                  className="rounded-lg bg-[#433C93] px-3 py-2.5 text-center text-sm font-semibold text-white hover:bg-[#4d45a5]"
                   onClick={() => setOpen(false)}
                 >
                   {primary.label}
@@ -191,7 +191,7 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
                 </Link>
                 <Link
                   href="/early-access"
-                  className="mt-1 rounded-lg bg-[#3525cd] px-3 py-2.5 text-center text-sm font-semibold text-white hover:bg-[#4f46e5]"
+                  className="mt-1 rounded-lg bg-[#433C93] px-3 py-2.5 text-center text-sm font-semibold text-white hover:bg-[#4d45a5]"
                   onClick={() => setOpen(false)}
                 >
                   Early access
