@@ -9,7 +9,8 @@ export type ProtectResult = { ok: true; actor: AuthActor } | { ok: false; respon
 const STAFF_ROLES: UserRole[] = [
   UserRole.ADMIN,
   UserRole.MODERATOR,
-  UserRole.SUPPORT_ADMIN
+  UserRole.SUPPORT_ADMIN,
+  UserRole.FINANCE_ADMIN
 ];
 
 /** Resolves the actor from the signed session cookie only (same source as middleware). */
