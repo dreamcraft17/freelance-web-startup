@@ -1,5 +1,5 @@
 import { db } from "@acme/database";
-import { AdminPageIntro, AdminPanel } from "@/features/admin/components/AdminUi";
+import { AdminPageIntro, AdminPanel, AdminEmptyState } from "@/features/admin/components/AdminUi";
 import { requireStaffSession } from "@/features/admin/lib/server-auth";
 
 export default async function AdminSubscriptionsPage() {
@@ -10,10 +10,9 @@ export default async function AdminSubscriptionsPage() {
     select: {
       id: true,
       status: true,
-      billingCycle: true,
       currentPeriodEnd: true,
       user: { select: { email: true } },
-      plan: { select: { name: true, code: true } }
+      plan: { select: { name: true, code: true, billingCycle: true } }
     }
   });
 
@@ -24,8 +23,11 @@ export default async function AdminSubscriptionsPage() {
         description="Plan adoption and subscription lifecycle monitoring for monetization operations."
       />
       <AdminPanel title={`Recent subscriptions (${subscriptions.length})`}>
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-sm">
+        {subscriptions.length === 0 ? (
+          <AdminEmptyState title="No subscriptions found" copy="Plan subscription data will appear once billing is active." />
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
             <thead className="text-left text-xs uppercase tracking-wide text-slate-500">
               <tr>
                 <th className="px-2 py-2">User</th>
@@ -42,14 +44,15 @@ export default async function AdminSubscriptionsPage() {
                   <td className="px-2 py-2">
                     {s.plan.name} ({s.plan.code})
                   </td>
-                  <td className="px-2 py-2">{s.billingCycle}</td>
+                  <td className="px-2 py-2">{s.plan.billingCycle}</td>
                   <td className="px-2 py-2">{s.status}</td>
                   <td className="px-2 py-2">{s.currentPeriodEnd.toLocaleDateString()}</td>
                 </tr>
               ))}
             </tbody>
-          </table>
-        </div>
+            </table>
+          </div>
+        )}
       </AdminPanel>
     </div>
   );

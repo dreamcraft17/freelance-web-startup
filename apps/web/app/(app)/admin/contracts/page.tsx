@@ -1,5 +1,5 @@
 import { db } from "@acme/database";
-import { AdminPageIntro, AdminPanel } from "@/features/admin/components/AdminUi";
+import { AdminPageIntro, AdminPanel, AdminEmptyState } from "@/features/admin/components/AdminUi";
 import { requireStaffSession } from "@/features/admin/lib/server-auth";
 
 export default async function AdminContractsPage() {
@@ -23,8 +23,11 @@ export default async function AdminContractsPage() {
     <div className="space-y-5">
       <AdminPageIntro title="Contracts" description="Monitor active and completed contracts across the marketplace." />
       <AdminPanel title={`Latest contracts (${contracts.length})`}>
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-sm">
+        {contracts.length === 0 ? (
+          <AdminEmptyState title="No contracts yet" copy="Contracts will appear here once bids are accepted." />
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
             <thead className="text-left text-xs uppercase tracking-wide text-slate-500">
               <tr>
                 <th className="px-2 py-2">Contract</th>
@@ -49,8 +52,9 @@ export default async function AdminContractsPage() {
                 </tr>
               ))}
             </tbody>
-          </table>
-        </div>
+            </table>
+          </div>
+        )}
       </AdminPanel>
     </div>
   );

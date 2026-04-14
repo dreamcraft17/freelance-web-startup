@@ -1,5 +1,5 @@
 import { db } from "@acme/database";
-import { AdminPageIntro, AdminPanel } from "@/features/admin/components/AdminUi";
+import { AdminPageIntro, AdminPanel, AdminEmptyState } from "@/features/admin/components/AdminUi";
 import { requireStaffSession } from "@/features/admin/lib/server-auth";
 
 export default async function AdminDonationsPage() {
@@ -22,8 +22,11 @@ export default async function AdminDonationsPage() {
     <div className="space-y-5">
       <AdminPageIntro title="Donations" description="Finance visibility for support donations and records." />
       <AdminPanel title={`Recent donations (${donations.length})`}>
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-sm">
+        {donations.length === 0 ? (
+          <AdminEmptyState title="No donations yet" copy="Donation records will appear once support payments are received." />
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
             <thead className="text-left text-xs uppercase tracking-wide text-slate-500">
               <tr>
                 <th className="px-2 py-2">Donor</th>
@@ -46,8 +49,9 @@ export default async function AdminDonationsPage() {
                 </tr>
               ))}
             </tbody>
-          </table>
-        </div>
+            </table>
+          </div>
+        )}
       </AdminPanel>
     </div>
   );

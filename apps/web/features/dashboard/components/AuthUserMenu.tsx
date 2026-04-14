@@ -21,7 +21,7 @@ function initialsFromSession(session: SessionDto | null): string {
   return session.userId.slice(0, 2).toUpperCase();
 }
 
-function profileHrefForRole(role: SessionDto["role"] | null): Route {
+function profileHrefForRole(role: SessionDto["role"] | null): string {
   if (role === "FREELANCER") return "/freelancer/profile";
   if (role === "CLIENT") return "/client";
   if (role === "ADMIN" || role === "SUPPORT_ADMIN" || role === "MODERATOR" || role === "FINANCE_ADMIN") {
@@ -30,7 +30,7 @@ function profileHrefForRole(role: SessionDto["role"] | null): Route {
   return "/settings";
 }
 
-function settingsHrefForRole(role: SessionDto["role"] | null): Route {
+function settingsHrefForRole(role: SessionDto["role"] | null): string {
   if (role === "ADMIN" || role === "SUPPORT_ADMIN" || role === "MODERATOR" || role === "FINANCE_ADMIN") {
     return "/admin/settings";
   }
@@ -123,14 +123,14 @@ export function AuthUserMenu({ compact = false }: AuthUserMenuProps) {
           </div>
           <div className="p-1">
             <Link
-              href={profileHref}
+              href={profileHref as Route}
               className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-slate-700 transition hover:bg-slate-50 hover:text-slate-900"
             >
               <User className="h-4 w-4 text-slate-400" aria-hidden />
               Profile
             </Link>
             <Link
-              href={settingsHref}
+              href={settingsHref as Route}
               className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-slate-700 transition hover:bg-slate-50 hover:text-slate-900"
             >
               <Settings className="h-4 w-4 text-slate-400" aria-hidden />
