@@ -1,28 +1,41 @@
-import { AdminPageIntro, AdminPanel } from "@/features/admin/components/AdminUi";
-import { requireStaffSession } from "@/features/admin/lib/server-auth";
+import { db } from "@acme/database";
+import { AdminPageIntro } from "@/features/admin/components/AdminUi";
+import {
+  AdminAccountCard,
+  EnvironmentInfoCard,
+  InternalPreferencesCard
+} from "@/features/admin/components/settings/AdminSettingsSections";
+import { requireAdminAccess } from "@/features/admin/lib/server-auth";
 
 export default async function AdminSettingsPage() {
-  await requireStaffSession("settings");
+  const session = await requireAdminAccess("settings");
+
+  const user = await db.user.findFirst({
+    where: { id: session.userId, deletedAt: null },
+    select: { email: true }
+  });
+
+  const nodeEnv = process.env.NODE_ENV ?? "development";
+  const vercelEnv = process.env.VERCEL_ENV?.trim() || null;
 
   return (
-    <div className="space-y-5">
+    <div className="mx-auto max-w-3xl space-y-6">
       <AdminPageIntro
         title="Admin settings"
-        description="Internal workspace settings and policy controls placeholder."
+        description="Lightweight internal workspace preferences and context. No destructive controls on this page."
+        badge="Internal"
       />
-      <AdminPanel title="Environment and policy">
-        <div className="grid gap-3 md:grid-cols-2">
-          <div className="rounded-lg border border-slate-100 p-3 text-sm text-slate-600">
-            <p className="font-semibold text-slate-800">Access policy</p>
-            <p className="mt-1">Staff access is role-scoped across admin sections for support, moderation, and finance.</p>
-          </div>
-          <div className="rounded-lg border border-slate-100 p-3 text-sm text-slate-600">
-            <p className="font-semibold text-slate-800">Audit readiness</p>
-            <p className="mt-1">Use this page as a home for internal ops toggles, escalation contacts, and runbooks.</p>
-          </div>
-        </div>
-      </AdminPanel>
+
+      <AdminAccountCard
+        userId={session.userId}
+        email={user?.email ?? null}
+        role={session.role}
+        accountStatus={session.accountStatus}
+      />
+
+      <InternalPreferencesCard />
+
+      <EnvironmentInfoCard nodeEnv={nodeEnv} vercelEnv={vercelEnv} />
     </div>
   );
 }
-

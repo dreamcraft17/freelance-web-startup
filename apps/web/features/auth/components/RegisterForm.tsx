@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useId, useMemo, useState } from "react";
 import { Briefcase, Eye, EyeOff, UserRound } from "lucide-react";
 import type { UserRole } from "@acme/types";
-import { homePathForSessionRole, sanitizeReturnUrl } from "@src/lib/return-url";
+import { resolvePostLoginRedirect, sanitizeReturnUrl } from "@src/lib/return-url";
 import { parseAuthIntent, registerIntentMessage, roleHintFromIntent, type AuthIntent } from "@/features/auth/lib/auth-intent";
 import { readApiBody } from "@/features/auth/lib/read-api-body";
 
@@ -113,10 +113,8 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
           return;
         }
 
-        const fallback = homePathForSessionRole(body.data.session.role);
         const rawNext = searchParams.get("next");
-        const target = sanitizeReturnUrl(rawNext, fallback);
-        window.location.assign(target);
+        window.location.assign(resolvePostLoginRedirect(body.data.session.role, rawNext));
       } catch (err) {
         const msg = err instanceof Error && err.message ? err.message : "Request failed";
         setError(

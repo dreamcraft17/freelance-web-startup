@@ -79,7 +79,7 @@ export async function getSessionFromRequest(request: Request | NextRequest): Pro
   return verifySessionToken(token);
 }
 
-export { sanitizeReturnUrl, homePathForSessionRole } from "./return-url";
+export { sanitizeReturnUrl, homePathForSessionRole, resolvePostLoginRedirect } from "./return-url";
 
 export function sessionCookieMaxAgeSec(): number {
   return SESSION_MAX_AGE_SEC;

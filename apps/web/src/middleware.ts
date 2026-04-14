@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { AccountStatus } from "@acme/types";
+import { canAccessAdminPage, isStaffRole } from "@/features/admin/lib/access";
 import {
   getSessionFromRequest,
   homePathForSessionRole,
+  resolvePostLoginRedirect,
   sanitizeReturnUrl
 } from "@src/lib/session";
 
@@ -56,8 +59,7 @@ export default async function middleware(request: NextRequest) {
     if ((authPath === "/login" || authPath === "/register") && session) {
       const rawReturn =
         request.nextUrl.searchParams.get("returnUrl") ?? request.nextUrl.searchParams.get("next");
-      const fallback = homePathForSessionRole(session.role);
-      const target = sanitizeReturnUrl(rawReturn, fallback);
+      const target = resolvePostLoginRedirect(session.role, rawReturn);
       return NextResponse.redirect(new URL(target, request.url));
     }
     return NextResponse.next();
@@ -76,6 +78,23 @@ export default async function middleware(request: NextRequest) {
       url.searchParams.set("intent", "protected");
       return NextResponse.redirect(url);
     }
+
+    const adminPath = pathname.toLowerCase();
+    if (adminPath === "/admin" || adminPath.startsWith("/admin/")) {
+      // Align with protectStaff(): ACTIVE session required for staff-gated surfaces.
+      if (session.accountStatus !== AccountStatus.ACTIVE) {
+        return NextResponse.redirect(new URL("/forbidden", request.url));
+      }
+      if (!isStaffRole(session.role)) {
+        // Logged-in marketplace user: send them to their workspace instead of a dead-end forbidden page.
+        const dest = homePathForSessionRole(session.role);
+        return NextResponse.redirect(new URL(dest, request.url));
+      }
+      if (!canAccessAdminPage(session.role, pathname)) {
+        return NextResponse.redirect(new URL("/forbidden", request.url));
+      }
+    }
+
     return NextResponse.next();
   }
 
@@ -88,6 +107,7 @@ export const config = {
     "/login/:path*",
     "/register/:path*",
     "/forgot-password/:path*",
+    "/admin",
     "/admin/:path*",
     "/client/:path*",
     "/freelancer/:path*",
