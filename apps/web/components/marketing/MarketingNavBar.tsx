@@ -42,7 +42,6 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
       <nav className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <div className="flex min-w-0 shrink-0 items-center gap-3 pr-2">
           <BrandLogo className="shrink-0" imageClassName="h-11 w-auto" alt="NearWork logo" />
-          <span className="hidden text-xl font-extrabold tracking-tight text-slate-900 sm:inline">NearWork</span>
         </div>
 
         <div className="hidden min-w-0 flex-1 items-center justify-center md:flex">
