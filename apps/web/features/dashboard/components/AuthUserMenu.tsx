@@ -115,7 +115,7 @@ export function AuthUserMenu({ compact = false, variant = "default" }: AuthUserM
         aria-haspopup="menu"
         aria-expanded={open}
       >
-        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#3525cd]/12 text-[11px] font-bold text-[#3525cd] ring-1 ring-[#3525cd]/15">
+        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#B7B0FF]/30 text-[11px] font-bold text-[#433C93] ring-1 ring-[#B7B0FF]/45">
           {initials}
         </span>
         {!compact ? <span className="hidden sm:inline">{roleLabel}</span> : null}
