@@ -39,9 +39,11 @@ function settingsHrefForRole(role: SessionDto["role"] | null): string {
 
 type AuthUserMenuProps = {
   compact?: boolean;
+  /** Internal admin toolbar: flatter chrome, lighter shadows */
+  variant?: "default" | "admin";
 };
 
-export function AuthUserMenu({ compact = false }: AuthUserMenuProps) {
+export function AuthUserMenu({ compact = false, variant = "default" }: AuthUserMenuProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -96,13 +98,18 @@ export function AuthUserMenu({ compact = false }: AuthUserMenuProps) {
     });
   };
 
+  const adminChrome = variant === "admin";
+
   return (
     <div ref={rootRef} className="relative">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          "inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white/95 text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-white hover:text-slate-900",
+          "inline-flex items-center gap-2 rounded-lg border text-slate-700 transition hover:text-slate-900",
+          adminChrome
+            ? "border-slate-200/90 bg-white shadow-none hover:border-slate-300 hover:bg-slate-50"
+            : "border-slate-200 bg-white/95 shadow-sm hover:border-slate-300 hover:bg-white",
           compact ? "h-8 px-2.5 text-xs font-semibold" : "h-9 px-3 text-sm font-medium"
         )}
         aria-haspopup="menu"
@@ -116,7 +123,14 @@ export function AuthUserMenu({ compact = false }: AuthUserMenuProps) {
       </button>
 
       {open ? (
-        <div className="absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white p-1 shadow-lg shadow-slate-900/[0.12] ring-1 ring-slate-900/[0.03]">
+        <div
+          className={cn(
+            "absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white p-1",
+            adminChrome
+              ? "shadow-md shadow-slate-900/[0.06]"
+              : "shadow-lg shadow-slate-900/[0.12] ring-1 ring-slate-900/[0.03]"
+          )}
+        >
           <div className="border-b border-slate-100 px-3 pb-2 pt-2">
             <p className="text-xs font-semibold text-slate-800">{roleLabel} account</p>
             <p className="text-[11px] text-slate-500">Manage workspace and preferences</p>

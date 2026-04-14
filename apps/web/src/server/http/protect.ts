@@ -1,17 +1,14 @@
 import { NextResponse } from "next/server";
 import { AccountStatus, UserRole } from "@acme/types";
 import type { AuthActor } from "@/server/domain/auth-actor";
+import { STAFF_ROLES } from "@/features/admin/lib/access";
 import { jsonFail } from "@/server/http/api-response";
 import { resolveActorFromRequest } from "@src/lib/auth";
 
 export type ProtectResult = { ok: true; actor: AuthActor } | { ok: false; response: NextResponse };
 
-const STAFF_ROLES: UserRole[] = [
-  UserRole.ADMIN,
-  UserRole.MODERATOR,
-  UserRole.SUPPORT_ADMIN,
-  UserRole.FINANCE_ADMIN
-];
+/** Same allow-list as /admin middleware + RBAC nav (order-independent). */
+const STAFF_ROLES_API: UserRole[] = [...STAFF_ROLES];
 
 /** Resolves the actor from the signed session cookie only (same source as middleware). */
 export async function requireAuth(request: Request): Promise<ProtectResult> {
@@ -106,7 +103,7 @@ export async function protectStaff(request: Request): Promise<ProtectResult> {
   if (!base.ok) return base;
   const active = requireActiveAccount(base.actor);
   if (!active.ok) return active;
-  return requireRoles(base.actor, STAFF_ROLES);
+  return requireRoles(base.actor, STAFF_ROLES_API);
 }
 
 /** Authenticated user with an ACTIVE account (any role). */

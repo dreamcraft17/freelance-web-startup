@@ -5,7 +5,8 @@ import {
   verifySessionToken,
   SESSION_COOKIE_NAME,
   sanitizeReturnUrl,
-  homePathForSessionRole
+  homePathForSessionRole,
+  resolvePostLoginRedirect
 } from "@src/lib/session";
 import type { SessionPayload } from "@src/lib/session";
 import { requireActiveAccount, requireAuth, requireRole } from "@src/server/policies/access.policy";
@@ -13,7 +14,15 @@ import type { UserRole } from "@acme/types";
 
 export type { SessionPayload };
 
-export { getSessionFromRequest, requireAuth, requireRole, requireActiveAccount, sanitizeReturnUrl, homePathForSessionRole };
+export {
+  getSessionFromRequest,
+  requireAuth,
+  requireRole,
+  requireActiveAccount,
+  sanitizeReturnUrl,
+  homePathForSessionRole,
+  resolvePostLoginRedirect
+};
 
 export async function getSessionFromCookies(): Promise<SessionPayload | null> {
   const jar = await cookies();

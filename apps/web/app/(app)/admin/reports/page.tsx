@@ -1,22 +1,18 @@
-import { AdminPageIntro, AdminPanel } from "@/features/admin/components/AdminUi";
-import { requireStaffSession } from "@/features/admin/lib/server-auth";
+import { AdminPageIntro } from "@/features/admin/components/AdminUi";
+import { AdminReportsHub } from "@/features/admin/components/reports/AdminReportsHub";
+import { requireAdminAccess } from "@/features/admin/lib/server-auth";
 
 export default async function AdminReportsPage() {
-  await requireStaffSession("reports");
+  await requireAdminAccess("reports");
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <AdminPageIntro
-        title="Reports"
-        description="Moderation reports queue scaffold. Ready for abuse/report pipeline integration."
+        title="Reports & moderation"
+        description="Central place for trust, safety, and content moderation when your reporting pipeline is live. Structured for triage and audit—not product analytics."
+        badge="Trust & safety"
       />
-      <AdminPanel title="Queue status">
-        <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
-          Reports moderation is not fully wired yet. This page is prepared for:
-          incoming abuse reports, triage status, and resolution workflow.
-        </div>
-      </AdminPanel>
+      <AdminReportsHub />
     </div>
   );
 }
-

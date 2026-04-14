@@ -2,6 +2,18 @@ import { UserRole } from "@acme/types";
 
 const MAX_RETURN_URL_LEN = 2048;
 
+/** Staff roles land on /admin after login when no valid returnUrl. Keep aligned with admin RBAC staff set. */
+const STAFF_WORKSPACE_ROLES: ReadonlyArray<UserRole> = [
+  UserRole.ADMIN,
+  UserRole.SUPPORT_ADMIN,
+  UserRole.MODERATOR,
+  UserRole.FINANCE_ADMIN
+];
+
+function isStaffWorkspaceRole(role: UserRole): boolean {
+  return STAFF_WORKSPACE_ROLES.includes(role);
+}
+
 function isDisallowedReturnPath(pathOnly: string): boolean {
   const p = pathOnly.toLowerCase();
   return (
@@ -32,18 +44,26 @@ export function sanitizeReturnUrl(raw: string | null | undefined, fallback: stri
   return trimmed;
 }
 
+/**
+ * Default home path after auth when no `returnUrl` applies (or it is invalid).
+ * CLIENT/FREELANCER keep product dashboards; staff roles use /admin; other roles fall back to /settings.
+ */
 export function homePathForSessionRole(role: UserRole): string {
+  if (isStaffWorkspaceRole(role)) return "/admin";
   switch (role) {
     case UserRole.FREELANCER:
       return "/freelancer";
     case UserRole.CLIENT:
       return "/client";
-    case UserRole.ADMIN:
-    case UserRole.SUPPORT_ADMIN:
-    case UserRole.FINANCE_ADMIN:
-    case UserRole.MODERATOR:
-      return "/admin";
     default:
       return "/settings";
   }
+}
+
+/**
+ * Single entry for post-login / post-register redirects: same-origin returnUrl wins when valid, else role home.
+ */
+export function resolvePostLoginRedirect(role: UserRole, returnUrl: string | null | undefined): string {
+  const fallback = homePathForSessionRole(role);
+  return sanitizeReturnUrl(returnUrl ?? null, fallback);
 }

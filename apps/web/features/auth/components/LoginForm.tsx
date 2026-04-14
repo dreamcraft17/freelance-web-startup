@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useCallback, useId, useMemo, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import type { UserRole } from "@acme/types";
-import { homePathForSessionRole, sanitizeReturnUrl } from "@src/lib/return-url";
+import { resolvePostLoginRedirect, sanitizeReturnUrl } from "@src/lib/return-url";
 import { buildLoginToRegisterHref, loginIntentMessage, type AuthIntent } from "@/features/auth/lib/auth-intent";
 import { readApiBody } from "@/features/auth/lib/read-api-body";
 
@@ -55,6 +55,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
       return "Log in to continue to your notifications.";
     }
     if (safe === "/settings" || safe.startsWith("/settings/")) return "Log in to continue to your settings.";
+    if (safe === "/admin" || safe.startsWith("/admin/")) return "Log in to continue to internal admin.";
     return "Log in to continue.";
   }, [intent, returnUrl]);
 
@@ -98,9 +99,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
         }
 
         const role = body.data.session.role;
-        const fallback = homePathForSessionRole(role);
-        const next = sanitizeReturnUrl(returnUrl ?? null, fallback);
-        window.location.assign(next);
+        window.location.assign(resolvePostLoginRedirect(role, returnUrl));
       } catch (err) {
         const msg = err instanceof Error && err.message ? err.message : "Request failed";
         setError(
