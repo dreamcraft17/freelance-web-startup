@@ -128,7 +128,7 @@ export function AuthUserMenu({ compact = false, variant = "default" }: AuthUserM
             "absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white p-1",
             adminChrome
               ? "shadow-md shadow-slate-900/[0.06]"
-              : "shadow-lg shadow-slate-900/[0.12] ring-1 ring-slate-900/[0.03]"
+              : "shadow-md shadow-slate-900/[0.08] ring-1 ring-slate-900/[0.03] backdrop-blur-[2px]"
           )}
         >
           <div className="border-b border-slate-100 px-3 pb-2 pt-2">

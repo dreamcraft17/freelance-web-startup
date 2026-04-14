@@ -3,7 +3,7 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { Bell, Menu, MessageSquare, X } from "lucide-react";
 import { useState } from "react";
 import type { SessionPayload } from "@src/lib/session";
 import { AuthUserMenu } from "@/features/dashboard/components/AuthUserMenu";
@@ -38,15 +38,15 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
   const secondary = authSession ? secondaryActionForRole(authSession.role) : null;
 
   return (
-    <header className="fixed top-0 z-50 w-full bg-white/80 backdrop-blur-xl">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:gap-4 sm:px-8">
-        <div className="flex min-w-0 flex-1 items-center gap-4 md:gap-6 lg:gap-8">
-          <BrandLogo
-            className="shrink-0"
-            imageClassName="h-10 w-auto sm:h-11"
-            alt="NearWork logo"
-          />
-          <div className="hidden min-w-0 flex-wrap items-center gap-x-3 gap-y-1 md:flex md:gap-x-4 lg:gap-x-5">
+    <header className="fixed top-0 z-50 w-full border-b border-slate-200/90 bg-white/95 shadow-[0_1px_0_rgba(15,23,42,0.04)] backdrop-blur-xl">
+      <nav className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 sm:px-6 lg:px-8">
+        <div className="flex min-w-0 shrink-0 items-center gap-3 pr-2">
+          <BrandLogo className="shrink-0" imageClassName="h-11 w-auto" alt="NearWork logo" />
+          <span className="hidden text-xl font-extrabold tracking-tight text-slate-900 sm:inline">NearWork</span>
+        </div>
+
+        <div className="hidden min-w-0 flex-1 items-center justify-center md:flex">
+          <div className="flex min-w-0 items-center gap-6 lg:gap-7">
             {navLinks.map(({ href, label }) => {
               const active = isActive(pathname, href);
               return (
@@ -55,8 +55,8 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
                   href={href}
                   className={
                     active
-                      ? "whitespace-nowrap border-b-2 border-indigo-600 py-1 text-sm font-semibold text-indigo-700"
-                      : "whitespace-nowrap py-1 text-sm font-medium text-slate-600 transition-colors hover:text-indigo-600"
+                      ? "whitespace-nowrap border-b-2 border-[#3525cd] py-1 text-sm font-semibold text-[#2d1fa8]"
+                      : "whitespace-nowrap border-b-2 border-transparent py-1 text-sm font-medium text-slate-600 transition-all duration-200 hover:border-slate-300 hover:text-slate-900 hover:opacity-90"
                   }
                 >
                   {label}
@@ -65,36 +65,47 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
             })}
           </div>
         </div>
-
         {authSession && primary ? (
-          <div className="hidden shrink-0 items-center gap-2 sm:gap-3 md:flex">
+          <div className="ml-auto hidden shrink-0 items-center gap-2 md:flex">
             {secondary ? (
-              <Link href={secondary.href as Route} className="text-sm font-medium text-slate-600 hover:text-indigo-600">
+              <Link href={secondary.href as Route} className="text-sm font-medium text-slate-600 hover:text-slate-900">
                 {secondary.label}
               </Link>
             ) : null}
             <Link
+              href={"/notifications" as Route}
+              aria-label="Notifications"
+              className="relative inline-flex h-9 w-9 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+            >
+              <Bell className="h-4 w-4" aria-hidden />
+              <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-rose-500 ring-2 ring-white" aria-hidden />
+            </Link>
+            <Link
+              href={"/messages" as Route}
+              aria-label="Messages"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+            >
+              <MessageSquare className="h-4 w-4" aria-hidden />
+            </Link>
+            <Link
               href={primary.href as Route}
-              className="rounded-lg bg-[#3525cd] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#4f46e5] active:scale-[0.98]"
+              className="rounded-md bg-[#3525cd] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#4f46e5]"
             >
               {primary.label}
             </Link>
             <AuthUserMenu compact />
           </div>
         ) : (
-          <div className="hidden shrink-0 items-center gap-2 sm:gap-3 md:flex">
-            <Link href="/login" className="text-sm font-medium text-slate-600 hover:text-indigo-600">
+          <div className="ml-auto hidden shrink-0 items-center gap-2 md:flex">
+            <Link href="/login" className="text-sm font-medium text-slate-600 hover:text-slate-900">
               Log in
             </Link>
-            <Link
-              href="/register"
-              className="hidden text-sm font-medium text-slate-600 hover:text-indigo-600 sm:inline"
-            >
+            <Link href="/register" className="text-sm font-medium text-slate-600 hover:text-slate-900">
               Register
             </Link>
             <Link
               href="/early-access"
-              className="rounded-lg bg-[#3525cd] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4f46e5] active:scale-[0.98] sm:px-6"
+              className="rounded-md bg-[#3525cd] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#4f46e5]"
             >
               Early access
             </Link>
@@ -103,7 +114,7 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
 
         <button
           type="button"
-          className="inline-flex shrink-0 rounded-lg border border-slate-200 bg-white p-2 text-indigo-800 shadow-sm md:hidden"
+          className="ml-auto inline-flex shrink-0 rounded-md border border-slate-200 bg-white p-2 text-slate-700 shadow-sm md:hidden"
           aria-expanded={open}
           aria-controls="marketing-mobile-nav"
           onClick={() => setOpen((v) => !v)}
@@ -116,7 +127,7 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
       {open ? (
         <div
           id="marketing-mobile-nav"
-          className="border-t border-slate-100 bg-white/95 px-4 py-4 shadow-lg backdrop-blur-md md:hidden"
+          className="border-t border-slate-200 bg-white px-4 py-4 shadow-lg md:hidden"
         >
           <div className="mx-auto flex max-w-7xl flex-col gap-1">
             {navLinks.map(({ href, label }) => (
@@ -141,6 +152,20 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
                     {secondary.label}
                   </Link>
                 ) : null}
+                <Link
+                  href={"/notifications" as Route}
+                  className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                  onClick={() => setOpen(false)}
+                >
+                  Notifications
+                </Link>
+                <Link
+                  href={"/messages" as Route}
+                  className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                  onClick={() => setOpen(false)}
+                >
+                  Messages
+                </Link>
                 <Link
                   href={primary.href as Route}
                   className="rounded-lg bg-[#3525cd] px-3 py-2.5 text-center text-sm font-semibold text-white hover:bg-[#4f46e5]"
