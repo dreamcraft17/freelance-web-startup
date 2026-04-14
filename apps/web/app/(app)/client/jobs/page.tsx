@@ -7,8 +7,6 @@ import {
   type ClientJobListRow
 } from "@/components/client-jobs/ClientJobsManager";
 
-export const dynamic = "force-dynamic";
-
 function statusFromSearchParam(raw: string | undefined): JobStatus | null {
   if (!raw || raw === "all") return null;
   if ((Object.values(JobStatus) as string[]).includes(raw)) return raw as JobStatus;

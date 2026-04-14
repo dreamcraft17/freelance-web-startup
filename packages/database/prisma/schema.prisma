@@ -263,6 +263,9 @@ model FreelancerProfile {
   @@index([city, country, deletedAt])
   @@index([workMode, availabilityStatus, deletedAt])
   @@index([lat, lng])
+  @@index([deletedAt, workMode, createdAt])
+  @@index([deletedAt, isBoosted, boostedUntil, createdAt])
+  @@index([deletedAt, isFeatured, createdAt])
 }
 
 model ClientProfile {
@@ -439,6 +442,8 @@ model Job {
   @@index([status, bidDeadline])
   @@index([visibility, status])
   @@index([createdAt])
+  @@index([deletedAt, status, visibility, createdAt])
+  @@index([clientProfileId, deletedAt, updatedAt])
 }
 
 model JobSkill {
@@ -532,6 +537,8 @@ model Contract {
   @@index([freelancerUserId, status, deletedAt])
   @@index([clientUserId, status, deletedAt])
   @@index([status, createdAt])
+  @@index([clientUserId, deletedAt, updatedAt])
+  @@index([freelancerUserId, deletedAt, updatedAt])
 }
 
 // -----------------------------------------------------------------------------
@@ -795,6 +802,7 @@ model MessageThreadParticipant {
 
   @@unique([threadId, userId])
   @@index([userId, createdAt])
+  @@index([userId, threadId])
 }
 
 model Message {
@@ -816,6 +824,7 @@ model Message {
   @@index([threadId, createdAt])
   @@index([senderId])
   @@index([deletedAt])
+  @@index([threadId, deletedAt, createdAt])
 }
 
 // -----------------------------------------------------------------------------

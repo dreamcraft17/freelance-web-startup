@@ -9,7 +9,7 @@ import { GeoService } from "@/server/services/geo.service";
 import type { FreelancerSearchItem } from "@/server/services/search.service";
 import { SearchService } from "@/server/services/search.service";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -61,6 +61,16 @@ function freelancersQueryString(args: {
   return s ? `?${s}` : "";
 }
 
+async function loadCategories(): Promise<{ id: string; name: string }[]> {
+  try {
+    const catRes = await new CategoryService().list({ page: 1, limit: 100 });
+    if (catRes.mode !== "categories") return [];
+    return catRes.items.map((c) => ({ id: c.id, name: c.name }));
+  } catch {
+    return [];
+  }
+}
+
 export default async function FreelancersDirectoryPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const raw = pick(await searchParams);
   const parsed = searchFreelancersSchema.safeParse({
@@ -78,19 +88,9 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
   const hasGeoCenter = Number.isFinite(rawLat) && Number.isFinite(rawLng);
   const radiusKm = clampRadius(Number(raw.radiusKm ?? 50));
 
-  let categories: { id: string; name: string }[] = [];
-  try {
-    const catRes = await new CategoryService().list({ page: 1, limit: 100 });
-    if (catRes.mode === "categories") {
-      categories = catRes.items.map((c) => ({ id: c.id, name: c.name }));
-    }
-  } catch {
-    categories = [];
-  }
-
   const search = new SearchService();
   const geoQuery = hasGeoCenter ? { ...query, page: 1 as const, limit: 120 as const } : query;
-  const { items, total } = await search.searchFreelancers(geoQuery);
+  const [{ items, total }, categories] = await Promise.all([search.searchFreelancers(geoQuery), loadCategories()]);
 
   const geo = new GeoService();
   const geoItems = hasGeoCenter

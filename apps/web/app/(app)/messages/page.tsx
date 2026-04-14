@@ -7,8 +7,6 @@ import {
 } from "@/components/messaging/MessagesWorkspace";
 import { MessageService } from "@/server/services/message.service";
 
-export const dynamic = "force-dynamic";
-
 type SearchParams = Record<string, string | string[] | undefined>;
 
 function pick(sp: SearchParams): Record<string, string> {
@@ -32,7 +30,8 @@ export default async function MessagesPage({
 
   const actor = sessionToActor(session);
   const messageService = new MessageService();
-  const { items: threadRows } = await messageService.listThreadsForActor(actor);
+  const [threadResult, sp] = await Promise.all([messageService.listThreadsForActor(actor), searchParams.then(pick)]);
+  const { items: threadRows } = threadResult;
 
   const threads: ThreadListItem[] = threadRows.map((t) => ({
     threadId: t.threadId,
@@ -45,7 +44,6 @@ export default async function MessagesPage({
   }));
 
   const validIds = new Set(threads.map((t) => t.threadId));
-  const sp = pick(await searchParams);
   const threadParam = sp.thread?.trim() ?? "";
 
   let messages: MessageItem[] = [];

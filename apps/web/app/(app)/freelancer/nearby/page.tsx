@@ -10,8 +10,6 @@ import {
 import { GeoService } from "@/server/services/geo.service";
 import { SearchService } from "@/server/services/search.service";
 
-export const dynamic = "force-dynamic";
-
 type SearchParams = Record<string, string | string[] | undefined>;
 
 function pick(sp: SearchParams): Record<string, string> {
@@ -44,7 +42,20 @@ export default async function FreelancerNearbyPage({
     redirect("/login?returnUrl=/freelancer/nearby");
   }
 
-  const sp = pick(await searchParams);
+  const [sp, profile] = await Promise.all([
+    searchParams.then(pick),
+    db.freelancerProfile.findFirst({
+      where: { userId: session.userId, deletedAt: null },
+      select: {
+        city: true,
+        region: true,
+        country: true,
+        lat: true,
+        lng: true,
+        serviceRadiusKm: true
+      }
+    })
+  ]);
   const q = (sp.q ?? "").trim();
   const workModeRaw = sp.workMode ?? "";
   const workMode =
@@ -52,18 +63,6 @@ export default async function FreelancerNearbyPage({
       ? (workModeRaw as WorkMode)
       : undefined;
   const radiusFromUrl = clampRadius(parseInt(sp.radiusKm ?? "", 10));
-
-  const profile = await db.freelancerProfile.findFirst({
-    where: { userId: session.userId, deletedAt: null },
-    select: {
-      city: true,
-      region: true,
-      country: true,
-      lat: true,
-      lng: true,
-      serviceRadiusKm: true
-    }
-  });
 
   const profileRadiusDefault = profile?.serviceRadiusKm != null ? clampRadius(profile.serviceRadiusKm) : 75;
   const radiusKm = sp.radiusKm ? radiusFromUrl : profileRadiusDefault;

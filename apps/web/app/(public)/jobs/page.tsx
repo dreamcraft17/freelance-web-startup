@@ -7,7 +7,7 @@ import { JobsPublicList, type JobsPublicCard } from "@/features/public/component
 import { CategoryService } from "@/server/services/category.service";
 import { JobService } from "@/server/services/job.service";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -63,6 +63,16 @@ function jobsQueryString(args: {
   return s ? `?${s}` : "";
 }
 
+async function loadCategories(): Promise<{ id: string; name: string }[]> {
+  try {
+    const catRes = await new CategoryService().list({ page: 1, limit: 100 });
+    if (catRes.mode !== "categories") return [];
+    return catRes.items.map((c) => ({ id: c.id, name: c.name }));
+  } catch {
+    return [];
+  }
+}
+
 export default async function JobsBrowsePage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const raw = pick(await searchParams);
   const parsed = searchJobsSchema.safeParse({
@@ -75,18 +85,8 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
   });
   const query = parsed.success ? parsed.data : { page: 1, limit: 24 as const };
 
-  let categories: { id: string; name: string }[] = [];
-  try {
-    const catRes = await new CategoryService().list({ page: 1, limit: 100 });
-    if (catRes.mode === "categories") {
-      categories = catRes.items.map((c) => ({ id: c.id, name: c.name }));
-    }
-  } catch {
-    categories = [];
-  }
-
   const jobService = new JobService();
-  const { items, total } = await jobService.listOpenJobs(query);
+  const [{ items, total }, categories] = await Promise.all([jobService.listOpenJobs(query), loadCategories()]);
   const jobs = items.map(toPublicJobCard);
 
   const keyword = query.keyword ?? "";

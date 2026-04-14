@@ -36,6 +36,7 @@ export function DashboardNav({ items, variant }: DashboardNavProps) {
             <Link
               key={`${item.href}-${item.label}`}
               href={item.href as Route}
+              prefetch
               className={cn(
                 "shrink-0 rounded-full px-3.5 py-2 text-[13px] font-medium transition-colors",
                 isActive
@@ -78,6 +79,7 @@ export function DashboardNav({ items, variant }: DashboardNavProps) {
             ) : null}
             <Link
               href={item.href as Route}
+              prefetch
               className={cn(
                 "block rounded-lg py-2 pl-3 pr-2.5 text-[13px] font-medium leading-snug transition-colors",
                 isActive
