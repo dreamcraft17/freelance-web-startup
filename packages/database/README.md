@@ -52,3 +52,29 @@ The folder `prisma/migrations/20260412120000_init/` contains the **baseline** SQ
 | `db:migrate:deploy` | `prisma migrate deploy` |
 | `db:studio` | `prisma studio` |
 | `db:push` | `prisma db push` (prototyping only; prefer migrations for shared environments) |
+| `db:seed` | `prisma db seed` — creates/updates a dev **ADMIN** user (see below) |
+
+## Seed admin user (local / internal)
+
+After migrations apply, from the **monorepo root** with `DATABASE_URL` set:
+
+```bash
+pnpm db:seed
+```
+
+Defaults (override with env):
+
+| Variable | Default |
+|----------|---------|
+| `SEED_ADMIN_EMAIL` | `admin@nearwork.local` |
+| `SEED_ADMIN_PASSWORD` | `NearWorkAdminDev123!` |
+
+Example:
+
+```bash
+set SEED_ADMIN_EMAIL=you@company.com
+set SEED_ADMIN_PASSWORD=YourStrongPass123
+pnpm db:seed
+```
+
+Then sign in at `/login` and open `/admin`. **Do not use default passwords in production** — set strong values via env or skip seed and promote users manually.

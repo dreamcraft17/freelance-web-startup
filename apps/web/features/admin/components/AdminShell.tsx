@@ -7,6 +7,7 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import type { UserRole } from "@acme/types";
 import { AuthUserMenu } from "@/features/dashboard/components/AuthUserMenu";
+import { BrandLogo } from "@/features/shared/components/BrandLogo";
 import { allowedSectionsForRole, type AdminSectionKey } from "../lib/access";
 
 type AdminShellProps = {
@@ -58,7 +59,7 @@ export function AdminShell({ role, children }: AdminShellProps) {
       <div className="flex min-h-screen">
         <aside className="hidden w-64 shrink-0 border-r border-slate-200 bg-slate-950 text-slate-100 lg:block">
           <div className="border-b border-slate-800 px-5 py-4">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">NearWork</p>
+            <BrandLogo imageClassName="h-7 w-auto" alt="NearWork logo" />
             <h2 className="mt-1 text-lg font-semibold text-white">Internal Admin</h2>
           </div>
           <nav className="px-3 py-3">

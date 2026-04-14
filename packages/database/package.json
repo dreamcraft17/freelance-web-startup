@@ -17,17 +17,24 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",
+    "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
     "db:push": "prisma db push",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "clean": "rimraf node_modules/.prisma"
   },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "dependencies": {
     "@prisma/client": "^5.22.0"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "bcryptjs": "^2.4.3",
     "prisma": "^5.22.0",
     "rimraf": "^6.0.1",
+    "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   }
 }
