@@ -1,6 +1,6 @@
 import { db } from "@acme/database";
 import { JobStatus } from "@acme/types";
-import { AdminPageIntro, AdminPanel } from "@/features/admin/components/AdminUi";
+import { AdminPageIntro, AdminPanel, AdminEmptyState } from "@/features/admin/components/AdminUi";
 import { requireStaffSession } from "@/features/admin/lib/server-auth";
 
 export default async function AdminJobsPage() {
@@ -28,8 +28,11 @@ export default async function AdminJobsPage() {
         description="Operational job inspection view for moderation, support, and quality checks."
       />
       <AdminPanel title={`Latest jobs (${jobs.length}) · Open now ${openCount}`}>
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-sm">
+        {jobs.length === 0 ? (
+          <AdminEmptyState title="No jobs yet" copy="No job records available for this scope." />
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
             <thead className="text-left text-xs uppercase tracking-wide text-slate-500">
               <tr>
                 <th className="px-2 py-2">Title</th>
@@ -52,8 +55,9 @@ export default async function AdminJobsPage() {
                 </tr>
               ))}
             </tbody>
-          </table>
-        </div>
+            </table>
+          </div>
+        )}
       </AdminPanel>
     </div>
   );

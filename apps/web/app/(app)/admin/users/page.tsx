@@ -1,6 +1,6 @@
 import { db } from "@acme/database";
 import { AccountStatus, UserRole } from "@acme/types";
-import { AdminPageIntro, AdminPanel } from "@/features/admin/components/AdminUi";
+import { AdminPageIntro, AdminPanel, AdminEmptyState } from "@/features/admin/components/AdminUi";
 import { requireStaffSession } from "@/features/admin/lib/server-auth";
 
 type SearchParams = { role?: string; status?: string; q?: string };
@@ -30,28 +30,32 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
     <div className="space-y-5">
       <AdminPageIntro title="Users" description="Inspect account roles, status, and onboarding footprint." />
       <AdminPanel title={`Latest users (${users.length})`}>
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-sm">
-            <thead className="text-left text-xs uppercase tracking-wide text-slate-500">
-              <tr>
-                <th className="px-2 py-2">Email</th>
-                <th className="px-2 py-2">Role</th>
-                <th className="px-2 py-2">Status</th>
-                <th className="px-2 py-2">Created</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((u) => (
-                <tr key={u.id} className="border-t border-slate-100 text-slate-700">
-                  <td className="px-2 py-2">{u.email}</td>
-                  <td className="px-2 py-2">{u.role}</td>
-                  <td className="px-2 py-2">{u.accountStatus}</td>
-                  <td className="px-2 py-2">{u.createdAt.toLocaleDateString()}</td>
+        {users.length === 0 ? (
+          <AdminEmptyState title="No users found" copy="No users match this filter set yet." />
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead className="text-left text-xs uppercase tracking-wide text-slate-500">
+                <tr>
+                  <th className="px-2 py-2">Email</th>
+                  <th className="px-2 py-2">Role</th>
+                  <th className="px-2 py-2">Status</th>
+                  <th className="px-2 py-2">Created</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {users.map((u) => (
+                  <tr key={u.id} className="border-t border-slate-100 text-slate-700">
+                    <td className="px-2 py-2">{u.email}</td>
+                    <td className="px-2 py-2">{u.role}</td>
+                    <td className="px-2 py-2">{u.accountStatus}</td>
+                    <td className="px-2 py-2">{u.createdAt.toLocaleDateString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </AdminPanel>
     </div>
   );

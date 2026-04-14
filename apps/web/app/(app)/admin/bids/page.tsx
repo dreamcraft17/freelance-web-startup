@@ -1,5 +1,5 @@
 import { db } from "@acme/database";
-import { AdminPageIntro, AdminPanel } from "@/features/admin/components/AdminUi";
+import { AdminPageIntro, AdminPanel, AdminEmptyState } from "@/features/admin/components/AdminUi";
 import { requireStaffSession } from "@/features/admin/lib/server-auth";
 
 export default async function AdminBidsPage() {
@@ -21,8 +21,11 @@ export default async function AdminBidsPage() {
     <div className="space-y-5">
       <AdminPageIntro title="Bids" description="Inspect incoming bids across jobs for support and operations." />
       <AdminPanel title={`Latest bids (${bids.length})`}>
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-sm">
+        {bids.length === 0 ? (
+          <AdminEmptyState title="No bids available" copy="No bids have been submitted yet." />
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
             <thead className="text-left text-xs uppercase tracking-wide text-slate-500">
               <tr>
                 <th className="px-2 py-2">Job</th>
@@ -45,8 +48,9 @@ export default async function AdminBidsPage() {
                 </tr>
               ))}
             </tbody>
-          </table>
-        </div>
+            </table>
+          </div>
+        )}
       </AdminPanel>
     </div>
   );
