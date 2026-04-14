@@ -22,52 +22,54 @@ export default async function FreelancerDashboardPage() {
     redirect("/login?returnUrl=/freelancer");
   }
 
-  const profile = await db.freelancerProfile.findFirst({
-    where: { userId: session.userId, deletedAt: null },
-    select: {
-      id: true,
-      username: true,
-      fullName: true,
-      headline: true,
-      profileCompleteness: true
-    }
-  });
-
-  const quotaService = new QuotaService();
-  const quota = profile ? await quotaService.getUsageForFreelancerUser(session.userId) : null;
-
-  const recentBids: FreelancerDashboardBid[] = profile
-    ? await db.bid.findMany({
-        where: { freelancerId: profile.id },
-        orderBy: { updatedAt: "desc" },
-        take: 5,
-        include: {
-          job: {
-            select: {
-              id: true,
-              title: true,
-              slug: true,
-              status: true,
-              workMode: true,
-              currency: true
-            }
+  const [profile, recentContractsRaw, openJobsResult] = await Promise.all([
+    db.freelancerProfile.findFirst({
+      where: { userId: session.userId, deletedAt: null },
+      select: {
+        id: true,
+        username: true,
+        fullName: true,
+        headline: true,
+        profileCompleteness: true
+      }
+    }),
+    db.contract.findMany({
+      where: { freelancerUserId: session.userId, deletedAt: null },
+      orderBy: { updatedAt: "desc" },
+      take: 5,
+      include: {
+        bid: {
+          include: {
+            job: { select: { id: true, title: true } }
           }
         }
-      })
-    : [];
-
-  const recentContractsRaw = await db.contract.findMany({
-    where: { freelancerUserId: session.userId, deletedAt: null },
-    orderBy: { updatedAt: "desc" },
-    take: 5,
-    include: {
-      bid: {
-        include: {
-          job: { select: { id: true, title: true } }
-        }
       }
-    }
-  });
+    }),
+    new JobService().listOpenJobs({ page: 1, limit: 9 })
+  ]);
+
+  const [quota, recentBids] = profile
+    ? await Promise.all([
+        new QuotaService().getUsageForFreelancerUser(session.userId),
+        db.bid.findMany({
+          where: { freelancerId: profile.id },
+          orderBy: { updatedAt: "desc" },
+          take: 5,
+          include: {
+            job: {
+              select: {
+                id: true,
+                title: true,
+                slug: true,
+                status: true,
+                workMode: true,
+                currency: true
+              }
+            }
+          }
+        })
+      ])
+    : [null, [] as FreelancerDashboardBid[]];
 
   const recentContracts: FreelancerDashboardContract[] = recentContractsRaw.map((c) => ({
     id: c.id,
@@ -77,8 +79,7 @@ export default async function FreelancerDashboardPage() {
     bid: { job: c.bid.job }
   }));
 
-  const jobService = new JobService();
-  const { items: openJobItems, total: openTotal } = await jobService.listOpenJobs({ page: 1, limit: 9 });
+  const { items: openJobItems, total: openTotal } = openJobsResult;
 
   const openJobs: FreelancerOpenJob[] = openJobItems.map((j) => ({
     id: j.id,

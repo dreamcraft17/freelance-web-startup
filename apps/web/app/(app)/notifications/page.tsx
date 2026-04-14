@@ -6,8 +6,6 @@ import {
 } from "@/components/notifications/NotificationsCenter";
 import { NotificationService } from "@/server/services/notification.service";
 
-export const dynamic = "force-dynamic";
-
 export default async function NotificationsPage() {
   const session = await getSessionFromCookies();
   if (!session) {

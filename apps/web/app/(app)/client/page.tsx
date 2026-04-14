@@ -42,14 +42,11 @@ export default async function ClientDashboardPage() {
     redirect("/login?returnUrl=/client");
   }
 
-  const clientProfile = await db.clientProfile.findFirst({
-    where: { userId: session.userId, deletedAt: null },
-    select: { id: true, displayName: true }
-  });
-
-  const hasProfile = Boolean(clientProfile);
-
-  const [activeContractsCount, completedHiresCount] = await Promise.all([
+  const [clientProfile, activeContractsCount, completedHiresCount, recentContractsRaw] = await Promise.all([
+    db.clientProfile.findFirst({
+      where: { userId: session.userId, deletedAt: null },
+      select: { id: true, displayName: true }
+    }),
     db.contract.count({
       where: {
         clientUserId: session.userId,
@@ -65,8 +62,28 @@ export default async function ClientDashboardPage() {
         deletedAt: null,
         status: ContractStatus.COMPLETED
       }
+    }),
+    db.contract.findMany({
+      where: { clientUserId: session.userId, deletedAt: null },
+      orderBy: { updatedAt: "desc" },
+      take: 6,
+      select: {
+        id: true,
+        status: true,
+        updatedAt: true,
+        amount: true,
+        currency: true,
+        bid: {
+          select: {
+            job: { select: { id: true, title: true } },
+            freelancer: { select: { fullName: true, username: true } }
+          }
+        }
+      }
     })
   ]);
+
+  const hasProfile = Boolean(clientProfile);
 
   let openJobsCount = 0;
   let incomingBidsCount = 0;
@@ -123,25 +140,6 @@ export default async function ClientDashboardPage() {
     recentJobsRaw = jobs;
     recentBidsRaw = bids;
   }
-
-  const recentContractsRaw = await db.contract.findMany({
-    where: { clientUserId: session.userId, deletedAt: null },
-    orderBy: { updatedAt: "desc" },
-    take: 6,
-    select: {
-      id: true,
-      status: true,
-      updatedAt: true,
-      amount: true,
-      currency: true,
-      bid: {
-        select: {
-          job: { select: { id: true, title: true } },
-          freelancer: { select: { fullName: true, username: true } }
-        }
-      }
-    }
-  });
 
   const recentJobs: ClientDashboardJob[] = recentJobsRaw.map((j) => ({
     id: j.id,

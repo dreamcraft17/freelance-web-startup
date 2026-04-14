@@ -35,12 +35,6 @@ function isProtectedWorkspacePath(pathname: string): boolean {
   );
 }
 
-/**
- * Broad matcher (Next.js recommendation) so "/" and all discovery/marketing routes always
- * reach the early public branch — never redirected to /login.
- *
- * Excludes: api, Next internals, static images, favicon.
- */
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -87,5 +81,15 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon\\.ico|robots\\.txt|sitemap\\.xml).*)"]
+  // Restrict middleware to auth + protected workspaces to reduce per-request overhead on public pages.
+  matcher: [
+    "/login/:path*",
+    "/register/:path*",
+    "/forgot-password/:path*",
+    "/client/:path*",
+    "/freelancer/:path*",
+    "/messages/:path*",
+    "/notifications/:path*",
+    "/settings/:path*"
+  ]
 };

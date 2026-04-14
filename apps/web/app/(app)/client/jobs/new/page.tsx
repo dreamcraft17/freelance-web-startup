@@ -8,8 +8,6 @@ import {
   type ClientNewJobCategoryOption
 } from "@/components/client-jobs/ClientNewJobForm";
 
-export const dynamic = "force-dynamic";
-
 export default async function ClientNewJobPage() {
   const session = await getSessionFromCookies();
   if (!session) {

@@ -10,8 +10,6 @@ import {
 import { GeoService } from "@/server/services/geo.service";
 import { SearchService } from "@/server/services/search.service";
 
-export const dynamic = "force-dynamic";
-
 type SearchParams = Record<string, string | string[] | undefined>;
 
 function pick(sp: SearchParams): Record<string, string> {
@@ -44,7 +42,18 @@ export default async function ClientNearbyTalentPage({
     redirect("/login?returnUrl=/client/nearby");
   }
 
-  const sp = pick(await searchParams);
+  const [sp, profile] = await Promise.all([
+    searchParams.then(pick),
+    db.clientProfile.findFirst({
+      where: { userId: session.userId, deletedAt: null },
+      select: {
+        id: true,
+        city: true,
+        region: true,
+        country: true
+      }
+    })
+  ]);
   const q = (sp.q ?? "").trim();
   const workModeRaw = sp.workMode ?? "";
   const workMode =
@@ -53,16 +62,6 @@ export default async function ClientNearbyTalentPage({
       : undefined;
   const radiusFromUrl = clampRadius(parseInt(sp.radiusKm ?? "", 10));
   const radiusKm = sp.radiusKm ? radiusFromUrl : 75;
-
-  const profile = await db.clientProfile.findFirst({
-    where: { userId: session.userId, deletedAt: null },
-    select: {
-      id: true,
-      city: true,
-      region: true,
-      country: true
-    }
-  });
 
   const hasProfile = Boolean(profile);
   const areaLabel = profile ? areaParts(profile.city, profile.region, profile.country) : null;
