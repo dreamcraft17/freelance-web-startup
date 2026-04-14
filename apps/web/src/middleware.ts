@@ -22,6 +22,8 @@ function isAuthPublicPath(pathname: string): boolean {
 function isProtectedWorkspacePath(pathname: string): boolean {
   const p = pathname.toLowerCase();
   return (
+    p === "/admin" ||
+    p.startsWith("/admin/") ||
     p === "/client" ||
     p.startsWith("/client/") ||
     p === "/freelancer" ||
@@ -86,6 +88,7 @@ export const config = {
     "/login/:path*",
     "/register/:path*",
     "/forgot-password/:path*",
+    "/admin/:path*",
     "/client/:path*",
     "/freelancer/:path*",
     "/messages/:path*",

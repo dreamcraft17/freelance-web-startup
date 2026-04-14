@@ -42,7 +42,7 @@ export function homePathForSessionRole(role: UserRole): string {
     case UserRole.SUPPORT_ADMIN:
     case UserRole.FINANCE_ADMIN:
     case UserRole.MODERATOR:
-      return "/settings";
+      return "/admin";
     default:
       return "/settings";
   }

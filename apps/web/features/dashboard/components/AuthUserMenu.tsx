@@ -24,6 +24,16 @@ function initialsFromSession(session: SessionDto | null): string {
 function profileHrefForRole(role: SessionDto["role"] | null): Route {
   if (role === "FREELANCER") return "/freelancer/profile";
   if (role === "CLIENT") return "/client";
+  if (role === "ADMIN" || role === "SUPPORT_ADMIN" || role === "MODERATOR" || role === "FINANCE_ADMIN") {
+    return "/admin";
+  }
+  return "/settings";
+}
+
+function settingsHrefForRole(role: SessionDto["role"] | null): Route {
+  if (role === "ADMIN" || role === "SUPPORT_ADMIN" || role === "MODERATOR" || role === "FINANCE_ADMIN") {
+    return "/admin/settings";
+  }
   return "/settings";
 }
 
@@ -69,6 +79,7 @@ export function AuthUserMenu({ compact = false }: AuthUserMenuProps) {
   const initials = useMemo(() => initialsFromSession(session), [session]);
   const roleLabel = session?.role === "FREELANCER" ? "Freelancer" : session?.role === "CLIENT" ? "Client" : "User";
   const profileHref = profileHrefForRole(session?.role ?? null);
+  const settingsHref = settingsHrefForRole(session?.role ?? null);
 
   const onLogout = () => {
     if (isPending) return;
@@ -119,7 +130,7 @@ export function AuthUserMenu({ compact = false }: AuthUserMenuProps) {
               Profile
             </Link>
             <Link
-              href={"/settings" as Route}
+              href={settingsHref}
               className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-slate-700 transition hover:bg-slate-50 hover:text-slate-900"
             >
               <Settings className="h-4 w-4 text-slate-400" aria-hidden />
