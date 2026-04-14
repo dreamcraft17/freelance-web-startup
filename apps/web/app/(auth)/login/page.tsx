@@ -1,8 +1,9 @@
 import type { Route } from "next";
 import Link from "next/link";
-import { Briefcase, Globe, Moon } from "lucide-react";
+import { Globe, Moon } from "lucide-react";
 import { parseAuthIntent } from "@/features/auth/lib/auth-intent";
 import { LoginForm } from "@/features/auth/components/LoginForm";
+import { BrandLogo } from "@/features/shared/components/BrandLogo";
 
 type PageProps = {
   searchParams: Promise<{ returnUrl?: string; next?: string; intent?: string }>;
@@ -19,15 +20,9 @@ export default async function LoginPage({ searchParams }: PageProps) {
     <div className="flex min-h-screen flex-col bg-slate-50 px-4 py-8 sm:py-12">
       <div className="flex flex-1 flex-col items-center justify-center">
         <div className="w-full max-w-md rounded-2xl border border-slate-200/90 bg-white p-8 shadow-[0_2px_28px_-6px_rgba(15,23,42,0.12)] ring-1 ring-slate-100 sm:p-10">
-          <Link
-            href={"/" as Route}
-            className="mb-8 flex items-center gap-3 rounded-lg outline-none ring-offset-2 focus-visible:ring-2 focus-visible:ring-[#3525cd]"
-          >
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#3525cd] text-white shadow-md">
-              <Briefcase className="h-6 w-6" strokeWidth={2} aria-hidden />
-            </span>
-            <span className="text-xl font-bold tracking-tight text-[#3525cd]">NearWork</span>
-          </Link>
+          <div className="mb-8">
+            <BrandLogo href={"/" as Route} imageClassName="h-10 w-auto sm:h-11" alt="NearWork logo" />
+          </div>
 
           <LoginForm returnUrl={returnUrl} intent={intent} />
 
