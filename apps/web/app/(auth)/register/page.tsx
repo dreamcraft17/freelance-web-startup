@@ -18,7 +18,7 @@ export default async function RegisterPage({ searchParams }: PageProps) {
       <div className="flex flex-1 flex-col items-center justify-center">
         <div className="w-full max-w-md rounded-2xl border border-slate-200/90 bg-white p-8 shadow-[0_2px_28px_-6px_rgba(15,23,42,0.12)] ring-1 ring-slate-100 sm:p-10">
           <div className="mb-8 flex justify-center">
-            <BrandLogo imageClassName="h-14 w-auto sm:h-16" alt="NearWork logo" />
+            <BrandLogo imageClassName="h-16 w-auto sm:h-20" alt="NearWork logo" />
           </div>
 
           <RegisterForm

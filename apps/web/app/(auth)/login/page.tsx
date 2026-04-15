@@ -23,7 +23,7 @@ export default async function LoginPage({ searchParams }: PageProps) {
           <div className="mb-8 flex justify-center">
             <BrandLogo
               href={"/" as Route}
-              imageClassName="h-14 w-auto sm:h-16"
+              imageClassName="h-16 w-auto sm:h-20"
               alt="NearWork logo"
             />
           </div>
