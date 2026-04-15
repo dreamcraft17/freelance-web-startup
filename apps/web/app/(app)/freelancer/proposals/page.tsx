@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { db } from "@acme/database";
 import { getSessionFromCookies } from "@src/lib/auth";
 import {
@@ -51,9 +52,17 @@ export default async function FreelancerProposalsPage() {
         <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900 md:text-[1.65rem]">
           Proposals
         </h1>
-        <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-600">
-          Track every bid you have sent—amount, job, and how clients have responded—without digging through email.
-        </p>
+        <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-2">
+          <p className="max-w-xl text-sm leading-relaxed text-slate-600">
+            Track every bid you have sent and focus on responses that need action.
+          </p>
+          <Link href="/jobs" className="text-sm font-semibold text-[#433C93] hover:underline">
+            Find more jobs
+          </Link>
+          <Link href="/freelancer/profile" className="text-sm font-semibold text-slate-600 hover:underline">
+            Update profile
+          </Link>
+        </div>
       </header>
 
       <FreelancerProposalsWorkspace hasProfile={Boolean(profile)} proposals={proposals} />

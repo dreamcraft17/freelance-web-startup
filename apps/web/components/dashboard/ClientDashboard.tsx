@@ -71,13 +71,13 @@ type ClientDashboardProps = {
 };
 
 const linkClass =
-  "inline-flex items-center gap-1 text-sm font-medium text-[#3525cd] underline-offset-4 transition hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/25 focus-visible:ring-offset-2 rounded-sm";
+  "inline-flex items-center gap-1 text-sm font-medium text-[#433C93] underline-offset-4 transition hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#433C93]/25 focus-visible:ring-offset-2 rounded-sm";
 
 const primaryCtaClass =
-  "inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#3525cd] px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-[#3525cd]/20 ring-1 ring-[#3525cd]/25 transition hover:bg-[#2d1fb0] hover:shadow-xl hover:shadow-[#3525cd]/15 sm:w-auto";
+  "inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#433C93] px-6 py-3 text-base font-semibold text-white transition hover:bg-[#4d45a5] sm:w-auto";
 
 const panelSurface =
-  "rounded-2xl border border-slate-200/80 bg-white shadow-sm shadow-slate-900/[0.04] ring-1 ring-slate-900/[0.02]";
+  "rounded-xl border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]";
 
 function money(amount: unknown, currency: string): string {
   const n =
@@ -134,7 +134,7 @@ export function ClientDashboard({
       emphasize: true
     },
     {
-      label: "View all jobs",
+      label: "Manage jobs",
       hint: "Edit listings & status",
       href: "/client/jobs" as Route,
       icon: Briefcase
@@ -146,8 +146,8 @@ export function ClientDashboard({
       icon: ClipboardList
     },
     {
-      label: "Browse freelancers",
-      hint: "Discover talent",
+      label: "Hire from directory",
+      hint: "Discover freelancers",
       href: "/freelancers" as Route,
       icon: Search
     }
@@ -156,15 +156,7 @@ export function ClientDashboard({
   return (
     <div className="mx-auto max-w-6xl space-y-10 pb-10">
       {/* Hero */}
-      <section className="relative overflow-hidden rounded-2xl border border-slate-200/70 bg-gradient-to-br from-white via-white to-slate-50/90 p-6 shadow-sm shadow-slate-900/[0.04] ring-1 ring-slate-900/[0.03] md:p-8">
-        <div
-          className="pointer-events-none absolute -right-16 -top-24 h-56 w-56 rounded-full bg-[#3525cd]/[0.07] blur-3xl"
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute -bottom-20 -left-10 h-48 w-48 rounded-full bg-violet-500/[0.06] blur-3xl"
-          aria-hidden
-        />
+      <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-8">
         <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="min-w-0 max-w-2xl space-y-3">
             <p className="text-xs font-medium uppercase tracking-[0.14em] text-slate-500">NearWork · Client</p>
@@ -225,9 +217,9 @@ export function ClientDashboard({
       </section>
 
       {!hasProfile ? (
-        <div className="rounded-2xl border border-slate-200/90 border-l-[3px] border-l-[#3525cd] bg-gradient-to-r from-[#3525cd]/[0.06] to-white p-5 shadow-sm md:flex md:items-center md:justify-between md:gap-6 md:p-6">
+        <div className="rounded-xl border border-slate-200 border-l-[3px] border-l-[#433C93] bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:flex md:items-center md:justify-between md:gap-6 md:p-6">
           <div className="flex min-w-0 gap-4">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white text-[#3525cd] shadow-sm ring-1 ring-slate-200/80">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-slate-50 text-[#433C93] ring-1 ring-slate-200/80">
               <Sparkles className="h-5 w-5" strokeWidth={1.75} aria-hidden />
             </span>
             <div className="min-w-0">
@@ -239,7 +231,7 @@ export function ClientDashboard({
           </div>
           <Link
             href={"/settings" as Route}
-            className="mt-4 inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#3525cd] px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-[#3525cd]/20 transition hover:bg-[#2d1fb0] md:mt-0 md:w-auto"
+            className="mt-4 inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-lg bg-[#433C93] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4d45a5] md:mt-0 md:w-auto"
           >
             Complete setup
             <ArrowRight className="h-4 w-4 opacity-90" aria-hidden />
@@ -261,10 +253,10 @@ export function ClientDashboard({
               key={item.label}
               href={item.href}
               className={cn(
-                "group relative flex flex-col gap-3 rounded-2xl border p-4 transition md:p-5",
+                "group relative flex flex-col gap-3 rounded-lg border p-4 transition md:p-5",
                 item.emphasize
-                  ? "border-[#3525cd]/20 bg-gradient-to-b from-[#3525cd]/[0.06] to-white shadow-md shadow-[#3525cd]/[0.08] ring-1 ring-[#3525cd]/10 hover:border-[#3525cd]/35"
-                  : "border-slate-200/90 bg-white shadow-sm hover:border-slate-300/90 hover:shadow-md"
+                  ? "border-[#433C93]/25 bg-[#433C93]/[0.05] hover:border-[#433C93]/45"
+                  : "border-slate-200 bg-white hover:border-slate-300/90"
               )}
             >
               <div className="flex items-start justify-between gap-2">
@@ -272,7 +264,7 @@ export function ClientDashboard({
                   className={cn(
                     "flex h-11 w-11 items-center justify-center rounded-xl ring-1",
                     item.emphasize
-                      ? "bg-[#3525cd] text-white shadow-md shadow-[#3525cd]/25 ring-[#3525cd]/20"
+                      ? "bg-[#433C93] text-white ring-[#433C93]/20"
                       : "bg-slate-50 text-slate-700 ring-slate-200/80 group-hover:bg-white"
                   )}
                 >
@@ -281,7 +273,7 @@ export function ClientDashboard({
                 <ArrowUpRight
                   className={cn(
                     "h-4 w-4 shrink-0 opacity-0 transition group-hover:opacity-100",
-                    item.emphasize ? "text-[#3525cd]" : "text-slate-400"
+                    item.emphasize ? "text-[#433C93]" : "text-slate-400"
                   )}
                   aria-hidden
                 />
@@ -408,7 +400,7 @@ export function ClientDashboard({
                 {recentBids.map((bid) => (
                   <li
                     key={bid.id}
-                    className="rounded-xl border border-slate-100 bg-slate-50/40 p-3.5 transition hover:border-slate-200 hover:bg-slate-50/80"
+                    className="rounded-lg border border-slate-100 bg-slate-50/40 p-3.5 transition hover:border-slate-200 hover:bg-slate-50/80"
                   >
                     <Link
                       href={`/jobs/${bid.job.id}` as Route}
@@ -463,10 +455,7 @@ export function ClientDashboard({
           ) : (
             <ul className="grid gap-3 sm:grid-cols-2">
               {recentContracts.map((c) => (
-                <li
-                  key={c.id}
-                  className="rounded-xl border border-slate-100 bg-gradient-to-b from-slate-50/80 to-white p-4 transition hover:border-slate-200 hover:shadow-sm"
-                >
+                <li key={c.id} className="rounded-lg border border-slate-100 bg-slate-50/70 p-4 transition hover:border-slate-200 hover:shadow-sm">
                   <Link
                     href={`/jobs/${c.bid.job.id}` as Route}
                     className="text-sm font-semibold text-slate-900 hover:text-[#3525cd]"
