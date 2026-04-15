@@ -23,8 +23,8 @@ type DashboardShellProps = {
  */
 export function DashboardShell({ navItems, children, className, topBanner }: DashboardShellProps) {
   return (
-    <div className="min-h-screen bg-[#f4f4f5]">
-      <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 shadow-[0_1px_0_rgba(15,23,42,0.04)] backdrop-blur-md md:hidden">
+    <div className="nw-page min-h-screen">
+      <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white shadow-[0_1px_0_rgba(15,23,42,0.04)] md:hidden">
         <div className="flex items-start justify-between gap-3 border-b border-slate-100/80 px-3 pb-2.5 pt-3">
           <div>
             <BrandLogo imageClassName="h-5 w-auto" alt="NearWork logo" />
@@ -47,16 +47,14 @@ export function DashboardShell({ navItems, children, className, topBanner }: Das
         </aside>
 
         <main className={cn("relative flex min-h-0 min-w-0 flex-1 flex-col", className)}>
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white/80 to-transparent md:h-40" aria-hidden />
-
           <div className="relative mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-10">
             <div className="mb-5 hidden justify-end md:flex">
               <AuthUserMenu />
             </div>
             {topBanner ? (
               <div className="mb-8 lg:mb-10">
-                <div className="overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-sm shadow-slate-900/[0.04] ring-1 ring-slate-900/[0.02]">
-                  <div className="border-b border-slate-100/90 bg-gradient-to-r from-slate-50/90 via-white to-[#3525cd]/[0.03] px-4 py-2 sm:px-5">
+                <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                  <div className="border-b border-slate-100 px-4 py-2 sm:px-5">
                     <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Workspace</p>
                   </div>
                   <div className="p-4 sm:p-5">{topBanner}</div>

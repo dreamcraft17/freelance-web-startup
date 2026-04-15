@@ -37,17 +37,17 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
   const secondary = authSession ? secondaryActionForRole(authSession.role) : null;
 
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-black/[0.05] bg-white/95 shadow-sm backdrop-blur-xl">
+    <header className="fixed top-0 z-50 w-full border-b border-black/[0.05] bg-white shadow-sm">
       <nav className="mx-auto flex max-w-7xl items-center gap-4 px-7 py-3 sm:px-10 lg:px-12">
         <Link href={"/" as Route} className="flex min-w-0 shrink-0 items-center gap-3.5 pr-3">
-          <span className="relative inline-flex h-14 w-14 overflow-hidden rounded-xl border border-[#433C93]/15 bg-white shadow-[0_4px_18px_-10px_rgba(67,60,147,0.45)]">
+          <span className="relative inline-flex h-14 w-14 overflow-hidden rounded-xl border border-[#433C93]/15 bg-white">
             <img
               src="/logo/logo3.png"
               alt="NearWork"
               className="h-full w-[236px] max-w-none object-cover object-left"
             />
           </span>
-          <span className="text-[1.55rem] font-bold leading-none tracking-[0.01em] text-[#231E59]">NearWork</span>
+          <span className="text-[1.55rem] font-semibold leading-none tracking-[0.01em] text-[#231E59]">NearWork</span>
         </Link>
 
         <div className="hidden min-w-0 flex-1 items-center justify-center md:flex">
@@ -110,7 +110,7 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
             </Link>
             <Link
               href="/early-access"
-              className="rounded-md bg-[#3A3288] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_20px_-12px_rgba(58,50,136,0.9)] transition-all duration-200 hover:scale-[1.02] hover:brightness-110"
+              className="nw-cta-primary px-4 py-2.5 shadow-[0_8px_20px_-12px_rgba(58,50,136,0.55)] hover:brightness-110"
             >
               Early access
             </Link>
@@ -197,7 +197,7 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
                 </Link>
                 <Link
                   href="/early-access"
-                  className="mt-1 rounded-lg bg-[#3A3288] px-4 py-2.5 text-center text-sm font-semibold text-white shadow-[0_8px_20px_-12px_rgba(58,50,136,0.9)] transition-all duration-200 hover:scale-[1.01] hover:brightness-110"
+                  className="nw-cta-primary mt-1 rounded-lg px-4 py-2.5 text-center shadow-[0_8px_20px_-12px_rgba(58,50,136,0.55)] hover:brightness-110"
                   onClick={() => setOpen(false)}
                 >
                   Early access

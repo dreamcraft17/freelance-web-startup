@@ -1,141 +1,197 @@
 # Audit teknis — Freelance-web (monorepo)
 
-**Lingkup:** `apps/web`, `packages/database`, paket workspace terkait.  
-**Tanggal referensi:** April 2026 (sesuai snapshot repo saat audit).
+**Lingkup:** `apps/web`, `packages/*`, dan jalur operasional yang mempengaruhi produksi.  
+**Tanggal referensi:** April 2026 (sinkron dengan update terakhir implementasi).
 
 ---
 
-## 1. Ringkasan eksekutif
+## 1) Ringkasan eksekutif
 
-Proyek ini adalah **marketplace freelance SaaS** berbasis Next.js 15 (App Router), Prisma/PostgreSQL, dan lapisan **service + policy + repository**. **Auth berbasis cookie JWT**, **job/bid/contract accept**, **profil**, **subscription**, **search**, **taxonomy (category/skill)**, **saved jobs & freelancers**, **pesan (thread + participant)**, **notifikasi**, **review terikat kontrak**, dan **halaman detail job** sudah terhubung ke Prisma/layanan. **Typecheck** `apps/web` bersih (`pnpm exec tsc --noEmit`).
+NearWork sudah berada di fase **MVP+ operasional**:
 
-**Kesiapan monetisasi (awal / tanpa paywall):** `packages/config` memuat **feature flags** + **`resolvePlanEntitlements`**; **QuotaService** membaca entitlement plan (merge opsional JSON plan) dengan mode **early access** (bypass enforcement lewat flag, tetap melaporkan pemakaian); **SubscriptionService** mengekspor ringkasan langganan + flag publik dan **`MONETIZATION_PRICING_PLACEHOLDER`** (harga/durasi placeholder, belum ditagih). **Donasi** — model **`Donation`**, **`DonationService`**, **`POST /api/donations`** (mock, `userId` opsional dari sesi). **Listing & pencarian:** job punya **`isFeatured` / `featuredUntil`**, profil freelancer **`isBoosted` / `boostedUntil`**; **SearchService** mengurutkan featured/boost aktif di atas hasil lain (SQL mentah + expiry). **JobService.listOpenJobs** memakai listing publik terurut itu dan mengekspor hook **`isFeatured` / `featuredUntil`** pada item; strip **early access** ringan di layout freelancer (kuota, teks upgrade opsional, CTA donasi).
+- core marketplace aktif (jobs, bids, contracts, messages, notifications, reviews, saved items, taxonomy, search),
+- auth cookie-based stabil (`acme_session`),
+- internal staff workspace `/admin` sudah real (bukan scaffold lagi) dengan RBAC dan banyak halaman operasional.
 
-Masih ada **placeholder / TODO** di beberapa area produk (mis. **VerificationService**, **checkout subscription** nyata, UI directory freelancer). **Penyelesaian kontrak** — `POST /api/contracts/[contractId]/complete` mengeset **COMPLETED** (gate review); idempotent **409** `ALREADY_COMPLETED`. **Tidak ada lagi duplikasi handler `/api/v1`** — diganti redirect ke `/api`.
+Perubahan besar sejak audit sebelumnya:
 
-**Kesiapan production:** memerlukan `DATABASE_URL`, `SESSION_SECRET`, migrasi `deploy` (termasuk migrasi setelah baseline: participant thread pesan, agregat review profil, dll.), serta peninjauan klien API (`credentials: 'include'` untuk cookie).
+- `/admin` sekarang fully integrated di `apps/web` (overview + users/jobs/bids/contracts/verification/reviews/reports/donations/subscriptions/feature-flags/settings),
+- guard staff sudah konsisten antara middleware, server guard, dan API (`protectStaff`),
+- navbar public sudah auth-aware (tidak lagi selalu menampilkan login/register saat sesi valid),
+- redirect post-login dipusatkan (`resolvePostLoginRedirect`) dan staff default ke `/admin`.
 
----
+Status umum:
 
-## 2. Arsitektur & konsistensi
-
-| Area | Penilaian |
-|------|-----------|
-| **Pemisahan domain** | Service + policy + repository — konsisten untuk job/bid/quota, pesan, review, notifikasi. |
-| **Path `@/` vs `@src/`** | `server/*` (root app) dan `src/*` (session, middleware, beberapa service) — impor re-export dari `server/services` ke `src/server/services` untuk auth/subscription/profile. |
-| **API surface** | Satu kanonik `/api/*`; `/api/v1/*` → **308** ke `/api/*` (`[[...legacy]]`), header `X-Api-Deprecation`. |
-| **Middleware** | Matcher: **`/client/*`**, **`/freelancer/*`**, **`/messages/*`**, **`/notifications/*`**, **`/settings/*`** — redirect ke `/login` + `returnUrl` jika tidak ada sesi. Publik **`/`**, **`/jobs`**, **`/freelancers`** tidak di-match. |
-| **Parse query API** | `parseSearchParams` / `parseJson` memakai **`ZodType<Output, Def, Input>`** agar output schema dengan `.default()` (mis. `page`/`limit`) tidak melebar jadi bentuk input. |
-| **Konfig & monetisasi** | `@acme/config`: **`plans.ts`** (tier FREE/PRO/AGENCY + entitlement), **`monetization.ts`** (flag + env `FEATURE_*`, **`shouldBypassQuotaEnforcement`**, **`resolvePlanEntitlements`**). |
+- **Typecheck `apps/web` bersih** pada perubahan terbaru.
+- Arsitektur service/policy/repository tetap rapi.
+- Risiko utama tersisa: billing provider nyata, ekspansi trust/safety reports backend, dan hardening operasional lanjutan.
 
 ---
 
-## 3. Autentikasi & otorisasi
+## 2) Arsitektur & konsistensi
 
-| Item | Status |
-|------|--------|
-| **Sesi** | Cookie `acme_session`, JWT (jose), klaim `sub`, `role`, `accountStatus`. |
-| **Middleware** | `getSessionFromRequest` — selaras dengan API; area app terlindungi diperluas (lihat §2). |
-| **`protect()` / `resolveActorFromRequest`** | Async; aktor hanya dari cookie; **tanpa** `dev-user-id` dan **tanpa** kepercayaan ke header `x-user-id` untuk akses terautentikasi. |
-| **Peran di gate** | `protectClient` / `protectFreelancer` mengizinkan **ADMIN**; `protectClientOrFreelancer` termasuk **ADMIN**; staff tetap policy terpisah. |
-| **RSC / halaman** | `getSessionFromCookies`, `requireAuthenticatedSession`, policy `access.policy` untuk asersi session. |
+| Area | Status |
+|---|---|
+| Domain layering | Konsisten: route handler → service → policy → repository/prisma |
+| Session source | Satu sumber (`acme_session` cookie JWT, `jose`) |
+| API canonical | `/api/*` aktif, legacy `/api/v1/*` tetap redirect/deprecation |
+| Shared config | `@acme/config` dipakai lintas service (flags, plans, entitlement) |
+| DTO validation | Zod validators tetap jadi kontrak input API |
 
-**Risiko sisa:** klien yang memanggil API tanpa `credentials: 'include'` tidak mengirim cookie → 401 (perilaku benar, perlu dokumentasi produk).
+Catatan:
 
----
-
-## 4. Basis data & Prisma
-
-| Item | Status |
-|------|--------|
-| **Skema** | `packages/database/prisma/schema.prisma` — model lengkap; tambahan **`MessageThreadParticipant`**, kolom agregat review di **`ClientProfile` / `FreelancerProfile`**, dll. |
-| **Migrasi** | Baseline **`20260412120000_init`** + lanjutan (participant pesan, agregat review, **`Donation`**, kolom **job featured** / **freelancer boost**) — cek folder `prisma/migrations` sebelum `deploy`. |
-| **Dokumentasi bootstrap** | `packages/database/README.md` — `pnpm db:generate`, `pnpm db:migrate:deploy`, `db:migrate` (dev). |
-| **Contoh env** | `packages/database/env.example.txt` (bukan `.env.example` karena `.env*` di-ignore). |
-| **Root scripts** | `db:generate`, `db:migrate`, `db:migrate:deploy`, `db:studio`. |
-
-**Catatan:** baseline dihasilkan dengan `prisma migrate diff` (bukan hanya `migrate dev` di satu mesin); tetap valid untuk `migrate deploy` pada DB kosong setelah semua file migrasi diterapkan.
+- Ada dual-path impor `@/` dan `@src/` yang masih valid, tapi tetap perlu disiplin agar tidak membingungkan contributor baru.
 
 ---
 
-## 5. Layanan — nyata vs stub
+## 3) Auth, redirect, dan otorisasi
 
-### Sudah berbasis DB / logika nyata (contoh)
+### 3.1 Session & login redirect
 
-- **AuthService** (`src/server/services`) — register/login, sesi.
-- **JobService / JobRepository** — job **OPEN** saat create; listing publik **`listOpenJobs`** memakai **SearchService.listPublicOpenJobsPaginated** (hanya **PUBLIC** + urutan featured aktif); detail publik menyertakan **`isFeatured` / `featuredUntil`**; update/close; detail kategori + ringkasan klien.
-- **BidService / BidRepository** — bid **SUBMITTED**, policy + kuota + unik `(jobId, freelancerId)`; **accept bid** → kontrak **PENDING** + notifikasi **BID_ACCEPTED**; notifikasi **BID_SUBMITTED** ke pemilik job.
-- **QuotaService** — entitlement efektif via **SubscriptionService**; enforcement dapat dilewati lewat **`shouldBypassQuotaEnforcement()`**; respons kuota menyertakan **`remaining`**, **`quotasUnlimited`**, snapshot entitlement.
-- **SubscriptionService** — **`resolveEffectivePlanContextForUser`** (satu baca DB: `planKey` + entitlement merge JSON plan), ringkasan aktif + **`getPublicMonetizationFlags`**, harga placeholder **`MONETIZATION_PRICING_PLACEHOLDER`**.
-- **FreelancerProfileService / ClientProfileService** — Prisma + view types; **GET publik** `?username=`, **`GET /api/freelancer-profiles/me`** (sesi freelancer), **`POST` buat profil**, **`PATCH /api/freelancer-profiles`** (partial: bio, headline, workMode, availability, dll.) — **wajib** untuk melengkapi **`bio`** setelah register agar **BidPolicy** (`isComplete`) mengizinkan bid; view freelancer menyertakan **`isBoosted` / `boostedUntil`** (hook UI, bukan gate).
-- **SearchService** — pencarian job & freelancer dengan **`$queryRaw`** terparameter: filter + pagination + **urutan featured/boost aktif** (expiry dipertimbangkan), lalu recency; **`listPublicOpenJobsPaginated`** untuk board publik.
-- **DonationService** — **`POST /api/donations`**, provider **MOCK**, amount + pesan opsional.
-- **SavedItemsService** — `SavedJob` / `SavedFreelancer`, ownership `userId`, upsert + list + `idsOnly` untuk UI.
-- **MessageService** — thread **DIRECT/JOB/CONTRACT**, participant, pesan, gate participant; notifikasi **NEW_MESSAGE** ke pihak lain.
-- **NotificationService** — create/list/mark read di DB; event bid & pesan terhubung.
-- **ReviewService** — review per kontrak **COMPLETED**, unik `(contractId, authorUserId, targetType)`, agregat `reviewCount` / `averageReviewRating` pada profil target.
-- **CategoryService / SkillService** — list & detail dari Prisma; filter `parentSlug`, `categoryId`, `q`; respons kategori vs subkategori terdiskriminasi.
+- Session payload: `userId`, `role`, `accountStatus`.
+- Redirect sesudah login/register sekarang dipusatkan di:
+  - `homePathForSessionRole`
+  - `resolvePostLoginRedirect`
+- Perilaku:
+  - `ADMIN`, `SUPPORT_ADMIN`, `MODERATOR`, `FINANCE_ADMIN` → fallback `/admin`
+  - `CLIENT` → `/client`
+  - `FREELANCER` → `/freelancer`
+  - `returnUrl` valid tetap diprioritaskan.
 
-### Masih stub / TODO utama
+### 3.2 Proteksi `/admin`
 
-| Service / area | Isu |
-|----------------|-----|
-| **VerificationService** | Mayoritas return placeholder / perlu alur staff lengkap. |
-| **SubscriptionService** | `initiateSubscriptionCheckout` — `checkoutUrl: null` (billing/pembayaran belum). Harga/feature tier sudah di-*placeholder*; penagihan & gate fitur belum diaktifkan. |
-| **Donasi** | Hanya persistensi + respons sukses; **belum** gateway (Stripe/Midtrans/Xendit). |
-| **Featured / boost** | Flag & ranking ada; **belum** alur pembelian/pembaruan otomatis atau cron pembersihan expiry (bisa ditambah). |
-| **ContractService** | **Selesai:** `completeContract` → **COMPLETED** + policy peserta; pembayaran escrow nyata tetap TODO. |
-| **UI publik** | Directory freelancer masih ringan; beberapa halaman settings placeholder. |
+Sudah benar-benar staff-only:
 
----
+- middleware memproteksi `/admin` dan nested routes,
+- account inactive ditolak (`/forbidden`),
+- non-staff diarahkan aman ke home role masing-masing,
+- staff tanpa akses page-level diarahkan ke `/forbidden`.
 
-## 6. API routes & UI
+### 3.3 Konsistensi guard
 
-- **Route API utama** memakai **`await protect*(request)`** — selaras cookie-session.
-- **GET publik** (jobs list, search, **GET /api/reviews** dengan query profil) sesuai desain; respons pencarian / list job publik dapat menyertakan **`isFeatured` / `featuredUntil`**; pencarian freelancer **`isBoosted` / `boostedUntil`** + **`isFeatured`**.
-- **`POST /api/donations`** — tanpa wajib auth; sesi opsional mengisi `userId`.
-- **`GET /api/quota/me`** — bentuk respons diperluas (remaining, unlimited early access, entitlement).
-- **`GET /api/subscriptions`** — menyertakan `entitlements`, `launch`, `featureFlags` (baca saja).
-- **`/jobs/[jobId]`** — data nyata dari **`JobService.getJobByIdForPublic`** (budget, kategori, klien, **flag featured**, loading/not-found).
-- **Freelancer `(app)`** — banner early access (kuota, label upgrade opsional, CTA donasi) di **`DashboardShell.topBanner`**.
-- **Saved** — tombol simpan di browse/detail job & profil freelancer publik; daftar di **Settings** + nav **Saved**.
-- **Notifikasi** — API list + PATCH read; event dari bid & pesan.
-- **Freelancer profil** — **`PATCH /api/freelancer-profiles`**, **`GET /api/freelancer-profiles/me`** (lihat §5).
+- `protectStaff()` di API sudah align dengan staff roles yang sama dengan admin access helpers.
+- `requireStaffSession()` dan `requireAdminAccess()` di RSC juga align dengan middleware.
+
+**Residual risk:** client-side fetch tanpa `credentials: "include"` tetap 401 (expected), perlu dijaga konsisten di seluruh UI baru.
 
 ---
 
-## 7. Build, typecheck & E2E
+## 4) Status internal `/admin` (yang kini sudah real)
 
-- **`pnpm exec tsc --noEmit`** di **`apps/web`** — **lulus** (pagination: perbaikan `ZodType<Output, _, Input>` di `route-helpers` + schema `paginationSchema.extend`).
-- **`pnpm typecheck`** di root (turbo) — memvalidasi seluruh paket workspace yang dikonfigurasi.
-- **Uji HTTP alur marketplace** — **`pnpm test:e2e`** menjalankan **`scripts/e2e-marketplace-flow.mjs`** (`node:test` + `fetch` + redirect manual dengan deteksi siklus). **Syarat:** server Next aktif (mis. `pnpm --filter @acme/web dev`), **`DATABASE_URL`**, **`SESSION_SECRET`** (≥16), migrasi DB. **`BASE_URL`** default **`http://127.0.0.1:3000`** (hindari loop redirect `localhost` ↔ `127.0.0.1` di Windows/Undici). Tanpa server yang merespons, tes gagal dengan **`fetch failed`**.
+### 4.1 Kekuatan saat ini
 
----
+- UI shell internal terstruktur (sidebar grouped + topbar + role badge + account menu).
+- Halaman operasional read-first sudah kaya data:
+  - users, jobs, bids, contracts, reviews, donations, subscriptions, feature flags.
+- Verification queue sudah punya aksi moderasi nyata (approve/reject) ke endpoint yang ada.
+- Overview dashboard sudah memakai data real (bukan fake metrics) + panel aktivitas.
 
-## 8. Keamanan & operasional
+### 4.2 Gap yang masih ada
 
-| Checklist | |
-|-----------|---|
-| Set **`SESSION_SECRET`** (panjang memadai) di production. |
-| Set **`DATABASE_URL`**; jalankan **`pnpm db:migrate:deploy`** sebelum app (semua migrasi). Opsional: set env **`FEATURE_*`** (lihat `packages/config/src/monetization.ts`) untuk uji coba bypass kuota / flag produk. |
-| Pastikan **HTTPS** di production agar flag **Secure** pada cookie sesi efektif. |
-| **pnpm approve-builds** — build script Prisma/sharp mungkin perlu disetujui di CI. |
-| **Vercel + pnpm** — **`packageManager`: `pnpm@9.15.9`**, install default Vercel (`pnpm install`); **`engines.node`: `20.x`**; tanpa `npm install -g pnpm`; jangan set **`ENABLE_EXPERIMENTAL_COREPACK`** jika memicu `ERR_INVALID_THIS` pada registry. |
-| Tinjau **matcher middleware** bila area `(app)` baru perlu wajib login di edge. |
+- `reports` masih placeholder readiness (struktur bagus, backend report entity belum ada).
+- Feature flags page masih read-only (sudah tepat untuk tahap sekarang).
+- Belum ada aksi destructive/admin mutation besar (suspend user, hard moderation workflows, dsb.) — by design read-first.
 
 ---
 
-## 9. Rekomendasi prioritas
+## 5) Database, migrasi, dan seed
 
-1. ~~**Kontrak** — alur **COMPLETED**~~ — **Sudah:** `POST …/complete` + gate review; lanjutkan **pembayaran / escrow** bila produk memerlukan.  
-2. **Pembayaran** — checkout subscription + integrasi provider; donasi (PSP) + penjualan featured/boost bila produk memerlukan.  
-3. **VerificationService** — persistensi & UI staff.  
-4. **Uji E2E** — **Skrip ada:** `scripts/e2e-marketplace-flow.mjs` + `pnpm test:e2e`; pertimbangkan **CI** (services DB + `next start` + env) agar lari otomatis.  
-5. **SEO / konten** — halaman marketing & directory freelancer bila produk memerlukan.  
-6. **Monetisasi lanjutan** — cron / webhook untuk **`featuredUntil` / `boostedUntil`**; selaraskan **`GET /api/search/jobs`** dengan filter **PUBLIC** bila ingin identik dengan board publik.
+### 5.1 Prisma
+
+- Skema domain sudah luas: users/profiles/jobs/bids/contracts/messages/notifications/reviews/subscriptions/donations/verification, dll.
+- Indeks dan model terbaru sudah dipakai oleh halaman admin.
+
+### 5.2 Seed admin
+
+- `packages/database/prisma/seed.ts` sudah menyiapkan akun admin dev via upsert.
+- Root script `pnpm db:seed` sudah tersedia.
+- Default seed credential didokumentasikan dan bisa di-override via env.
+
+**Catatan keamanan:** credential default dev tidak boleh dipakai di shared/staging/prod.
 
 ---
 
-## 10. Kesimpulan
+## 6) UI/UX audit (public + auth pages)
 
-Repo berada pada titik **MVP backend yang jauh lebih lengkap**: **taxonomy**, **saved items**, **messaging dengan participant**, **notifikasi**, **review + agregat profil**, **detail job publik**, **penyelesaian kontrak (COMPLETED)**, **update profil freelancer (PATCH) + profil “me”**, **persiapan monetisasi (flag, entitlement, kuota, donasi, ranking featured/boost)**, **skrip uji E2E HTTP**, dan **middleware app** terhubung. **Typecheck web** bersih. Utang utama bergeser ke **billing nyata**, **verifikasi**, **otomasi expiry promosi**, dan **kilasan UI** tertentu. Ringkasan fitur **seluruh monorepo** (apps + packages + skrip): **`features.md`**. File ini dapat diperbarui setelah setiap rilis besar.
+### 6.1 Public navbar
+
+Positif:
+
+- sekarang auth-aware (session real), role-aware actions, mobile collapse, visual polish meningkat.
+
+Perlu perhatian:
+
+- sering berubah cepat (iterasi tinggi) → rawan inkonsistensi spacing/brand tone antar halaman.
+- karena brand asset berubah dari SVG ke PNG (`logo3.png`), perlu guideline final ukuran/crop agar tidak regress lagi.
+
+### 6.2 Auth pages (login/register)
+
+- logo sudah dibesarkan dan dipusatkan.
+- brand visibility naik, namun aset PNG membuat kontrol warna/kontras lebih bergantung ke file desain final.
+
+Rekomendasi: freeze satu brand source-of-truth (PNG atau SVG final) + token ukuran resmi untuk navbar/auth/dashboard.
+
+---
+
+## 7) Monetisasi & trust/safety readiness
+
+### Monetisasi
+
+Sudah ada:
+
+- plan/entitlement resolution,
+- subscription records & plan catalog,
+- donation records,
+- feature flags visibility.
+
+Belum ada:
+
+- payment provider real end-to-end (checkout, webhook, reconciliation),
+- status transaksi finansial yang kaya (chargeback/dispute states).
+
+### Trust/Safety
+
+Sudah ada:
+
+- verification workflow staff (approved/rejected),
+- moderation-ready reports page scaffold.
+
+Belum ada:
+
+- report entity + triage lifecycle persisted,
+- assignment/escalation workflow,
+- policy engine yang lebih granular untuk abuse handling.
+
+---
+
+## 8) Kualitas build/test/ops
+
+- `apps/web` typecheck: lulus di update terbaru.
+- Lints file yang disentuh: bersih.
+- E2E script tersedia (`pnpm test:e2e`) tapi tetap butuh environment + server hidup.
+
+Ops checklist yang tetap wajib:
+
+1. set `SESSION_SECRET` kuat,
+2. set `DATABASE_URL` benar,
+3. jalankan migrasi deploy sebelum startup app,
+4. pastikan HTTPS prod untuk cookie security behavior,
+5. hindari commit file kredensial/rahasia real.
+
+---
+
+## 9) Prioritas rekomendasi berikutnya
+
+1. **Billing real integration** (provider + webhook + audit trail finansial).
+2. **Reports backend** (model, API, status lifecycle, assignment).
+3. **Admin action layer** bertahap (safe mutations + audit logs).
+4. **Stabilisasi design system navbar/brand** (token final supaya iterasi tidak regress).
+5. **CI hardening**: jalankan typecheck/lint/e2e smoke secara otomatis.
+
+---
+
+## 10) Kesimpulan
+
+Freelance-web saat ini sudah lebih dari “backend MVP”: sekarang ada **internal admin workspace yang usable**, **RBAC yang terpusat**, **redirect/auth flow yang lebih benar**, dan **UI publik yang session-aware**. Fondasi teknisnya kuat untuk lanjut ke fase operasi awal.
+
+Utang utama bukan lagi core CRUD, melainkan **operasional produksi**: billing nyata, trust/safety reports backend, dan standardisasi visual brand agar stabil lintas rilis.
