@@ -42,7 +42,7 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
         <Link href={"/" as Route} className="flex min-w-0 shrink-0 items-center gap-3.5 pr-3">
           <span className="relative inline-flex h-14 w-14 overflow-hidden rounded-xl border border-[#433C93]/15 bg-white shadow-[0_4px_18px_-10px_rgba(67,60,147,0.45)]">
             <img
-              src="/logo/logo.svg"
+              src="/logo/logo3.png"
               alt="NearWork"
               className="h-full w-[236px] max-w-none object-cover object-left"
             />
