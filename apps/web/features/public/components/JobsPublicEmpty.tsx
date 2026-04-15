@@ -12,7 +12,7 @@ type JobsPublicEmptyProps = {
 export function JobsPublicEmpty({ categorySelected, hasFilters }: JobsPublicEmptyProps) {
   if (categorySelected) {
     return (
-      <div className="rounded-2xl border border-dashed border-slate-300/90 bg-white/70 px-6 py-14 text-center sm:px-10">
+      <div className="rounded-xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center sm:px-10">
         <p className="text-lg font-semibold text-slate-900">No jobs yet in this category</p>
         <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-slate-600">
           Nothing open matches that category right now. Try another category, clear filters, or check back as clients
@@ -21,7 +21,7 @@ export function JobsPublicEmpty({ categorySelected, hasFilters }: JobsPublicEmpt
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
           <Link
             href="/jobs"
-            className="rounded-lg bg-[#3525cd] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4f46e5]"
+            className="nw-cta-primary px-5 py-2.5"
           >
             Browse all open jobs
           </Link>
@@ -41,7 +41,7 @@ export function JobsPublicEmpty({ categorySelected, hasFilters }: JobsPublicEmpt
 
   if (hasFilters) {
     return (
-      <div className="rounded-2xl border border-dashed border-slate-300/90 bg-white/70 px-6 py-14 text-center sm:px-10">
+      <div className="rounded-xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center sm:px-10">
         <p className="text-lg font-semibold text-slate-900">No jobs match these filters</p>
         <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-slate-600">
           Loosen the keyword, try another work mode, or remove the city—NearWork is early access and the board is
@@ -50,7 +50,7 @@ export function JobsPublicEmpty({ categorySelected, hasFilters }: JobsPublicEmpt
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
           <Link
             href="/jobs"
-            className="rounded-lg bg-[#3525cd] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4f46e5]"
+            className="nw-cta-primary px-5 py-2.5"
           >
             Clear filters
           </Link>
@@ -63,7 +63,7 @@ export function JobsPublicEmpty({ categorySelected, hasFilters }: JobsPublicEmpt
   }
 
   return (
-    <div className="rounded-2xl border border-dashed border-slate-300/90 bg-white/70 px-6 py-14 text-center sm:px-10">
+    <div className="rounded-xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center sm:px-10">
       <p className="text-lg font-semibold text-slate-900">No open jobs yet</p>
       <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-slate-600">
         The public board is empty for now. When clients post briefs—nearby shoots, remote edits, hybrid projects—they
@@ -75,7 +75,7 @@ export function JobsPublicEmpty({ categorySelected, hasFilters }: JobsPublicEmpt
           intent="post-job"
           unauthenticatedTo="register"
           registerRoleHint="client"
-          className="rounded-lg bg-[#3525cd] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4f46e5]"
+          className="nw-cta-primary px-5 py-2.5"
         >
           Post the first job
         </AuthAwareCtaLink>

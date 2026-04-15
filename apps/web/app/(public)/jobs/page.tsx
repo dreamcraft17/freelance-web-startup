@@ -101,12 +101,13 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
   const categorySelected = Boolean(categoryId.trim());
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 md:px-6 md:py-12">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">Find work on NearWork</h1>
-        <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-600">
-          Open briefs from clients—nearby, hybrid, or remote. Filter by what matters to you; everything here is live
-          data from the marketplace.
+    <div className="mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-10">
+      <header className="nw-page-header">
+        <p className="nw-section-title">Jobs discovery</p>
+        <h1 className="nw-page-title md:text-4xl">Browse open jobs</h1>
+        <p className="nw-page-description text-base">
+          Review active briefs from clients. Filter by category, location, and work mode to narrow to jobs that match how
+          you work.
         </p>
       </header>
 
@@ -119,7 +120,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
       />
 
       {total > 0 ? (
-        <p className="mb-6 text-sm text-slate-600">
+        <p className="mb-5 text-sm text-slate-600">
           {total === 1 ? "One open role matches your filters." : `${total} open roles match your filters.`}
         </p>
       ) : null}
@@ -132,7 +133,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
 
       {totalPages > 1 ? (
         <nav
-          className="mt-10 flex items-center justify-between border-t border-slate-200/80 pt-6 text-sm"
+          className="mt-8 flex items-center justify-between border-t border-slate-200 pt-5 text-sm"
           aria-label="Pagination"
         >
           {page > 1 ? (

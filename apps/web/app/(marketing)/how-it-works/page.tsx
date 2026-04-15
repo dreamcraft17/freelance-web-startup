@@ -2,19 +2,19 @@ import Link from "next/link";
 
 export default function HowItWorksPage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 md:px-6 md:py-14">
-      <header className="mb-12">
-        <p className="text-xs font-semibold uppercase tracking-wider text-indigo-700">How it works</p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">How NearWork works</h1>
-        <p className="mt-4 text-base leading-relaxed text-slate-600">
+    <div className="mx-auto max-w-5xl px-4 py-8 md:px-6 md:py-10">
+      <header className="nw-page-header mb-8">
+        <p className="nw-section-title">How it works</p>
+        <h1 className="nw-page-title md:text-4xl">How NearWork works</h1>
+        <p className="nw-page-description text-base leading-relaxed">
           NearWork connects clients and freelancers around <span className="font-medium text-slate-800">briefs</span>,{" "}
           <span className="font-medium text-slate-800">bids</span>, and <span className="font-medium text-slate-800">delivery</span>
           —with your city and work mode in the loop when place matters. The product is real; the roadmap is still open.
         </p>
       </header>
 
-      <div className="space-y-10">
-        <section className="rounded-2xl bg-white/90 p-6 shadow-[0_2px_20px_-4px_rgba(53,37,205,0.08)] ring-1 ring-slate-200/60 sm:p-8">
+      <div className="grid gap-4 lg:grid-cols-2">
+        <section className="nw-surface p-6 sm:p-7">
           <h2 className="text-lg font-semibold text-slate-900">For clients</h2>
           <p className="mt-1 text-sm text-slate-600">When you need talent for a defined piece of work.</p>
           <ol className="mt-6 space-y-6">
@@ -43,7 +43,7 @@ export default function HowItWorksPage() {
           </ol>
         </section>
 
-        <section className="rounded-2xl bg-white/90 p-6 shadow-[0_2px_20px_-4px_rgba(53,37,205,0.08)] ring-1 ring-slate-200/60 sm:p-8">
+        <section className="nw-surface p-6 sm:p-7">
           <h2 className="text-lg font-semibold text-slate-900">For freelancers</h2>
           <p className="mt-1 text-sm text-slate-600">When you want briefs that respect how and where you work.</p>
           <ol className="mt-6 space-y-6">
@@ -71,7 +71,7 @@ export default function HowItWorksPage() {
           </ol>
         </section>
 
-        <section className="rounded-2xl bg-indigo-50/70 px-5 py-6 text-sm leading-relaxed text-slate-700 ring-1 ring-indigo-100 sm:px-6">
+        <section className="nw-surface-soft px-5 py-6 text-sm leading-relaxed text-slate-700 sm:px-6">
           <h2 className="text-base font-semibold text-indigo-950">Nearby vs remote</h2>
           <p className="mt-3">
             <span className="font-medium text-slate-900">Nearby</span> fits shoots, installs, on-site support, and
@@ -81,7 +81,7 @@ export default function HowItWorksPage() {
           </p>
         </section>
 
-        <section className="rounded-2xl border border-dashed border-slate-300/90 bg-slate-50/80 px-5 py-6 text-sm leading-relaxed text-slate-700 sm:px-6">
+        <section className="rounded-xl border border-dashed border-slate-300 bg-white px-5 py-6 text-sm leading-relaxed text-slate-700 sm:px-6">
           <h2 className="text-base font-semibold text-slate-900">Early access</h2>
           <p className="mt-3">
             NearWork is still in early access: features and coverage will grow, and some flows will change as we learn
@@ -96,35 +96,35 @@ export default function HowItWorksPage() {
         </section>
       </div>
 
-      <section className="mt-14 rounded-2xl bg-[#3525cd] px-6 py-10 text-center sm:px-10">
-        <h2 className="text-xl font-semibold text-white">Ready to try it?</h2>
-        <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-indigo-100">
+      <section className="nw-surface mt-8 px-6 py-7 sm:px-8">
+        <h2 className="text-xl font-semibold text-slate-900">Ready to try it?</h2>
+        <p className="mt-2 max-w-lg text-sm leading-relaxed text-slate-600">
           Create an account to post or bid, or explore the public board first—no hype, just the same product everyone
           else sees.
         </p>
-        <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+        <div className="mt-5 flex flex-wrap items-center gap-3">
           <Link
             href="/register"
-            className="inline-flex justify-center rounded-lg bg-white px-6 py-3 text-sm font-semibold text-[#3525cd] transition hover:bg-indigo-50"
+            className="nw-cta-primary inline-flex justify-center px-6 py-3"
           >
             Create an account
           </Link>
           <Link
             href="/jobs"
-            className="inline-flex justify-center rounded-lg border border-white/40 bg-transparent px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+            className="inline-flex justify-center rounded-md border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
           >
             Browse open jobs
           </Link>
           <Link
             href="/freelancers"
-            className="inline-flex justify-center rounded-lg border border-transparent px-6 py-3 text-sm font-semibold text-white hover:underline"
+            className="inline-flex justify-center px-1 py-3 text-sm font-semibold text-[#433C93] hover:underline"
           >
             Discover freelancers
           </Link>
         </div>
-        <p className="mt-6 text-xs text-indigo-200/90">
+        <p className="mt-5 text-xs text-slate-500">
           Questions or rough edges?{" "}
-          <Link href="/help" className="font-medium text-white underline-offset-2 hover:underline">
+          <Link href="/help" className="font-medium text-[#433C93] underline-offset-2 hover:underline">
             Help
           </Link>
         </p>

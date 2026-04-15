@@ -25,23 +25,23 @@ const helpTopics = [
 
 export default function HelpPage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 md:px-6 md:py-14">
-      <header className="mb-10">
-        <p className="text-xs font-semibold uppercase tracking-wider text-indigo-700">Help</p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">Help & contact</h1>
-        <p className="mt-4 text-base leading-relaxed text-slate-600">
+    <div className="mx-auto max-w-5xl px-4 py-8 md:px-6 md:py-10">
+      <header className="nw-page-header mb-8">
+        <p className="nw-section-title">Help</p>
+        <h1 className="nw-page-title md:text-4xl">Help & contact</h1>
+        <p className="nw-page-description text-base leading-relaxed">
           NearWork is a small product in early access. We are not a 24/7 support desk yet—this page is a honest anchor
           for how to reach us and what we can help with.
         </p>
       </header>
 
-      <section className="mb-10 rounded-2xl bg-white/90 p-6 shadow-[0_2px_20px_-4px_rgba(53,37,205,0.08)] ring-1 ring-slate-200/60 sm:p-8">
+      <section className="nw-surface mb-6 p-6 sm:p-7">
         <h2 className="text-lg font-semibold text-slate-900">Contact / support</h2>
         <p className="mt-3 text-sm leading-relaxed text-slate-700">
           For questions, bugs, or trust and safety reports, email us at the address below. We read everything; response
           time depends on volume while the team is small.
         </p>
-        <p className="mt-4 rounded-lg bg-slate-50 px-4 py-3 font-mono text-sm text-slate-800 ring-1 ring-slate-200/80">
+        <p className="mt-4 rounded-md border border-slate-200 bg-slate-50 px-4 py-3 font-mono text-sm text-slate-800">
           support@nearwork.example
         </p>
         <p className="mt-2 text-xs leading-relaxed text-slate-500">
@@ -49,7 +49,7 @@ export default function HelpPage() {
         </p>
       </section>
 
-      <section className="mb-10">
+      <section className="mb-6">
         <h2 className="text-base font-semibold text-slate-900">Help topics (outline)</h2>
         <p className="mt-2 text-sm text-slate-600">
           Full articles can live here later; for now these are the buckets we expect to document.
@@ -58,7 +58,7 @@ export default function HelpPage() {
           {helpTopics.map((t) => (
             <li
               key={t.title}
-              className="rounded-xl border border-slate-200/90 bg-white/60 px-4 py-3 text-sm text-slate-700"
+              className="rounded-md border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700"
             >
               <span className="font-semibold text-slate-900">{t.title}</span>
               <span className="mt-1 block leading-relaxed text-slate-600">{t.blurb}</span>
@@ -67,7 +67,7 @@ export default function HelpPage() {
         </ul>
       </section>
 
-      <section className="rounded-2xl border border-dashed border-slate-300/90 bg-slate-50/80 px-5 py-6 text-sm leading-relaxed text-slate-700 sm:px-6">
+      <section className="rounded-xl border border-dashed border-slate-300 bg-white px-5 py-6 text-sm leading-relaxed text-slate-700 sm:px-6">
         <h2 className="text-base font-semibold text-slate-900">Self-serve first</h2>
         <ul className="mt-3 list-inside list-disc space-y-1.5">
           <li>
