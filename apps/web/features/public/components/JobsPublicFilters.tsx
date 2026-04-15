@@ -21,7 +21,7 @@ const workModes: { value: WorkMode; label: string }[] = [
 
 export function JobsPublicFilters({ keyword, city, workMode, categoryId, categories }: JobsPublicFiltersProps) {
   return (
-    <div className="mb-10 rounded-2xl bg-white/90 p-4 shadow-[0_2px_20px_-4px_rgba(53,37,205,0.08)] ring-1 ring-slate-200/60 sm:p-5">
+    <div className="mb-8 rounded-xl border border-slate-200 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] sm:p-5">
       <form method="get" action="/jobs" className="flex flex-col gap-4 xl:flex-row xl:flex-wrap xl:items-end">
         <div className="min-w-0 flex-1 xl:max-w-[220px]">
           <label htmlFor="jobs-kw" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -33,7 +33,7 @@ export function JobsPublicFilters({ keyword, city, workMode, categoryId, categor
             type="search"
             defaultValue={keyword}
             placeholder="Title or description"
-            className="w-full rounded-lg border-0 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 ring-1 ring-slate-200/80 outline-none transition focus:bg-white focus:ring-2 focus:ring-[#3525cd]/35"
+            className="nw-input w-full"
           />
         </div>
 
@@ -45,7 +45,7 @@ export function JobsPublicFilters({ keyword, city, workMode, categoryId, categor
             id="jobs-cat"
             name="categoryId"
             defaultValue={categoryId}
-            className="w-full rounded-lg border-0 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 ring-1 ring-slate-200/80 outline-none transition focus:bg-white focus:ring-2 focus:ring-[#3525cd]/35"
+            className="nw-input w-full"
           >
             <option value="">All categories</option>
             {categories.map((c) => (
@@ -64,7 +64,7 @@ export function JobsPublicFilters({ keyword, city, workMode, categoryId, categor
             id="jobs-wm"
             name="workMode"
             defaultValue={workMode}
-            className="w-full rounded-lg border-0 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 ring-1 ring-slate-200/80 outline-none transition focus:bg-white focus:ring-2 focus:ring-[#3525cd]/35"
+            className="nw-input w-full"
           >
             {workModes.map((o) => (
               <option key={o.value || "any"} value={o.value}>
@@ -84,7 +84,7 @@ export function JobsPublicFilters({ keyword, city, workMode, categoryId, categor
             type="text"
             defaultValue={city}
             placeholder="City (optional)"
-            className="w-full rounded-lg border-0 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 ring-1 ring-slate-200/80 outline-none transition focus:bg-white focus:ring-2 focus:ring-[#3525cd]/35"
+            className="nw-input w-full"
           />
           <p className="mt-1.5 text-[11px] leading-snug text-slate-500">Matches when the job lists a city.</p>
         </div>
@@ -92,13 +92,13 @@ export function JobsPublicFilters({ keyword, city, workMode, categoryId, categor
         <div className="flex flex-wrap gap-2 xl:pb-0.5">
           <button
             type="submit"
-            className="rounded-lg bg-[#3525cd] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4f46e5]"
+            className="nw-cta-primary px-5 py-2.5"
           >
             Search
           </button>
           <Link
             href="/jobs"
-            className="inline-flex items-center rounded-lg bg-slate-100 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-200/80"
+            className="inline-flex items-center rounded-md border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
           >
             Reset
           </Link>

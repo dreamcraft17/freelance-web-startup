@@ -10,23 +10,23 @@ const chips: { label: string; variant: "solid" | "soft" | "outline" }[] = [
 ];
 
 const chipClass: Record<(typeof chips)[number]["variant"], string> = {
-  solid: "border-transparent bg-slate-800 text-white hover:bg-slate-700",
-  soft: "border-transparent bg-indigo-100/90 text-indigo-950 hover:bg-indigo-200/90",
-  outline: "border border-slate-200/80 bg-white text-[#464555] hover:border-indigo-200 hover:bg-indigo-50/80"
+  solid: "border-slate-900/10 bg-slate-900 text-white hover:bg-slate-800",
+  soft: "border-slate-200 bg-slate-100 text-slate-800 hover:bg-slate-200",
+  outline: "border border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
 };
 
 export function LandingCategoryChips() {
   return (
-    <section className="mx-auto mt-14 max-w-7xl px-4 sm:mt-20 sm:px-8">
-      <p className="mb-4 text-center text-xs font-medium uppercase tracking-wider text-slate-500">
+    <section className="mx-auto mt-10 max-w-6xl px-4 sm:px-6">
+      <p className="mb-3 text-xs font-medium uppercase tracking-wider text-slate-500">
         Open roles · often hired on-site or hybrid
       </p>
-      <div className="flex flex-wrap justify-center gap-2.5 sm:gap-3">
+      <div className="flex flex-wrap gap-2.5 sm:gap-3">
         {chips.map(({ label, variant }) => (
           <Link
             key={label}
             href="/jobs"
-            className={`rounded-full px-5 py-2.5 text-sm font-medium transition-colors ${chipClass[variant]}`}
+            className={`rounded-md border px-4 py-2 text-sm font-medium transition-colors ${chipClass[variant]}`}
           >
             {label}
           </Link>

@@ -10,7 +10,7 @@ type FreelancersPublicEmptyProps = {
 export function FreelancersPublicEmpty({ categorySelected, hasFilters }: FreelancersPublicEmptyProps) {
   if (categorySelected) {
     return (
-      <div className="rounded-2xl border border-dashed border-slate-300/90 bg-white/70 px-6 py-14 text-center sm:px-10">
+      <div className="rounded-xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center sm:px-10">
         <p className="text-lg font-semibold text-slate-900">No freelancers in this category yet</p>
         <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-slate-600">
           Nobody on the directory lists skills under that category right now. Try another category, drop the filter, or
@@ -19,7 +19,7 @@ export function FreelancersPublicEmpty({ categorySelected, hasFilters }: Freelan
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
           <Link
             href="/freelancers"
-            className="rounded-lg bg-[#3525cd] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4f46e5]"
+            className="nw-cta-primary px-5 py-2.5"
           >
             Browse everyone
           </Link>
@@ -33,7 +33,7 @@ export function FreelancersPublicEmpty({ categorySelected, hasFilters }: Freelan
 
   if (hasFilters) {
     return (
-      <div className="rounded-2xl border border-dashed border-slate-300/90 bg-white/70 px-6 py-14 text-center sm:px-10">
+      <div className="rounded-xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center sm:px-10">
         <p className="text-lg font-semibold text-slate-900">No freelancers match these filters</p>
         <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-slate-600">
           Loosen the city, try remote-only, or shorten the keyword. The roster is still small in early access—clearing
@@ -42,7 +42,7 @@ export function FreelancersPublicEmpty({ categorySelected, hasFilters }: Freelan
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
           <Link
             href="/freelancers"
-            className="rounded-lg bg-[#3525cd] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4f46e5]"
+            className="nw-cta-primary px-5 py-2.5"
           >
             Reset filters
           </Link>
@@ -55,7 +55,7 @@ export function FreelancersPublicEmpty({ categorySelected, hasFilters }: Freelan
   }
 
   return (
-    <div className="rounded-2xl border border-dashed border-slate-300/90 bg-white/70 px-6 py-14 text-center sm:px-10">
+    <div className="rounded-xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center sm:px-10">
       <p className="text-lg font-semibold text-slate-900">The freelancer directory is still waking up</p>
       <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-slate-600">
         No public profiles to show yet. When freelancers finish their NearWork profiles—especially city and work
@@ -64,7 +64,7 @@ export function FreelancersPublicEmpty({ categorySelected, hasFilters }: Freelan
       <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
         <Link
           href={REGISTER_FREELANCER_PROFILE as Route}
-          className="rounded-lg bg-[#3525cd] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4f46e5]"
+          className="nw-cta-primary px-5 py-2.5"
         >
           Create a freelancer profile
         </Link>

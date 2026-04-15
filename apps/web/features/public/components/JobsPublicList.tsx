@@ -38,12 +38,12 @@ function budgetLabel(job: JobsPublicCard): string {
 
 export function JobsPublicList({ jobs }: { jobs: JobsPublicCard[] }) {
   return (
-    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {jobs.map((job) => (
         <li key={job.id}>
           <Link
             href={`/jobs/${job.id}` as Route}
-            className="flex h-full flex-col rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition hover:border-indigo-200/80 hover:shadow-md"
+            className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition hover:border-slate-300"
           >
             <h2 className="text-base font-semibold leading-snug text-slate-900">{job.title}</h2>
             <p className="mt-2 line-clamp-2 flex-1 text-sm leading-relaxed text-slate-600">{job.description}</p>

@@ -68,7 +68,7 @@ export function FreelancersBrowseList({ freelancers, activeCityFilter }: Freelan
   }
 
   return (
-    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {freelancers.map((f) => {
         const loc = locationLabel(f);
         const spec = specialtyLine(f);
@@ -79,14 +79,14 @@ export function FreelancersBrowseList({ freelancers, activeCityFilter }: Freelan
           <li key={f.id}>
             <Link
               href={`/freelancers/${encodeURIComponent(f.username)}`}
-              className="flex h-full flex-col rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition hover:border-indigo-200/80 hover:shadow-md"
+              className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition hover:border-slate-300"
             >
               <div className="mb-3 flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">
+                <span className="rounded-md bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">
                   {workModeLabel(f.workMode)}
                 </span>
                 {activeCityFilter?.trim() && loc?.toLowerCase().includes(activeCityFilter.trim().toLowerCase()) ? (
-                  <span className="rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-medium text-[#3525cd]">
+                  <span className="rounded-md bg-indigo-50 px-2.5 py-0.5 text-xs font-medium text-[#3525cd]">
                     Lists {activeCityFilter.trim()}
                   </span>
                 ) : null}

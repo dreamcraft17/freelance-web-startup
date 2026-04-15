@@ -124,13 +124,13 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
   const categorySelected = Boolean(categoryId.trim());
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 md:px-6 md:py-12">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">Discover freelancers</h1>
-        <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-600">
-          NearWork is built around <span className="font-semibold text-slate-800">who is near you</span> and who can
-          work <span className="font-semibold text-slate-800">remotely</span>. Start with city for on-site or hybrid,
-          switch to remote when location does not matter—every row is a live profile from the directory.
+    <div className="mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-10">
+      <header className="nw-page-header">
+        <p className="nw-section-title">Freelancer discovery</p>
+        <h1 className="nw-page-title md:text-4xl">Browse freelancers</h1>
+        <p className="nw-page-description text-base">
+          Filter by skill, city, and work mode. Use nearby search when location matters; switch to remote when it does not.
+          All results are live directory profiles.
         </p>
       </header>
 
@@ -146,12 +146,12 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
       />
 
       {hasGeoCenter ? (
-        <p className="mb-6 rounded-xl bg-emerald-50/80 px-4 py-3 text-sm leading-relaxed text-emerald-900 ring-1 ring-emerald-100">
+        <p className="mb-5 rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm leading-relaxed text-emerald-900">
           Showing freelancers near you within <span className="font-semibold">{radiusKm} km</span>. You can still refine
           by city and work mode.
         </p>
       ) : city.trim() ? (
-        <p className="mb-6 rounded-xl bg-indigo-50/80 px-4 py-3 text-sm leading-relaxed text-slate-700 ring-1 ring-indigo-100">
+        <p className="mb-5 rounded-md border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm leading-relaxed text-slate-700">
           Showing freelancers whose listed city matches{" "}
           <span className="font-semibold text-slate-900">&ldquo;{city.trim()}&rdquo;</span>—pair with work mode to
           separate remote collaborators from people who expect to meet in person.
@@ -159,7 +159,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
       ) : null}
 
       {nearbyTotal > 0 ? (
-        <p className="mb-6 text-sm text-slate-600">
+        <p className="mb-5 text-sm text-slate-600">
           {nearbyTotal === 1 ? "One profile matches your search." : `${nearbyTotal} profiles match your search.`}
         </p>
       ) : null}
@@ -172,7 +172,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
 
       {!hasGeoCenter && totalPages > 1 ? (
         <nav
-          className="mt-10 flex items-center justify-between border-t border-slate-200/80 pt-6 text-sm"
+          className="mt-8 flex items-center justify-between border-t border-slate-200 pt-5 text-sm"
           aria-label="Pagination"
         >
           {page > 1 ? (
