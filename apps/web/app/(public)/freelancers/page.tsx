@@ -22,7 +22,9 @@ function pick(sp: SearchParams): Record<string, string> {
   return out;
 }
 
-function toPublicCard(f: FreelancerSearchItem): PublicFreelancerCard {
+function toPublicCard(f: FreelancerSearchItem, distanceKm?: number | null): PublicFreelancerCard {
+  const rounded =
+    distanceKm != null && Number.isFinite(distanceKm) ? Math.round(distanceKm * 10) / 10 : null;
   return {
     id: f.id,
     username: f.username,
@@ -35,7 +37,8 @@ function toPublicCard(f: FreelancerSearchItem): PublicFreelancerCard {
     hourlyRate: f.hourlyRate,
     availabilityStatus: f.availabilityStatus,
     reviewCount: f.reviewCount,
-    averageReviewRating: f.averageReviewRating
+    averageReviewRating: f.averageReviewRating,
+    distanceKm: rounded
   };
 }
 
@@ -93,26 +96,26 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
   const [{ items, total }, categories] = await Promise.all([search.searchFreelancers(geoQuery), loadCategories()]);
 
   const geo = new GeoService();
-  const geoItems = hasGeoCenter
+  const rowsWithDistance = hasGeoCenter
     ? items
-        .map((f) => ({
-          row: f,
-          distanceKm:
-            f.lat != null && f.lng != null ? geo.haversineKm(rawLat, rawLng, f.lat, f.lng) : Number.POSITIVE_INFINITY
-        }))
-        .filter((x) => x.distanceKm <= radiusKm)
+        .map((f) => {
+          const distanceKm =
+            f.lat != null && f.lng != null ? geo.haversineKm(rawLat, rawLng, f.lat, f.lng) : Number.POSITIVE_INFINITY;
+          return { row: f, distanceKm };
+        })
+        .filter((x) => Number.isFinite(x.distanceKm) && x.distanceKm <= radiusKm)
         .sort((a, b) => a.distanceKm - b.distanceKm)
         .slice(0, 24)
-        .map((x) => x.row)
-    : items;
-  const freelancers = geoItems.map(toPublicCard);
+        .map((x) => ({ row: x.row, distanceKm: x.distanceKm as number }))
+    : items.map((row) => ({ row, distanceKm: null as number | null }));
+  const freelancers = rowsWithDistance.map(({ row, distanceKm }) => toPublicCard(row, distanceKm));
 
   const keyword = query.keyword ?? "";
   const city = query.city ?? "";
   const workMode = (query.workMode ?? "") as "" | "REMOTE" | "ONSITE" | "HYBRID";
   const categoryId = query.categoryId ?? "";
   const page = query.page;
-  const nearbyTotal = hasGeoCenter ? geoItems.length : total;
+  const nearbyTotal = hasGeoCenter ? rowsWithDistance.length : total;
   const totalPages = hasGeoCenter ? 1 : Math.max(1, Math.ceil(total / query.limit));
 
   const hasFilters =
@@ -134,76 +137,91 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
         </p>
       </header>
 
-      <FreelancersPublicFilters
-        keyword={keyword}
-        city={city}
-        workMode={workMode}
-        categoryId={categoryId}
-        categories={categories}
-        lat={hasGeoCenter ? rawLat : null}
-        lng={hasGeoCenter ? rawLng : null}
-        radiusKm={radiusKm}
-      />
+      <div className="lg:grid lg:grid-cols-[minmax(0,1fr),min(100%,22rem)] lg:items-start lg:gap-8">
+        <div className="order-2 min-w-0 space-y-5 lg:order-1">
+          {hasGeoCenter ? (
+            <div className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm leading-relaxed text-emerald-950">
+              <p className="font-medium">Nearby sort active</p>
+              <p className="mt-1 text-emerald-900/90">
+                Within <span className="font-semibold">{radiusKm} km</span> of your point, closest first. Distance shows
+                on each card when coordinates are on file.
+              </p>
+            </div>
+          ) : city.trim() ? (
+            <div className="rounded-md border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-relaxed text-slate-800">
+              <p className="font-medium text-slate-900">City filter</p>
+              <p className="mt-1 text-slate-700">
+                Profiles listing{" "}
+                <span className="font-semibold">&ldquo;{city.trim()}&rdquo;</span>. Combine with work mode to split remote
+                from on-site expectations.
+              </p>
+            </div>
+          ) : null}
 
-      {hasGeoCenter ? (
-        <p className="mb-5 rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm leading-relaxed text-emerald-900">
-          Showing freelancers near you within <span className="font-semibold">{radiusKm} km</span>. You can still refine
-          by city and work mode.
-        </p>
-      ) : city.trim() ? (
-        <p className="mb-5 rounded-md border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm leading-relaxed text-slate-700">
-          Showing freelancers whose listed city matches{" "}
-          <span className="font-semibold text-slate-900">&ldquo;{city.trim()}&rdquo;</span>—pair with work mode to
-          separate remote collaborators from people who expect to meet in person.
-        </p>
-      ) : null}
+          {nearbyTotal > 0 ? (
+            <div className="nw-results-toolbar">
+              <span className="font-medium text-slate-900">
+                {nearbyTotal === 1 ? "1 profile" : `${nearbyTotal} profiles`}
+              </span>
+              <span className="text-slate-500">Open a row to view the full profile.</span>
+            </div>
+          ) : null}
 
-      {nearbyTotal > 0 ? (
-        <p className="mb-5 text-sm text-slate-600">
-          {nearbyTotal === 1 ? "One profile matches your search." : `${nearbyTotal} profiles match your search.`}
-        </p>
-      ) : null}
-
-      {freelancers.length === 0 ? (
-        <FreelancersPublicEmpty categorySelected={categorySelected} hasFilters={hasFilters} />
-      ) : (
-        <FreelancersBrowseList freelancers={freelancers} activeCityFilter={city.trim() || undefined} />
-      )}
-
-      {!hasGeoCenter && totalPages > 1 ? (
-        <nav
-          className="mt-8 flex items-center justify-between border-t border-slate-200 pt-5 text-sm"
-          aria-label="Pagination"
-        >
-          {page > 1 ? (
-            <Link
-              href={
-                `/freelancers${freelancersQueryString({ keyword, city, workMode, categoryId, page: page - 1 })}` as Route
-              }
-              className="font-semibold text-[#3525cd] hover:underline"
-            >
-              ← Previous
-            </Link>
+          {freelancers.length === 0 ? (
+            <FreelancersPublicEmpty categorySelected={categorySelected} hasFilters={hasFilters} />
           ) : (
-            <span className="text-slate-300">← Previous</span>
+            <FreelancersBrowseList freelancers={freelancers} activeCityFilter={city.trim() || undefined} />
           )}
-          <span className="text-slate-500">
-            Page {page} of {totalPages}
-          </span>
-          {page < totalPages ? (
-            <Link
-              href={
-                `/freelancers${freelancersQueryString({ keyword, city, workMode, categoryId, page: page + 1 })}` as Route
-              }
-              className="font-semibold text-[#3525cd] hover:underline"
+
+          {!hasGeoCenter && totalPages > 1 ? (
+            <nav
+              className="flex items-center justify-between border-t border-slate-200 pt-5 text-sm"
+              aria-label="Pagination"
             >
-              Next →
-            </Link>
-          ) : (
-            <span className="text-slate-300">Next →</span>
-          )}
-        </nav>
-      ) : null}
+              {page > 1 ? (
+                <Link
+                  href={
+                    `/freelancers${freelancersQueryString({ keyword, city, workMode, categoryId, page: page - 1 })}` as Route
+                  }
+                  className="font-semibold text-[#433C93] hover:underline"
+                >
+                  ← Previous
+                </Link>
+              ) : (
+                <span className="text-slate-300">← Previous</span>
+              )}
+              <span className="text-slate-500">
+                Page {page} of {totalPages}
+              </span>
+              {page < totalPages ? (
+                <Link
+                  href={
+                    `/freelancers${freelancersQueryString({ keyword, city, workMode, categoryId, page: page + 1 })}` as Route
+                  }
+                  className="font-semibold text-[#433C93] hover:underline"
+                >
+                  Next →
+                </Link>
+              ) : (
+                <span className="text-slate-300">Next →</span>
+              )}
+            </nav>
+          ) : null}
+        </div>
+
+        <aside className="order-1 mb-6 min-w-0 lg:order-2 lg:mb-0 lg:sticky lg:top-28">
+          <FreelancersPublicFilters
+            keyword={keyword}
+            city={city}
+            workMode={workMode}
+            categoryId={categoryId}
+            categories={categories}
+            lat={hasGeoCenter ? rawLat : null}
+            lng={hasGeoCenter ? rawLng : null}
+            radiusKm={radiusKm}
+          />
+        </aside>
+      </div>
     </div>
   );
 }
