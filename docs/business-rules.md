@@ -10,3 +10,11 @@
   - open job + valid deadline
   - unique bid per freelancer per job
   - work mode compatibility
+
+## Update status (April 2026)
+
+- Decision flow client diperjelas di UI:
+  - jobs yang perlu perhatian ditandai (pending/shortlisted signal),
+  - bid comparison menampilkan sinyal keputusan inti (harga, profil, lokasi/mode, status),
+  - next action (`Accept bid`) tersedia langsung pada context review.
+- Rule domain utama tetap tidak berubah; pembaruan fokus pada clarity dan operasionalisasi workflow.

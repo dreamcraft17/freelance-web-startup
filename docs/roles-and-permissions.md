@@ -19,3 +19,8 @@ Policy examples:
 - only job owner can shortlist/accept bids
 - only contract participants can access contract threads
 - only admins/moderators process verification requests
+
+## Update status (April 2026)
+
+- Staff role matrix (`ADMIN`, `SUPPORT_ADMIN`, `MODERATOR`, `FINANCE_ADMIN`) sudah aktif pada workspace `/admin` dengan pembatasan per halaman.
+- Auth-aware UI juga sudah membedakan perilaku public/client/freelancer/staff agar aksi utama sesuai role context.

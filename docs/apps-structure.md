@@ -1,5 +1,7 @@
 # Phase 2 - Detailed App Structures
 
+> Update (April 2026): struktur ini bersifat historis perencanaan fase. Implementasi aktual saat ini berpusat di `apps/web` dengan route groups App Router seperti `(public)`, `(marketing)`, `(auth)`, `(app)` dan workspace `client/freelancer/admin` yang sudah aktif.
+
 ## apps/web
 
 ```txt

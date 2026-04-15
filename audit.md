@@ -3,6 +3,19 @@
 **Lingkup:** `apps/web`, `packages/*`, dan jalur operasional yang mempengaruhi produksi.  
 **Tanggal referensi:** April 2026 (sinkron dengan update terakhir implementasi).
 
+## Addendum update (April 2026)
+
+- UI telah bergeser dari “template-like” ke pendekatan **product-first** dengan hierarchy yang lebih operasional.
+- Area discovery publik sekarang lebih kuat untuk pemindaian cepat dan keputusan:
+  - struktur filter/list lebih jelas,
+  - location/nearby cues lebih praktis,
+  - empty states lebih actionable.
+- Client hiring workflow menunjukkan peningkatan nyata:
+  - `/client/jobs` memunculkan indikator attention (pending decision/new bids/stale open jobs),
+  - job detail menyediakan compact bid comparison untuk owner,
+  - next action (`Accept bid`) tidak tersembunyi di layer yang dalam.
+- Risiko tersisa tetap sama: integrasi billing produksi, trust & safety report backend penuh, dan hardening operasional.
+
 ---
 
 ## 1) Ringkasan eksekutif

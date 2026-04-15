@@ -11,3 +11,4 @@
 - Source: `packages/database/prisma/seed.ts` defaults (`SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`).
 - Use for local/internal development only.
 - Change these values via env variables before seeding shared environments.
+- Keep this file out of public/shared deployments and rotate credentials for any non-local environment.

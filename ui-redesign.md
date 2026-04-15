@@ -4,6 +4,15 @@
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
+## Progress update (April 2026)
+
+- Shared design language sudah diterapkan ke shell utama (public, dashboard, admin) dan komponen header/panel/inputs/action.
+- Batch public pages selesai dengan fokus realistis: landing lebih product-oriented, discovery pages lebih seperti tools browse.
+- Increment berikutnya sudah berjalan:
+  - freelancer-side flow: profile -> find jobs -> proposals,
+  - client-side hiring flow: jobs control center + bid decision clarity.
+- Prinsip tetap dijaga: tidak ada glass/gradient dekoratif, tidak ada fake data, tidak ada backend rewrite yang tidak perlu.
+
 ## 1) Audit: Template-Like Patterns To Remove
 
 ### Public marketing layer
