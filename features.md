@@ -1,168 +1,254 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-Dokumen ini merangkum **semua fitur dan aset** di monorepo: aplikasi (`apps/*`), pustaka bersama (`packages/*`), skrip root, dan pola arsitektur. Untuk risiko, utang teknis, dan checklist operasional, lihat **`audit.md`**.
+Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
-**Ringkasan produk:** platform **marketplace freelance SaaS** (klien posting pekerjaan, freelancer bid, kontrak, pesan, notifikasi, review terikat kontrak, taxonomy, pencarian geo-aware, kuota/langganan placeholder, donasi mock, promosi featured/boost dengan pembersihan expiry).
+> Catatan: detail risiko, gap, dan technical debt tetap di `audit.md`.
 
 ---
 
-## 1. Struktur repositori & tooling
+## 1) Ringkasan produk
+
+NearWork adalah marketplace freelance SaaS dengan area publik + workspace per role:
+
+- Publik: discovery jobs/freelancers, marketing pages, auth.
+- User app: workspace `CLIENT`, `FREELANCER`, shared tools (`messages`, `notifications`, `settings`).
+- Internal app: workspace `/admin` untuk staff (`ADMIN`, `SUPPORT_ADMIN`, `MODERATOR`, `FINANCE_ADMIN`) dengan RBAC per halaman.
+- Auth berbasis cookie session tunggal (`acme_session`), tanpa auth system duplikat.
+
+---
+
+## 2) Struktur repo & tooling
 
 | Bagian | Peran |
-|--------|--------|
-| **Turborepo** (`turbo.json`) | Orkestrasi `build`, `dev`, `lint`, `typecheck`, `clean` antar-paket. |
-| **pnpm workspaces** | Dependensi ter-link (`workspace:*`). |
-| **Root `package.json`** | `build`, `dev`, `lint`, `typecheck`, `db:*`, **`test:e2e`**. |
-| **`tsconfig.base.json`** | Basis TypeScript bersama. |
-| **`scripts/e2e-marketplace-flow.mjs`** | Uji HTTP alur marketplace (register → review); jalankan dengan server Next + DB + `SESSION_SECRET`. |
+|---|---|
+| `turbo.json` | Orkestrasi `build`, `dev`, `lint`, `typecheck`, `clean` |
+| `pnpm-workspace.yaml` | Workspace linking (`workspace:*`) |
+| Root `package.json` | script lint/build/typecheck + `db:*` + `test:e2e` |
+| `scripts/e2e-marketplace-flow.mjs` | Uji end-to-end alur utama marketplace via HTTP |
+| `tsconfig.base.json` | konfigurasi TS dasar lintas package |
 
 ---
 
-## 2. `apps/web` — aplikasi marketplace (Next.js 15, App Router)
+## 3) `apps/web` (Next.js App Router) — fitur utama
 
-Lapisan backend di dalam app: **route handlers** → **service** → **policy** → **repository** → **Prisma** (`@acme/database`). Auth **hanya dari cookie** `acme_session` (JWT via `jose`).
+Arsitektur backend in-app:
 
-### 2.1 Middleware & keamanan edge
+- Route handlers (`app/api/*`)
+- Services (`server/services/*`)
+- Policies (`server/policies/*`)
+- Guard auth/role (`src/server/http/protect.ts`)
+- Prisma via `@acme/database`
 
-- **Matcher:** `/client/*`, `/freelancer/*`, `/messages/*`, `/notifications/*`, `/settings/*` — redirect ke `/login` + `returnUrl` jika tidak ada sesi.
-- **Area publik** (contoh `/`, `/jobs`, `/freelancers`, marketing) tidak wajib sesi di edge.
+Session source tunggal:
 
-### 2.2 Halaman & UI (routing)
+- Cookie JWT `acme_session`
+- helper: `src/lib/session.ts`, `src/lib/auth.ts`
 
-| Area | Rute / isi |
-|------|------------|
-| **Marketing** | `/` — landing; **`/pricing`**, **`/how-it-works`**. |
-| **Auth** | **`/login`**, **`/register`**, **`/forgot-password`**. |
-| **Publik** | **`/jobs`** — board; **`/jobs/[jobId]`** — detail job; **`/freelancers`** — direktori; **`/freelancers/[username]`** — profil publik; **`/search/nearby`**. |
-| **Checkout mock** | **`/checkout/mock`** — halaman debug `paymentIntentId` (placeholder PSP). |
-| **App klien** | **`/client`**, **`/client/jobs`**, **`/client/jobs/new`**, **`/client/nearby`**. |
-| **App freelancer** | **`/freelancer`**, **`/freelancer/proposals`**, **`/freelancer/nearby`**, **`/freelancer/profile`** (placeholder editor). |
-| **Bersama (login)** | **`/messages`**, **`/notifications`**, **`/settings`** (saved items, dll.). |
-| **Forbidden** | **`/forbidden`**. |
+### 3.1 Middleware & keamanan route
 
-*(Beberapa halaman masih placeholder/CTA ke API — lihat `audit.md`.)*
+Middleware aktif untuk:
 
-### 2.3 API kanonik — referensi cepat
+- `/login/*`, `/register/*`, `/forgot-password/*`
+- `/admin`, `/admin/*`
+- `/client/*`, `/freelancer/*`, `/messages/*`, `/notifications/*`, `/settings/*`
 
-Semua di bawah prefix **`/api`**. Respons sukses umumnya `{ "success": true, "data": … }`.
+Perilaku penting:
 
-| Metode | Path | Ringkas |
-|--------|------|---------|
-| POST | `/api/auth/register` | Daftar CLIENT \| FREELANCER + Set-Cookie sesi. |
-| POST | `/api/auth/login` | Login + Set-Cookie. |
-| POST | `/api/auth/logout` | Hapus cookie sesi. |
-| GET | `/api/auth/session` | Payload sesi saat ini (401 tanpa cookie). |
-| GET / POST | `/api/client-profiles` | Baca / buat profil klien (sesuai gate). |
-| GET | `/api/freelancer-profiles?username=` | Profil publil freelancer. |
-| GET | `/api/freelancer-profiles/me` | Profil freelancer sesi saat ini (`id`, `username`, …). |
-| POST | `/api/freelancer-profiles` | Buat profil freelancer (onboarding). |
-| PATCH | `/api/freelancer-profiles` | Update partial (bio, headline, workMode, availability, …). |
-| GET / POST | `/api/jobs` | Daftar job publik (pagination/filter) \| buat job **OPEN** (klien). |
-| GET / PATCH | `/api/jobs/[jobId]` | Detail publik \| update job (klien pemilik). |
-| POST | `/api/bids` | Kirim bid (freelancer; kuota + profil lengkap). |
-| POST | `/api/bids/[bidId]/accept` | Terima bid → kontrak **PENDING** (klien). |
-| GET | `/api/contracts/[contractId]` | Detail kontrak (peserta / staff sesuai policy). |
-| POST | `/api/contracts/[contractId]/complete` | Tandai **COMPLETED** (klien/freelancer). |
-| GET / POST | `/api/messages` | Daftar thread \| buat thread DIRECT / JOB / CONTRACT. |
-| GET / POST | `/api/messages/[threadId]` | Daftar pesan \| kirim pesan (+ notifikasi). |
-| GET | `/api/notifications` | Daftar notifikasi user. |
-| PATCH | `/api/notifications/[notificationId]` | `{ "read": true }`. |
-| GET / POST | `/api/reviews` | Daftar publik per `freelancerProfileId` **atau** `clientProfileId` \| buat review (pasca **COMPLETED**). |
-| GET / POST / DELETE | `/api/saved-items/jobs` | Daftar (opsi `idsOnly=1`) \| simpan \| hapus simpan. |
-| GET / POST / DELETE | `/api/saved-items/freelancers` | Idem untuk profil freelancer. |
-| GET | `/api/search/jobs` | Pencarian job (parameter di validators). |
-| GET | `/api/search/freelancers` | Pencarian freelancer. |
-| GET | `/api/categories` | Daftar kategori atau subkategori (`parentSlug`). |
-| GET | `/api/categories/[slug]` | Detail kategori (+ subkategori bila ada). |
-| GET | `/api/skills` | Daftar skill (filter opsional). |
-| GET | `/api/skills/[skillId]` | Detail skill. |
-| GET | `/api/quota/me` | Kuota pemakaian freelancer (entitlement plan). |
-| GET / POST | `/api/subscriptions` | Ringkasan langganan \| inisiasi checkout (placeholder URL). |
-| POST | `/api/donations` | Donasi mock (sesi opsional). |
-| GET / POST | `/api/verification` | Daftar / ajukan permintaan verifikasi (freelancer). |
-| GET / PATCH | `/api/verification/[requestId]` | Detail untuk aktor \| **staff** review APPROVED/REJECTED. |
-| GET | `/**/api/v1/**` | **308** redirect ke `/api/*` (deprecation header). |
+- Unauthenticated ke protected route → `/login` dengan `returnUrl` aman.
+- Auth pages (`/login`, `/register`) jika sudah login → redirect ke target aman berbasis role (`resolvePostLoginRedirect`).
+- `/admin`:
+  - wajib session aktif
+  - non-staff diarahkan ke home role mereka (bukan masuk admin)
+  - staff tanpa izin halaman diarahkan ke `/forbidden`
 
-**Layanan internal (tanpa route khusus di daftar di atas)** — tetap bagian fitur domain di kode: mis. **`PaymentService`** (intent mock, alur featured job / boost freelancer), **`JobService.purchaseFeaturedJob`**, **`FreelancerProfileService.purchaseProfileBoost`**, **`SearchService`** (urutan featured/boost aktif), **`QuotaService`**, **`SubscriptionService`**, **`DonationService`**, dll.
+### 3.2 Public & auth UI
 
-### 2.4 Domain & perilaku utama (web)
+Rute publik utama:
 
-- **Job:** status **OPEN** saat dibuat; listing publik + featured aktif; update/close oleh pemilik.
-- **Bid:** status **SUBMITTED**; unik per `(jobId, freelancer)`; notifikasi **BID_SUBMITTED** ke klien; setelah accept **ACCEPTED** + kontrak.
-- **Kontrak:** **PENDING** → **COMPLETED** via API; review hanya setelah **COMPLETED**; aturan peran untuk target review (klien → freelancer, sebaliknya).
-- **Pesan:** thread bertipe **DIRECT**, **JOB** (job masih OPEN), **CONTRACT**; partisipan eksplisit; **NEW_MESSAGE** ke pihak lain.
-- **Review:** agregat **`reviewCount`** / **`averageReviewRating`** di **ClientProfile** & **FreelancerProfile**.
-- **Verifikasi:** permintaan dari freelancer; keputusan staff via PATCH (gate `protectStaff`).
+- `/` landing (marketing shell)
+- `/jobs`, `/jobs/[jobId]`
+- `/freelancers`, `/freelancers/[username]`
+- `/search/nearby`
+- `/pricing`, `/how-it-works`, `/help`, `/early-access`
+- `/login`, `/register`, `/forgot-password`
+
+Navbar publik:
+
+- Auth-aware (session real dari cookie, server-side)
+- Logout state: `Log in`, `Register`, CTA `Early access`
+- Login state role-aware:
+  - freelancer → dashboard `/freelancer` (+ messages)
+  - client → dashboard `/client` (+ post job)
+  - staff/admin → `/admin`
+- Includes `AuthUserMenu`, notifications/messages icon, mobile hamburger behavior
+
+Branding:
+
+- `BrandLogo` dipakai lintas app
+- asset aktif logo: `/logo/logo3.png`
+- metadata icon/favicons app mengarah ke logo terbaru
+
+### 3.3 Internal admin workspace (`/admin`)
+
+#### Staff roles didukung
+
+- `ADMIN`
+- `SUPPORT_ADMIN`
+- `MODERATOR`
+- `FINANCE_ADMIN`
+
+#### RBAC terpusat
+
+File kunci:
+
+- `features/admin/lib/access.ts`
+- `features/admin/lib/server-auth.ts`
+
+Helper utama:
+
+- `isStaffRole(...)`
+- `parseAdminPathname(...)`
+- `canAccessAdminPage(...)`
+- `canAccessAdminPageKey(...)`
+- `requireStaffSession()`
+- `requireAdminAccess(page)`
+
+Matriks akses:
+
+- `ADMIN`: full `/admin/*`
+- `SUPPORT_ADMIN`: overview, users, jobs, bids, contracts, verification, reviews, settings
+- `MODERATOR`: overview, jobs, verification, reviews, reports
+- `FINANCE_ADMIN`: overview, donations, subscriptions, feature-flags, settings
+
+#### Halaman admin yang tersedia
+
+- `/admin` (overview dashboard operasional)
+- `/admin/users`
+- `/admin/jobs`
+- `/admin/bids`
+- `/admin/contracts`
+- `/admin/verification` (termasuk aksi approve/reject untuk pending requests)
+- `/admin/reviews`
+- `/admin/reports` (placeholder trust/safety siap integrasi)
+- `/admin/donations`
+- `/admin/subscriptions`
+- `/admin/feature-flags` (read-only resolved flags)
+- `/admin/settings`
+
+#### Catatan UI admin
+
+- Shell internal terpisah dari landing
+- Sidebar grup: Core / Operations / Finance / Platform
+- Topbar role badge + account menu
+- Reusable admin table/filter/empty-state components
+
+### 3.4 API ringkas (kanonik `/api/*`)
+
+Auth/session:
+
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `POST /api/auth/logout`
+- `GET /api/auth/session`
+
+Marketplace core:
+
+- jobs (`/api/jobs`, `/api/jobs/[jobId]`)
+- bids (`/api/bids`, `/api/bids/[bidId]/accept`)
+- contracts (`/api/contracts/[contractId]`, `/complete`)
+- messages (`/api/messages`, `/api/messages/[threadId]`)
+- notifications (`/api/notifications`, `/api/notifications/[notificationId]`)
+- reviews (`/api/reviews`)
+- saved items jobs/freelancers
+- taxonomy/search (`/api/categories`, `/api/skills`, `/api/search/*`)
+
+Monetization & trust:
+
+- `GET /api/quota/me`
+- `GET/POST /api/subscriptions`
+- `POST /api/donations`
+- `GET/POST /api/verification`
+- `GET/PATCH /api/verification/[requestId]` (staff review approve/reject)
+
+Compat:
+
+- `/api/v1/*` → redirect/deprecation ke `/api/*`
 
 ---
 
-## 3. `apps/admin` — konsol admin (kerangka)
+## 4) `apps/admin` (terpisah) & `apps/worker`
 
-- **Next.js** minimal: halaman beranda placeholder (**moderation, verification, billing, analytics** — teks orientasi).
-- Belum modul CRUD nyata; diposisikan untuk tim internal.
+### 4.1 `apps/admin`
 
----
+- Masih skeleton/placeholder terpisah dari `apps/web`
+- Internal UI real yang aktif saat ini ada di `/admin` dalam `apps/web`
 
-## 4. `apps/worker` — pekerja latar belakang
+### 4.2 `apps/worker`
 
-- Proses Node (`tsx` dev / `node dist` produksi).
-- **`promotionSweep`:** interval (default 6 jam, override `PROMOTION_SWEEP_INTERVAL_MS`) memanggil **`clearExpiredPromotionFlags`** — menurunkan flag **`isFeatured`** / **`isBoosted`** setelah **`featuredUntil`** / **`boostedUntil`** lewat, selaras dengan ranking di pencarian.
-
----
-
-## 5. `packages/database` — data & migrasi
-
-- **Prisma** + **`schema.prisma`**: user & peran, profil klien/freelancer, job, bid, kontrak, thread pesan & partisipan & pesan, notifikasi, review, langganan/plan, kuota, donasi, kategori/subkategori/skill, saved jobs/freelancers, verifikasi, payment intents (sesuai migrasi terbaru), kolom promosi & agregat review, dll.
-- **Skrip:** `db:generate`, `db:migrate`, `db:migrate:deploy`, `db:studio` (via filter `@acme/database`).
-- **`README.md` / `env.example.txt`** — bootstrap DB.
+- Worker background Node
+- job utama: promotion sweep untuk menonaktifkan `featured/boost` yang expired
 
 ---
 
-## 6. `packages/config` — konfigurasi produk & monetisasi
+## 5) Package bersama
 
-- **`plans.ts`:** tier (mis. FREE / PRO / AGENCY), entitlement JSON.
-- **`monetization.ts`:** feature flags env (`FEATURE_*`), **`shouldBypassQuotaEnforcement`**, **`resolvePlanEntitlements`**, placeholder harga/durasi.
-- Diekspor melalui **`@acme/config`** untuk web & layanan terkait.
+### 5.1 `packages/database`
+
+- Prisma schema domain lengkap: users, profiles, jobs, bids, contracts, reviews, notifications, messages, subscriptions, donations, verification, search taxonomy, dsb.
+- Script:
+  - `db:generate`
+  - `db:migrate`
+  - `db:migrate:deploy`
+  - `db:studio`
+  - `db:seed`
+
+Seed admin dev:
+
+- Seed script: `packages/database/prisma/seed.ts`
+- default (dev): `admin@nearwork.local` / `NearWorkAdminDev123!`
+- override via env: `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`
+
+### 5.2 `packages/config`
+
+- Monetization plans + entitlements
+- Feature flags env `FEATURE_*`
+- `shouldBypassQuotaEnforcement`
+- `getPublicMonetizationFlags`, `resolvePlanEntitlements`
+
+### 5.3 `packages/validators`
+
+- Zod schemas untuk request body/query seluruh API
+
+### 5.4 `packages/types`
+
+- Enum domain shared (`UserRole`, `JobStatus`, `BidStatus`, `ContractStatus`, `SubscriptionStatus`, dll.)
+
+### 5.5 `packages/utils`
+
+- Util umum (pagination, date helpers, safe JSON, dsb.)
 
 ---
 
-## 7. `packages/validators` — kontrak request API
+## 6) Pengujian & operasional
 
-- Skema **Zod** untuk body/query (register, login, job, bid, review, pesan, notifikasi, verifikasi, subscription, pagination, dll.).
-- Dipakai handler `parseJson` / `parseSearchParams` agar input API konsisten.
-
----
-
-## 8. `packages/types` — tipe & enum bersama
-
-- Enum domain: peran user, status job/bid/kontrak, tipe notifikasi, mode kerja, status ketersediaan freelancer, jenis verifikasi, dll.
-- Dipakai Prisma, policy, dan validators (di mana relevan).
+- `pnpm typecheck`, `pnpm lint`, `pnpm build`
+- E2E flow: `pnpm test:e2e`
+- Kebutuhan env penting:
+  - `DATABASE_URL`
+  - `SESSION_SECRET` (min 16 chars)
 
 ---
 
-## 9. `packages/utils` — utilitas agnostik framework
-
-- Pagination (`clampPage`, `clampLimit`, `offsetFromPage`), tanggal, JSON aman, helper error — dipakai service & validators.
-
----
-
-## 10. Pengujian & otomasi
-
-- **`pnpm test:e2e`** — menjalankan **`scripts/e2e-marketplace-flow.mjs`**: alur register (klien + freelancer), login/sesi, PATCH bio, job, bid, notifikasi, accept, pesan kontrak, complete kontrak, review silang, agregat, penolakan duplikat.
-- **Syarat:** `DATABASE_URL`, `SESSION_SECRET` (≥16), migrasi DB, server **`pnpm --filter @acme/web dev`** (atau `start`). **`BASE_URL`** default **`http://127.0.0.1:3000`** — samakan dengan host di banner Next; override jika perlu (mis. `http://localhost:3000` hanya jika tidak memicu loop redirect).
-
----
-
-## 11. Ringkasan dependensi antar-bagian
+## 7) Dependensi tinggi (ringkas)
 
 ```mermaid
 flowchart LR
-  subgraph apps [Apps]
+  subgraph Apps
     web[apps/web]
     admin[apps/admin]
     worker[apps/worker]
   end
-  subgraph pkgs [Packages]
+  subgraph Packages
     db[@acme/database]
     cfg[@acme/config]
     val[@acme/validators]
@@ -184,4 +270,4 @@ flowchart LR
 
 ---
 
-*Terakhir diselaraskan dengan struktur repo saat penulisan; bila menambah app/route baru, perbarui bagian API dan UI di atas.*
+*Dokumen ini sudah diselaraskan dengan implementasi terbaru (admin workspace, RBAC, auth-aware navbar, seed admin, feature flags page). Jika ada route/fitur baru, update bagian routing + API + admin workspace di dokumen ini.*

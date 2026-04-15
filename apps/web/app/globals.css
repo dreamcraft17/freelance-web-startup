@@ -21,6 +21,13 @@
     --input: 240 5.9% 90%;
     --ring: 240 5.9% 10%;
     --radius: 0.5rem;
+    --nw-bg: 215 27% 97%;
+    --nw-surface: 0 0% 100%;
+    --nw-surface-soft: 220 20% 98%;
+    --nw-text: 226 24% 13%;
+    --nw-text-muted: 220 10% 41%;
+    --nw-border: 220 16% 87%;
+    --nw-brand: 246 41% 41%;
   }
 
   .dark {
@@ -48,5 +55,43 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
+  }
+}
+
+@layer components {
+  .nw-page {
+    @apply bg-[#f4f6f8] text-slate-900 antialiased;
+  }
+
+  .nw-surface {
+    @apply rounded-xl border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)];
+  }
+
+  .nw-surface-soft {
+    @apply rounded-xl border border-slate-200/80 bg-slate-50;
+  }
+
+  .nw-section-title {
+    @apply text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500;
+  }
+
+  .nw-page-header {
+    @apply mb-6 flex flex-col gap-2 border-b border-slate-200 pb-4;
+  }
+
+  .nw-page-title {
+    @apply text-2xl font-semibold tracking-tight text-slate-900;
+  }
+
+  .nw-page-description {
+    @apply max-w-3xl text-sm text-slate-600;
+  }
+
+  .nw-cta-primary {
+    @apply rounded-md bg-[#433C93] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#4d45a5];
+  }
+
+  .nw-input {
+    @apply rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#433C93] focus:outline-none focus:ring-1 focus:ring-[#433C93];
   }
 }

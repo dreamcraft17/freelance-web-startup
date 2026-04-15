@@ -44,7 +44,7 @@ export function AdminShell({ role, children }: AdminShellProps) {
   const pageTitle = currentLabel ?? "Admin";
 
   return (
-    <div className="min-h-screen bg-[#eef0f3] text-slate-900 antialiased">
+    <div className="nw-page min-h-screen">
       <div className="flex min-h-screen">
         <AdminSidebar
           items={visibleNav}
