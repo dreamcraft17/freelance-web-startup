@@ -1,9 +1,13 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { BidStatus, UserRole } from "@acme/types";
+import { db } from "@acme/database";
+import { getSessionFromCookies } from "@src/lib/auth";
 import { loginReturnTo, registerFreelancerReturnToJob } from "@/features/auth/lib/register-intents";
 import { PageHeader } from "@/features/shared/components/PageHeader";
 import { SaveJobButton } from "@/features/saved/components/SaveJobButton";
+import { BidDecisionAction } from "@/components/client-jobs/BidDecisionAction";
 import { JobService } from "@/server/services/job.service";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -68,6 +72,42 @@ export default async function JobDetailPage({ params }: PageProps) {
   const jobService = new JobService();
   const job = await jobService.getJobByIdForPublic(jobId);
   if (!job) notFound();
+  const session = await getSessionFromCookies();
+
+  const owner = await db.job.findFirst({
+    where: { id: job.id, deletedAt: null },
+    select: { clientProfile: { select: { userId: true } } }
+  });
+  const isClientOwner = Boolean(
+    session && owner?.clientProfile.userId === session.userId && session.role === UserRole.CLIENT
+  );
+
+  const bidRows = isClientOwner
+    ? await db.bid.findMany({
+        where: { jobId: job.id },
+        orderBy: { createdAt: "desc" },
+        select: {
+          id: true,
+          status: true,
+          bidAmount: true,
+          estimatedDays: true,
+          createdAt: true,
+          freelancer: { select: { userId: true, fullName: true, username: true } }
+        }
+      })
+    : [];
+
+  const freelancerUserIds = [...new Set(bidRows.map((b) => b.freelancer.userId))];
+  const freelancerProfiles = freelancerUserIds.length
+    ? await db.freelancerProfile.findMany({
+        where: { userId: { in: freelancerUserIds }, deletedAt: null },
+        select: { userId: true, city: true, workMode: true, profileCompleteness: true }
+      })
+    : [];
+  const profileMap = new Map(freelancerProfiles.map((p) => [p.userId, p]));
+
+  const pendingDecisionCount = bidRows.filter((b) => b.status === BidStatus.SUBMITTED).length;
+  const shortlistedCount = bidRows.filter((b) => b.status === BidStatus.SHORTLISTED).length;
 
   const categoryLabel = job.subcategory
     ? `${job.category.name} · ${job.subcategory.name}`
@@ -140,26 +180,119 @@ export default async function JobDetailPage({ params }: PageProps) {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Submit a bid</CardTitle>
+            <CardTitle className="text-base">{isClientOwner ? "Bid review" : "Submit a bid"}</CardTitle>
             <CardDescription>
-              Bidding requires a signed-in freelancer account. Browse this page freely; sign in or register when you are
-              ready to propose.
+              {isClientOwner
+                ? "Compare freelancers by price, profile readiness, and location signals. Start with pending decisions."
+                : "Bidding requires a signed-in freelancer account. Browse this page freely; sign in or register when you are ready to propose."}
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-            <Link
-              href={loginReturnTo(returnToThisJob, "submit-bid") as Route}
-              className="inline-flex justify-center rounded-lg bg-[#3525cd] px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-[#4f46e5]"
-            >
-              Sign in to submit a bid
-            </Link>
-            <Link
-              href={registerFreelancerReturnToJob(job.id) as Route}
-              className="inline-flex justify-center rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-center text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
-            >
-              Register as freelancer
-            </Link>
-          </CardContent>
+          {isClientOwner ? (
+            <CardContent className="space-y-4">
+              <div className="grid gap-2 sm:grid-cols-3">
+                <div className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Pending decision</p>
+                  <p className="mt-1 text-lg font-semibold tabular-nums text-slate-900">{pendingDecisionCount}</p>
+                </div>
+                <div className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Shortlisted</p>
+                  <p className="mt-1 text-lg font-semibold tabular-nums text-slate-900">{shortlistedCount}</p>
+                </div>
+                <div className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Total bids</p>
+                  <p className="mt-1 text-lg font-semibold tabular-nums text-slate-900">{bidRows.length}</p>
+                </div>
+              </div>
+
+              {bidRows.length === 0 ? (
+                <div className="rounded-md border border-dashed border-slate-300 bg-white px-4 py-6 text-sm text-slate-600">
+                  No bids yet. Keep this job open or refine the brief to attract stronger proposals.
+                </div>
+              ) : (
+                <div className="overflow-x-auto rounded-lg border border-slate-200">
+                  <table className="w-full min-w-[780px] border-collapse text-left text-sm">
+                    <thead>
+                      <tr className="border-b border-slate-100 bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                        <th className="px-3 py-2.5">Freelancer</th>
+                        <th className="px-3 py-2.5">Price</th>
+                        <th className="px-3 py-2.5">Profile strength</th>
+                        <th className="px-3 py-2.5">Location / mode</th>
+                        <th className="px-3 py-2.5">Status</th>
+                        <th className="px-3 py-2.5 text-right">Next action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {bidRows.map((bid) => {
+                        const profile = profileMap.get(bid.freelancer.userId);
+                        return (
+                          <tr key={bid.id} className={bid.status === BidStatus.SUBMITTED ? "bg-amber-50/30" : undefined}>
+                            <td className="px-3 py-3">
+                              <p className="font-semibold text-slate-900">{bid.freelancer.fullName}</p>
+                              <p className="text-xs text-slate-500">@{bid.freelancer.username}</p>
+                              <p className="mt-0.5 text-xs text-slate-500">
+                                Submitted{" "}
+                                {new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric" }).format(
+                                  bid.createdAt
+                                )}
+                              </p>
+                            </td>
+                            <td className="px-3 py-3">
+                              <p className="font-semibold text-slate-900">{formatMoney(bid.bidAmount, job.currency)}</p>
+                              {bid.estimatedDays != null ? (
+                                <p className="text-xs text-slate-500">~{bid.estimatedDays} day timeline</p>
+                              ) : null}
+                            </td>
+                            <td className="px-3 py-3 text-xs text-slate-600">
+                              {profile?.profileCompleteness != null ? (
+                                <span className="font-medium text-slate-800">{profile.profileCompleteness}% complete</span>
+                              ) : (
+                                <span>Not available</span>
+                              )}
+                            </td>
+                            <td className="px-3 py-3 text-xs text-slate-600">
+                              {[profile?.city, profile?.workMode].filter(Boolean).join(" · ") || "Not specified"}
+                            </td>
+                            <td className="px-3 py-3">
+                              <span className="inline-flex rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
+                                {bid.status.replace(/_/g, " ").toLowerCase()}
+                              </span>
+                            </td>
+                            <td className="px-3 py-3 text-right">
+                              <BidDecisionAction bidId={bid.id} currentStatus={bid.status} />
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              <div className="flex flex-wrap items-center gap-3 text-sm">
+                <Link href={"/client/jobs" as Route} className="font-semibold text-[#433C93] hover:underline">
+                  Review all jobs
+                </Link>
+                <Link href={"/messages" as Route} className="font-semibold text-slate-600 hover:underline">
+                  Open messages
+                </Link>
+              </div>
+            </CardContent>
+          ) : (
+            <CardContent className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+              <Link
+                href={loginReturnTo(returnToThisJob, "submit-bid") as Route}
+                className="inline-flex justify-center rounded-lg bg-[#3525cd] px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-[#4f46e5]"
+              >
+                Sign in to submit a bid
+              </Link>
+              <Link
+                href={registerFreelancerReturnToJob(job.id) as Route}
+                className="inline-flex justify-center rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-center text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
+              >
+                Register as freelancer
+              </Link>
+            </CardContent>
+          )}
         </Card>
 
         <div>

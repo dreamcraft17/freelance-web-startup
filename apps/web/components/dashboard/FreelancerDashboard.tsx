@@ -141,8 +141,8 @@ export function FreelancerDashboard({
 
   const quickLinks = [
     { label: "Complete profile", href: "/freelancer/profile" as Route, icon: UserRound, primary: true as const },
-    { label: "Browse jobs", href: "/jobs" as Route, icon: Compass, primary: true as const },
-    { label: "View proposals", href: "/freelancer/proposals" as Route, icon: FileText, primary: false as const },
+    { label: "Find jobs", href: "/jobs" as Route, icon: Compass, primary: true as const },
+    { label: "Track proposals", href: "/freelancer/proposals" as Route, icon: FileText, primary: false as const },
     { label: "Update availability", href: "/freelancer/profile" as Route, icon: CalendarClock, primary: false as const }
   ];
 
@@ -277,10 +277,10 @@ export function FreelancerDashboard({
                   tone="elevated"
                   kicker="Timeline"
                   icon={Inbox}
-                  title="Nothing new here yet"
-                  description="When you bid or a contract moves, it shows up here so you always know what changed."
-                  action={{ label: "Browse open jobs", href: "/jobs" }}
-                  secondaryAction={{ label: "View proposals", href: "/freelancer/proposals" }}
+                  title="No proposal activity yet"
+                  description="Send your first bid to start tracking client responses and contract updates."
+                  action={{ label: "Find jobs", href: "/jobs" }}
+                  secondaryAction={{ label: "Track proposals", href: "/freelancer/proposals" }}
                 />
               </div>
             ) : (

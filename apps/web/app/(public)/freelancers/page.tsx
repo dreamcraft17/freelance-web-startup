@@ -1,6 +1,7 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { searchFreelancersSchema } from "@acme/validators";
+import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
 import { FreelancersBrowseList, type PublicFreelancerCard } from "@/features/public/components/FreelancersBrowseList";
 import { FreelancersPublicEmpty } from "@/features/public/components/FreelancersPublicEmpty";
 import { FreelancersPublicFilters } from "@/features/public/components/FreelancersPublicFilters";
@@ -220,6 +221,37 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
             lng={hasGeoCenter ? rawLng : null}
             radiusKm={radiusKm}
           />
+          <div className="mt-3 hidden rounded-xl border border-slate-200 bg-white p-4 text-sm lg:block">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">For freelancers</p>
+            <p className="mt-1 font-semibold text-slate-900">Build your earning pipeline</p>
+            <ul className="mt-3 space-y-2 text-slate-600">
+              <li className="rounded-md bg-slate-50 px-3 py-2">
+                <span className="font-medium text-slate-800">Complete profile</span> to improve visibility
+              </li>
+              <li className="rounded-md bg-slate-50 px-3 py-2">
+                <span className="font-medium text-slate-800">Find jobs</span> that match your work mode
+              </li>
+              <li className="rounded-md bg-slate-50 px-3 py-2">
+                <span className="font-medium text-slate-800">Track proposals</span> in one workspace
+              </li>
+            </ul>
+            <div className="mt-3 space-y-2">
+              <Link
+                href={"/freelancer/profile" as Route}
+                className="inline-flex w-full items-center justify-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+              >
+                Complete profile
+              </Link>
+              <AuthAwareCtaLink
+                href={"/freelancer/proposals" as Route}
+                intent="continue"
+                unauthenticatedTo="login"
+                className="inline-flex w-full items-center justify-center rounded-md bg-[#433C93] px-3 py-2 text-sm font-semibold text-white hover:bg-[#4d45a5]"
+              >
+                View proposals
+              </AuthAwareCtaLink>
+            </div>
+          </div>
         </aside>
       </div>
     </div>

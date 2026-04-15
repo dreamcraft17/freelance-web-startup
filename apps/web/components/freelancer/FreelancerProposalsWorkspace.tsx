@@ -49,13 +49,13 @@ function humanizeStatus(status: string): string {
 function rowVisual(status: string): string {
   switch (status) {
     case BidStatus.ACCEPTED:
-      return "border-emerald-200/90 bg-gradient-to-br from-emerald-50/80 to-white ring-1 ring-emerald-100/80";
+      return "border-emerald-200/90 bg-emerald-50/60";
     case BidStatus.SHORTLISTED:
-      return "border-[#3525cd]/25 bg-gradient-to-br from-[#3525cd]/[0.07] to-white ring-1 ring-[#3525cd]/12";
+      return "border-[#3525cd]/25 bg-[#3525cd]/[0.05]";
     case BidStatus.REJECTED:
-      return "border-red-200/80 bg-gradient-to-br from-red-50/50 to-white ring-1 ring-red-100/60";
+      return "border-red-200/80 bg-red-50/40";
     default:
-      return "border-slate-200/90 bg-white ring-1 ring-slate-100/80";
+      return "border-slate-200/90 bg-white";
   }
 }
 
@@ -71,6 +71,21 @@ function statusPill(status: string): string {
       return "bg-slate-100 text-slate-800 ring-slate-200/80";
     default:
       return "bg-slate-100 text-slate-700 ring-slate-200/70";
+  }
+}
+
+function statusOrder(status: string): number {
+  switch (status) {
+    case BidStatus.SHORTLISTED:
+      return 1;
+    case BidStatus.SUBMITTED:
+      return 2;
+    case BidStatus.ACCEPTED:
+      return 3;
+    case BidStatus.REJECTED:
+      return 4;
+    default:
+      return 9;
   }
 }
 
@@ -102,8 +117,12 @@ export function FreelancerProposalsWorkspace({
 
   const filtered = useMemo(() => {
     const def = FILTERS.find((f) => f.key === filter);
-    if (!def?.statuses) return proposals;
-    return proposals.filter((p) => def.statuses!.includes(p.status as BidStatus));
+    const pool = !def?.statuses ? proposals : proposals.filter((p) => def.statuses!.includes(p.status as BidStatus));
+    return [...pool].sort((a, b) => {
+      const order = statusOrder(a.status) - statusOrder(b.status);
+      if (order !== 0) return order;
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
   }, [proposals, filter]);
 
   if (!hasProfile) {
@@ -139,11 +158,7 @@ export function FreelancerProposalsWorkspace({
         <p className="text-sm text-slate-600">Filter by client response. Other statuses (e.g. withdrawn) stay in “All”.</p>
       </div>
 
-      <div
-        role="tablist"
-        aria-label="Proposal status"
-        className="flex gap-1 overflow-x-auto rounded-xl border border-slate-200/90 bg-slate-50/80 p-1 shadow-sm"
-      >
+      <div role="tablist" aria-label="Proposal status" className="flex gap-1 overflow-x-auto rounded-lg border border-slate-200 bg-slate-50 p-1">
         {FILTERS.map((f) => {
           const active = filter === f.key;
           const count = counts[f.key];
@@ -155,9 +170,9 @@ export function FreelancerProposalsWorkspace({
               aria-selected={active}
               onClick={() => setFilter(f.key)}
               className={cn(
-                "whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/30",
+                "whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/30",
                 active
-                  ? "bg-white text-[#3525cd] shadow-sm ring-1 ring-slate-200/90"
+                  ? "bg-white text-[#3525cd] ring-1 ring-slate-200/90"
                   : "text-slate-600 hover:bg-white/60 hover:text-slate-900"
               )}
             >
@@ -184,13 +199,13 @@ export function FreelancerProposalsWorkspace({
           </Link>
         </div>
       ) : (
-        <ul className="space-y-3">
+        <ul className="space-y-2.5">
           {filtered.map((p) => (
             <li key={p.id}>
               <Link
                 href={`/jobs/${p.job.id}` as Route}
                 className={cn(
-                  "block rounded-xl border p-4 shadow-sm transition hover:shadow-md md:p-5",
+                  "block rounded-lg border p-4 transition hover:border-slate-300 md:p-5",
                   rowVisual(p.status)
                 )}
               >
@@ -206,7 +221,7 @@ export function FreelancerProposalsWorkspace({
                   <div className="flex shrink-0 flex-col items-start gap-2 sm:items-end">
                     <span
                       className={cn(
-                        "inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize ring-1",
+                        "inline-flex rounded-md px-2.5 py-0.5 text-xs font-semibold capitalize ring-1",
                         statusPill(p.status)
                       )}
                     >
