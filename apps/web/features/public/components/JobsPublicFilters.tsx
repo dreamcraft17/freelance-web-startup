@@ -22,7 +22,25 @@ const workModes: { value: WorkMode; label: string }[] = [
 export function JobsPublicFilters({ keyword, city, workMode, categoryId, categories }: JobsPublicFiltersProps) {
   return (
     <div className="mb-8 rounded-xl border border-slate-200 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] sm:p-5">
-      <form method="get" action="/jobs" className="flex flex-col gap-4 xl:flex-row xl:flex-wrap xl:items-end">
+      <div className="nw-panel-head">
+        <div>
+          <p className="nw-section-title">Job board filters</p>
+          <p className="text-sm text-slate-600">Search the live board—open roles only.</p>
+        </div>
+        <div className="flex shrink-0 gap-2">
+          <button type="submit" form="jobs-filter-form" className="nw-cta-primary px-5 py-2.5">
+            Apply
+          </button>
+          <Link
+            href="/jobs"
+            className="inline-flex items-center rounded-md border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+          >
+            Reset
+          </Link>
+        </div>
+      </div>
+
+      <form id="jobs-filter-form" method="get" action="/jobs" className="flex flex-col gap-4 xl:flex-row xl:flex-wrap xl:items-end">
         <div className="min-w-0 flex-1 xl:max-w-[220px]">
           <label htmlFor="jobs-kw" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
             Keyword
@@ -89,20 +107,10 @@ export function JobsPublicFilters({ keyword, city, workMode, categoryId, categor
           <p className="mt-1.5 text-[11px] leading-snug text-slate-500">Matches when the job lists a city.</p>
         </div>
 
-        <div className="flex flex-wrap gap-2 xl:pb-0.5">
-          <button
-            type="submit"
-            className="nw-cta-primary px-5 py-2.5"
-          >
-            Search
-          </button>
-          <Link
-            href="/jobs"
-            className="inline-flex items-center rounded-md border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-          >
-            Reset
-          </Link>
-        </div>
+        <p className="w-full text-[11px] text-slate-500">
+          Tip: filter by <span className="font-medium text-slate-700">work mode</span> first, then keyword—most noise
+          drops off quickly.
+        </p>
       </form>
     </div>
   );

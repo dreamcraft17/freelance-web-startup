@@ -1,6 +1,5 @@
 import type { Route } from "next";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { getSessionFromCookies } from "@src/lib/auth";
 import { AuthUserMenu } from "@/features/dashboard/components/AuthUserMenu";
 import { primaryActionForRole, secondaryActionForRole } from "@/features/public/lib/auth-nav";
@@ -13,32 +12,52 @@ export async function PublicSiteHeader() {
   const secondary = session ? secondaryActionForRole(session.role) : null;
 
   return (
-    <header className="border-b bg-background">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 md:px-6">
-        <BrandLogo imageClassName="h-8 w-auto" alt="NearWork logo" />
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/jobs">Jobs</Link>
-          </Button>
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/freelancers">Freelancers</Link>
-          </Button>
+    <header className="border-b border-slate-200 bg-white">
+      <div className="mx-auto flex h-[3.25rem] max-w-6xl items-center justify-between gap-3 px-4 md:px-6">
+        <Link href={"/" as Route} className="shrink-0" aria-label="NearWork home">
+          <BrandLogo imageClassName="h-8 w-auto" alt="NearWork logo" />
+        </Link>
+        <div className="flex min-w-0 items-center gap-1 sm:gap-2">
+          <Link
+            href="/jobs"
+            className="rounded-md px-2.5 py-1.5 text-sm font-semibold text-slate-800 hover:bg-slate-100 hover:text-slate-900"
+          >
+            Jobs
+          </Link>
+          <Link
+            href="/freelancers"
+            className="rounded-md px-2.5 py-1.5 text-sm font-semibold text-slate-800 hover:bg-slate-100 hover:text-slate-900"
+          >
+            Freelancers
+          </Link>
+          <span className="mx-0.5 hidden h-5 w-px bg-slate-200 sm:block" aria-hidden />
           {primary ? (
             <>
               {secondary ? (
-                <Button variant="ghost" size="sm" asChild>
-                  <Link href={secondary.href as Route}>{secondary.label}</Link>
-                </Button>
+                <Link
+                  href={secondary.href as Route}
+                  className="hidden rounded-md px-2.5 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 sm:inline-flex"
+                >
+                  {secondary.label}
+                </Link>
               ) : null}
-              <Button size="sm" asChild>
-                <Link href={primary.href as Route}>{primary.label}</Link>
-              </Button>
+              <Link href={primary.href as Route} className="nw-cta-primary shrink-0 px-3 py-1.5 text-sm">
+                {primary.label}
+              </Link>
               <AuthUserMenu compact />
             </>
           ) : (
-            <Button size="sm" asChild>
-              <Link href="/login">Log in</Link>
-            </Button>
+            <>
+              <Link
+                href="/register"
+                className="rounded-md px-2.5 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+              >
+                Register
+              </Link>
+              <Link href="/login" className="nw-cta-primary shrink-0 px-3 py-1.5 text-sm">
+                Log in
+              </Link>
+            </>
           )}
         </div>
       </div>

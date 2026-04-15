@@ -13,9 +13,13 @@ import {
   secondaryActionForRole
 } from "@/features/public/lib/auth-nav";
 
-const navLinks = [
-  { href: "/jobs", label: "Find jobs" },
-  { href: "/freelancers", label: "Find freelancers" },
+/** Discovery-first — reads like a product shell, not a brochure nav */
+const navPrimary = [
+  { href: "/jobs", label: "Jobs" },
+  { href: "/freelancers", label: "Freelancers" }
+] as const;
+
+const navSecondary = [
   { href: "/how-it-works", label: "How it works" },
   { href: "/pricing", label: "Pricing" },
   { href: "/early-access", label: "Early access" },
@@ -51,8 +55,8 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
         </Link>
 
         <div className="hidden min-w-0 flex-1 items-center justify-center md:flex">
-          <div className="flex min-w-0 items-center gap-6 lg:gap-7">
-            {navLinks.map(({ href, label }) => {
+          <div className="flex min-w-0 flex-wrap items-center justify-center gap-x-1 gap-y-1">
+            {navPrimary.map(({ href, label }) => {
               const active = isActive(pathname, href);
               return (
                 <Link
@@ -60,8 +64,25 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
                   href={href}
                   className={
                     active
-                      ? "whitespace-nowrap border-b-2 border-[#433C93]/45 py-1 text-sm font-medium text-slate-700"
-                      : "whitespace-nowrap border-b-2 border-transparent py-1 text-sm font-medium text-slate-600/90 transition-all duration-200 hover:border-[#433C93]/35 hover:text-[#433C93]"
+                      ? "whitespace-nowrap rounded-md bg-[#433C93]/10 px-3 py-2 text-sm font-semibold text-[#2f2a68]"
+                      : "whitespace-nowrap rounded-md px-3 py-2 text-sm font-semibold text-slate-800 transition hover:bg-slate-100 hover:text-[#433C93]"
+                  }
+                >
+                  {label}
+                </Link>
+              );
+            })}
+            <span className="mx-1 hidden h-5 w-px bg-slate-200 lg:inline-block" aria-hidden />
+            {navSecondary.map(({ href, label }) => {
+              const active = isActive(pathname, href);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={
+                    active
+                      ? "whitespace-nowrap px-2.5 py-2 text-xs font-medium text-[#433C93] underline decoration-[#433C93]/30 underline-offset-4"
+                      : "whitespace-nowrap px-2.5 py-2 text-xs font-medium text-slate-500 transition hover:text-slate-800"
                   }
                 >
                   {label}
@@ -92,26 +113,26 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
             >
               <MessageSquare className="h-4 w-4" aria-hidden />
             </Link>
-            <Link
-              href={primary.href as Route}
-              className="rounded-md bg-[#433C93] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#4d45a5]"
-            >
+            <Link href={primary.href as Route} className="nw-cta-primary px-4 py-2">
               {primary.label}
             </Link>
             <AuthUserMenu compact />
           </div>
         ) : (
-          <div className="ml-auto hidden shrink-0 items-center gap-2 md:flex">
-            <Link href="/login" className="text-sm font-medium text-slate-600 hover:text-slate-900">
+          <div className="ml-auto hidden shrink-0 items-center gap-1.5 md:flex">
+            <Link
+              href="/jobs"
+              className="rounded-md px-2.5 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-slate-900"
+            >
+              Browse jobs
+            </Link>
+            <Link href="/login" className="rounded-md px-2.5 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900">
               Log in
             </Link>
-            <Link href="/register" className="text-sm font-medium text-slate-600 hover:text-slate-900">
+            <Link href="/register" className="rounded-md px-2.5 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900">
               Register
             </Link>
-            <Link
-              href="/early-access"
-              className="nw-cta-primary px-4 py-2.5 shadow-[0_8px_20px_-12px_rgba(58,50,136,0.55)] hover:brightness-110"
-            >
+            <Link href="/early-access" className="nw-cta-primary px-4 py-2">
               Early access
             </Link>
           </div>
@@ -135,11 +156,23 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
           className="border-t border-slate-200 bg-white px-4 py-4 shadow-lg md:hidden"
         >
           <div className="mx-auto flex max-w-7xl flex-col gap-1">
-            {navLinks.map(({ href, label }) => (
+            <p className="px-3 pt-1 text-[11px] font-semibold uppercase tracking-wide text-slate-400">Browse</p>
+            {navPrimary.map(({ href, label }) => (
               <Link
                 key={href}
                 href={href}
-                className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                className="rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+                onClick={() => setOpen(false)}
+              >
+                {label}
+              </Link>
+            ))}
+            <p className="px-3 pt-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">Product</p>
+            {navSecondary.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
                 onClick={() => setOpen(false)}
               >
                 {label}
@@ -182,6 +215,13 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
             ) : (
               <>
                 <Link
+                  href="/jobs"
+                  className="rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+                  onClick={() => setOpen(false)}
+                >
+                  Browse jobs
+                </Link>
+                <Link
                   href="/login"
                   className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
                   onClick={() => setOpen(false)}
@@ -195,11 +235,7 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
                 >
                   Register
                 </Link>
-                <Link
-                  href="/early-access"
-                  className="nw-cta-primary mt-1 rounded-lg px-4 py-2.5 text-center shadow-[0_8px_20px_-12px_rgba(58,50,136,0.55)] hover:brightness-110"
-                  onClick={() => setOpen(false)}
-                >
+                <Link href="/early-access" className="nw-cta-primary mt-1 rounded-lg px-4 py-2.5 text-center" onClick={() => setOpen(false)}>
                   Early access
                 </Link>
               </>

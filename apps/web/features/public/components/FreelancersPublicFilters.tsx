@@ -122,8 +122,26 @@ export function FreelancersPublicFilters({
   }, [coords]);
 
   return (
-    <div className="mb-8 rounded-xl border border-slate-200 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] sm:p-5">
-      <form method="get" action="/freelancers" className="flex flex-col gap-4 xl:flex-row xl:flex-wrap xl:items-end">
+    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] sm:p-5">
+      <div className="nw-panel-head">
+        <div>
+          <p className="nw-section-title">Directory filters</p>
+          <p className="text-sm text-slate-600">Keyword + category narrow the roster; city and nearby refine place.</p>
+        </div>
+        <div className="flex shrink-0 gap-2 sm:pb-0">
+          <button type="submit" form="freelancers-filter-form" className="nw-cta-primary px-5 py-2.5">
+            Apply
+          </button>
+          <Link
+            href="/freelancers"
+            className="inline-flex items-center rounded-md border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+          >
+            Reset
+          </Link>
+        </div>
+      </div>
+
+      <form id="freelancers-filter-form" method="get" action="/freelancers" className="flex flex-col gap-4 xl:flex-row xl:flex-wrap xl:items-end">
         {activeCoords ? (
           <>
             <input type="hidden" name="lat" value={String(activeCoords.lat)} />
@@ -203,20 +221,10 @@ export function FreelancersPublicFilters({
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-2 xl:pb-0.5">
-          <button
-            type="submit"
-            className="nw-cta-primary px-5 py-2.5"
-          >
-            Search
-          </button>
-          <Link
-            href="/freelancers"
-            className="inline-flex items-center rounded-md border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-          >
-            Reset
-          </Link>
-        </div>
+        <p className="w-full text-[11px] text-slate-500 xl:col-span-full">
+          Tip: set work mode to <span className="font-medium text-slate-700">Remote</span> when you do not need someone
+          on-site.
+        </p>
       </form>
 
       <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-3.5">

@@ -14,6 +14,8 @@ export type PublicFreelancerCard = {
   availabilityStatus: string;
   reviewCount: number;
   averageReviewRating: number | null;
+  /** Present when directory is sorted by browser location + radius */
+  distanceKm?: number | null;
 };
 
 function workModeLabel(wm: string): string {
@@ -68,66 +70,74 @@ export function FreelancersBrowseList({ freelancers, activeCityFilter }: Freelan
   }
 
   return (
-    <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    <ul className="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3">
       {freelancers.map((f) => {
         const loc = locationLabel(f);
         const spec = specialtyLine(f);
         const showHeadlineBelow = Boolean(f.primaryCategoryName?.trim() && f.headline?.trim());
         const rating = ratingLine(f);
+        const showDistance = f.distanceKm != null && Number.isFinite(f.distanceKm);
 
         return (
           <li key={f.id}>
             <Link
               href={`/freelancers/${encodeURIComponent(f.username)}`}
-              className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition hover:border-slate-300"
+              className="flex h-full flex-col rounded-lg border border-slate-200 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition hover:border-[#433C93]/35"
             >
-              <div className="mb-3 flex flex-wrap items-center gap-2">
-                <span className="rounded-md bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">
+              <div className="mb-2 flex flex-wrap items-center gap-1.5">
+                <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-slate-700">
                   {workModeLabel(f.workMode)}
                 </span>
+                {showDistance ? (
+                  <span className="rounded border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-900">
+                    ~{f.distanceKm} km
+                  </span>
+                ) : null}
                 {activeCityFilter?.trim() && loc?.toLowerCase().includes(activeCityFilter.trim().toLowerCase()) ? (
-                  <span className="rounded-md bg-indigo-50 px-2.5 py-0.5 text-xs font-medium text-[#3525cd]">
-                    Lists {activeCityFilter.trim()}
+                  <span className="rounded border border-[#433C93]/25 bg-[#433C93]/5 px-2 py-0.5 text-[11px] font-semibold text-[#433C93]">
+                    City: {activeCityFilter.trim()}
                   </span>
                 ) : null}
               </div>
 
-              <p className="text-base font-semibold leading-snug text-slate-900">{f.fullName}</p>
-              <p className="text-sm text-slate-500">@{f.username}</p>
+              <p className="text-[15px] font-semibold leading-snug text-slate-900">{f.fullName}</p>
+              <p className="text-xs text-slate-500">@{f.username}</p>
 
               {spec ? (
-                <p className="mt-2 text-sm font-medium text-slate-700 line-clamp-2">{spec}</p>
+                <p className="mt-1.5 text-sm font-medium text-slate-700 line-clamp-2">{spec}</p>
               ) : (
-                <p className="mt-2 text-sm italic text-slate-400">Profile focus on their page</p>
+                <p className="mt-1.5 text-sm italic text-slate-400">Open profile for details</p>
               )}
 
               {showHeadlineBelow ? (
-                <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-slate-600">{f.headline}</p>
+                <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-600">{f.headline}</p>
               ) : null}
 
-              <div className="mt-auto pt-4">
+              <div className="mt-auto pt-3">
                 {loc ? (
                   <p className="flex items-start gap-1.5 text-xs text-slate-600">
-                    <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-indigo-600" aria-hidden />
+                    <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#433C93]" aria-hidden />
                     <span>{loc}</span>
                   </p>
                 ) : (
                   <p className="text-xs text-slate-400">Location not listed</p>
                 )}
 
-                <div className="mt-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-t border-slate-100 pt-3">
+                <div className="mt-2.5 flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1 border-t border-slate-100 pt-2.5">
                   <span className="text-sm font-semibold text-slate-800">{rateLabel(f)}</span>
                   {rating ? (
-                    <span className="inline-flex items-center gap-1 text-xs font-medium text-slate-600">
+                    <span className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-600">
                       <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" aria-hidden />
                       {rating}
                     </span>
                   ) : (
-                    <span className="text-xs text-slate-400">No reviews yet</span>
+                    <span className="text-[11px] text-slate-400">No reviews yet</span>
                   )}
                 </div>
 
-                <p className="mt-2 text-[11px] capitalize tracking-wide text-slate-400">{availabilityLabel(f.availabilityStatus)}</p>
+                <p className="mt-1.5 text-[10px] font-medium uppercase tracking-wide text-slate-400">
+                  {availabilityLabel(f.availabilityStatus)}
+                </p>
               </div>
             </Link>
           </li>

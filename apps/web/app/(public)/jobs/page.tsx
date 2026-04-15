@@ -1,6 +1,7 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { searchJobsSchema } from "@acme/validators";
+import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
 import { JobsPublicEmpty } from "@/features/public/components/JobsPublicEmpty";
 import { JobsPublicFilters } from "@/features/public/components/JobsPublicFilters";
 import { JobsPublicList, type JobsPublicCard } from "@/features/public/components/JobsPublicList";
@@ -111,56 +112,97 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
         </p>
       </header>
 
-      <JobsPublicFilters
-        keyword={keyword}
-        city={city}
-        workMode={workMode}
-        categoryId={categoryId}
-        categories={categories}
-      />
+      <div className="lg:grid lg:grid-cols-[minmax(0,1fr),14.5rem] lg:items-start lg:gap-8">
+        <div className="min-w-0 space-y-5">
+          <JobsPublicFilters
+            keyword={keyword}
+            city={city}
+            workMode={workMode}
+            categoryId={categoryId}
+            categories={categories}
+          />
 
-      {total > 0 ? (
-        <p className="mb-5 text-sm text-slate-600">
-          {total === 1 ? "One open role matches your filters." : `${total} open roles match your filters.`}
-        </p>
-      ) : null}
-
-      {jobs.length === 0 ? (
-        <JobsPublicEmpty categorySelected={categorySelected} hasFilters={hasFilters} />
-      ) : (
-        <JobsPublicList jobs={jobs} />
-      )}
-
-      {totalPages > 1 ? (
-        <nav
-          className="mt-8 flex items-center justify-between border-t border-slate-200 pt-5 text-sm"
-          aria-label="Pagination"
-        >
-          {page > 1 ? (
-            <Link
-              href={`/jobs${jobsQueryString({ keyword, city, workMode, categoryId, page: page - 1 })}` as Route}
-              className="font-semibold text-[#3525cd] hover:underline"
+          <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 lg:hidden">
+            <p className="font-medium text-slate-900">Hiring?</p>
+            <p className="mt-0.5 text-slate-600">Post a brief and collect bids on NearWork.</p>
+            <AuthAwareCtaLink
+              href={"/client/jobs/new" as Route}
+              intent="post-job"
+              unauthenticatedTo="register"
+              registerRoleHint="client"
+              className="nw-cta-primary mt-3 inline-flex w-full justify-center py-2.5"
             >
-              ← Previous
-            </Link>
+              Post a job
+            </AuthAwareCtaLink>
+          </div>
+
+          {total > 0 ? (
+            <div className="nw-results-toolbar">
+              <span className="font-medium text-slate-900">
+                {total === 1 ? "1 open role" : `${total} open roles`}
+              </span>
+              <span className="text-slate-500">Scan title + budget, then open for full brief.</span>
+            </div>
+          ) : null}
+
+          {jobs.length === 0 ? (
+            <JobsPublicEmpty categorySelected={categorySelected} hasFilters={hasFilters} />
           ) : (
-            <span className="text-slate-300">← Previous</span>
+            <JobsPublicList jobs={jobs} />
           )}
-          <span className="text-slate-500">
-            Page {page} of {totalPages}
-          </span>
-          {page < totalPages ? (
-            <Link
-              href={`/jobs${jobsQueryString({ keyword, city, workMode, categoryId, page: page + 1 })}` as Route}
-              className="font-semibold text-[#3525cd] hover:underline"
+
+          {totalPages > 1 ? (
+            <nav
+              className="flex items-center justify-between border-t border-slate-200 pt-5 text-sm"
+              aria-label="Pagination"
             >
-              Next →
+              {page > 1 ? (
+                <Link
+                  href={`/jobs${jobsQueryString({ keyword, city, workMode, categoryId, page: page - 1 })}` as Route}
+                  className="font-semibold text-[#433C93] hover:underline"
+                >
+                  ← Previous
+                </Link>
+              ) : (
+                <span className="text-slate-300">← Previous</span>
+              )}
+              <span className="text-slate-500">
+                Page {page} of {totalPages}
+              </span>
+              {page < totalPages ? (
+                <Link
+                  href={`/jobs${jobsQueryString({ keyword, city, workMode, categoryId, page: page + 1 })}` as Route}
+                  className="font-semibold text-[#433C93] hover:underline"
+                >
+                  Next →
+                </Link>
+              ) : (
+                <span className="text-slate-300">Next →</span>
+              )}
+            </nav>
+          ) : null}
+        </div>
+
+        <aside className="mt-2 hidden min-w-0 lg:sticky lg:top-28 lg:mt-0 lg:block">
+          <div className="nw-surface-soft space-y-3 p-4 text-sm">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">For clients</p>
+            <p className="font-semibold text-slate-900">Need talent listed here?</p>
+            <p className="text-slate-600">Post a brief with budget and location so the right freelancers can bid.</p>
+            <AuthAwareCtaLink
+              href={"/client/jobs/new" as Route}
+              intent="post-job"
+              unauthenticatedTo="register"
+              registerRoleHint="client"
+              className="nw-cta-primary flex w-full justify-center py-2.5 text-center"
+            >
+              Post a job
+            </AuthAwareCtaLink>
+            <Link href="/freelancers" className="block text-center text-xs font-semibold text-[#433C93] hover:underline">
+              Browse freelancers instead
             </Link>
-          ) : (
-            <span className="text-slate-300">Next →</span>
-          )}
-        </nav>
-      ) : null}
+          </div>
+        </aside>
+      </div>
     </div>
   );
 }
