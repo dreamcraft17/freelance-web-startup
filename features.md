@@ -4,6 +4,18 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 > Catatan: detail risiko, gap, dan technical debt tetap di `audit.md`.
 
+## Update terbaru (April 2026)
+
+- Sistem UI sudah bergerak ke arah **grounded product UI** (tanpa glassmorphism/gradient dekoratif) di public + app surfaces.
+- Public discovery (`/freelancers`, `/jobs`) sekarang berorientasi **scanability dan decision flow**: filter lebih operasional, density list lebih rapat, dan nearby cues lebih nyata.
+- Workflow client hiring ditingkatkan:
+  - `/client/jobs` jadi control center dengan attention metrics (needs attention, new bid activity, stale jobs),
+  - job detail menampilkan tabel perbandingan bid untuk client owner (harga, profile strength, lokasi/mode, status, next action),
+  - aksi keputusan langsung (`Accept bid`) tersedia lewat API existing.
+- Workflow freelancer earning diperjelas:
+  - `/freelancers` punya rail terarah untuk profile/job/proposals,
+  - proposal workspace lebih padat dan lebih fokus pada prioritas status.
+
 ---
 
 ## 1) Ringkasan produk

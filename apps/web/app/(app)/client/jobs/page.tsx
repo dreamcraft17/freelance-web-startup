@@ -56,7 +56,7 @@ export default async function ClientJobsPage({
     }
   });
 
-  const [bidAgg, latestBidAgg] = await Promise.all([
+  const [bidAgg, latestBidAgg, messageThreads] = await Promise.all([
     db.bid.groupBy({
       by: ["jobId", "status"],
       where: {
@@ -70,6 +70,25 @@ export default async function ClientJobsPage({
         job: { clientProfileId: clientProfile.id, deletedAt: null }
       },
       _max: { createdAt: true }
+    }),
+    db.messageThread.findMany({
+      where: {
+        type: "JOB",
+        job: { clientProfileId: clientProfile.id, deletedAt: null },
+        participants: { some: { userId: session.userId } }
+      },
+      select: {
+        id: true,
+        jobId: true,
+        updatedAt: true,
+        participants: { select: { userId: true } },
+        messages: {
+          where: { deletedAt: null },
+          orderBy: { createdAt: "desc" },
+          take: 1,
+          select: { createdAt: true, senderId: true }
+        }
+      }
     })
   ]);
 
@@ -90,8 +109,27 @@ export default async function ClientJobsPage({
     bidMap.set(b.jobId, row);
   }
 
+  const messageMap = new Map<
+    string,
+    { conversationCount: number; awaitingReplyCount: number; latestMessageAt: Date | null }
+  >();
+  for (const t of messageThreads) {
+    if (!t.jobId) continue;
+    const row = messageMap.get(t.jobId) ?? { conversationCount: 0, awaitingReplyCount: 0, latestMessageAt: null };
+    row.conversationCount += 1;
+    const last = t.messages[0] ?? null;
+    if (last && last.senderId !== session.userId) {
+      row.awaitingReplyCount += 1;
+    }
+    if (last?.createdAt && (!row.latestMessageAt || last.createdAt > row.latestMessageAt)) {
+      row.latestMessageAt = last.createdAt;
+    }
+    messageMap.set(t.jobId, row);
+  }
+
   const rows: ClientJobListRow[] = jobs.map((j) => ({
     ...(bidMap.get(j.id) ?? { submitted: 0, shortlisted: 0, accepted: 0, latestBidAt: null }),
+    ...(messageMap.get(j.id) ?? { conversationCount: 0, awaitingReplyCount: 0, latestMessageAt: null }),
     id: j.id,
     title: j.title,
     status: j.status,

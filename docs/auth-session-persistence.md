@@ -2,6 +2,12 @@
 
 Dokumen ini menjelaskan bagaimana session login dipertahankan setelah user berhasil login, termasuk format cookie, validasi middleware, dan alur redirect.
 
+## Update status (April 2026)
+
+- Session persistence tetap berbasis cookie tunggal (`acme_session`) dan tidak berubah secara arsitektur.
+- Redirect post-login untuk staff tetap terpusat dan mengarah default ke `/admin`.
+- Public navbar/header sudah auth-aware secara server-side sehingga state login/logout terlihat konsisten di halaman publik.
+
 ## Tujuan
 
 - User **tidak perlu login ulang** saat pindah halaman, refresh, atau membuka route protected.

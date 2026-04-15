@@ -2,6 +2,15 @@
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
+## Update status (April 2026)
+
+- Public browse/discovery sekarang lebih kuat sebagai product tool (bukan landing template):
+  - `/freelancers` dan `/jobs` menekankan scanability + actionable filters.
+- Workspace client/freelancer sudah lebih simetris secara tujuan:
+  - freelancer: profile, job search, proposal tracking,
+  - client: post job, review bids, hire decisions.
+- Internal `/admin` tetap diposisikan sebagai workspace operasional (compact dan practical), dengan RBAC yang konsisten.
+
 ## Product Summary
 
 NearWork adalah platform marketplace kerja freelance yang menghubungkan:

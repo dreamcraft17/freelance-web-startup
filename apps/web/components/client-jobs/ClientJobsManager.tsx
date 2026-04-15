@@ -10,6 +10,9 @@ export type ClientJobListRow = {
   shortlisted: number;
   accepted: number;
   latestBidAt: Date | null;
+  conversationCount: number;
+  awaitingReplyCount: number;
+  latestMessageAt: Date | null;
   id: string;
   title: string;
   status: string;
@@ -117,6 +120,7 @@ export function ClientJobsManager({ jobs, statusParam, hasProfile }: ClientJobsM
   });
   const attentionCount = jobs.filter(isNeedsAttention).length;
   const newBidCount = jobs.filter((j) => j.latestBidAt && Date.now() - j.latestBidAt.getTime() <= 1000 * 60 * 60 * 48).length;
+  const awaitingReplyJobs = jobs.filter((j) => j.awaitingReplyCount > 0).length;
   const staleCount = jobs.filter(isStale).length;
 
   return (
@@ -160,9 +164,10 @@ export function ClientJobsManager({ jobs, statusParam, hasProfile }: ClientJobsM
         />
       ) : (
         <>
-          <div className="grid gap-3 md:grid-cols-3">
+          <div className="grid gap-3 md:grid-cols-4">
             <SummaryTile label="Needs attention" value={attentionCount} hint="Open jobs with pending decisions" />
             <SummaryTile label="New bid activity" value={newBidCount} hint="Jobs with bids in last 48h" />
+            <SummaryTile label="Awaiting reply" value={awaitingReplyJobs} hint="Jobs with unread communication signals" />
             <SummaryTile label="Stale open jobs" value={staleCount} hint="Open jobs with no updates in 14+ days" />
           </div>
 
@@ -247,6 +252,18 @@ export function ClientJobsManager({ jobs, statusParam, hasProfile }: ClientJobsM
                             <span className="text-xs text-slate-500">
                               {job.latestBidAt ? `new bid ${formatRelativeDays(job.latestBidAt)}` : `posted ${formatCreated(job.createdAt)}`}
                             </span>
+                            <span
+                              className={cn(
+                                "text-xs",
+                                job.awaitingReplyCount > 0 ? "font-medium text-[#433C93]" : "text-slate-500"
+                              )}
+                            >
+                              {job.conversationCount === 0
+                                ? "No conversation yet"
+                                : job.awaitingReplyCount > 0
+                                  ? `${job.awaitingReplyCount} awaiting reply`
+                                  : `Conversation active · ${job.latestMessageAt ? formatRelativeDays(job.latestMessageAt) : "no messages"}`}
+                            </span>
                           </div>
                         </td>
                         <td className="px-5 py-4 text-xs text-slate-500">
@@ -264,6 +281,11 @@ export function ClientJobsManager({ jobs, statusParam, hasProfile }: ClientJobsM
                           >
                             {isNeedsAttention(job) ? "Review bids" : "Open job"}
                           </Link>
+                          {job.conversationCount > 0 ? (
+                            <Link href={"/messages" as Route} className="ml-2 text-[11px] font-semibold text-slate-500 hover:underline">
+                              Messages
+                            </Link>
+                          ) : null}
                         </td>
                       </tr>
                     ))}
@@ -305,6 +327,13 @@ export function ClientJobsManager({ jobs, statusParam, hasProfile }: ClientJobsM
                       </span>
                       <span>
                         <span className="font-medium text-slate-500">Updated</span> {formatRelativeDays(job.updatedAt)}
+                      </span>
+                      <span className={job.awaitingReplyCount > 0 ? "font-medium text-[#433C93]" : undefined}>
+                        {job.conversationCount === 0
+                          ? "No conversation"
+                          : job.awaitingReplyCount > 0
+                            ? "Unread message"
+                            : "Conversation active"}
                       </span>
                     </div>
                   </li>

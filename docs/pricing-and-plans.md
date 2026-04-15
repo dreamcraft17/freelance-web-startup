@@ -15,3 +15,8 @@
 ## AGENCY
 - Higher quotas and multi-seat operations
 - Shared billing and team workflow support
+
+## Update status (April 2026)
+
+- Produktif UX saat ini masih early-access oriented; monetization penuh masih bertahap.
+- Quota/entitlement architecture tetap dipakai sebagai dasar readiness, namun pengalaman user publik menekankan transparansi (tanpa fake urgency/pricing gimmick).

@@ -8,6 +8,7 @@ import { loginReturnTo, registerFreelancerReturnToJob } from "@/features/auth/li
 import { PageHeader } from "@/features/shared/components/PageHeader";
 import { SaveJobButton } from "@/features/saved/components/SaveJobButton";
 import { BidDecisionAction } from "@/components/client-jobs/BidDecisionAction";
+import { BidConversationAction } from "@/components/client-jobs/BidConversationAction";
 import { JobService } from "@/server/services/job.service";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -64,6 +65,31 @@ function locationParts(
   return out.length > 0 ? out.join(" · ") : null;
 }
 
+function formatRelativeTime(d: Date): string {
+  const diffMs = Date.now() - d.getTime();
+  const mins = Math.floor(diffMs / 60000);
+  if (mins < 60) return `${Math.max(1, mins)}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.floor(hrs / 24);
+  if (days < 7) return `${days}d ago`;
+  return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric" }).format(d);
+}
+
+function profileStrengthHint(completeness: number | null | undefined): string {
+  if (completeness == null) return "Profile details limited";
+  if (completeness >= 85) return "Profile looks strong";
+  if (completeness >= 60) return "Profile is moderately complete";
+  return "Profile still sparse";
+}
+
+function bidDecisionHint(status: string): string {
+  if (status === BidStatus.SHORTLISTED) return "Ready to hire when you're confident";
+  if (status === BidStatus.SUBMITTED) return "Shortlist to compare later";
+  if (status === BidStatus.ACCEPTED) return "Hiring decision completed";
+  return "No decision needed";
+}
+
 export default async function JobDetailPage({ params }: PageProps) {
   const { jobId: rawId } = await params;
   const jobId = rawId?.trim() ?? "";
@@ -97,6 +123,26 @@ export default async function JobDetailPage({ params }: PageProps) {
       })
     : [];
 
+  const jobThreads = isClientOwner
+    ? await db.messageThread.findMany({
+        where: {
+          type: "JOB",
+          jobId: job.id,
+          participants: { some: { userId: session!.userId } }
+        },
+        select: {
+          id: true,
+          participants: { select: { userId: true } },
+          messages: {
+            where: { deletedAt: null },
+            orderBy: { createdAt: "desc" },
+            take: 1,
+            select: { createdAt: true, senderId: true }
+          }
+        }
+      })
+    : [];
+
   const freelancerUserIds = [...new Set(bidRows.map((b) => b.freelancer.userId))];
   const freelancerProfiles = freelancerUserIds.length
     ? await db.freelancerProfile.findMany({
@@ -106,8 +152,27 @@ export default async function JobDetailPage({ params }: PageProps) {
     : [];
   const profileMap = new Map(freelancerProfiles.map((p) => [p.userId, p]));
 
+  const conversationMap = new Map<
+    string,
+    { threadId: string; lastMessageAt: Date | null; awaitingReply: boolean; hasMessages: boolean }
+  >();
+  if (session) {
+    for (const t of jobThreads) {
+      const peer = t.participants.find((p) => p.userId !== session.userId);
+      if (!peer) continue;
+      const last = t.messages[0] ?? null;
+      conversationMap.set(peer.userId, {
+        threadId: t.id,
+        lastMessageAt: last?.createdAt ?? null,
+        awaitingReply: Boolean(last && last.senderId !== session.userId),
+        hasMessages: Boolean(last)
+      });
+    }
+  }
+
   const pendingDecisionCount = bidRows.filter((b) => b.status === BidStatus.SUBMITTED).length;
   const shortlistedCount = bidRows.filter((b) => b.status === BidStatus.SHORTLISTED).length;
+  const awaitingReplyCount = bidRows.filter((b) => conversationMap.get(b.freelancer.userId)?.awaitingReply).length;
 
   const categoryLabel = job.subcategory
     ? `${job.category.name} · ${job.subcategory.name}`
@@ -189,18 +254,26 @@ export default async function JobDetailPage({ params }: PageProps) {
           </CardHeader>
           {isClientOwner ? (
             <CardContent className="space-y-4">
-              <div className="grid gap-2 sm:grid-cols-3">
+              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
                 <div className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
                   <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Pending decision</p>
                   <p className="mt-1 text-lg font-semibold tabular-nums text-slate-900">{pendingDecisionCount}</p>
+                  <p className="text-[11px] text-slate-500">Shortlist to compare, accept when ready</p>
                 </div>
                 <div className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
                   <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Shortlisted</p>
                   <p className="mt-1 text-lg font-semibold tabular-nums text-slate-900">{shortlistedCount}</p>
+                  <p className="text-[11px] text-slate-500">Focused candidates for final decision</p>
                 </div>
                 <div className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
                   <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Total bids</p>
                   <p className="mt-1 text-lg font-semibold tabular-nums text-slate-900">{bidRows.length}</p>
+                  <p className="text-[11px] text-slate-500">Use price + profile + response signals</p>
+                </div>
+                <div className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Awaiting reply</p>
+                  <p className="mt-1 text-lg font-semibold tabular-nums text-slate-900">{awaitingReplyCount}</p>
+                  <p className="text-[11px] text-slate-500">Conversation may need your follow-up</p>
                 </div>
               </div>
 
@@ -210,13 +283,14 @@ export default async function JobDetailPage({ params }: PageProps) {
                 </div>
               ) : (
                 <div className="overflow-x-auto rounded-lg border border-slate-200">
-                  <table className="w-full min-w-[780px] border-collapse text-left text-sm">
+                  <table className="w-full min-w-[940px] border-collapse text-left text-sm">
                     <thead>
                       <tr className="border-b border-slate-100 bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
                         <th className="px-3 py-2.5">Freelancer</th>
                         <th className="px-3 py-2.5">Price</th>
                         <th className="px-3 py-2.5">Profile strength</th>
                         <th className="px-3 py-2.5">Location / mode</th>
+                        <th className="px-3 py-2.5">Conversation</th>
                         <th className="px-3 py-2.5">Status</th>
                         <th className="px-3 py-2.5 text-right">Next action</th>
                       </tr>
@@ -224,6 +298,7 @@ export default async function JobDetailPage({ params }: PageProps) {
                     <tbody className="divide-y divide-slate-100">
                       {bidRows.map((bid) => {
                         const profile = profileMap.get(bid.freelancer.userId);
+                        const convo = conversationMap.get(bid.freelancer.userId);
                         return (
                           <tr key={bid.id} className={bid.status === BidStatus.SUBMITTED ? "bg-amber-50/30" : undefined}>
                             <td className="px-3 py-3">
@@ -244,18 +319,70 @@ export default async function JobDetailPage({ params }: PageProps) {
                             </td>
                             <td className="px-3 py-3 text-xs text-slate-600">
                               {profile?.profileCompleteness != null ? (
-                                <span className="font-medium text-slate-800">{profile.profileCompleteness}% complete</span>
+                                <div>
+                                  <p className="font-medium text-slate-800">{profile.profileCompleteness}% complete</p>
+                                  <p className="text-[11px] text-slate-500">{profileStrengthHint(profile.profileCompleteness)}</p>
+                                </div>
                               ) : (
-                                <span>Not available</span>
+                                <span className="text-slate-500">Not available</span>
                               )}
                             </td>
                             <td className="px-3 py-3 text-xs text-slate-600">
-                              {[profile?.city, profile?.workMode].filter(Boolean).join(" · ") || "Not specified"}
+                              <div>
+                                <p>{[profile?.city, profile?.workMode].filter(Boolean).join(" · ") || "Not specified"}</p>
+                                {job.city && profile?.city ? (
+                                  <p className="text-[11px] text-slate-500">
+                                    {job.city.toLowerCase() === profile.city.toLowerCase()
+                                      ? "Location relevant (same city)"
+                                      : "Different city from job"}
+                                  </p>
+                                ) : null}
+                              </div>
+                            </td>
+                            <td className="px-3 py-3 text-xs">
+                              {!convo ? (
+                                <div className="text-slate-500">
+                                  <p>No conversation yet</p>
+                                  <div className="mt-1">
+                                    <BidConversationAction
+                                      threadId={null}
+                                      jobId={job.id}
+                                      freelancerUserId={bid.freelancer.userId}
+                                    />
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className={convo.awaitingReply ? "text-[#433C93]" : "text-slate-600"}>
+                                  <p className="font-medium">
+                                    {convo.awaitingReply
+                                      ? "Unread message"
+                                      : convo.hasMessages
+                                        ? "Conversation active"
+                                        : "Thread active"}
+                                  </p>
+                                  <p className="text-[11px] text-slate-500">
+                                    {convo.awaitingReply ? "Waiting for your reply" : "Conversation ongoing"}
+                                  </p>
+                                  <p className="text-slate-500">
+                                    {convo.lastMessageAt ? `Last message ${formatRelativeTime(convo.lastMessageAt)}` : "No messages yet"}
+                                  </p>
+                                  <div className="mt-1">
+                                    <BidConversationAction
+                                      threadId={convo.threadId}
+                                      jobId={job.id}
+                                      freelancerUserId={bid.freelancer.userId}
+                                    />
+                                  </div>
+                                </div>
+                              )}
                             </td>
                             <td className="px-3 py-3">
-                              <span className="inline-flex rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
-                                {bid.status.replace(/_/g, " ").toLowerCase()}
-                              </span>
+                              <div>
+                                <span className="inline-flex rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
+                                  {bid.status.replace(/_/g, " ").toLowerCase()}
+                                </span>
+                                <p className="mt-1 text-[11px] text-slate-500">{bidDecisionHint(bid.status)}</p>
+                              </div>
                             </td>
                             <td className="px-3 py-3 text-right">
                               <BidDecisionAction bidId={bid.id} currentStatus={bid.status} />

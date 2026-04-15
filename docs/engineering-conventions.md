@@ -1,5 +1,14 @@
 # Engineering Conventions (Production SaaS)
 
+## Update status (April 2026)
+
+- Konvensi layering (handler -> service -> policy -> repository) tetap dipertahankan pada fitur baru.
+- Perubahan terbaru berfokus pada UI/workflow tanpa mengubah kontrak backend inti.
+- Praktik yang ditegaskan:
+  - no decorative UI gimmicks untuk product surfaces,
+  - no fake data di empty state/discovery,
+  - incremental modular updates dan type-safe verification (`tsc`, lint).
+
 ## Naming
 - Services use explicit domain names: `FreelancerProfileService`, `SubscriptionService`.
 - Policies use capability-oriented methods: `assertCanCreateJob`, `assertParticipantOrAdmin`.

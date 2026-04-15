@@ -78,7 +78,7 @@ export class BidService {
 
     const bid = await this.bidRepo.findBidForAccept(bidId);
     if (!bid) throw new NotFoundError("Bid not found");
-    if (bid.status !== BidStatus.SUBMITTED) {
+    if (bid.status !== BidStatus.SUBMITTED && bid.status !== BidStatus.SHORTLISTED) {
       throw new PolicyDeniedError("Bid cannot be accepted in its current state");
     }
     if (bid.contract) {
@@ -118,5 +118,39 @@ export class BidService {
     });
 
     return contract;
+  }
+
+  /** Client job owner marks a bid as shortlisted for later comparison. */
+  async shortlistBid(actor: AuthActor, bidId: string) {
+    if (actor.role !== UserRole.CLIENT && actor.role !== UserRole.ADMIN) {
+      throw new PolicyDeniedError("Only clients can shortlist bids");
+    }
+
+    const bid = await this.bidRepo.findBidForAccept(bidId);
+    if (!bid) throw new NotFoundError("Bid not found");
+    if (bid.contract) {
+      throw new PolicyDeniedError("This bid already has a contract");
+    }
+
+    const clientProfileId = await this.clientRepo.requireClientProfileIdForUser(actor.userId);
+    if (bid.job.clientProfileId !== clientProfileId) {
+      throw new PolicyDeniedError("You do not own this job");
+    }
+
+    if (bid.status === BidStatus.ACCEPTED || bid.status === BidStatus.REJECTED || bid.status === BidStatus.WITHDRAWN) {
+      throw new PolicyDeniedError("Bid cannot be shortlisted in its current state");
+    }
+
+    if (bid.status === BidStatus.SHORTLISTED) {
+      return { id: bid.id, status: bid.status };
+    }
+
+    const updated = await db.bid.update({
+      where: { id: bid.id },
+      data: { status: BidStatus.SHORTLISTED },
+      select: { id: true, status: true }
+    });
+
+    return updated;
   }
 }
