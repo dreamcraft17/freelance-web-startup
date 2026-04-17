@@ -1,5 +1,7 @@
 # Internal Dev Credentials
 
+> Last synchronized: 2026-04-15 (post-accept handoff update applied across product and docs).
+
 ## Seeded Admin Account (Development)
 
 - Email: `admin@nearwork.local`

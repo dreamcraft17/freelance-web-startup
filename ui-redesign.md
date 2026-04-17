@@ -1,5 +1,7 @@
 # NearWork UI Redesign Audit + Design Language
 
+> Last synchronized: 2026-04-15 (post-accept handoff update applied across product and docs).
+
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.

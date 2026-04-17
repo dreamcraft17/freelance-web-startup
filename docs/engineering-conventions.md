@@ -1,5 +1,7 @@
 # Engineering Conventions (Production SaaS)
 
+> Last synchronized: 2026-04-15 (post-accept handoff update applied across product and docs).
+
 ## Update status (April 2026)
 
 - Konvensi layering (handler -> service -> policy -> repository) tetap dipertahankan pada fitur baru.

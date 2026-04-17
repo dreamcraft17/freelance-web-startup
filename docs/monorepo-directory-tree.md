@@ -1,5 +1,7 @@
 # Full monorepo directory tree (SaaS freelance marketplace)
 
+> Last synchronized: 2026-04-15 (post-accept handoff update applied across product and docs).
+
 Target layout: TypeScript-first, API and domain layers first. UI packages and app pages are omitted or stubbed until a dedicated UI phase.
 
 > Update (April 2026): konteks di atas bersifat rencana awal. UI phase kini sudah aktif dan luas di `apps/web` (public discovery, auth, client/freelancer dashboards, admin workspace).

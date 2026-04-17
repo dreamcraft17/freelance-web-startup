@@ -1,5 +1,7 @@
 # Pricing and Plans
 
+> Last synchronized: 2026-04-15 (post-accept handoff update applied across product and docs).
+
 ## FREE
 - Active bids: 5
 - Active accepted contracts: 2

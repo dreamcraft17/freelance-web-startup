@@ -1,5 +1,7 @@
 # Taxonomy and Categories
 
+> Last synchronized: 2026-04-15 (post-accept handoff update applied across product and docs).
+
 - `Category` for top-level service grouping.
 - `Subcategory` for more specific service classes.
 - `Skill` for standardized searchable capabilities.
