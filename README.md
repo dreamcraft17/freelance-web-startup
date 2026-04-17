@@ -1,5 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
+> Last synchronized: 2026-04-15 (post-accept handoff update applied across product and docs).
+
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
 - Fastwork (service-based)

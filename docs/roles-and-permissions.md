@@ -1,5 +1,7 @@
 # Roles and Permissions
 
+> Last synchronized: 2026-04-15 (post-accept handoff update applied across product and docs).
+
 System roles:
 - `ADMIN`
 - `CLIENT`

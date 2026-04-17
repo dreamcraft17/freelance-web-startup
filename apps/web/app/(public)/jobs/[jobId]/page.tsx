@@ -90,6 +90,13 @@ function bidDecisionHint(status: string): string {
   return "No decision needed";
 }
 
+function contractStatusHint(status: string): string {
+  if (status === "PENDING") return "Waiting for kickoff details";
+  if (status === "IN_PROGRESS" || status === "ACTIVE") return "Work is now underway";
+  if (status === "COMPLETED") return "Contract completed";
+  return "Contract is available";
+}
+
 export default async function JobDetailPage({ params }: PageProps) {
   const { jobId: rawId } = await params;
   const jobId = rawId?.trim() ?? "";
@@ -118,7 +125,8 @@ export default async function JobDetailPage({ params }: PageProps) {
           bidAmount: true,
           estimatedDays: true,
           createdAt: true,
-          freelancer: { select: { userId: true, fullName: true, username: true } }
+          freelancer: { select: { userId: true, fullName: true, username: true } },
+          contract: { select: { id: true, status: true } }
         }
       })
     : [];
@@ -173,6 +181,27 @@ export default async function JobDetailPage({ params }: PageProps) {
   const pendingDecisionCount = bidRows.filter((b) => b.status === BidStatus.SUBMITTED).length;
   const shortlistedCount = bidRows.filter((b) => b.status === BidStatus.SHORTLISTED).length;
   const awaitingReplyCount = bidRows.filter((b) => conversationMap.get(b.freelancer.userId)?.awaitingReply).length;
+  const acceptedBid = bidRows.find((b) => b.status === BidStatus.ACCEPTED) ?? null;
+
+  const acceptedContractIds = bidRows.map((b) => b.contract?.id).filter((id): id is string => Boolean(id));
+  const acceptedContractThreads = isClientOwner && acceptedContractIds.length > 0
+    ? await db.messageThread.findMany({
+        where: {
+          type: "CONTRACT",
+          contractId: { in: acceptedContractIds },
+          participants: { some: { userId: session!.userId } }
+        },
+        select: {
+          id: true,
+          contractId: true
+        }
+      })
+    : [];
+  const contractThreadMap = new Map(
+    acceptedContractThreads
+      .filter((t): t is { id: string; contractId: string } => Boolean(t.contractId))
+      .map((t) => [t.contractId, t.id])
+  );
 
   const categoryLabel = job.subcategory
     ? `${job.category.name} · ${job.subcategory.name}`
@@ -248,12 +277,59 @@ export default async function JobDetailPage({ params }: PageProps) {
             <CardTitle className="text-base">{isClientOwner ? "Bid review" : "Submit a bid"}</CardTitle>
             <CardDescription>
               {isClientOwner
-                ? "Compare freelancers by price, profile readiness, and location signals. Start with pending decisions."
+                ? acceptedBid
+                  ? "Hiring decision is complete. Continue with contract and coordination for delivery."
+                  : "Compare freelancers by price, profile readiness, and location signals. Start with pending decisions."
                 : "Bidding requires a signed-in freelancer account. Browse this page freely; sign in or register when you are ready to propose."}
             </CardDescription>
           </CardHeader>
           {isClientOwner ? (
             <CardContent className="space-y-4">
+              {acceptedBid ? (
+                <div className="rounded-md border border-emerald-200 bg-emerald-50/50 px-4 py-3">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-emerald-700">Hired freelancer</p>
+                  <div className="mt-1 flex flex-wrap items-center gap-2">
+                    <p className="text-sm font-semibold text-emerald-900">{acceptedBid.freelancer.fullName}</p>
+                    <span className="text-xs text-emerald-700">@{acceptedBid.freelancer.username}</span>
+                    <span className="text-xs text-emerald-700">
+                      {acceptedBid.contract
+                        ? `Contract ${acceptedBid.contract.status.replace(/_/g, " ").toLowerCase()}`
+                        : "Contract setup pending"}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs text-emerald-700">
+                    {acceptedBid.contract ? contractStatusHint(acceptedBid.contract.status) : "Open contract details when available."}
+                  </p>
+                  <div className="mt-3 flex flex-wrap items-center gap-3 text-xs font-semibold">
+                    {acceptedBid.contract ? (
+                      <a
+                        href={`/api/contracts/${acceptedBid.contract.id}`}
+                        className="text-[#433C93] hover:underline"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Open contract
+                      </a>
+                    ) : null}
+                    {acceptedBid.contract && contractThreadMap.get(acceptedBid.contract.id) ? (
+                      <Link
+                        href={`/messages?thread=${contractThreadMap.get(acceptedBid.contract.id)}` as Route}
+                        className="text-slate-700 hover:underline"
+                      >
+                        Open conversation
+                      </Link>
+                    ) : (
+                      <Link
+                        href={"/messages" as Route}
+                        className="text-slate-700 hover:underline"
+                      >
+                        Continue coordination
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              ) : null}
+
               <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
                 <div className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
                   <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Pending decision</p>
@@ -299,10 +375,28 @@ export default async function JobDetailPage({ params }: PageProps) {
                       {bidRows.map((bid) => {
                         const profile = profileMap.get(bid.freelancer.userId);
                         const convo = conversationMap.get(bid.freelancer.userId);
+                        const isAccepted = bid.status === BidStatus.ACCEPTED;
+                        const isMutedAfterAccept = Boolean(acceptedBid) && !isAccepted;
                         return (
-                          <tr key={bid.id} className={bid.status === BidStatus.SUBMITTED ? "bg-amber-50/30" : undefined}>
+                          <tr
+                            key={bid.id}
+                            className={[
+                              isAccepted ? "bg-emerald-50/40" : "",
+                              !acceptedBid && bid.status === BidStatus.SUBMITTED ? "bg-amber-50/30" : "",
+                              isMutedAfterAccept ? "opacity-60" : ""
+                            ]
+                              .filter(Boolean)
+                              .join(" ")}
+                          >
                             <td className="px-3 py-3">
-                              <p className="font-semibold text-slate-900">{bid.freelancer.fullName}</p>
+                              <div className="flex items-center gap-2">
+                                <p className="font-semibold text-slate-900">{bid.freelancer.fullName}</p>
+                                {isAccepted ? (
+                                  <span className="inline-flex rounded-md bg-emerald-100 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
+                                    Hired
+                                  </span>
+                                ) : null}
+                              </div>
                               <p className="text-xs text-slate-500">@{bid.freelancer.username}</p>
                               <p className="mt-0.5 text-xs text-slate-500">
                                 Submitted{" "}

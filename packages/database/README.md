@@ -1,5 +1,7 @@
 # @acme/database
 
+> Last synchronized: 2026-04-15 (post-accept handoff update applied across product and docs).
+
 PostgreSQL access via **Prisma**: schema, migrations, and generated client.
 
 ## Prerequisites

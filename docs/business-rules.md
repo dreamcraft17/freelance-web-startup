@@ -1,5 +1,7 @@
 # Business Rules
 
+> Last synchronized: 2026-04-15 (post-accept handoff update applied across product and docs).
+
 - Active bid statuses count for quota: `SUBMITTED`, `SHORTLISTED`, `ACCEPTED`.
 - Active contract statuses count for quota: `ACTIVE`, `IN_PROGRESS`.
 - Free freelancer limit: `maxActiveBids=5`, `maxActiveAcceptedContracts=2`.

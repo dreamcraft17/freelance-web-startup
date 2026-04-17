@@ -1,5 +1,7 @@
 # Auth Session Persistence (NearWork Web)
 
+> Last synchronized: 2026-04-15 (post-accept handoff update applied across product and docs).
+
 Dokumen ini menjelaskan bagaimana session login dipertahankan setelah user berhasil login, termasuk format cookie, validasi middleware, dan alur redirect.
 
 ## Update status (April 2026)

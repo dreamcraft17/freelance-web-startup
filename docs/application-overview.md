@@ -1,5 +1,7 @@
 # NearWork Application Overview
 
+> Last synchronized: 2026-04-15 (post-accept handoff update applied across product and docs).
+
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
 ## Update status (April 2026)

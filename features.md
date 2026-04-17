@@ -1,5 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
+> Last synchronized: 2026-04-15 (post-accept handoff update applied across product and docs).
+
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
 > Catatan: detail risiko, gap, dan technical debt tetap di `audit.md`.
