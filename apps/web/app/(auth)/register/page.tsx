@@ -1,3 +1,4 @@
+import type { Route } from "next";
 import Link from "next/link";
 import { Globe, Moon } from "lucide-react";
 import { parseAuthIntent } from "@/features/auth/lib/auth-intent";
@@ -17,8 +18,12 @@ export default async function RegisterPage({ searchParams }: PageProps) {
     <div className="flex min-h-screen flex-col bg-slate-50 px-4 py-8 sm:py-12">
       <div className="flex flex-1 flex-col items-center justify-center">
         <div className="w-full max-w-md rounded-2xl border border-slate-200/90 bg-white p-8 shadow-[0_2px_28px_-6px_rgba(15,23,42,0.12)] ring-1 ring-slate-100 sm:p-10">
-          <div className="mb-8 flex justify-center">
-            <BrandLogo imageClassName="h-16 w-auto sm:h-20" alt="NearWork logo" />
+          <div className="mb-10 flex justify-center px-1">
+            <BrandLogo
+              href={"/" as Route}
+              imageClassName="h-[5.25rem] w-auto max-w-full object-contain sm:h-28 md:h-32"
+              alt="NearWork logo"
+            />
           </div>
 
           <RegisterForm
