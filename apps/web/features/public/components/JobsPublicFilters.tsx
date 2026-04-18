@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { popularJobSearchSuggestions } from "@/features/public/lib/popular-search-suggestions";
 
 type WorkMode = "" | "REMOTE" | "ONSITE" | "HYBRID";
 
@@ -45,14 +46,32 @@ export function JobsPublicFilters({ keyword, city, workMode, categoryId, categor
           <label htmlFor="jobs-kw" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
             Keyword
           </label>
+          <datalist id="jobs-kw-suggestions">
+            {popularJobSearchSuggestions.map((term) => (
+              <option key={term} value={term} />
+            ))}
+          </datalist>
           <input
             id="jobs-kw"
             name="keyword"
             type="search"
+            list="jobs-kw-suggestions"
             defaultValue={keyword}
             placeholder="Title or description"
             className="nw-input w-full"
           />
+          <p className="mt-1.5 text-[11px] font-medium text-slate-500">Popular:</p>
+          <div className="mt-1 flex flex-wrap gap-x-2 gap-y-1">
+            {popularJobSearchSuggestions.map((term) => (
+              <Link
+                key={term}
+                href={`/jobs?keyword=${encodeURIComponent(term)}`}
+                className="text-[11px] font-semibold text-[#3525cd] hover:underline"
+              >
+                {term}
+              </Link>
+            ))}
+          </div>
         </div>
 
         <div className="min-w-0 flex-1 xl:max-w-[200px]">

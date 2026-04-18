@@ -2,6 +2,8 @@ import type { Route } from "next";
 import Link from "next/link";
 import { ArrowRight, MapPin, Search, Sparkles } from "lucide-react";
 import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
+import { MarketplacePulse, type MarketplacePulseStats } from "@/components/marketing/MarketplacePulse";
+import { popularFreelancerSearchSuggestions } from "@/features/public/lib/popular-search-suggestions";
 
 const trendingSearches: { label: string; href: Route }[] = [
   { label: "Wedding photographer", href: "/freelancers?keyword=wedding+photographer" },
@@ -11,7 +13,7 @@ const trendingSearches: { label: string; href: Route }[] = [
   { label: "Brand design", href: "/freelancers?keyword=brand+design" }
 ];
 
-export function LandingHero() {
+export function LandingHero({ pulse }: { pulse: MarketplacePulseStats }) {
   return (
     <section className="nw-hero-stage">
       <div className="mx-auto max-w-6xl px-4 pb-12 pt-8 sm:px-6 sm:pb-14 sm:pt-10">
@@ -20,11 +22,14 @@ export function LandingHero() {
             <p className="text-xs font-medium tracking-tight text-slate-500">
               Live freelancer directory
             </p>
+            <div className="mt-1">
+              <MarketplacePulse pulse={pulse} />
+            </div>
             <h1 className="mt-3 text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl sm:leading-[1.06] lg:text-[2.75rem] xl:text-[2.9rem]">
               Hire freelancers for real work—nearby or remote
             </h1>
             <p className="mt-4 max-w-xl text-lg font-semibold leading-snug text-slate-800">
-              Search live profiles, compare bids on open jobs, and keep every conversation tied to the brief.
+              Search live profiles, compare proposals on open jobs, and keep every conversation tied to the brief.
             </p>
             <p className="mt-3 flex items-start gap-2 text-sm font-medium text-slate-600">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#3525cd]" aria-hidden />
@@ -45,7 +50,7 @@ export function LandingHero() {
                 </li>
                 <li className="flex gap-2">
                   <span className="font-mono text-xs font-bold text-[#3525cd]">2</span>
-                  Review bids and profiles in context.
+                  Review proposals and profiles in context.
                 </li>
                 <li className="flex gap-2">
                   <span className="font-mono text-xs font-bold text-[#3525cd]">3</span>
@@ -54,7 +59,7 @@ export function LandingHero() {
               </ol>
             </div>
             <p className="mt-6 border-t border-slate-200/80 pt-4 text-xs font-medium leading-relaxed text-slate-600 lg:border-[#3525cd]/10">
-              No sign-in required to search—create an account when you are ready to post or bid.
+              No sign-in required to search—create an account when you are ready to post or send proposals.
             </p>
           </aside>
         </div>
@@ -71,12 +76,18 @@ export function LandingHero() {
             method="get"
             className="flex w-full flex-col gap-3 lg:flex-row lg:items-stretch"
           >
+            <datalist id="landing-kw-suggestions">
+              {popularFreelancerSearchSuggestions.map((term) => (
+                <option key={term} value={term} />
+              ))}
+            </datalist>
             <label className="flex min-h-[3.5rem] flex-1 cursor-text items-center gap-3 rounded-xl border-2 border-white bg-white px-4 py-3 shadow-sm transition focus-within:border-[#3525cd] focus-within:ring-2 focus-within:ring-[#3525cd]/20 lg:min-h-[3.75rem] lg:flex-[1.2]">
               <span className="sr-only">Search</span>
               <Search className="h-6 w-6 shrink-0 text-[#3525cd]" aria-hidden />
               <input
                 name="keyword"
                 type="search"
+                list="landing-kw-suggestions"
                 placeholder="What do you need? e.g. shoot, edit, tutor…"
                 className="min-w-0 flex-1 border-0 bg-transparent text-left text-base font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-0 sm:text-lg"
                 autoComplete="off"

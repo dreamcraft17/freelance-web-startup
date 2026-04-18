@@ -1,6 +1,6 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v2  
+> **Doc revision:** v3  
 > Last synchronized: 2026-04-18 — keep in sync with code changes; see `docs/DOCUMENTATION-MAINTENANCE.md`.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
@@ -252,6 +252,8 @@ pnpm exec tsc --noEmit -p apps/web
 ## 📚 Documentation
 
 Topic docs live in **`docs/`**. See **`docs/DOCUMENTATION-MAINTENANCE.md`** for which files to touch when you change security, UI, or APIs.
+
+- **Apa produk ini (non-teknis)?** → [`docs/apa-itu-nearwork.md`](docs/apa-itu-nearwork.md)
 
 ### Vercel (monorepo → `apps/web`)
 

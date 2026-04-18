@@ -1,14 +1,15 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v2  
-> Last synchronized: 2026-04-18 (post-accept handoff update applied across product and docs).
+> **Doc revision:** v4  
+> Last synchronized: 2026-04-18 (marketplace pulse, proposal language, discovery search hints).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
-> Catatan: detail risiko, gap, dan technical debt tetap di `audit.md`.
+> Catatan: penjelasan **produk ini apa** (non-teknis) ada di `docs/apa-itu-nearwork.md`. Detail risiko, gap, dan technical debt tetap di `audit.md`.
 
 ## Update terbaru (April 2026)
 
+- **2026-04-18 — Engagement tanpa dekorasi:** agregat ringan `PublicStatsService` + komponen `MarketplacePulse` (board terbuka, proposal 24 jam, freelancer berstatus available) di landing, `/jobs`, `/freelancers`; badge notifikasi **nyata** di `MarketingNavBar` (count dari DB, tanpa dot palsu); filter discovery punya `datalist` + tautan “Popular”; microcopy **proposal / hire** di job detail, client jobs, dan how-it-works; kartu freelancer menampilkan sinyal kepercayaan dari data yang ada (availability + ulasan berulang).
 - **2026-04-18 — Landing & chrome publik:** hero “marketplace stage” (split layout, headline dominan tanpa label `nw-section-title` generik—mikro-label “Live freelancer directory”); blok search besar, *popular searches*, kategori ikon horizontal; preview ilustratif + zebra; section bands; footer **kompak** (Product / Company / Legal / Support + strip bawah).
 - **2026-04-18 — API discovery:** perlindungan anti-scraping ringan + pagination/query hardening (detail di `audit.md` addendum).
 - Sistem UI sudah bergerak ke arah **grounded product UI** (tanpa glassmorphism/gradient dekoratif) di public + app surfaces.
@@ -16,7 +17,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 - Workflow client hiring ditingkatkan:
   - `/client/jobs` jadi control center dengan attention metrics (needs attention, new bid activity, stale jobs),
   - job detail menampilkan tabel perbandingan bid untuk client owner (harga, profile strength, lokasi/mode, status, next action),
-  - aksi keputusan langsung (`Accept bid`) tersedia lewat API existing.
+  - aksi keputusan langsung (**Hire** pada proposal) tersedia lewat API existing.
 - Workflow freelancer earning diperjelas:
   - `/freelancers` punya rail terarah untuk profile/job/proposals,
   - proposal workspace lebih padat dan lebih fokus pada prioritas status.
@@ -102,7 +103,7 @@ Navbar publik:
 Branding:
 
 - `BrandLogo` dipakai lintas app
-- asset aktif logo: `/logo/logo3.png`
+- asset aktif logo: `/logo/logo_EN.png`
 - metadata icon/favicons app mengarah ke logo terbaru
 
 ### 3.3 Internal admin workspace (`/admin`)

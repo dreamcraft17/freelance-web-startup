@@ -1,25 +1,28 @@
 # NearWork Application Overview
 
-> **Doc revision:** v2  
-> Last synchronized: 2026-04-18 (post-accept handoff update applied across product and docs).
+> **Doc revision:** v4  
+> Last synchronized: 2026-04-18 (marketplace pulse + proposal-first copy).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
+> Ringkasan “**produk ini apa**” untuk non-engineer: **`docs/apa-itu-nearwork.md`**.
+
 ## Update status (April 2026)
 
+- **Sinyal aktivitas (2026-04-18):** baris agregat ringan di landing dan halaman discovery (`/jobs`, `/freelancers`) memperkuat nuansa board hidup; navbar marketing menampilkan jumlah notifikasi belum dibaca yang konsisten dengan data.
 - **Landing `/` (2026-04-18):** hero tanpa label bagian generik—mikro-copy “Live freelancer directory” di atas headline; stage putih, search sentral, *popular searches*, strip kategori ikon, preview ilustratif, use cases di band brand ringan; footer kompak berkolom.
 - Public browse/discovery sekarang lebih kuat sebagai product tool (bukan landing template):
   - `/freelancers` dan `/jobs` menekankan scanability + actionable filters.
 - Workspace client/freelancer sudah lebih simetris secara tujuan:
   - freelancer: profile, job search, proposal tracking,
-  - client: post job, review bids, hire decisions.
+  - client: post job, review proposals, hire decisions.
 - Internal `/admin` tetap diposisikan sebagai workspace operasional (compact dan practical), dengan RBAC yang konsisten.
 
 ## Product Summary
 
 NearWork adalah platform marketplace kerja freelance yang menghubungkan:
 
-- **Client**: membuat job, menerima bid, memilih freelancer, mengelola kontrak.
+- **Client**: membuat job, menerima proposal, memilih freelancer, mengelola kontrak.
 - **Freelancer**: membangun profil, mencari job, kirim proposal, berkomunikasi dengan client.
 
 ## Main Experience Areas

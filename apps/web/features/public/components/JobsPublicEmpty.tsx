@@ -81,7 +81,7 @@ export function JobsPublicEmpty({ categorySelected, hasFilters }: JobsPublicEmpt
       </p>
       <SuggestedSteps>
         <li>Clients: post the first brief with budget and work mode.</li>
-        <li>Freelancers: browse the directory while jobs ramp up.</li>
+        <li>Freelancers: browse the directory and polish your profile while jobs ramp up.</li>
         <li>Everyone: early access means the feed will move—bookmark and check back.</li>
       </SuggestedSteps>
       <div className="mt-6 flex flex-wrap gap-3">

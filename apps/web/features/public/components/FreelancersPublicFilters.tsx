@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Loader2, MapPin, Navigation, X } from "lucide-react";
 import { useBrowserLocation } from "@/features/public/hooks/useBrowserLocation";
+import { popularFreelancerSearchSuggestions } from "@/features/public/lib/popular-search-suggestions";
 
 type WorkMode = "" | "REMOTE" | "ONSITE" | "HYBRID";
 
@@ -153,14 +154,32 @@ export function FreelancersPublicFilters({
           <label htmlFor="fl-kw" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
             Keyword
           </label>
+          <datalist id="fl-kw-suggestions">
+            {popularFreelancerSearchSuggestions.map((term) => (
+              <option key={term} value={term} />
+            ))}
+          </datalist>
           <input
             id="fl-kw"
             name="keyword"
             type="search"
+            list="fl-kw-suggestions"
             defaultValue={keyword}
             placeholder="Name, headline, or bio"
             className="nw-input w-full"
           />
+          <p className="mt-1.5 text-[11px] font-medium text-slate-500">Popular:</p>
+          <div className="mt-1 flex flex-wrap gap-x-2 gap-y-1">
+            {popularFreelancerSearchSuggestions.map((term) => (
+              <Link
+                key={term}
+                href={`/freelancers?keyword=${encodeURIComponent(term)}`}
+                className="text-[11px] font-semibold text-[#3525cd] hover:underline"
+              >
+                {term}
+              </Link>
+            ))}
+          </div>
         </div>
 
         <div className="min-w-0 flex-1 xl:max-w-[200px]">

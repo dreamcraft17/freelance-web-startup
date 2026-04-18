@@ -21,7 +21,7 @@ export function BidDecisionAction({ bidId, currentStatus }: { bidId: string; cur
       setError(null);
       const res = await fetchWithCsrf(`/api/bids/${encodeURIComponent(bidId)}/shortlist`, { method: "POST" });
       if (!res.ok) {
-        setError("Could not shortlist this bid.");
+        setError("Could not shortlist this proposal.");
         return;
       }
       router.refresh();
@@ -72,7 +72,7 @@ export function BidDecisionAction({ bidId, currentStatus }: { bidId: string; cur
           disabled={pending}
           className="inline-flex items-center rounded-md bg-[#433C93] px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#4d45a5] disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {pending ? "Accepting..." : "Accept bid"}
+          {pending ? "Confirming..." : "Hire"}
         </button>
       </div>
       {error ? <p className="text-[11px] text-rose-600">{error}</p> : null}

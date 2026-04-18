@@ -5,8 +5,10 @@ import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
 import { JobsPublicEmpty } from "@/features/public/components/JobsPublicEmpty";
 import { JobsPublicFilters } from "@/features/public/components/JobsPublicFilters";
 import { JobsPublicList, type JobsPublicCard } from "@/features/public/components/JobsPublicList";
+import { MarketplacePulse } from "@/components/marketing/MarketplacePulse";
 import { CategoryService } from "@/server/services/category.service";
 import { JobService } from "@/server/services/job.service";
+import { PublicStatsService } from "@/server/services/public-stats.service";
 
 export const revalidate = 60;
 
@@ -87,7 +89,11 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
   const query = parsed.success ? parsed.data : { page: 1, limit: 24 as const };
 
   const jobService = new JobService();
-  const [{ items, total }, categories] = await Promise.all([jobService.listOpenJobs(query), loadCategories()]);
+  const [{ items, total }, categories, pulse] = await Promise.all([
+    jobService.listOpenJobs(query),
+    loadCategories(),
+    new PublicStatsService().getMarketplacePulse()
+  ]);
   const jobs = items.map(toPublicJobCard);
 
   const keyword = query.keyword ?? "";
@@ -109,6 +115,9 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
         <p className="nw-page-description">
           Active client briefs—filter by category, place, and work mode, then open a row for the full scope.
         </p>
+        <div className="mt-2">
+          <MarketplacePulse pulse={pulse} />
+        </div>
       </header>
 
       <div className="lg:grid lg:grid-cols-[minmax(0,1fr),min(100%,22rem)] lg:items-start lg:gap-8">
@@ -173,7 +182,9 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
           <div className="nw-surface-soft space-y-3 border-t-[3px] border-t-[#3525cd] p-4 text-sm">
             <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-600">For clients</p>
             <p className="text-base font-bold text-slate-950">Hiring on NearWork?</p>
-            <p className="font-medium text-slate-600">Post a brief with budget and location so the right people can bid.</p>
+            <p className="font-medium text-slate-600">
+              Post a brief with budget and location so the right people can send proposals.
+            </p>
             <AuthAwareCtaLink
               href={"/client/jobs/new" as Route}
               intent="post-job"

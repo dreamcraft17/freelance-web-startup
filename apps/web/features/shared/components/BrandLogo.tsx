@@ -28,7 +28,7 @@ export function BrandLogo({
       {failed ? (
         <span className="text-sm font-semibold tracking-tight text-[#3525cd]">NearWork</span>
       ) : (
-        <img src="/logo/logo3.png" alt={alt} className={imageClassName} onError={() => setFailed(true)} />
+        <img src="/logo/logo_EN.png" alt={alt} className={imageClassName} onError={() => setFailed(true)} />
       )}
     </Link>
   );

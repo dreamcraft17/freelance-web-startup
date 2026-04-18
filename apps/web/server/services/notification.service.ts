@@ -85,6 +85,12 @@ export class NotificationService {
     });
   }
 
+  async countUnreadForUser(userId: string): Promise<number> {
+    return db.notification.count({
+      where: { userId, readAt: null, dismissedAt: null }
+    });
+  }
+
   async listForActor(actor: AuthActor) {
     const rows = await db.notification.findMany({
       where: { userId: actor.userId, dismissedAt: null },

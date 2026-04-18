@@ -8,7 +8,8 @@ export default function HowItWorksPage() {
         <h1 className="nw-page-title md:text-4xl">How NearWork works</h1>
         <p className="nw-page-description text-base leading-relaxed">
           NearWork connects clients and freelancers around <span className="font-medium text-slate-800">briefs</span>,{" "}
-          <span className="font-medium text-slate-800">bids</span>, and <span className="font-medium text-slate-800">delivery</span>
+          <span className="font-medium text-slate-800">proposals</span>, and{" "}
+          <span className="font-medium text-slate-800">delivery</span>
           —with your city and work mode in the loop when place matters. The product is real; the roadmap is still open.
         </p>
       </header>
@@ -27,7 +28,7 @@ export default function HowItWorksPage() {
               </p>
             </li>
             <li className="border-l-2 border-indigo-200 pl-4">
-              <p className="font-semibold text-slate-900">Receive bids</p>
+              <p className="font-semibold text-slate-900">Receive proposals</p>
               <p className="mt-1 text-sm leading-relaxed text-slate-700">
                 Freelancers respond with proposals on your job. You compare scope, price, and timing in one place instead
                 of scattered threads.
@@ -62,10 +63,10 @@ export default function HowItWorksPage() {
               </p>
             </li>
             <li className="border-l-2 border-indigo-200 pl-4">
-              <p className="font-semibold text-slate-900">Submit bids</p>
+              <p className="font-semibold text-slate-900">Send proposals</p>
               <p className="mt-1 text-sm leading-relaxed text-slate-700">
-                Reply with clear scope, price, and timing. A good bid is specific to the brief—generic pitches do not
-                help you or the client.
+                Reply with clear scope, price, and timing. A strong proposal is specific to the brief—generic pitches do
+                not help you or the client.
               </p>
             </li>
           </ol>

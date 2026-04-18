@@ -74,7 +74,7 @@ export function FreelancersPublicEmpty({ categorySelected, hasFilters }: Freelan
       </p>
       <SuggestedSteps>
         <li>If you are a freelancer, complete your profile and set availability.</li>
-        <li>If you are hiring, post a job so bids can start.</li>
+        <li>If you are hiring, post a job so proposals can start.</li>
         <li>Come back after early-access invites roll out—this list will move first.</li>
       </SuggestedSteps>
       <div className="mt-6 flex flex-wrap gap-3">

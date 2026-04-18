@@ -58,6 +58,17 @@ function ratingLine(f: PublicFreelancerCard): string | null {
   return `${stars} · ${n}`;
 }
 
+/** Real profile signals only—no invented hire counts or response SLAs. */
+function confidenceLine(f: PublicFreelancerCard): string | null {
+  const parts: string[] = [];
+  if (f.availabilityStatus === "AVAILABLE") parts.push("Available on the roster now");
+  if (f.reviewCount >= 3 && f.averageReviewRating != null && Number.isFinite(f.averageReviewRating)) {
+    parts.push("Repeated client reviews on record");
+  }
+  if (parts.length === 0) return null;
+  return parts.join(" · ");
+}
+
 type FreelancersBrowseListProps = {
   freelancers: PublicFreelancerCard[];
   /** When set, cards emphasize that listings are being filtered by this city */
@@ -76,6 +87,7 @@ export function FreelancersBrowseList({ freelancers, activeCityFilter }: Freelan
         const spec = specialtyLine(f);
         const showHeadlineBelow = Boolean(f.primaryCategoryName?.trim() && f.headline?.trim());
         const rating = ratingLine(f);
+        const confidence = confidenceLine(f);
         const showDistance = f.distanceKm != null && Number.isFinite(f.distanceKm);
 
         return (
@@ -111,6 +123,10 @@ export function FreelancersBrowseList({ freelancers, activeCityFilter }: Freelan
 
               {showHeadlineBelow ? (
                 <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-600">{f.headline}</p>
+              ) : null}
+
+              {confidence ? (
+                <p className="mt-2 text-[11px] font-medium leading-snug text-slate-600">{confidence}</p>
               ) : null}
 
               <div className="mt-auto pt-3">

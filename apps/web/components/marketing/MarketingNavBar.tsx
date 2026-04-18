@@ -31,7 +31,19 @@ function isActive(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function MarketingNavBar({ session }: { session: SessionPayload | null }) {
+function unreadBadgeLabel(count: number): string {
+  if (count <= 0) return "Notifications";
+  if (count > 9) return "More than 9 unread notifications";
+  return `${count} unread notification${count === 1 ? "" : "s"}`;
+}
+
+export function MarketingNavBar({
+  session,
+  unreadNotifications = 0
+}: {
+  session: SessionPayload | null;
+  unreadNotifications?: number;
+}) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const authSession: PublicSessionLite | null = session
@@ -100,11 +112,15 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
             ) : null}
             <Link
               href={"/notifications" as Route}
-              aria-label="Notifications"
+              aria-label={unreadBadgeLabel(unreadNotifications)}
               className="relative inline-flex h-9 w-9 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
             >
               <Bell className="h-4 w-4" aria-hidden />
-              <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-rose-500 ring-2 ring-white" aria-hidden />
+              {unreadNotifications > 0 ? (
+                <span className="absolute -right-1 -top-1 flex min-h-[1.125rem] min-w-[1.125rem] items-center justify-center rounded-full bg-[#3525cd] px-1 text-[10px] font-bold leading-none text-white ring-2 ring-white">
+                  {unreadNotifications > 9 ? "9+" : unreadNotifications}
+                </span>
+              ) : null}
             </Link>
             <Link
               href={"/messages" as Route}
@@ -192,10 +208,15 @@ export function MarketingNavBar({ session }: { session: SessionPayload | null })
                 ) : null}
                 <Link
                   href={"/notifications" as Route}
-                  className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                  className="flex items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
                   onClick={() => setOpen(false)}
                 >
-                  Notifications
+                  <span>Notifications</span>
+                  {unreadNotifications > 0 ? (
+                    <span className="rounded-full bg-[#3525cd] px-2 py-0.5 text-[11px] font-semibold text-white">
+                      {unreadNotifications > 9 ? "9+" : unreadNotifications}
+                    </span>
+                  ) : null}
                 </Link>
                 <Link
                   href={"/messages" as Route}

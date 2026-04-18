@@ -98,6 +98,11 @@ function isStale(job: ClientJobListRow): boolean {
   return days >= 14 && job.status === JobStatus.OPEN;
 }
 
+function jobPrimaryActionLabel(job: ClientJobListRow): string {
+  if (isNeedsAttention(job)) return "Review candidates";
+  return "View job";
+}
+
 function filterHref(status: StatusFilter): Route {
   if (status === FILTER_ALL) return "/client/jobs" as Route;
   const q = new URLSearchParams({ status });
@@ -148,7 +153,7 @@ export function ClientJobsManager({ jobs, statusParam, hasProfile }: ClientJobsM
           kicker="Profile"
           icon={Briefcase}
           title="Set up your client profile first"
-          description="Once your workspace is configured, your jobs appear here with status, bids, and dates—ready to manage from one list."
+          description="Once your workspace is configured, your jobs appear here with status, proposals, and dates—ready to manage from one list."
           action={{ label: "Complete setup", href: "/settings" }}
           secondaryAction={{ label: "Back to overview", href: "/client" }}
         />
@@ -166,7 +171,7 @@ export function ClientJobsManager({ jobs, statusParam, hasProfile }: ClientJobsM
         <>
           <div className="grid gap-3 md:grid-cols-4">
             <SummaryTile label="Needs attention" value={attentionCount} hint="Open jobs with pending decisions" />
-            <SummaryTile label="New bid activity" value={newBidCount} hint="Jobs with bids in last 48h" />
+            <SummaryTile label="Recent proposals" value={newBidCount} hint="Jobs with new proposals in last 48h" />
             <SummaryTile label="Awaiting reply" value={awaitingReplyJobs} hint="Jobs with unread communication signals" />
             <SummaryTile label="Stale open jobs" value={staleCount} hint="Open jobs with no updates in 14+ days" />
           </div>
@@ -208,7 +213,7 @@ export function ClientJobsManager({ jobs, statusParam, hasProfile }: ClientJobsM
                     <tr className="border-b border-slate-100 bg-slate-50/90 text-xs font-semibold uppercase tracking-wide text-slate-500">
                       <th className="px-5 py-3.5 font-semibold">Job</th>
                       <th className="px-4 py-3.5 font-semibold">Status</th>
-                      <th className="px-4 py-3.5 font-semibold tabular-nums">Bid signals</th>
+                      <th className="px-4 py-3.5 font-semibold tabular-nums">Proposals</th>
                       <th className="px-4 py-3.5 font-semibold">Activity</th>
                       <th className="px-5 py-3.5 font-semibold">Details</th>
                       <th className="px-5 py-3.5 font-semibold text-right">Action</th>
@@ -250,7 +255,9 @@ export function ClientJobsManager({ jobs, statusParam, hasProfile }: ClientJobsM
                           <div className="flex flex-col">
                             <span>{formatRelativeDays(job.updatedAt)}</span>
                             <span className="text-xs text-slate-500">
-                              {job.latestBidAt ? `new bid ${formatRelativeDays(job.latestBidAt)}` : `posted ${formatCreated(job.createdAt)}`}
+                              {job.latestBidAt
+                                ? `new proposal ${formatRelativeDays(job.latestBidAt)}`
+                                : `posted ${formatCreated(job.createdAt)}`}
                             </span>
                             <span
                               className={cn(
@@ -279,7 +286,7 @@ export function ClientJobsManager({ jobs, statusParam, hasProfile }: ClientJobsM
                                 : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                             )}
                           >
-                            {isNeedsAttention(job) ? "Review bids" : "Open job"}
+                            {jobPrimaryActionLabel(job)}
                           </Link>
                           {job.conversationCount > 0 ? (
                             <Link href={"/messages" as Route} className="ml-2 text-[11px] font-semibold text-slate-500 hover:underline">
@@ -318,7 +325,7 @@ export function ClientJobsManager({ jobs, statusParam, hasProfile }: ClientJobsM
                     <p className="mt-2 text-xs text-slate-500">{detailLine(job)}</p>
                     <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-slate-100 pt-3 text-xs text-slate-600">
                       <span>
-                        <span className="font-medium text-slate-500">Bids</span>{" "}
+                        <span className="font-medium text-slate-500">Proposals</span>{" "}
                         <span className="tabular-nums text-slate-800">{job.bidCount}</span>
                       </span>
                       <span>
@@ -335,6 +342,19 @@ export function ClientJobsManager({ jobs, statusParam, hasProfile }: ClientJobsM
                             ? "Unread message"
                             : "Conversation active"}
                       </span>
+                    </div>
+                    <div className="mt-3">
+                      <Link
+                        href={`/jobs/${job.id}` as Route}
+                        className={cn(
+                          "inline-flex w-full items-center justify-center rounded-lg px-3 py-2 text-xs font-semibold",
+                          isNeedsAttention(job)
+                            ? "bg-[#433C93] text-white hover:bg-[#4d45a5]"
+                            : "border border-slate-200 bg-white text-slate-800 hover:bg-slate-50"
+                        )}
+                      >
+                        {jobPrimaryActionLabel(job)}
+                      </Link>
                     </div>
                   </li>
                 ))}
