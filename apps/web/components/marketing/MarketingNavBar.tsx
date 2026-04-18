@@ -55,15 +55,15 @@ export function MarketingNavBar({
 
   return (
     <header className="fixed top-0 z-50 w-full border-b border-black/[0.05] bg-white shadow-sm">
-      <nav className="mx-auto flex max-w-7xl items-center gap-4 px-7 py-3 sm:px-10 lg:px-12">
+      <nav className="mx-auto flex min-h-16 max-w-7xl items-center gap-6 px-6 sm:gap-8 sm:px-10 lg:px-12">
         <BrandLogo
           href={"/" as Route}
-          className="shrink-0 rounded-xl border border-[#433C93]/15 bg-white px-2 py-1.5 pr-3"
-          imageClassName="h-9 w-auto max-h-10 max-w-[min(200px,42vw)] object-contain object-left sm:h-10 sm:max-w-[220px]"
+          className="shrink-0 origin-left py-2 pl-0 pr-1 outline-none transition duration-200 hover:opacity-90 md:py-2.5 md:hover:scale-105 motion-reduce:transition-none motion-reduce:md:hover:scale-100 motion-reduce:hover:opacity-100"
+          imageClassName="h-8 w-auto object-contain object-left md:h-9 lg:h-10 max-w-[min(260px,55vw)] sm:max-w-[min(300px,48vw)]"
           alt="NearWork"
         />
 
-        <div className="hidden min-w-0 flex-1 items-center justify-center md:flex">
+        <div className="hidden min-w-0 flex-1 items-center justify-center md:ml-2 md:flex">
           <div className="flex min-w-0 flex-wrap items-center justify-center gap-x-1 gap-y-1">
             {navPrimary.map(({ href, label }) => {
               const active = isActive(pathname, href);
