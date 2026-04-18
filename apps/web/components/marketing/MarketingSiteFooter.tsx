@@ -1,73 +1,102 @@
+import type { Route } from "next";
 import Link from "next/link";
 
-const productLinks = [
+type FooterLink = { href: Route; label: string };
+
+const productLinks: FooterLink[] = [
   { href: "/jobs", label: "Find jobs" },
-  { href: "/freelancers", label: "Find freelancers" },
-  { href: "/how-it-works", label: "How it works" },
+  { href: "/freelancers", label: "Find freelancers" }
+];
+
+const companyLinks: FooterLink[] = [
+  { href: "/how-it-works", label: "About" },
   { href: "/pricing", label: "Pricing" },
   { href: "/early-access", label: "Early access" }
-] as const;
+];
 
-const accountLinks = [
-  { href: "/login", label: "Log in" },
-  { href: "/register", label: "Register" }
-] as const;
-
-const supportLinks = [
-  { href: "/help", label: "Help" },
+const legalLinks: FooterLink[] = [
   { href: "/privacy", label: "Privacy" },
   { href: "/terms", label: "Terms" }
-] as const;
+];
+
+const supportLinks: FooterLink[] = [
+  { href: "/help", label: "Help" },
+  { href: "/contact", label: "Contact" }
+];
+
+function LinkColumn({ title, links }: { title: string; links: FooterLink[] }) {
+  return (
+    <div className="min-w-0">
+      <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{title}</p>
+      <ul className="mt-2 space-y-1.5">
+        {links.map(({ href, label }) => (
+          <li key={href}>
+            <Link
+              href={href}
+              className="text-xs font-medium text-slate-600 transition hover:text-[#3525cd]"
+            >
+              {label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 export function MarketingSiteFooter() {
-  return (
-    <footer className="mt-auto w-full border-t border-slate-200 bg-white py-10">
-      <div className="mx-auto max-w-7xl px-4 sm:px-8">
-        <div className="flex flex-col items-start gap-8 md:flex-row md:items-start md:justify-between">
-          <Link href="/" className="text-lg font-semibold text-slate-900 transition hover:text-[#433C93]">
-            NearWork
-          </Link>
+  const year = new Date().getFullYear();
 
-          <nav className="flex max-w-xl flex-col gap-5 text-left sm:max-w-none sm:flex-row sm:flex-wrap sm:justify-start" aria-label="Footer">
-            <div className="flex flex-wrap justify-start gap-x-5 gap-y-2">
-              {productLinks.map(({ href, label }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="text-sm font-medium text-slate-600 transition-colors hover:text-[#433C93]"
-                >
-                  {label}
-                </Link>
-              ))}
-            </div>
-            <div className="flex flex-wrap justify-start gap-x-5 gap-y-2">
-              {accountLinks.map(({ href, label }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="text-sm font-medium text-slate-600 transition-colors hover:text-[#433C93]"
-                >
-                  {label}
-                </Link>
-              ))}
-            </div>
-            <div className="flex flex-wrap justify-start gap-x-5 gap-y-2">
-              {supportLinks.map(({ href, label }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="text-sm font-medium text-slate-600 transition-colors hover:text-[#433C93]"
-                >
-                  {label}
-                </Link>
-              ))}
-            </div>
+  return (
+    <footer className="mt-auto border-t border-slate-200 bg-slate-50/90">
+      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-7">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-12 lg:gap-10">
+          <div className="lg:col-span-4">
+            <Link href="/" className="text-sm font-bold tracking-tight text-slate-900 hover:text-[#3525cd]">
+              NearWork
+            </Link>
+            <p className="mt-1.5 max-w-xs text-xs leading-snug text-slate-500">
+              Freelance marketplace for local and remote work.
+            </p>
+          </div>
+
+          <nav
+            className="grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-4 lg:col-span-8 lg:justify-end"
+            aria-label="Footer"
+          >
+            <LinkColumn title="Product" links={productLinks} />
+            <LinkColumn title="Company" links={companyLinks} />
+            <LinkColumn title="Legal" links={legalLinks} />
+            <LinkColumn title="Support" links={supportLinks} />
           </nav>
         </div>
 
-        <p className="mt-8 text-left text-xs font-medium text-slate-500 md:text-right">
-          © {new Date().getFullYear()} NearWork
-        </p>
+        <div className="mt-6 flex flex-col gap-2 border-t border-slate-200/90 pt-4 text-[11px] font-medium text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+          <p>© {year} NearWork</p>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <Link href="/privacy" className="hover:text-[#3525cd]">
+              Privacy
+            </Link>
+            <span className="text-slate-300" aria-hidden>
+              ·
+            </span>
+            <Link href="/terms" className="hover:text-[#3525cd]">
+              Terms
+            </Link>
+            <span className="text-slate-300" aria-hidden>
+              ·
+            </span>
+            <Link href="/login" className="hover:text-[#3525cd]">
+              Log in
+            </Link>
+            <span className="text-slate-300" aria-hidden>
+              ·
+            </span>
+            <Link href="/register" className="hover:text-[#3525cd]">
+              Register
+            </Link>
+          </div>
+        </div>
       </div>
     </footer>
   );
