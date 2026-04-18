@@ -1,6 +1,7 @@
 # Billing Architecture
 
-> Last synchronized: 2026-04-15 (post-accept handoff update applied across product and docs).
+> **Doc revision:** v1  
+> Last synchronized: 2026-04-18 (post-accept handoff update applied across product and docs).
 
 - `SubscriptionPlan` defines canonical commercial plan.
 - `PlanEntitlement` stores feature and quota keys.

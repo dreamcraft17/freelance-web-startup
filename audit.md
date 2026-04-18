@@ -1,6 +1,7 @@
 # Audit teknis — Freelance-web (monorepo)
 
-> Last synchronized: 2026-04-15 (post-accept handoff update applied across product and docs).
+> **Doc revision:** v1  
+> Last synchronized: 2026-04-18 (post-accept handoff update applied across product and docs).
 
 **Lingkup:** `apps/web`, `packages/*`, dan jalur operasional yang mempengaruhi produksi.  
 **Tanggal referensi:** April 2026 (sinkron dengan update terakhir implementasi).
@@ -17,6 +18,13 @@
   - job detail menyediakan compact bid comparison untuk owner,
   - next action (`Accept bid`) tidak tersembunyi di layer yang dalam.
 - Risiko tersisa tetap sama: integrasi billing produksi, trust & safety report backend penuh, dan hardening operasional.
+
+### Addendum 2026-04-18
+
+- **Produksi / edge:** baseline security headers + optional HSTS (`NEARWORK_ENABLE_HSTS`) di `apps/web/next.config.ts`; `instrumentation.ts` memvalidasi `SESSION_SECRET` saat `NODE_ENV=production`.
+- **Discovery publik:** limiter khusus + fingerprint query + skor UA ringan pada `GET /api/search/*` dan `GET /api/jobs` (`public-discovery-guard.ts`); validator discovery (`MAX_PUBLIC_DISCOVERY_PAGE`, panjang string query).
+- **UI publik:** landing hero marketplace (stage putih, kategori horizontal ikon, preview baris); footer marketing **kompak** berkolom (Product / Company / Legal / Support) + strip copyright.
+- **Dokumentasi:** panduan sinkronisasi file `.md` di `docs/DOCUMENTATION-MAINTENANCE.md`.
 
 ---
 

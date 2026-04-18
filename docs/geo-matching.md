@@ -1,6 +1,7 @@
 # Geo Matching
 
-> Last synchronized: 2026-04-15 (post-accept handoff update applied across product and docs).
+> **Doc revision:** v1  
+> Last synchronized: 2026-04-18 (post-accept handoff update applied across product and docs).
 
 - Store `lat/lng` on freelancer profile and jobs where relevant.
 - Use `serviceRadiusKm` and optional service-area records for onsite matching.

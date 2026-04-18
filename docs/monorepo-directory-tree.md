@@ -1,6 +1,7 @@
 # Full monorepo directory tree (SaaS freelance marketplace)
 
-> Last synchronized: 2026-04-15 (post-accept handoff update applied across product and docs).
+> **Doc revision:** v1  
+> Last synchronized: 2026-04-18 (post-accept handoff update applied across product and docs).
 
 Target layout: TypeScript-first, API and domain layers first. UI packages and app pages are omitted or stubbed until a dedicated UI phase.
 

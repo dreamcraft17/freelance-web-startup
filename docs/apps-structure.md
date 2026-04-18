@@ -1,6 +1,7 @@
 # Phase 2 - Detailed App Structures
 
-> Last synchronized: 2026-04-15 (post-accept handoff update applied across product and docs).
+> **Doc revision:** v1  
+> Last synchronized: 2026-04-18 (post-accept handoff update applied across product and docs).
 
 > Update (April 2026): struktur ini bersifat historis perencanaan fase. Implementasi aktual saat ini berpusat di `apps/web` dengan route groups App Router seperti `(public)`, `(marketing)`, `(auth)`, `(app)` dan workspace `client/freelancer/admin` yang sudah aktif.
 

@@ -1,11 +1,14 @@
 # Auth Session Persistence (NearWork Web)
 
-> Last synchronized: 2026-04-15 (post-accept handoff update applied across product and docs).
+> **Doc revision:** v1  
+> Last synchronized: 2026-04-18 (post-accept handoff update applied across product and docs).
 
 Dokumen ini menjelaskan bagaimana session login dipertahankan setelah user berhasil login, termasuk format cookie, validasi middleware, dan alur redirect.
 
 ## Update status (April 2026)
 
+- **Mutasi API (2026-04-18):** CSRF double-submit (`acme_csrf` + header `X-CSRF-Token`) pada route yang memanggil `assertMutationCsrf`; logout mempertimbangkan sesi.
+- **Produksi:** `SESSION_SECRET` divalidasi saat startup Node (`apps/web/instrumentation.ts`) ketika `NODE_ENV=production`.
 - Session persistence tetap berbasis cookie tunggal (`acme_session`) dan tidak berubah secara arsitektur.
 - Redirect post-login untuk staff tetap terpusat dan mengarah default ke `/admin`.
 - Public navbar/header sudah auth-aware secara server-side sehingga state login/logout terlihat konsisten di halaman publik.
