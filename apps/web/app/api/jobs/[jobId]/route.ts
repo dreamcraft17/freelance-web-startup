@@ -4,6 +4,7 @@ import { parseJson } from "@/server/http/route-helpers";
 import { protectClient } from "@/server/http/protect";
 import { jsonFail, jsonOk, withApiHandler } from "@/server/http/api-response";
 import {
+  assertMutationCsrf,
   consumeRateLimitOr429,
   getClientIp,
   jobUpdateUserLimiter,
@@ -46,6 +47,9 @@ export async function PATCH(request: Request, context: RouteContext) {
       60_000
     );
     if (userLimited) return userLimited;
+
+    const csrf = assertMutationCsrf(request);
+    if (csrf) return csrf;
 
     const params = await context.params;
     const jobId = params.jobId?.trim();

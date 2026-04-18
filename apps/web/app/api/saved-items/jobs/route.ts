@@ -4,6 +4,7 @@ import { parseJson } from "@/server/http/route-helpers";
 import { protectAnyActiveUser } from "@/server/http/protect";
 import { jsonOk, withApiHandler } from "@/server/http/api-response";
 import {
+  assertMutationCsrf,
   consumeRateLimitOr429,
   getClientIp,
   savedJobsMutateUserLimiter,
@@ -46,6 +47,9 @@ export async function POST(request: Request) {
     );
     if (userLimited) return userLimited;
 
+    const csrf = assertMutationCsrf(request);
+    if (csrf) return csrf;
+
     const parsed = await parseJson(request, saveJobBodySchema);
     if (!parsed.ok) return parsed.response;
     const data = await savedItemsService.saveJob(gate.actor, parsed.data.jobId);
@@ -69,6 +73,9 @@ export async function DELETE(request: Request) {
       60_000
     );
     if (userLimited) return userLimited;
+
+    const csrf = assertMutationCsrf(request);
+    if (csrf) return csrf;
 
     const parsed = await parseJson(request, saveJobBodySchema);
     if (!parsed.ok) return parsed.response;

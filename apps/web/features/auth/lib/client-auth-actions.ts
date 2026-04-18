@@ -1,7 +1,10 @@
+"use client";
+
 /**
  * Shared client-side auth actions for UI components.
  * Keeps logout/session checks consistent across menus, buttons, and CTA guards.
  */
+import { fetchWithCsrf } from "@/features/auth/lib/fetch-with-csrf";
 export async function hasActiveSession(): Promise<boolean> {
   const snapshot = await getSessionSnapshot();
   return snapshot.ok;
@@ -23,7 +26,7 @@ export async function getSessionSnapshot(): Promise<{ ok: boolean; data?: { user
 
 export async function signOutCurrentSession(): Promise<{ ok: boolean }> {
   try {
-    const res = await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin" });
+    const res = await fetchWithCsrf("/api/auth/logout", { method: "POST" });
     return { ok: res.ok };
   } catch {
     return { ok: false };

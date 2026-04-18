@@ -8,6 +8,7 @@ import { parseJson, parseSearchParams } from "@/server/http/route-helpers";
 import { protectFreelancer } from "@/server/http/protect";
 import { jsonOk, withApiHandler } from "@/server/http/api-response";
 import {
+  assertMutationCsrf,
   consumeRateLimitOr429,
   freelancerProfileCreateUserLimiter,
   freelancerProfilePatchUserLimiter,
@@ -49,6 +50,9 @@ export async function POST(request: Request) {
     );
     if (userLimited) return userLimited;
 
+    const csrf = assertMutationCsrf(request);
+    if (csrf) return csrf;
+
     const parsed = await parseJson(request, createFreelancerProfileSchema);
     if (!parsed.ok) return parsed.response;
     const data = await service.createProfile(gate.actor, parsed.data);
@@ -72,6 +76,9 @@ export async function PATCH(request: Request) {
       60_000
     );
     if (userLimited) return userLimited;
+
+    const csrf = assertMutationCsrf(request);
+    if (csrf) return csrf;
 
     const parsed = await parseJson(request, updateFreelancerProfileSchema);
     if (!parsed.ok) return parsed.response;

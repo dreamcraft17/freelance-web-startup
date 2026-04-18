@@ -7,6 +7,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { createJobSchema } from "@acme/validators";
 import { BudgetType, WorkMode } from "@acme/types";
+import { fetchWithCsrf } from "@/features/auth/lib/fetch-with-csrf";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -138,7 +139,7 @@ export function ClientNewJobForm({ categories }: ClientNewJobFormProps) {
 
     setSubmitting(true);
     try {
-      const res = await fetch("/api/jobs", {
+      const res = await fetchWithCsrf("/api/jobs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(parsed.data)

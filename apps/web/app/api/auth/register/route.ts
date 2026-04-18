@@ -5,7 +5,9 @@ import { jsonFail, jsonOk, withApiHandler } from "@/server/http/api-response";
 import { buildSessionSetCookieHeader } from "@src/lib/session";
 import {
   authRegisterIpLimiter,
+  buildCsrfSetCookieHeader,
   consumeRateLimitOr429,
+  createCsrfToken,
   getClientIp,
   isContentLengthWithinLimit
 } from "@/server/security";
@@ -29,6 +31,7 @@ export async function POST(request: Request) {
     const { token, session } = await authService.register(parsed.data);
     const res = jsonOk({ session }, 201);
     res.headers.append("Set-Cookie", buildSessionSetCookieHeader(token, request));
+    res.headers.append("Set-Cookie", buildCsrfSetCookieHeader(createCsrfToken(), request));
     return res;
   });
 }

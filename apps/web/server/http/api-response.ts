@@ -36,12 +36,22 @@ export function mapDomainErrorToResponse(error: unknown): NextResponse | null {
   return null;
 }
 
+function logUnhandledApiError(error: unknown): void {
+  if (process.env.NODE_ENV === "production") {
+    const name = error instanceof Error ? error.name : typeof error;
+    console.error("[nearwork:api] unhandled_error", { name });
+  } else {
+    console.error("[nearwork:api] unhandled_error", error);
+  }
+}
+
 export async function withApiHandler(fn: () => Promise<NextResponse>): Promise<NextResponse> {
   try {
     return await fn();
   } catch (error) {
     const mapped = mapDomainErrorToResponse(error);
     if (mapped) return mapped;
+    logUnhandledApiError(error);
     return jsonFail("Internal server error", 500, "INTERNAL_ERROR");
   }
 }

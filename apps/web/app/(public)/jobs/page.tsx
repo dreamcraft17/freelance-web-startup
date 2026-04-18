@@ -102,46 +102,25 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
   const categorySelected = Boolean(categoryId.trim());
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-10">
+    <div className="mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-12">
       <header className="nw-page-header">
         <p className="nw-section-title">Jobs discovery</p>
-        <h1 className="nw-page-title md:text-4xl">Browse open jobs</h1>
-        <p className="nw-page-description text-base">
-          Review active briefs from clients. Filter by category, location, and work mode to narrow to jobs that match how
-          you work.
+        <h1 className="nw-page-title">Browse open jobs</h1>
+        <p className="nw-page-description">
+          Active client briefs—filter by category, place, and work mode, then open a row for the full scope.
         </p>
       </header>
 
-      <div className="lg:grid lg:grid-cols-[minmax(0,1fr),14.5rem] lg:items-start lg:gap-8">
-        <div className="min-w-0 space-y-5">
-          <JobsPublicFilters
-            keyword={keyword}
-            city={city}
-            workMode={workMode}
-            categoryId={categoryId}
-            categories={categories}
-          />
-
-          <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 lg:hidden">
-            <p className="font-medium text-slate-900">Hiring?</p>
-            <p className="mt-0.5 text-slate-600">Post a brief and collect bids on NearWork.</p>
-            <AuthAwareCtaLink
-              href={"/client/jobs/new" as Route}
-              intent="post-job"
-              unauthenticatedTo="register"
-              registerRoleHint="client"
-              className="nw-cta-primary mt-3 inline-flex w-full justify-center py-2.5"
-            >
-              Post a job
-            </AuthAwareCtaLink>
-          </div>
-
+      <div className="lg:grid lg:grid-cols-[minmax(0,1fr),min(100%,22rem)] lg:items-start lg:gap-8">
+        <div className="order-2 min-w-0 space-y-6 lg:order-1">
           {total > 0 ? (
             <div className="nw-results-toolbar">
-              <span className="font-medium text-slate-900">
+              <span className="text-[15px] font-bold text-slate-950">
                 {total === 1 ? "1 open role" : `${total} open roles`}
               </span>
-              <span className="text-slate-500">Scan title + budget, then open for full brief.</span>
+              <span className="max-w-[14rem] text-right text-xs font-medium leading-snug text-slate-600 sm:max-w-none sm:text-left">
+                Title + budget at a glance—open for the full brief.
+              </span>
             </div>
           ) : null}
 
@@ -153,26 +132,26 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
 
           {totalPages > 1 ? (
             <nav
-              className="flex items-center justify-between border-t border-slate-200 pt-5 text-sm"
+              className="flex items-center justify-between border-t border-slate-200 pt-6 text-sm"
               aria-label="Pagination"
             >
               {page > 1 ? (
                 <Link
                   href={`/jobs${jobsQueryString({ keyword, city, workMode, categoryId, page: page - 1 })}` as Route}
-                  className="font-semibold text-[#433C93] hover:underline"
+                  className="font-bold text-[#3525cd] hover:underline"
                 >
                   ← Previous
                 </Link>
               ) : (
                 <span className="text-slate-300">← Previous</span>
               )}
-              <span className="text-slate-500">
+              <span className="text-xs font-semibold text-slate-600">
                 Page {page} of {totalPages}
               </span>
               {page < totalPages ? (
                 <Link
                   href={`/jobs${jobsQueryString({ keyword, city, workMode, categoryId, page: page + 1 })}` as Route}
-                  className="font-semibold text-[#433C93] hover:underline"
+                  className="font-bold text-[#3525cd] hover:underline"
                 >
                   Next →
                 </Link>
@@ -183,21 +162,31 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
           ) : null}
         </div>
 
-        <aside className="mt-2 hidden min-w-0 lg:sticky lg:top-28 lg:mt-0 lg:block">
-          <div className="nw-surface-soft space-y-3 p-4 text-sm">
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">For clients</p>
-            <p className="font-semibold text-slate-900">Need talent listed here?</p>
-            <p className="text-slate-600">Post a brief with budget and location so the right freelancers can bid.</p>
+        <aside className="order-1 mb-8 min-w-0 space-y-5 lg:order-2 lg:mb-0 lg:sticky lg:top-28">
+          <JobsPublicFilters
+            keyword={keyword}
+            city={city}
+            workMode={workMode}
+            categoryId={categoryId}
+            categories={categories}
+          />
+          <div className="nw-surface-soft space-y-3 border-t-[3px] border-t-[#3525cd] p-4 text-sm">
+            <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-600">For clients</p>
+            <p className="text-base font-bold text-slate-950">Hiring on NearWork?</p>
+            <p className="font-medium text-slate-600">Post a brief with budget and location so the right people can bid.</p>
             <AuthAwareCtaLink
               href={"/client/jobs/new" as Route}
               intent="post-job"
               unauthenticatedTo="register"
               registerRoleHint="client"
-              className="nw-cta-primary flex w-full justify-center py-2.5 text-center"
+              className="nw-cta-primary flex w-full justify-center py-3 text-center"
             >
               Post a job
             </AuthAwareCtaLink>
-            <Link href="/freelancers" className="block text-center text-xs font-semibold text-[#433C93] hover:underline">
+            <Link
+              href="/freelancers"
+              className="block text-center text-xs font-bold text-[#3525cd] hover:underline"
+            >
               Browse freelancers instead
             </Link>
           </div>

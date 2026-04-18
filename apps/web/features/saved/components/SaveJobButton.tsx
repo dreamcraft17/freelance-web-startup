@@ -1,5 +1,6 @@
 "use client";
 
+import { fetchWithCsrf } from "@/features/auth/lib/fetch-with-csrf";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -71,7 +72,7 @@ export function SaveJobButton({
     setBusy(true);
     try {
       if (!saved) {
-        const res = await fetch("/api/saved-items/jobs", {
+        const res = await fetchWithCsrf("/api/saved-items/jobs", {
           method: "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
@@ -84,7 +85,7 @@ export function SaveJobButton({
         const body = await readJson<ApiOk<{ saved: true }> | ApiErr>(res);
         if (body.success) applySaved(true);
       } else {
-        const res = await fetch("/api/saved-items/jobs", {
+        const res = await fetchWithCsrf("/api/saved-items/jobs", {
           method: "DELETE",
           credentials: "include",
           headers: { "Content-Type": "application/json" },

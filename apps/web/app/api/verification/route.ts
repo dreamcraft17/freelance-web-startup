@@ -4,6 +4,7 @@ import { parseJson } from "@/server/http/route-helpers";
 import { protectFreelancer } from "@/server/http/protect";
 import { jsonOk, withApiHandler } from "@/server/http/api-response";
 import {
+  assertMutationCsrf,
   consumeRateLimitOr429,
   getClientIp,
   sensitiveMutateIpLimiter,
@@ -50,6 +51,9 @@ export async function POST(request: Request) {
       60 * 60 * 1000
     );
     if (userLimited) return userLimited;
+
+    const csrf = assertMutationCsrf(request);
+    if (csrf) return csrf;
 
     const parsed = await parseJson(request, createVerificationRequestSchema);
     if (!parsed.ok) return parsed.response;

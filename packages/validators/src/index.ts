@@ -89,20 +89,37 @@ export const createDonationSchema = z.object({
   message: z.string().max(500).optional()
 });
 
-export const searchFreelancersSchema = paginationSchema.extend({
-  keyword: z.string().optional(),
-  city: z.string().optional(),
-  workMode: z.enum(["REMOTE", "ONSITE", "HYBRID"]).optional(),
-  categoryId: z.string().optional(),
-  skillId: z.string().optional()
-});
+/** Public discovery: deep pagination is expensive and scrape-prone */
+export const MAX_PUBLIC_DISCOVERY_PAGE = 200;
 
-export const searchJobsSchema = paginationSchema.extend({
-  keyword: z.string().optional(),
-  city: z.string().optional(),
-  workMode: z.enum(["REMOTE", "ONSITE", "HYBRID"]).optional(),
-  categoryId: z.string().optional()
-});
+const discoveryPageRefine = <T extends { page: number }>(data: T, ctx: z.RefinementCtx) => {
+  if (data.page > MAX_PUBLIC_DISCOVERY_PAGE) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Page is out of range for public discovery",
+      path: ["page"]
+    });
+  }
+};
+
+export const searchFreelancersSchema = paginationSchema
+  .extend({
+    keyword: z.string().max(120).optional(),
+    city: z.string().max(120).optional(),
+    workMode: z.enum(["REMOTE", "ONSITE", "HYBRID"]).optional(),
+    categoryId: z.string().max(48).optional(),
+    skillId: z.string().max(48).optional()
+  })
+  .superRefine(discoveryPageRefine);
+
+export const searchJobsSchema = paginationSchema
+  .extend({
+    keyword: z.string().max(120).optional(),
+    city: z.string().max(120).optional(),
+    workMode: z.enum(["REMOTE", "ONSITE", "HYBRID"]).optional(),
+    categoryId: z.string().max(48).optional()
+  })
+  .superRefine(discoveryPageRefine);
 
 export const createVerificationRequestSchema = z.object({
   type: z.enum(["IDENTITY", "BUSINESS", "ADDRESS", "CERTIFICATION", "PAYMENT_METHOD"]),

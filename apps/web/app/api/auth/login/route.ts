@@ -6,8 +6,10 @@ import { DomainError } from "@/server/errors/domain-errors";
 import { buildSessionSetCookieHeader } from "@src/lib/session";
 import {
   authLoginIpLimiter,
+  buildCsrfSetCookieHeader,
   clearFailedLogin,
   consumeRateLimitOr429,
+  createCsrfToken,
   getClientIp,
   getLoginAttemptState,
   isContentLengthWithinLimit,
@@ -43,6 +45,7 @@ export async function POST(request: Request) {
       clearFailedLogin(ip, emailNorm);
       const res = jsonOk({ session }, 200);
       res.headers.append("Set-Cookie", buildSessionSetCookieHeader(token, request));
+      res.headers.append("Set-Cookie", buildCsrfSetCookieHeader(createCsrfToken(), request));
       return res;
     } catch (err) {
       if (err instanceof DomainError && err.code === "INVALID_CREDENTIALS") {

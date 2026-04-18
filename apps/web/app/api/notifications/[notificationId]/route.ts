@@ -3,6 +3,7 @@ import { NotificationService } from "@/server/services/notification.service";
 import { parseJson } from "@/server/http/route-helpers";
 import { protectAnyActiveUser } from "@/server/http/protect";
 import { jsonFail, jsonOk, withApiHandler } from "@/server/http/api-response";
+import { assertMutationCsrf } from "@/server/security";
 
 const notificationService = new NotificationService();
 
@@ -12,6 +13,10 @@ export async function PATCH(request: Request, context: RouteContext) {
   return withApiHandler(async () => {
     const gate = await protectAnyActiveUser(request);
     if (!gate.ok) return gate.response;
+
+    const csrf = assertMutationCsrf(request);
+    if (csrf) return csrf;
+
     const params = await context.params;
     const notificationId = params.notificationId?.trim();
     if (!notificationId) return jsonFail("Invalid notification id", 400, "INVALID_ID");

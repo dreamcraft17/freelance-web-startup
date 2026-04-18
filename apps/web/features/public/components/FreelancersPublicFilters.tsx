@@ -122,11 +122,11 @@ export function FreelancersPublicFilters({
   }, [coords]);
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] sm:p-5">
+    <div className="nw-discovery-panel">
       <div className="nw-panel-head">
         <div>
-          <p className="nw-section-title">Directory filters</p>
-          <p className="text-sm text-slate-600">Keyword + category narrow the roster; city and nearby refine place.</p>
+          <p className="nw-section-title">Filters</p>
+          <p className="text-sm font-semibold text-slate-900">Keyword + category narrow the roster</p>
         </div>
         <div className="flex shrink-0 gap-2 sm:pb-0">
           <button type="submit" form="freelancers-filter-form" className="nw-cta-primary px-5 py-2.5">
@@ -221,20 +221,19 @@ export function FreelancersPublicFilters({
           </p>
         </div>
 
-        <p className="w-full text-[11px] text-slate-500 xl:col-span-full">
-          Tip: set work mode to <span className="font-medium text-slate-700">Remote</span> when you do not need someone
-          on-site.
+        <p className="w-full text-[11px] font-medium text-slate-600 xl:col-span-full">
+          Tip: choose <span className="font-bold text-slate-800">Remote</span> when on-site is not required.
         </p>
       </form>
 
-      <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-3.5">
+      <div className="mt-4 border border-slate-200 border-l-[3px] border-l-[#3525cd] bg-slate-50/90 p-3.5">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-2">
             <Navigation className="h-4 w-4 shrink-0 text-[#3525cd]" aria-hidden />
-            <p className="text-sm font-medium text-slate-800">Find nearby talent</p>
+            <p className="text-sm font-bold text-slate-900">Nearby talent</p>
             {locationState === "granted" ? (
-              <span className="inline-flex items-center rounded-md bg-[#3525cd]/10 px-2 py-0.5 text-[11px] font-semibold text-[#3525cd] ring-1 ring-[#3525cd]/15">
-                Nearby active
+              <span className="inline-flex items-center rounded border border-[#3525cd]/30 bg-white px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-[#3525cd]">
+                Live sort
               </span>
             ) : null}
           </div>
