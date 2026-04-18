@@ -1,13 +1,20 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v2  
-> Last synchronized: 2026-04-18 (post-accept handoff update applied across product and docs).
+> **Doc revision:** v3  
+> Last synchronized: 2026-04-18 (marketplace pulse + proposal language + discovery hints).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-04-18 — Trust & activity (no new chrome)
+
+- Satu baris stat agregat (`MarketplacePulse`) di hero landing + header discovery jobs/freelancers—teks muted, bukan banner.
+- Navbar marketing: indikator notifikasi mengikuti **jumlah unread** dari database (bukan indikator tetap).
+- Filter publik: saran keyword via `datalist` + baris “Popular” (tautan pencarian, bukan hasil live).
+- Saluran hiring: istilah **proposal / hire** menggantikan copy generik “bid / open job” di permukaan utama.
 
 ### 2026-04-18 — Marketplace landing + footer
 

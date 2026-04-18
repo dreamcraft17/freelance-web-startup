@@ -5,10 +5,12 @@ import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
 import { FreelancersBrowseList, type PublicFreelancerCard } from "@/features/public/components/FreelancersBrowseList";
 import { FreelancersPublicEmpty } from "@/features/public/components/FreelancersPublicEmpty";
 import { FreelancersPublicFilters } from "@/features/public/components/FreelancersPublicFilters";
+import { MarketplacePulse } from "@/components/marketing/MarketplacePulse";
 import { CategoryService } from "@/server/services/category.service";
 import { GeoService } from "@/server/services/geo.service";
 import type { FreelancerSearchItem } from "@/server/services/search.service";
 import { SearchService } from "@/server/services/search.service";
+import { PublicStatsService } from "@/server/services/public-stats.service";
 
 export const revalidate = 60;
 
@@ -94,7 +96,11 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
 
   const search = new SearchService();
   const geoQuery = hasGeoCenter ? { ...query, page: 1 as const, limit: 120 as const } : query;
-  const [{ items, total }, categories] = await Promise.all([search.searchFreelancers(geoQuery), loadCategories()]);
+  const [{ items, total }, categories, pulse] = await Promise.all([
+    search.searchFreelancers(geoQuery),
+    loadCategories(),
+    new PublicStatsService().getMarketplacePulse()
+  ]);
 
   const geo = new GeoService();
   const rowsWithDistance = hasGeoCenter
@@ -136,6 +142,9 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
           Live profiles—filter by skill, city, and work mode. Turn on nearby when place matters; go remote when it does
           not.
         </p>
+        <div className="mt-2">
+          <MarketplacePulse pulse={pulse} />
+        </div>
       </header>
 
       <div className="lg:grid lg:grid-cols-[minmax(0,1fr),min(100%,22rem)] lg:items-start lg:gap-8">

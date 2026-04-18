@@ -236,15 +236,20 @@ export default async function JobDetailPage({ params }: PageProps) {
         }
         actions={<SaveJobButton jobId={job.id} />}
       />
+      <p className="mb-8 text-xs font-medium text-slate-600">
+        {isClientOwner
+          ? "Shortlist to compare later—hire when you are confident every scope detail is clear."
+          : "Send a proposal with price and timing—clients compare you in context with the brief."}
+      </p>
 
-      <div className="mt-8 space-y-6">
+      <div className="space-y-6">
         <Card>
           <CardHeader>
             <CardTitle className="text-base">Budget</CardTitle>
             <CardDescription>{budgetLine(job)}</CardDescription>
           </CardHeader>
           {bidDeadline ? (
-            <CardContent className="text-muted-foreground pt-0 text-sm">Bids close {bidDeadline}</CardContent>
+            <CardContent className="text-muted-foreground pt-0 text-sm">Proposals close {bidDeadline}</CardContent>
           ) : null}
         </Card>
 
@@ -274,13 +279,13 @@ export default async function JobDetailPage({ params }: PageProps) {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">{isClientOwner ? "Bid review" : "Submit a bid"}</CardTitle>
+            <CardTitle className="text-base">{isClientOwner ? "Proposal review" : "Send a proposal"}</CardTitle>
             <CardDescription>
               {isClientOwner
                 ? acceptedBid
                   ? "Hiring decision is complete. Continue with contract and coordination for delivery."
                   : "Compare freelancers by price, profile readiness, and location signals. Start with pending decisions."
-                : "Bidding requires a signed-in freelancer account. Browse this page freely; sign in or register when you are ready to propose."}
+                : "Sending a proposal requires a signed-in freelancer account. Browse this page freely; sign in or register when you are ready."}
             </CardDescription>
           </CardHeader>
           {isClientOwner ? (
@@ -355,7 +360,7 @@ export default async function JobDetailPage({ params }: PageProps) {
 
               {bidRows.length === 0 ? (
                 <div className="rounded-md border border-dashed border-slate-300 bg-white px-4 py-6 text-sm text-slate-600">
-                  No bids yet. Keep this job open or refine the brief to attract stronger proposals.
+                  No proposals yet. Keep this job open or refine the brief so freelancers can respond with confidence.
                 </div>
               ) : (
                 <div className="overflow-x-auto rounded-lg border border-slate-200">
@@ -504,7 +509,7 @@ export default async function JobDetailPage({ params }: PageProps) {
                 href={loginReturnTo(returnToThisJob, "submit-bid") as Route}
                 className="inline-flex justify-center rounded-lg bg-[#3525cd] px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-[#4f46e5]"
               >
-                Sign in to submit a bid
+                Sign in to send a proposal
               </Link>
               <Link
                 href={registerFreelancerReturnToJob(job.id) as Route}
