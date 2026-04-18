@@ -1,13 +1,21 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v3  
-> Last synchronized: 2026-04-18 (marketplace pulse + proposal language + discovery hints).
+> **Doc revision:** v4  
+> Last synchronized: 2026-04-18 (marketing navbar product hierarchy).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-04-18 — Marketing navbar (product chrome, not template)
+
+- **`MarketingNavBar`:** layout eksplisit **brand (kiri) · primary links (tengah) · auth/utilitas (kanan)**; semua tautan produk utama ada di kolom tengah dengan **grup** Jobs/Freelancers vs sisanya + divider vertikal ringan.
+- **Brand:** `BrandLogo` + `logo_EN.png`, **tanpa** kotak/border dekoratif; ukuran gambar naik per breakpoint; hover disederhanakan (opacity).
+- **Nav items:** berat font tidak seragam (discovery lebih tegas, link produk lain `font-medium` + warna sekunder); aktif = **underline / border-b brand** (`#3525cd`), bukan chip background penuh.
+- **Kanan:** tautan guest + CTA dengan hierarki abu; sesi login: ikon + CTA role; **pemisah vertikal** `border-slate-100` memisahkan dari nav utama.
+- Header: **tanpa `shadow-sm`** pada bar atas—hanya border bawah + putih, tetap dalam garis “no glass / no gradient”.
 
 ### 2026-04-18 — Trust & activity (no new chrome)
 

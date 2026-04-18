@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v4  
-> Last synchronized: 2026-04-18 (marketplace pulse, proposal language, discovery search hints).
+> **Doc revision:** v5  
+> Last synchronized: 2026-04-18 (marketing navbar hierarchy + brand/logo docs sync).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,6 +9,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
+- **2026-04-18 — Navbar marketing (`MarketingNavBar`):** struktur kiri–tengah–kanan (brand / primary nav / utilitas auth); logo **`/logo/logo_EN.png`** lewat `BrandLogo` dengan ukuran desktop lebih tegas; nav pusat digabung (Jobs, Freelancers, How it works, Pricing, Early access, Help) dengan hierarki tipografi + pemisah vertikal; state aktif memakai **garis bawah brand** (bukan pill abu template); area kanan dipisah **border-l** halus; header putih + border bawah saja (tanpa shadow header).
 - **2026-04-18 — Engagement tanpa dekorasi:** agregat ringan `PublicStatsService` + komponen `MarketplacePulse` (board terbuka, proposal 24 jam, freelancer berstatus available) di landing, `/jobs`, `/freelancers`; badge notifikasi **nyata** di `MarketingNavBar` (count dari DB, tanpa dot palsu); filter discovery punya `datalist` + tautan “Popular”; microcopy **proposal / hire** di job detail, client jobs, dan how-it-works; kartu freelancer menampilkan sinyal kepercayaan dari data yang ada (availability + ulasan berulang).
 - **2026-04-18 — Landing & chrome publik:** hero “marketplace stage” (split layout, headline dominan tanpa label `nw-section-title` generik—mikro-label “Live freelancer directory”); blok search besar, *popular searches*, kategori ikon horizontal; preview ilustratif + zebra; section bands; footer **kompak** (Product / Company / Legal / Support + strip bawah).
 - **2026-04-18 — API discovery:** perlindungan anti-scraping ringan + pagination/query hardening (detail di `audit.md` addendum).

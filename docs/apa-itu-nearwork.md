@@ -1,7 +1,7 @@
 # Apa itu NearWork?
 
-> **Doc revision:** v1  
-> Last synchronized: 2026-04-18
+> **Doc revision:** v2  
+> Last synchronized: 2026-04-18 (public chrome / navigasi).
 
 Dokumen ini menjawab secara singkat: **produk ini apa**, **untuk siapa**, dan **apa yang dilakukan user di dalamnya**—tanpa detail teknis implementasi.
 
@@ -30,6 +30,7 @@ Repo monorepo ini (nama kerja: **Freelance-web**) adalah **aplikasi web** yang m
 - Ada **siklus pekerjaan**: job → bid → penerimaan → kontrak (dan fitur pendukung seperti pesan, notifikasi, ulasan—sesuai kematangan rilis).
 - Ada **aturan produk**: kuota bid, langganan/plan, kebijakan akses—bukan hanya daftar nama dan nomor telepon.
 - **Discovery publik**: siapa pun bisa **melihat** job dan profil freelancer tertentu tanpa login; login baru wajib saat melakukan aksi yang dilindungi (misalnya posting job, mengirim bid, menyimpan favorit).
+- **Navigasi publik**: halaman ber-chrome marketing memakai bilah atas yang terasa seperti **produk** (jelas ke Jobs/Freelancers, informasi produk, bantuan, dan akun)—bukan sekadar “header template”; setelah login, area akun dan notifikasi mengikuti **status sungguhan** Anda.
 
 ---
 

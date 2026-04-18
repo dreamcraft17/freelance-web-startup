@@ -1,6 +1,6 @@
 # Documentation maintenance (NearWork)
 
-> **Doc revision:** v4  
+> **Doc revision:** v5  
 > Last synchronized: 2026-04-18
 
 ## AUTO — wajib untuk AI & kontributor
@@ -10,6 +10,8 @@
 1. **Identifikasi semua `.md` yang terdampak** (lihat tabel di bawah + isi file yang sama domainnya).
 2. **Perbarui isi** setiap file itu agar selaras dengan kode.
 3. Di **setiap file `.md` yang Anda sentuh**, naikkan **`Doc revision`** (+1) dan sesuaikan **`Last synchronized`**.
+
+**Sweep minimum (AI):** untuk satu perubahan produk, jangan berhenti di satu file. **Ikuti tabel “What to update”** baris per baris: jika baris itu relevan dengan diff, buka file yang tercantum dan sinkronkan (bukan hanya `features.md`). Contoh: UI publik + auth chrome → setidaknya `features.md`, `ui-redesign.md`, `docs/application-overview.md`, `audit.md`, `README.md`, `docs/auth-session-persistence.md`, `docs/apa-itu-nearwork.md` bila copy pengguna terdampak; perubahan Prisma/pool → tambahkan `packages/database/README.md` + `audit.md` jika risiko operasional.
 
 > “Semua MD” = **semua file Markdown yang relevan dengan perubahan itu**, bukan seluruh repo kecuali memang ada instruksi audit dokumen penuh.
 
