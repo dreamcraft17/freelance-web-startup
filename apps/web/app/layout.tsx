@@ -10,11 +10,9 @@ export const metadata: Metadata = {
   description:
     "Find freelancers near you or anywhere: design, photography, video editing, writing, tutoring, marketing, local services, and more. Post jobs, compare bids, and collaborate in one place.",
   icons: {
-    icon: [
-      { url: "/logo/logo3.png", type: "image/svg+xml" }
-    ],
-    shortcut: ["/logo/logo3.png"],
-    apple: ["/logo/logo3.png"]
+    icon: [{ url: "/logo/logo_EN.png", type: "image/png" }],
+    shortcut: ["/logo/logo_EN.png"],
+    apple: ["/logo/logo_EN.png"]
   }
 };
 
