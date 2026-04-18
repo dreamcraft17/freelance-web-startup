@@ -35,33 +35,44 @@ function budgetLabel(job: JobsPublicCard): string {
   return budgetType.replace(/_/g, " ");
 }
 
+function workModeChipClass(wm: string): string {
+  if (wm === "REMOTE") return "border-slate-300 bg-slate-50 text-slate-800";
+  if (wm === "ONSITE") return "border-amber-300/70 bg-amber-50 text-amber-950";
+  if (wm === "HYBRID") return "border-[#3525cd]/35 bg-[#3525cd]/[0.07] text-[#3525cd]";
+  return "border-slate-200 bg-white text-slate-700";
+}
+
 export function JobsPublicList({ jobs }: { jobs: JobsPublicCard[] }) {
   return (
-    <ul className="nw-surface divide-y divide-slate-200 overflow-hidden">
+    <ul className="divide-y divide-slate-200 overflow-hidden border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
       {jobs.map((job) => (
         <li key={job.id}>
           <Link
             href={`/jobs/${job.id}` as Route}
-            className="flex flex-col gap-1 px-4 py-3.5 transition hover:bg-slate-50/90 sm:flex-row sm:items-start sm:justify-between sm:gap-6 sm:px-5 sm:py-4"
+            className="group flex flex-col gap-1 px-4 py-4 transition-colors hover:bg-slate-50/90 sm:flex-row sm:items-start sm:justify-between sm:gap-6 sm:px-5 sm:py-4"
           >
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
-                <h2 className="text-[15px] font-semibold leading-snug text-slate-900">{job.title}</h2>
-                <span className="shrink-0 rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
+                <h2 className="text-base font-bold leading-snug text-slate-950 group-hover:text-[#3525cd] sm:text-[17px]">
+                  {job.title}
+                </h2>
+                <span
+                  className={`shrink-0 rounded border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${workModeChipClass(job.workMode)}`}
+                >
                   {workModeLabel(job.workMode)}
                 </span>
               </div>
-              <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-slate-600">{job.description}</p>
+              <p className="mt-1.5 line-clamp-2 text-sm font-medium leading-relaxed text-slate-600">{job.description}</p>
             </div>
-            <div className="flex shrink-0 flex-col items-start gap-1 border-t border-slate-100 pt-2 text-left sm:w-52 sm:border-t-0 sm:pt-0 sm:text-right">
-              <span className="text-sm font-semibold tabular-nums text-slate-900">{budgetLabel(job)}</span>
+            <div className="flex shrink-0 flex-col items-start gap-1 border-t border-slate-100 pt-2.5 text-left sm:w-56 sm:border-t-0 sm:items-end sm:pt-0 sm:text-right">
+              <span className="text-[15px] font-bold tabular-nums text-slate-950">{budgetLabel(job)}</span>
               {job.city ? (
-                <span className="inline-flex items-center gap-1 text-xs font-medium text-slate-600">
-                  <MapPin className="h-3.5 w-3.5 shrink-0 text-[#433C93]" aria-hidden />
+                <span className="inline-flex items-center gap-1 text-xs font-semibold text-slate-700">
+                  <MapPin className="h-3.5 w-3.5 shrink-0 text-[#3525cd]" aria-hidden />
                   {job.city}
                 </span>
               ) : (
-                <span className="text-xs text-slate-400">No city on brief</span>
+                <span className="text-xs font-medium text-slate-400">No city on brief</span>
               )}
             </div>
           </Link>

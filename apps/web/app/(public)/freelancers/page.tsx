@@ -128,43 +128,44 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
   const categorySelected = Boolean(categoryId.trim());
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-10">
+    <div className="mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-12">
       <header className="nw-page-header">
         <p className="nw-section-title">Freelancer discovery</p>
-        <h1 className="nw-page-title md:text-4xl">Browse freelancers</h1>
-        <p className="nw-page-description text-base">
-          Filter by skill, city, and work mode. Use nearby search when location matters; switch to remote when it does not.
-          All results are live directory profiles.
+        <h1 className="nw-page-title">Browse freelancers</h1>
+        <p className="nw-page-description">
+          Live profiles—filter by skill, city, and work mode. Turn on nearby when place matters; go remote when it does
+          not.
         </p>
       </header>
 
       <div className="lg:grid lg:grid-cols-[minmax(0,1fr),min(100%,22rem)] lg:items-start lg:gap-8">
-        <div className="order-2 min-w-0 space-y-5 lg:order-1">
+        <div className="order-2 min-w-0 space-y-6 lg:order-1">
           {hasGeoCenter ? (
-            <div className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm leading-relaxed text-emerald-950">
-              <p className="font-medium">Nearby sort active</p>
-              <p className="mt-1 text-emerald-900/90">
-                Within <span className="font-semibold">{radiusKm} km</span> of your point, closest first. Distance shows
-                on each card when coordinates are on file.
+            <div className="border border-emerald-200 border-l-[3px] border-l-emerald-600 bg-emerald-50/90 px-4 py-3.5 text-sm leading-relaxed text-emerald-950">
+              <p className="text-xs font-bold uppercase tracking-wide text-emerald-800">Nearby sort on</p>
+              <p className="mt-1 font-semibold text-emerald-950">
+                Within <span className="text-emerald-900">{radiusKm} km</span> · closest first. Distance on cards when
+                coordinates exist.
               </p>
             </div>
           ) : city.trim() ? (
-            <div className="rounded-md border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-relaxed text-slate-800">
-              <p className="font-medium text-slate-900">City filter</p>
-              <p className="mt-1 text-slate-700">
-                Profiles listing{" "}
-                <span className="font-semibold">&ldquo;{city.trim()}&rdquo;</span>. Combine with work mode to split remote
-                from on-site expectations.
+            <div className="border border-slate-200 border-l-[3px] border-l-[#3525cd] bg-white px-4 py-3.5 text-sm leading-relaxed">
+              <p className="text-xs font-bold uppercase tracking-wide text-[#3525cd]">City match</p>
+              <p className="mt-1 font-semibold text-slate-800">
+                Profiles mentioning <span className="text-slate-950">&ldquo;{city.trim()}&rdquo;</span>—pair with work
+                mode to separate remote vs on-site.
               </p>
             </div>
           ) : null}
 
           {nearbyTotal > 0 ? (
             <div className="nw-results-toolbar">
-              <span className="font-medium text-slate-900">
+              <span className="text-[15px] font-bold text-slate-950">
                 {nearbyTotal === 1 ? "1 profile" : `${nearbyTotal} profiles`}
               </span>
-              <span className="text-slate-500">Open a row to view the full profile.</span>
+              <span className="max-w-[12rem] text-right text-xs font-medium leading-snug text-slate-600 sm:max-w-none sm:text-left">
+                Open a card for the full profile and reviews.
+              </span>
             </div>
           ) : null}
 
@@ -176,7 +177,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
 
           {!hasGeoCenter && totalPages > 1 ? (
             <nav
-              className="flex items-center justify-between border-t border-slate-200 pt-5 text-sm"
+              className="flex items-center justify-between border-t border-slate-200 pt-6 text-sm"
               aria-label="Pagination"
             >
               {page > 1 ? (
@@ -184,14 +185,14 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
                   href={
                     `/freelancers${freelancersQueryString({ keyword, city, workMode, categoryId, page: page - 1 })}` as Route
                   }
-                  className="font-semibold text-[#433C93] hover:underline"
+                  className="font-bold text-[#3525cd] hover:underline"
                 >
                   ← Previous
                 </Link>
               ) : (
                 <span className="text-slate-300">← Previous</span>
               )}
-              <span className="text-slate-500">
+              <span className="text-xs font-semibold text-slate-600">
                 Page {page} of {totalPages}
               </span>
               {page < totalPages ? (
@@ -199,7 +200,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
                   href={
                     `/freelancers${freelancersQueryString({ keyword, city, workMode, categoryId, page: page + 1 })}` as Route
                   }
-                  className="font-semibold text-[#433C93] hover:underline"
+                  className="font-bold text-[#3525cd] hover:underline"
                 >
                   Next →
                 </Link>
@@ -210,7 +211,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
           ) : null}
         </div>
 
-        <aside className="order-1 mb-6 min-w-0 lg:order-2 lg:mb-0 lg:sticky lg:top-28">
+        <aside className="order-1 mb-8 min-w-0 space-y-5 lg:order-2 lg:mb-0 lg:sticky lg:top-28">
           <FreelancersPublicFilters
             keyword={keyword}
             city={city}
@@ -221,24 +222,24 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
             lng={hasGeoCenter ? rawLng : null}
             radiusKm={radiusKm}
           />
-          <div className="mt-3 hidden rounded-xl border border-slate-200 bg-white p-4 text-sm lg:block">
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">For freelancers</p>
-            <p className="mt-1 font-semibold text-slate-900">Build your earning pipeline</p>
-            <ul className="mt-3 space-y-2 text-slate-600">
-              <li className="rounded-md bg-slate-50 px-3 py-2">
-                <span className="font-medium text-slate-800">Complete profile</span> to improve visibility
+          <div className="nw-surface-soft hidden border-t-[3px] border-t-[#3525cd] p-4 text-sm lg:block">
+            <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-600">For freelancers</p>
+            <p className="mt-1 text-base font-bold text-slate-950">Get seen on this directory</p>
+            <ul className="mt-3 space-y-2 font-medium text-slate-700">
+              <li className="border-l-2 border-slate-200 pl-3">
+                <span className="font-bold text-slate-900">Profile</span> — headline, skills, city
               </li>
-              <li className="rounded-md bg-slate-50 px-3 py-2">
-                <span className="font-medium text-slate-800">Find jobs</span> that match your work mode
+              <li className="border-l-2 border-slate-200 pl-3">
+                <span className="font-bold text-slate-900">Jobs</span> — match your work mode
               </li>
-              <li className="rounded-md bg-slate-50 px-3 py-2">
-                <span className="font-medium text-slate-800">Track proposals</span> in one workspace
+              <li className="border-l-2 border-[#3525cd]/40 pl-3">
+                <span className="font-bold text-[#3525cd]">Proposals</span> — one workspace
               </li>
             </ul>
-            <div className="mt-3 space-y-2">
+            <div className="mt-4 space-y-2">
               <Link
                 href={"/freelancer/profile" as Route}
-                className="inline-flex w-full items-center justify-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+                className="inline-flex w-full items-center justify-center rounded-md border-2 border-slate-300 bg-white px-3 py-2.5 text-sm font-bold text-slate-800 transition hover:border-slate-400 hover:bg-slate-50"
               >
                 Complete profile
               </Link>
@@ -246,7 +247,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
                 href={"/freelancer/proposals" as Route}
                 intent="continue"
                 unauthenticatedTo="login"
-                className="inline-flex w-full items-center justify-center rounded-md bg-[#433C93] px-3 py-2 text-sm font-semibold text-white hover:bg-[#4d45a5]"
+                className="nw-cta-primary inline-flex w-full items-center justify-center px-3 py-2.5 text-sm font-semibold"
               >
                 View proposals
               </AuthAwareCtaLink>

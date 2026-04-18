@@ -1,5 +1,6 @@
 "use client";
 
+import { fetchWithCsrf } from "@/features/auth/lib/fetch-with-csrf";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
@@ -24,7 +25,7 @@ export function VerificationReviewActions({ requestId }: Props) {
     setError(null);
     setBusy(true);
     try {
-      const res = await fetch(`/api/verification/${encodeURIComponent(requestId)}`, {
+      const res = await fetchWithCsrf(`/api/verification/${encodeURIComponent(requestId)}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "same-origin",

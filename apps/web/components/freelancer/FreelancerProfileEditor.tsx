@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { fetchWithCsrf } from "@/features/auth/lib/fetch-with-csrf";
 import { cn } from "@/lib/utils";
 import { ArrowRight, Check, Loader2, MapPin, Sparkles, User } from "lucide-react";
 
@@ -118,7 +119,7 @@ export function FreelancerProfileEditor({
             ...(form.headline.trim() ? { headline: form.headline.trim() } : {}),
             ...(form.bio.trim() ? { bio: form.bio.trim() } : {})
           };
-          const res = await fetch("/api/freelancer-profiles", {
+          const res = await fetchWithCsrf("/api/freelancer-profiles", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(body)
@@ -147,7 +148,7 @@ export function FreelancerProfileEditor({
           return;
         }
 
-        const res = await fetch("/api/freelancer-profiles", {
+        const res = await fetchWithCsrf("/api/freelancer-profiles", {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(patch)

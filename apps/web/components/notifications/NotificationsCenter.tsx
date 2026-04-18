@@ -4,6 +4,7 @@ import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { NotificationType } from "@acme/types";
+import { fetchWithCsrf } from "@/features/auth/lib/fetch-with-csrf";
 import { DashboardEmptyState } from "@/components/dashboard/DashboardEmptyState";
 import { cn } from "@/lib/utils";
 import {
@@ -101,7 +102,7 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
     setLoadingId(n.id);
     try {
       if (n.readAt == null) {
-        const res = await fetch(`/api/notifications/${n.id}`, {
+        const res = await fetchWithCsrf(`/api/notifications/${n.id}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ read: true })

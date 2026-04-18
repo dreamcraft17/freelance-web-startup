@@ -1,5 +1,6 @@
 "use client";
 
+import { fetchWithCsrf } from "@/features/auth/lib/fetch-with-csrf";
 import Link from "next/link";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
@@ -25,7 +26,7 @@ export function BidConversationAction({
     if (pending) return;
     startTransition(async () => {
       setError(null);
-      const res = await fetch("/api/messages", {
+      const res = await fetchWithCsrf("/api/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

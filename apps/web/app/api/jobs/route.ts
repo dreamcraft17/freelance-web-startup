@@ -4,10 +4,11 @@ import { parseJson, parseSearchParams } from "@/server/http/route-helpers";
 import { protectClient } from "@/server/http/protect";
 import { jsonOk, withApiHandler } from "@/server/http/api-response";
 import {
+  assertMutationCsrf,
+  consumePublicDiscoveryLimits,
   consumeRateLimitOr429,
   getClientIp,
   jobCreateUserLimiter,
-  publicReadIpLimiter,
   sensitiveMutateIpLimiter
 } from "@/server/security";
 
@@ -16,10 +17,10 @@ const jobService = new JobService();
 export async function GET(request: Request) {
   return withApiHandler(async () => {
     const ip = getClientIp(request);
-    const limited = consumeRateLimitOr429(publicReadIpLimiter, `pub:${ip}`, 100, 60_000);
+    const url = new URL(request.url);
+    const limited = consumePublicDiscoveryLimits(request, ip, url);
     if (limited) return limited;
 
-    const url = new URL(request.url);
     const parsed = parseSearchParams(url, searchJobsSchema);
     if (!parsed.ok) return parsed.response;
     const data = await jobService.listOpenJobs(parsed.data);
@@ -43,6 +44,9 @@ export async function POST(request: Request) {
       60 * 60 * 1000
     );
     if (userLimited) return userLimited;
+
+    const csrf = assertMutationCsrf(request);
+    if (csrf) return csrf;
 
     const parsed = await parseJson(request, createJobSchema);
     if (!parsed.ok) return parsed.response;

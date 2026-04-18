@@ -21,11 +21,11 @@ const workModes: { value: WorkMode; label: string }[] = [
 
 export function JobsPublicFilters({ keyword, city, workMode, categoryId, categories }: JobsPublicFiltersProps) {
   return (
-    <div className="mb-8 rounded-xl border border-slate-200 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] sm:p-5">
+    <div className="nw-discovery-panel">
       <div className="nw-panel-head">
         <div>
-          <p className="nw-section-title">Job board filters</p>
-          <p className="text-sm text-slate-600">Search the live board—open roles only.</p>
+          <p className="nw-section-title">Filters</p>
+          <p className="text-sm font-semibold text-slate-900">Live board · open roles only</p>
         </div>
         <div className="flex shrink-0 gap-2">
           <button type="submit" form="jobs-filter-form" className="nw-cta-primary px-5 py-2.5">
@@ -107,9 +107,8 @@ export function JobsPublicFilters({ keyword, city, workMode, categoryId, categor
           <p className="mt-1.5 text-[11px] leading-snug text-slate-500">Matches when the job lists a city.</p>
         </div>
 
-        <p className="w-full text-[11px] text-slate-500">
-          Tip: filter by <span className="font-medium text-slate-700">work mode</span> first, then keyword—most noise
-          drops off quickly.
+        <p className="w-full text-[11px] font-medium text-slate-600">
+          Tip: set <span className="font-bold text-slate-800">work mode</span> first, then keyword.
         </p>
       </form>
     </div>

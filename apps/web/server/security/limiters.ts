@@ -9,6 +9,15 @@ export const authRegisterIpLimiter = new SlidingWindowRateLimiter();
 /** Public GET discovery (search, job list, public profile by username) */
 export const publicReadIpLimiter = new SlidingWindowRateLimiter();
 
+/** GET /api/search/* and GET /api/jobs list — tuned separately from generic public reads */
+export const publicDiscoveryIpLimiter = new SlidingWindowRateLimiter();
+
+/** Same IP + stable query fingerprint (excludes page) — curbs enumeration / crawl bursts */
+export const publicDiscoveryEnumerationLimiter = new SlidingWindowRateLimiter();
+
+/** Extra ceiling for high scrape-signal clients (non-indexer UAs) */
+export const suspiciousPublicDiscoveryLimiter = new SlidingWindowRateLimiter();
+
 /** Authenticated reads (messages list, thread messages) */
 export const authenticatedReadUserLimiter = new SlidingWindowRateLimiter();
 

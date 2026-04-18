@@ -4,6 +4,7 @@ import {
   getSessionFromRequest,
   verifySessionToken,
   SESSION_COOKIE_NAME,
+  normalizeSessionToken,
   sanitizeReturnUrl,
   homePathForSessionRole,
   resolvePostLoginRedirect
@@ -26,7 +27,8 @@ export {
 
 export async function getSessionFromCookies(): Promise<SessionPayload | null> {
   const jar = await cookies();
-  const token = jar.get(SESSION_COOKIE_NAME)?.value;
+  const raw = jar.get(SESSION_COOKIE_NAME)?.value;
+  const token = normalizeSessionToken(raw);
   if (!token) return null;
   return verifySessionToken(token);
 }

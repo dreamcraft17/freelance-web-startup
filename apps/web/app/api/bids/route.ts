@@ -3,7 +3,13 @@ import { BidService } from "@/server/services/bid.service";
 import { parseJson } from "@/server/http/route-helpers";
 import { protectFreelancer } from "@/server/http/protect";
 import { jsonOk, withApiHandler } from "@/server/http/api-response";
-import { bidPostUserLimiter, consumeRateLimitOr429, getClientIp, sensitiveMutateIpLimiter } from "@/server/security";
+import {
+  assertMutationCsrf,
+  bidPostUserLimiter,
+  consumeRateLimitOr429,
+  getClientIp,
+  sensitiveMutateIpLimiter
+} from "@/server/security";
 
 const bidService = new BidService();
 
@@ -26,6 +32,9 @@ export async function POST(request: Request) {
       60_000
     );
     if (userLimited) return userLimited;
+
+    const csrf = assertMutationCsrf(request);
+    if (csrf) return csrf;
 
     const parsed = await parseJson(request, submitBidSchema);
     if (!parsed.ok) return parsed.response;

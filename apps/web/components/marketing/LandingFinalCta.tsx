@@ -2,28 +2,28 @@ import Link from "next/link";
 
 export function LandingFinalCta() {
   return (
-    <section className="mx-auto mt-8 max-w-6xl px-4 sm:px-6">
-      <div className="nw-surface flex flex-col gap-6 p-5 sm:p-7">
-        <div>
-          <p className="nw-section-title">Start using the product</p>
-          <h2 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900">
-            Browse first, then sign up when you are ready
+    <section className="mx-auto mt-10 max-w-6xl px-4 sm:px-6">
+      <div className="nw-hero-panel flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
+        <div className="min-w-0 max-w-xl">
+          <p className="nw-section-title">Get started</p>
+          <h2 className="mt-1 text-2xl font-bold tracking-tight text-slate-950 sm:text-[1.65rem]">
+            Browse listings first—sign up when you hire or bid
           </h2>
-          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
-            Early access stays practical: real listings, no fake urgency, and clear flows for both clients and freelancers.
+          <p className="mt-2 text-sm font-medium leading-relaxed text-slate-700">
+            Real directory data, clear client and freelancer flows.
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <Link href="/freelancers" className="nw-cta-primary">
+        <div className="flex shrink-0 flex-col gap-2.5 sm:items-end">
+          <Link href="/freelancers" className="nw-cta-primary inline-flex min-w-[11rem] justify-center px-5 py-2.5">
             Find freelancers
           </Link>
           <Link
             href="/jobs"
-            className="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
+            className="inline-flex min-w-[11rem] items-center justify-center rounded-md border-2 border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-800 transition hover:border-slate-400 hover:bg-slate-50"
           >
             Browse jobs
           </Link>
-          <Link href="/register" className="text-sm font-semibold text-[#433C93] hover:underline">
+          <Link href="/register" className="text-center text-sm font-bold text-[#3525cd] hover:underline sm:text-right">
             Create an account
           </Link>
         </div>

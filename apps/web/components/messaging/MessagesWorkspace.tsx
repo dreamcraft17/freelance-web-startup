@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { fetchWithCsrf } from "@/features/auth/lib/fetch-with-csrf";
 import { DashboardEmptyState } from "@/components/dashboard/DashboardEmptyState";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -119,7 +120,7 @@ export function MessagesWorkspace({ threads, messages, selectedThreadId, current
     if (!selectedThreadId || !text) return;
     setSendError(null);
     startTransition(async () => {
-      const res = await fetch(`/api/messages/${selectedThreadId}`, {
+      const res = await fetchWithCsrf(`/api/messages/${selectedThreadId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ body: text })

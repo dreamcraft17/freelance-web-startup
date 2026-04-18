@@ -6,3 +6,7 @@ dist
 .env.*
 coverage
 *.log
+
+# Local-only secrets / notes — never commit
+credential.md
+**/credential.md

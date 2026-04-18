@@ -4,7 +4,11 @@ import { AccountStatus, UserRole } from "@acme/types";
 
 export const SESSION_COOKIE_NAME = "acme_session";
 
+/** Session cookie + JWT calendar lifetime (keep in sync). */
 const SESSION_MAX_AGE_SEC = 60 * 60 * 24 * 7;
+
+/** Reject pathological cookie values before `jwtVerify` (DoS / log noise). */
+const MAX_SESSION_JWT_CHARS = 12_000;
 
 export type SessionPayload = {
   userId: string;
@@ -14,8 +18,18 @@ export type SessionPayload = {
 
 function getSecretKey(): Uint8Array | null {
   const raw = process.env.SESSION_SECRET;
+  /** Minimum 16 for dev; use 32+ random bytes in production (e.g. `openssl rand -base64 32`). */
   if (!raw || raw.length < 16) return null;
   return new TextEncoder().encode(raw);
+}
+
+/** Single entry for raw cookie / header token strings — trim, length-bound, no logging. */
+export function normalizeSessionToken(raw: string | null | undefined): string | null {
+  if (raw == null) return null;
+  const t = raw.trim();
+  if (!t.length) return null;
+  if (t.length > MAX_SESSION_JWT_CHARS) return null;
+  return t;
 }
 
 function readTokenFromCookieHeader(cookieHeader: string | null): string | null {
@@ -23,33 +37,50 @@ function readTokenFromCookieHeader(cookieHeader: string | null): string | null {
   for (const part of cookieHeader.split(";")) {
     const [name, ...rest] = part.trim().split("=");
     if (name === SESSION_COOKIE_NAME && rest.length) {
-      return decodeURIComponent(rest.join("=").trim());
+      const decoded = decodeURIComponent(rest.join("=").trim());
+      return normalizeSessionToken(decoded);
     }
   }
   return null;
 }
 
+/**
+ * Issues a compact HS256 JWT. Payload is minimal: `sub` (user id), `role`, `accountStatus`, `jti`.
+ * `jti` enables future server-side revocation / rotation without changing the session DTO shape.
+ */
 export async function signSessionToken(payload: SessionPayload): Promise<string | null> {
   const secret = getSecretKey();
   if (!secret) return null;
 
+  const exp = new Date(Date.now() + SESSION_MAX_AGE_SEC * 1000);
+
   return new jose.SignJWT({
     role: payload.role,
-    accountStatus: payload.accountStatus
+    accountStatus: payload.accountStatus,
+    jti: globalThis.crypto.randomUUID()
   })
-    .setProtectedHeader({ alg: "HS256" })
+    .setProtectedHeader({ alg: "HS256", typ: "JWT" })
     .setSubject(payload.userId)
     .setIssuedAt()
-    .setExpirationTime(`${Math.floor(SESSION_MAX_AGE_SEC / 86400)}d`)
+    .setExpirationTime(exp)
     .sign(secret);
 }
 
+/**
+ * Verifies signature, `exp`, and algorithm. Invalid / expired / tampered tokens → `null` (no error detail to callers).
+ */
 export async function verifySessionToken(token: string): Promise<SessionPayload | null> {
+  const normalized = normalizeSessionToken(token);
+  if (!normalized) return null;
+
   const secret = getSecretKey();
   if (!secret) return null;
 
   try {
-    const { payload } = await jose.jwtVerify(token, secret);
+    const { payload } = await jose.jwtVerify(normalized, secret, {
+      algorithms: ["HS256"],
+      clockTolerance: 30
+    });
     const userId = typeof payload.sub === "string" ? payload.sub : null;
     const role = payload.role;
     const accountStatus = payload.accountStatus;
@@ -85,7 +116,7 @@ export function sessionCookieMaxAgeSec(): number {
   return SESSION_MAX_AGE_SEC;
 }
 
-function shouldUseSecureCookies(request?: Request): boolean {
+export function shouldUseSecureCookies(request?: Request): boolean {
   if (process.env.NODE_ENV !== "production") return false;
   if (!request) return true;
 
@@ -116,6 +147,9 @@ export function buildSessionSetCookieHeader(token: string, request?: Request): s
   return parts.join("; ");
 }
 
+/**
+ * Clears the session cookie with the same Path / HttpOnly / SameSite / Secure pattern as `Set-Cookie` on login.
+ */
 export function buildSessionClearCookieHeader(request?: Request): string {
   const secure = shouldUseSecureCookies(request);
   const parts = [

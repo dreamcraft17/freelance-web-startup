@@ -1,5 +1,6 @@
 "use client";
 
+import { fetchWithCsrf } from "@/features/auth/lib/fetch-with-csrf";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -18,7 +19,7 @@ export function BidDecisionAction({ bidId, currentStatus }: { bidId: string; cur
     if (!canShortlist || pending) return;
     startTransition(async () => {
       setError(null);
-      const res = await fetch(`/api/bids/${encodeURIComponent(bidId)}/shortlist`, { method: "POST" });
+      const res = await fetchWithCsrf(`/api/bids/${encodeURIComponent(bidId)}/shortlist`, { method: "POST" });
       if (!res.ok) {
         setError("Could not shortlist this bid.");
         return;
@@ -31,7 +32,7 @@ export function BidDecisionAction({ bidId, currentStatus }: { bidId: string; cur
     if (!canAccept || pending) return;
     startTransition(async () => {
       setError(null);
-      const res = await fetch(`/api/bids/${encodeURIComponent(bidId)}/accept`, { method: "POST" });
+      const res = await fetchWithCsrf(`/api/bids/${encodeURIComponent(bidId)}/accept`, { method: "POST" });
       if (!res.ok) {
         setError("Could not accept this bid right now.");
         return;
