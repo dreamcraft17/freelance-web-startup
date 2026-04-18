@@ -1,7 +1,17 @@
 # Documentation maintenance (NearWork)
 
-> **Doc revision:** v2  
+> **Doc revision:** v3  
 > Last synchronized: 2026-04-18
+
+## AUTO — wajib untuk AI & kontributor
+
+**Ingat:** pada setiap PR / perubahan yang relevan, **secara otomatis**:
+
+1. **Identifikasi semua `.md` yang terdampak** (lihat tabel di bawah + isi file yang sama domainnya).
+2. **Perbarui isi** setiap file itu agar selaras dengan kode.
+3. Di **setiap file `.md` yang Anda sentuh**, naikkan **`Doc revision`** (+1) dan sesuaikan **`Last synchronized`**.
+
+> “Semua MD” = **semua file Markdown yang relevan dengan perubahan itu**, bukan seluruh repo kecuali memang ada instruksi audit dokumen penuh.
 
 ## Versi dokumen (`Doc revision` v1, v2, …)
 

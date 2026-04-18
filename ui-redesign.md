@@ -1,6 +1,6 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v1  
+> **Doc revision:** v2  
 > Last synchronized: 2026-04-18 (post-accept handoff update applied across product and docs).
 
 ## Goal
@@ -11,6 +11,7 @@ Build a grounded, practical, product-first UI across public and authenticated su
 
 ### 2026-04-18 — Marketplace landing + footer
 
+- **Hero `/`:** label generik “Marketplace” / `nw-section-title` di hero diganti **mikro-label produk** ringan (“Live freelancer directory”) supaya **headline** jadi fokus pertama—nuansa marketplace nyata, bukan startup template.
 - **Hero `/`:** stage putih penuh lebar (`nw-hero-stage`), grid headline + panel alur singkat, blok search besar dengan *popular search* pills, CTA primer/sekunder jelas (tanpa glass/gradient/blob).
 - **Kategori:** strip `nw-section-slab`, ikon per jalur, horizontal scan (scroll di mobile) — link ke directory dengan keyword.
 - **Preview / use cases:** variasi latar (`nw-section-mist` + kartu putih); baris preview lebih “feed-like” (inisial, meta chip, zebra).

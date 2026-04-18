@@ -1,6 +1,6 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v1  
+> **Doc revision:** v2  
 > Last synchronized: 2026-04-18 (post-accept handoff update applied across product and docs).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
@@ -9,7 +9,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
-- **2026-04-18 — Landing & chrome publik:** hero “marketplace stage” (split layout, blok search besar, *popular searches*, kategori ikon horizontal); preview hasil ilustratif dengan avatar inisial + zebra ringan; section bands (`nw-hero-stage`, `nw-section-mist`, `nw-section-slab`); footer marketing **kompak** (kolom Product / Company / Legal / Support + strip bawah).
+- **2026-04-18 — Landing & chrome publik:** hero “marketplace stage” (split layout, headline dominan tanpa label `nw-section-title` generik—mikro-label “Live freelancer directory”); blok search besar, *popular searches*, kategori ikon horizontal; preview ilustratif + zebra; section bands; footer **kompak** (Product / Company / Legal / Support + strip bawah).
 - **2026-04-18 — API discovery:** perlindungan anti-scraping ringan + pagination/query hardening (detail di `audit.md` addendum).
 - Sistem UI sudah bergerak ke arah **grounded product UI** (tanpa glassmorphism/gradient dekoratif) di public + app surfaces.
 - Public discovery (`/freelancers`, `/jobs`) sekarang berorientasi **scanability dan decision flow**: filter lebih operasional, density list lebih rapat, dan nearby cues lebih nyata.
