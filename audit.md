@@ -1,7 +1,7 @@
 # Audit teknis — Freelance-web (monorepo)
 
-> **Doc revision:** v1  
-> Last synchronized: 2026-04-18 (post-accept handoff update applied across product and docs).
+> **Doc revision:** v2  
+> Last synchronized: 2026-04-18 (navbar/brand docs + pooler notes).
 
 **Lingkup:** `apps/web`, `packages/*`, dan jalur operasional yang mempengaruhi produksi.  
 **Tanggal referensi:** April 2026 (sinkron dengan update terakhir implementasi).
@@ -16,7 +16,7 @@
 - Client hiring workflow menunjukkan peningkatan nyata:
   - `/client/jobs` memunculkan indikator attention (pending decision/new bids/stale open jobs),
   - job detail menyediakan compact bid comparison untuk owner,
-  - next action (`Accept bid`) tidak tersembunyi di layer yang dalam.
+  - next action (**Hire** pada proposal) tidak tersembunyi di layer yang dalam.
 - Risiko tersisa tetap sama: integrasi billing produksi, trust & safety report backend penuh, dan hardening operasional.
 
 ### Addendum 2026-04-18
@@ -140,12 +140,13 @@ Sudah benar-benar staff-only:
 
 Positif:
 
-- sekarang auth-aware (session real), role-aware actions, mobile collapse, visual polish meningkat.
+- auth-aware (session real), role-aware actions, mobile drawer, badge notifikasi unread nyata.
+- iterasi **2026-04-18:** struktur produk kiri–tengah–kanan, brand `logo_EN.png` via `BrandLogo`, nav pusat lengkap dengan hierarki tipografi + indikator aktif garis bawah brand (kurangi rasa template SaaS).
 
 Perlu perhatian:
 
-- sering berubah cepat (iterasi tinggi) → rawan inkonsistensi spacing/brand tone antar halaman.
-- karena brand asset berubah dari SVG ke PNG (`logo3.png`), perlu guideline final ukuran/crop agar tidak regress lagi.
+- iterasi cepat → tetap rawan inkonsistensi spacing/brand tone antar halaman (dashboard vs marketing).
+- **Aset:** freeze satu **source-of-truth** (`/public/logo/logo_EN.png` + varian ID jika dipakai) + token tinggi logo per permukaan (navbar / auth / dashboard) agar tidak regress.
 
 ### 6.2 Auth pages (login/register)
 

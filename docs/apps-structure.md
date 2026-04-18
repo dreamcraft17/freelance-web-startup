@@ -1,9 +1,11 @@
 # Phase 2 - Detailed App Structures
 
-> **Doc revision:** v1  
-> Last synchronized: 2026-04-18 (post-accept handoff update applied across product and docs).
+> **Doc revision:** v2  
+> Last synchronized: 2026-04-18 (marketing shell note).
 
 > Update (April 2026): struktur ini bersifat historis perencanaan fase. Implementasi aktual saat ini berpusat di `apps/web` dengan route groups App Router seperti `(public)`, `(marketing)`, `(auth)`, `(app)` dan workspace `client/freelancer/admin` yang sudah aktif.
+>
+> **Chrome publik:** halaman discovery + marketing memakai `MarketingShell` → `MarketingNavBar` (navigasi produk, auth-aware, notifikasi unread dari server).
 
 ## apps/web
 

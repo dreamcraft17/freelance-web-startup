@@ -13,14 +13,15 @@ import {
   secondaryActionForRole
 } from "@/features/public/lib/auth-nav";
 import { BrandLogo } from "@/features/shared/components/BrandLogo";
+import { cn } from "@/lib/utils";
 
-/** Discovery-first — reads like a product shell, not a brochure nav */
-const navPrimary = [
+/** Center column: discovery first (stronger), then product/support (lighter). */
+const navDiscovery = [
   { href: "/jobs", label: "Jobs" },
   { href: "/freelancers", label: "Freelancers" }
 ] as const;
 
-const navSecondary = [
+const navProduct = [
   { href: "/how-it-works", label: "How it works" },
   { href: "/pricing", label: "Pricing" },
   { href: "/early-access", label: "Early access" },
@@ -36,6 +37,39 @@ function unreadBadgeLabel(count: number): string {
   if (count <= 0) return "Notifications";
   if (count > 9) return "More than 9 unread notifications";
   return `${count} unread notification${count === 1 ? "" : "s"}`;
+}
+
+function CenterNavLink({
+  href,
+  label,
+  pathname,
+  emphasis
+}: {
+  href: string;
+  label: string;
+  pathname: string;
+  emphasis: "discovery" | "product";
+}) {
+  const active = isActive(pathname, href);
+  return (
+    <Link
+      href={href as Route}
+      className={cn(
+        "relative whitespace-nowrap border-b-2 px-2.5 py-3.5 text-sm transition-colors",
+        emphasis === "discovery" ? "font-semibold tracking-tight" : "font-medium",
+        active
+          ? "border-[#3525cd] text-[#3525cd]"
+          : cn(
+              "border-transparent",
+              emphasis === "discovery"
+                ? "text-slate-800 hover:text-slate-950"
+                : "text-slate-600 hover:text-slate-900"
+            )
+      )}
+    >
+      {label}
+    </Link>
+  );
 }
 
 export function MarketingNavBar({
@@ -54,63 +88,53 @@ export function MarketingNavBar({
   const secondary = authSession ? secondaryActionForRole(authSession.role) : null;
 
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-black/[0.05] bg-white shadow-sm">
-      <nav className="mx-auto flex min-h-16 max-w-7xl items-center gap-6 px-6 sm:gap-8 sm:px-10 lg:px-12">
-        <BrandLogo
-          href={"/" as Route}
-          className="shrink-0 origin-left py-2 pl-0 pr-1 outline-none transition duration-200 hover:opacity-90 md:py-2.5 md:hover:scale-105 motion-reduce:transition-none motion-reduce:md:hover:scale-100 motion-reduce:hover:opacity-100"
-          imageClassName="h-8 w-auto object-contain object-left md:h-9 lg:h-10 max-w-[min(260px,55vw)] sm:max-w-[min(300px,48vw)]"
-          alt="NearWork"
-        />
+    <header className="fixed top-0 z-50 w-full border-b border-slate-200/90 bg-white">
+      <nav className="mx-auto flex min-h-[4.25rem] max-w-7xl items-center px-5 sm:px-8 lg:px-10">
+        {/* Brand — strongest anchor */}
+        <div className="flex shrink-0 items-center py-1 pr-4 sm:pr-6 lg:pr-10">
+          <BrandLogo
+            href={"/" as Route}
+            className="inline-flex max-w-[min(88vw,300px)] items-center outline-none transition duration-200 hover:opacity-[0.88] motion-reduce:transition-none sm:max-w-[min(70vw,340px)] md:max-w-[min(52vw,380px)] lg:max-w-[420px]"
+            imageClassName="h-10 w-auto object-contain object-left sm:h-11 md:h-12 md:max-h-[3rem]"
+            alt="NearWork"
+          />
+        </div>
 
-        <div className="hidden min-w-0 flex-1 items-center justify-center md:ml-2 md:flex">
-          <div className="flex min-w-0 flex-wrap items-center justify-center gap-x-1 gap-y-1">
-            {navPrimary.map(({ href, label }) => {
-              const active = isActive(pathname, href);
-              return (
-                <Link
-                  key={href}
-                  href={href}
-                  className={
-                    active
-                      ? "whitespace-nowrap rounded-md bg-[#433C93]/10 px-3 py-2 text-sm font-semibold text-[#2f2a68]"
-                      : "whitespace-nowrap rounded-md px-3 py-2 text-sm font-semibold text-slate-800 transition hover:bg-slate-100 hover:text-[#433C93]"
-                  }
-                >
-                  {label}
-                </Link>
-              );
-            })}
-            <span className="mx-1 hidden h-5 w-px bg-slate-200 lg:inline-block" aria-hidden />
-            {navSecondary.map(({ href, label }) => {
-              const active = isActive(pathname, href);
-              return (
-                <Link
-                  key={href}
-                  href={href}
-                  className={
-                    active
-                      ? "whitespace-nowrap px-2.5 py-2 text-xs font-medium text-[#433C93] underline decoration-[#433C93]/30 underline-offset-4"
-                      : "whitespace-nowrap px-2.5 py-2 text-xs font-medium text-slate-500 transition hover:text-slate-800"
-                  }
-                >
-                  {label}
-                </Link>
-              );
-            })}
+        {/* Primary navigation — lighter than brand; grouped rhythm */}
+        <div className="hidden min-w-0 flex-1 items-center justify-center md:flex">
+          <div className="flex max-w-full flex-wrap items-center justify-center gap-x-0.5 sm:gap-x-1">
+            <div className="flex items-center">
+              {navDiscovery.map(({ href, label }) => (
+                <CenterNavLink key={href} href={href} label={label} pathname={pathname} emphasis="discovery" />
+              ))}
+            </div>
+            <span
+              className="mx-2 hidden h-5 w-px shrink-0 bg-slate-200 sm:block lg:mx-3"
+              aria-hidden
+            />
+            <div className="flex flex-wrap items-center justify-center gap-x-0.5 sm:gap-x-1">
+              {navProduct.map(({ href, label }) => (
+                <CenterNavLink key={href} href={href} label={label} pathname={pathname} emphasis="product" />
+              ))}
+            </div>
           </div>
         </div>
+
+        {/* Utility / auth — visually secondary to main nav */}
         {authSession && primary ? (
-          <div className="ml-auto hidden shrink-0 items-center gap-2 md:flex">
+          <div className="ml-auto hidden shrink-0 items-center gap-2 border-l border-slate-100 pl-4 md:flex lg:gap-3 lg:pl-6 xl:pl-8">
             {secondary ? (
-              <Link href={secondary.href as Route} className="text-sm font-medium text-slate-600 hover:text-slate-900">
+              <Link
+                href={secondary.href as Route}
+                className="whitespace-nowrap text-sm font-medium text-slate-600 transition hover:text-slate-900"
+              >
                 {secondary.label}
               </Link>
             ) : null}
             <Link
               href={"/notifications" as Route}
               aria-label={unreadBadgeLabel(unreadNotifications)}
-              className="relative inline-flex h-9 w-9 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+              className="relative inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-slate-200 text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
             >
               <Bell className="h-4 w-4" aria-hidden />
               {unreadNotifications > 0 ? (
@@ -122,30 +146,39 @@ export function MarketingNavBar({
             <Link
               href={"/messages" as Route}
               aria-label="Messages"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-slate-200 text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
             >
               <MessageSquare className="h-4 w-4" aria-hidden />
             </Link>
-            <Link href={primary.href as Route} className="nw-cta-primary px-4 py-2">
+            <Link href={primary.href as Route} className="nw-cta-primary px-4 py-2 text-sm font-semibold shadow-none">
               {primary.label}
             </Link>
             <AuthUserMenu compact />
           </div>
         ) : (
-          <div className="ml-auto hidden shrink-0 items-center gap-1.5 md:flex">
+          <div className="ml-auto hidden shrink-0 items-center gap-1 border-l border-slate-100 pl-4 md:flex lg:gap-2 lg:pl-6 xl:pl-8">
             <Link
               href="/jobs"
-              className="rounded-md px-2.5 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-slate-900"
+              className="whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 hover:text-slate-900"
             >
               Browse jobs
             </Link>
-            <Link href="/login" className="rounded-md px-2.5 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+            <Link
+              href="/login"
+              className="whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium text-slate-500 transition hover:bg-slate-50 hover:text-slate-800"
+            >
               Log in
             </Link>
-            <Link href="/register" className="rounded-md px-2.5 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+            <Link
+              href="/register"
+              className="whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium text-slate-500 transition hover:bg-slate-50 hover:text-slate-800"
+            >
               Register
             </Link>
-            <Link href="/early-access" className="nw-cta-primary px-4 py-2">
+            <Link
+              href="/early-access"
+              className="nw-cta-primary ml-1 px-4 py-2 text-sm font-semibold shadow-none"
+            >
               Early access
             </Link>
           </div>
@@ -153,7 +186,7 @@ export function MarketingNavBar({
 
         <button
           type="button"
-          className="ml-auto inline-flex shrink-0 rounded-md border border-slate-200 bg-white p-2 text-slate-700 shadow-sm md:hidden"
+          className="ml-auto inline-flex shrink-0 items-center justify-center self-center rounded-md border border-slate-200 p-2.5 text-slate-700 transition hover:bg-slate-50 md:hidden"
           aria-expanded={open}
           aria-controls="marketing-mobile-nav"
           onClick={() => setOpen((v) => !v)}
@@ -166,26 +199,22 @@ export function MarketingNavBar({
       {open ? (
         <div
           id="marketing-mobile-nav"
-          className="border-t border-slate-200 bg-white px-4 py-4 shadow-lg md:hidden"
+          className="border-t border-slate-200 bg-white px-4 py-4 md:hidden"
         >
           <div className="mx-auto flex max-w-7xl flex-col gap-1">
-            <p className="px-3 pt-1 text-[11px] font-semibold uppercase tracking-wide text-slate-400">Browse</p>
-            {navPrimary.map(({ href, label }) => (
+            <p className="px-3 pt-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">
+              Explore
+            </p>
+            {[...navDiscovery, ...navProduct].map(({ href, label }) => (
               <Link
                 key={href}
                 href={href}
-                className="rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50"
-                onClick={() => setOpen(false)}
-              >
-                {label}
-              </Link>
-            ))}
-            <p className="px-3 pt-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">Product</p>
-            {navSecondary.map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                className="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
+                className={cn(
+                  "rounded-lg px-3 py-2.5 text-sm transition hover:bg-slate-50",
+                  href === "/jobs" || href === "/freelancers"
+                    ? "font-semibold text-slate-900"
+                    : "font-medium text-slate-600"
+                )}
                 onClick={() => setOpen(false)}
               >
                 {label}
@@ -232,28 +261,35 @@ export function MarketingNavBar({
               </>
             ) : (
               <>
+                <p className="px-3 pt-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">
+                  Account
+                </p>
                 <Link
                   href="/jobs"
-                  className="rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+                  className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
                   onClick={() => setOpen(false)}
                 >
                   Browse jobs
                 </Link>
                 <Link
                   href="/login"
-                  className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                  className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50"
                   onClick={() => setOpen(false)}
                 >
                   Log in
                 </Link>
                 <Link
                   href="/register"
-                  className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                  className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50"
                   onClick={() => setOpen(false)}
                 >
                   Register
                 </Link>
-                <Link href="/early-access" className="nw-cta-primary mt-1 rounded-lg px-4 py-2.5 text-center" onClick={() => setOpen(false)}>
+                <Link
+                  href="/early-access"
+                  className="nw-cta-primary mt-1 rounded-lg px-4 py-2.5 text-center text-sm font-semibold"
+                  onClick={() => setOpen(false)}
+                >
                   Early access
                 </Link>
               </>

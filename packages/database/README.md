@@ -1,7 +1,7 @@
 # @acme/database
 
-> **Doc revision:** v1  
-> Last synchronized: 2026-04-18 (post-accept handoff update applied across product and docs).
+> **Doc revision:** v2  
+> Last synchronized: 2026-04-18 (Prisma singleton + public read patterns).
 
 PostgreSQL access via **Prisma**: schema, migrations, and generated client.
 
@@ -81,6 +81,11 @@ pnpm db:seed
 ```
 
 Then sign in at `/login` and open `/admin`. **Do not use default passwords in production** — set strong values via env or skip seed and promote users manually.
+
+## Prisma client usage (Next.js / small pools)
+
+- **`@acme/database` export `db`:** satu `PrismaClient` per proses Node, disimpan di **`globalThis`** supaya hot reload / bundler tidak membuat banyak instance (mengurangi risiko **“max clients reached”** pada pool kecil, mis. Supabase session mode).
+- **Kueri agregat ringan publik:** gunakan **`$transaction`** berurutan bila beberapa `count` harus jalan dalam satu permintaan HTTP—lebih ramah koneksi daripada `Promise.all` paralel pada pool `pool_size` kecil.
 
 ## Documentation
 
