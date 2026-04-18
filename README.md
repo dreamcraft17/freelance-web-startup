@@ -1,6 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> Last synchronized: 2026-04-15 (post-accept handoff update applied across product and docs).
+> **Doc revision:** v2  
+> Last synchronized: 2026-04-18 — keep in sync with code changes; see `docs/DOCUMENTATION-MAINTENANCE.md`.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -41,12 +42,14 @@ Platform ini dirancang untuk mendukung **semua jenis freelance**, bukan hanya pr
 - SubscriptionService membaca plan dari database
 
 ### 🔹 Auth & Security
-- Cookie-based JWT session (`acme_session`)
+- Cookie-based JWT session (`acme_session`), HS256 via `jose`
+- **Production:** `apps/web/instrumentation.ts` requires `SESSION_SECRET` (min 16 chars; prefer 32+ random bytes)
+- **CSRF:** double-submit cookie + `X-CSRF-Token` on mutations (see `server/security/csrf.ts`)
+- **Rate limits:** in-memory sliding windows per IP/user on auth, public reads, discovery, and sensitive mutations (`apps/web/server/security/`)
+- **Public discovery:** dedicated limits + light scrape heuristics on `GET /api/search/*` and `GET /api/jobs` (`public-discovery-guard.ts`)
+- **HTTP headers:** baseline security headers + optional HSTS via `NEARWORK_ENABLE_HSTS=1` in `apps/web/next.config.ts`
 - Middleware protection untuk route sensitif
-- Role-based access:
-  - CLIENT
-  - FREELANCER
-  - ADMIN
+- Role-based access: CLIENT, FREELANCER, ADMIN (+ staff roles untuk `/admin`)
 
 ### 🔹 Search
 - Keyword search
@@ -91,7 +94,7 @@ utils/ # Utilities
 validators/ # Zod schemas
 config/ # Constants & plan configs
 
-docs/ # Product & architecture docs
+docs/ # Product & architecture docs (see docs/DOCUMENTATION-MAINTENANCE.md when editing)
 
 
 ---
@@ -165,70 +168,90 @@ Melindungi route:
 
 ```bash
 pnpm install
-2. Setup environment variables
-
-Copy example:
-
-cp packages/database/env.example.txt .env
-
-Isi:
-
-DATABASE_URL=postgresql://...
-SESSION_SECRET=your_super_secret_key
-3. Generate Prisma client
-pnpm db:generate
-4. Run migrations
-pnpm db:migrate:deploy
-
-Untuk development:
-
-pnpm db:migrate
-5. Run development server
-pnpm dev
-🧪 Type Checking
-pnpm exec tsc --noEmit
-🔄 Available Scripts
-pnpm dev                  # run app
-pnpm build                # build
-pnpm start                # production start
-
-pnpm db:generate          # prisma generate
-pnpm db:migrate           # dev migration
-pnpm db:migrate:deploy    # prod migration
-pnpm db:studio            # prisma studio
 ```
 
-🚧 Current Status
-✅ Implemented
-Auth (JWT cookie)
-Job creation & listing
-Bid submission + quota enforcement
-Subscription plan resolution
-Profile CRUD
-Search (basic filters)
-UI connected to real data
-⚠️ In Progress / TODO
-Messaging system
-Notifications
-Review & rating
-Verification system
-Saved jobs / freelancers
-Category & skill API
-Payment / billing integration
-Job detail page refinement
-Full typecheck cleanup
-⚠️ Production Checklist
+### 2. Environment variables
 
-Before deploying:
+```bash
+cp packages/database/env.example.txt .env
+```
 
- Set SESSION_SECRET
- Set DATABASE_URL
- Run pnpm db:migrate:deploy
- Ensure HTTPS (cookie security)
- Remove any dev-only fallbacks
- Fix TypeScript errors
- Test end-to-end flow:
-register → login → create job → submit bid
+Set at minimum `DATABASE_URL` and `SESSION_SECRET` (strong random; use `openssl rand -base64 32` in production).
+
+### 3. Prisma client
+
+```bash
+pnpm db:generate
+```
+
+### 4. Migrations
+
+```bash
+pnpm db:migrate:deploy
+```
+
+Development iterations:
+
+```bash
+pnpm db:migrate
+```
+
+### 5. Run the app
+
+```bash
+pnpm dev
+```
+
+### Type checking
+
+```bash
+pnpm exec tsc --noEmit -p apps/web
+```
+
+### Common scripts
+
+| Script | Purpose |
+|--------|---------|
+| `pnpm dev` | Dev server |
+| `pnpm build` | Production build |
+| `pnpm start` | Production start |
+| `pnpm db:generate` | Regenerate Prisma Client |
+| `pnpm db:migrate` | Dev migrations |
+| `pnpm db:migrate:deploy` | Prod/CI migrations |
+| `pnpm db:studio` | Prisma Studio |
+
+---
+
+## 🚧 Current status
+
+### Implemented
+
+- Auth (JWT cookie), CSRF on mutations, rate limits on sensitive routes
+- Job creation & listing; public discovery with layered limits (`public-discovery-guard`)
+- Bid submission + quota enforcement; subscription plan resolution
+- Profile CRUD; search with validation caps
+- Messaging, notifications, reviews, saved items, verification (maturity varies by area)
+- NearWork UI tokens + compact marketing footer
+
+### In progress / roadmap
+
+- Full production billing provider
+- Trust & safety reporting depth
+- Broader package typecheck parity
+
+### Production checklist
+
+- Set `SESSION_SECRET` and `DATABASE_URL`
+- Run `pnpm db:migrate:deploy`
+- HTTPS + review `next.config.ts` security headers / optional `NEARWORK_ENABLE_HSTS`
+- `pnpm exec tsc --noEmit -p apps/web`
+- Smoke: register → login → create job → submit bid
+
+---
+
+## 📚 Documentation
+
+Topic docs live in **`docs/`**. See **`docs/DOCUMENTATION-MAINTENANCE.md`** for which files to touch when you change security, UI, or APIs.
 
 ### Vercel (monorepo → `apps/web`)
 

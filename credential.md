@@ -1,6 +1,9 @@
 # Internal Dev Credentials
 
-> Last synchronized: 2026-04-15 (post-accept handoff update applied across product and docs).
+> **Doc revision:** v1  
+> Last synchronized: 2026-04-18 (post-accept handoff update applied across product and docs).
+
+> Repo policy: `credential.md` is listed in root `.gitignore` for local copies — **do not commit production secrets** here. Rotate any credential that was ever exposed in git history.
 
 ## Seeded Admin Account (Development)
 

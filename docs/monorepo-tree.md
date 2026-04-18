@@ -1,6 +1,7 @@
 # Phase 1 - Full Monorepo Directory Tree
 
-> Last synchronized: 2026-04-15 (post-accept handoff update applied across product and docs).
+> **Doc revision:** v1  
+> Last synchronized: 2026-04-18 (post-accept handoff update applied across product and docs).
 
 > Update (April 2026): dokumen ini merekam tree fase awal. State implementasi saat ini sudah lebih terkonsolidasi di `apps/web` + `packages/*`; referensi terbaru ada di `features.md` dan `docs/application-overview.md`.
 

@@ -1,9 +1,11 @@
 # Engineering Conventions (Production SaaS)
 
-> Last synchronized: 2026-04-15 (post-accept handoff update applied across product and docs).
+> **Doc revision:** v1  
+> Last synchronized: 2026-04-18 (post-accept handoff update applied across product and docs).
 
 ## Update status (April 2026)
 
+- **Dokumentasi:** saat mengubah perilaku produk/keamanan/UI, update file Markdown terkait — lihat `docs/DOCUMENTATION-MAINTENANCE.md`.
 - Konvensi layering (handler -> service -> policy -> repository) tetap dipertahankan pada fitur baru.
 - Perubahan terbaru berfokus pada UI/workflow tanpa mengubah kontrak backend inti.
 - Praktik yang ditegaskan:

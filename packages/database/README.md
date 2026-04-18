@@ -1,6 +1,7 @@
 # @acme/database
 
-> Last synchronized: 2026-04-15 (post-accept handoff update applied across product and docs).
+> **Doc revision:** v1  
+> Last synchronized: 2026-04-18 (post-accept handoff update applied across product and docs).
 
 PostgreSQL access via **Prisma**: schema, migrations, and generated client.
 
@@ -80,3 +81,7 @@ pnpm db:seed
 ```
 
 Then sign in at `/login` and open `/admin`. **Do not use default passwords in production** — set strong values via env or skip seed and promote users manually.
+
+## Documentation
+
+When schema, seed defaults, or migration workflow change, update this README and any references in root `README.md` / `audit.md`. See `docs/DOCUMENTATION-MAINTENANCE.md` for the full doc map.
