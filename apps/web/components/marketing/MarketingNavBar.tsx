@@ -12,6 +12,7 @@ import {
   primaryActionForRole,
   secondaryActionForRole
 } from "@/features/public/lib/auth-nav";
+import { BrandLogo } from "@/features/shared/components/BrandLogo";
 
 /** Discovery-first — reads like a product shell, not a brochure nav */
 const navPrimary = [
@@ -55,16 +56,12 @@ export function MarketingNavBar({
   return (
     <header className="fixed top-0 z-50 w-full border-b border-black/[0.05] bg-white shadow-sm">
       <nav className="mx-auto flex max-w-7xl items-center gap-4 px-7 py-3 sm:px-10 lg:px-12">
-        <Link href={"/" as Route} className="flex min-w-0 shrink-0 items-center gap-3.5 pr-3">
-          <span className="relative inline-flex h-14 w-14 overflow-hidden rounded-xl border border-[#433C93]/15 bg-white">
-            <img
-              src="/logo/logo3.png"
-              alt="NearWork"
-              className="h-full w-[236px] max-w-none object-cover object-left"
-            />
-          </span>
-          <span className="text-[1.55rem] font-semibold leading-none tracking-[0.01em] text-[#231E59]">NearWork</span>
-        </Link>
+        <BrandLogo
+          href={"/" as Route}
+          className="shrink-0 rounded-xl border border-[#433C93]/15 bg-white px-2 py-1.5 pr-3"
+          imageClassName="h-9 w-auto max-h-10 max-w-[min(200px,42vw)] object-contain object-left sm:h-10 sm:max-w-[220px]"
+          alt="NearWork"
+        />
 
         <div className="hidden min-w-0 flex-1 items-center justify-center md:flex">
           <div className="flex min-w-0 flex-wrap items-center justify-center gap-x-1 gap-y-1">
