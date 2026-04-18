@@ -2,8 +2,8 @@ import Link from "next/link";
 
 export function LandingFinalCta() {
   return (
-    <section className="mx-auto mt-10 max-w-6xl px-4 sm:px-6">
-      <div className="nw-hero-panel flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
+    <section className="mx-auto mt-4 max-w-6xl px-4 sm:px-6">
+      <div className="nw-hero-panel flex flex-col gap-6 rounded-2xl sm:flex-row sm:items-center sm:justify-between sm:gap-8">
         <div className="min-w-0 max-w-xl">
           <p className="nw-section-title">Get started</p>
           <h2 className="mt-1 text-2xl font-bold tracking-tight text-slate-950 sm:text-[1.65rem]">

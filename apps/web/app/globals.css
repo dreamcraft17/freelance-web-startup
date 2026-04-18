@@ -122,4 +122,17 @@
   .nw-results-toolbar {
     @apply flex flex-wrap items-center justify-between gap-3 border border-slate-200 border-l-[3px] border-l-[#3525cd] bg-white px-4 py-3.5 text-sm shadow-[0_1px_2px_rgba(15,23,42,0.04)];
   }
+
+  /** Full-width landing bands — rhythm without cards-everywhere */
+  .nw-hero-stage {
+    @apply border-b border-slate-200 bg-white;
+  }
+
+  .nw-section-mist {
+    @apply border-y border-[#3525cd]/[0.12] bg-[#3525cd]/[0.04];
+  }
+
+  .nw-section-slab {
+    @apply border-y border-slate-200/90 bg-slate-100/80;
+  }
 }
