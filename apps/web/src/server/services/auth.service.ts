@@ -62,7 +62,8 @@ export class AuthService {
 
   async register(input: RegisterDto): Promise<{ token: string; session: PublicSessionDto }> {
     const existing = await db.user.findFirst({
-      where: { email: input.email.toLowerCase(), deletedAt: null }
+      where: { email: input.email.toLowerCase(), deletedAt: null },
+      select: { id: true }
     });
     if (existing) {
       throw new DomainError("An account with this email already exists", "EMAIL_IN_USE", 409);
@@ -81,7 +82,8 @@ export class AuthService {
           passwordHash,
           role,
           accountStatus: AccountStatus.ACTIVE
-        }
+        },
+        select: { id: true, role: true, accountStatus: true }
       });
       if (role === UserRole.CLIENT) {
         await tx.clientProfile.create({
@@ -119,7 +121,8 @@ export class AuthService {
 
   async login(input: LoginDto): Promise<{ token: string; session: PublicSessionDto }> {
     const user = await db.user.findFirst({
-      where: { email: input.email.toLowerCase(), deletedAt: null }
+      where: { email: input.email.toLowerCase(), deletedAt: null },
+      select: { id: true, passwordHash: true, role: true, accountStatus: true }
     });
     if (!user?.passwordHash) {
       throw new DomainError("Invalid email or password", "INVALID_CREDENTIALS", 401);

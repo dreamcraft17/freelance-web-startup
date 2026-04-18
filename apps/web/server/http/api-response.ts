@@ -17,6 +17,18 @@ export function jsonFail(
   );
 }
 
+/** Rate limit / lockout responses — safe, minimal payload. */
+export function jsonRateLimited(message: string, retryAfterSec?: number) {
+  const headers = new Headers();
+  if (retryAfterSec != null && Number.isFinite(retryAfterSec)) {
+    headers.set("Retry-After", String(Math.min(Math.max(1, Math.floor(retryAfterSec)), 86_400)));
+  }
+  return NextResponse.json(
+    { success: false, error: message, code: "RATE_LIMITED" as const },
+    { status: 429, headers }
+  );
+}
+
 export function mapDomainErrorToResponse(error: unknown): NextResponse | null {
   if (error instanceof DomainError) {
     return jsonFail(error.message, error.status, error.code);

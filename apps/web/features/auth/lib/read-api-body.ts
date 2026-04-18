@@ -17,7 +17,7 @@ export async function readApiBody<T>(response: Response): Promise<
     return {
       ok: false,
       status,
-      message: `Empty server reply (HTTP ${status}). Check Vercel deployment logs and environment variables.`
+      message: `Empty server reply (HTTP ${status}). If this persists, contact support with the time you tried to sign in.`
     };
   }
 
@@ -27,7 +27,7 @@ export async function readApiBody<T>(response: Response): Promise<
     return {
       ok: false,
       status,
-      message: `Unexpected reply (HTTP ${status}, not JSON). Often a gateway or config issue—open Vercel logs and confirm DATABASE_URL and SESSION_SECRET are set for Production.`
+      message: `Unexpected reply (HTTP ${status}). Often a gateway or temporary outage—try again in a moment.`
     };
   }
 }
