@@ -7,6 +7,7 @@ import { Eye, EyeOff } from "lucide-react";
 import type { UserRole } from "@acme/types";
 import { resolvePostLoginRedirect, sanitizeReturnUrl } from "@src/lib/return-url";
 import { buildLoginToRegisterHref, loginIntentMessage, type AuthIntent } from "@/features/auth/lib/auth-intent";
+import { clearPasswordFieldsInForm } from "@/features/auth/lib/clear-form-password-fields";
 import { readApiBody } from "@/features/auth/lib/read-api-body";
 
 type LoginApiSuccess = {
@@ -72,6 +73,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
       const fd = new FormData(form);
       const email = String(fd.get("email") ?? "").trim();
       const password = String(fd.get("password") ?? "");
+      clearPasswordFieldsInForm(form, ["password"]);
 
       setLoading(true);
       try {
@@ -99,6 +101,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
         }
 
         const role = body.data.session.role;
+        form.reset();
         window.location.assign(resolvePostLoginRedirect(role, returnUrl));
       } catch (err) {
         const msg = err instanceof Error && err.message ? err.message : "Request failed";

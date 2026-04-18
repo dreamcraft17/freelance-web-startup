@@ -8,6 +8,7 @@ import { Briefcase, Eye, EyeOff, UserRound } from "lucide-react";
 import type { UserRole } from "@acme/types";
 import { resolvePostLoginRedirect, sanitizeReturnUrl } from "@src/lib/return-url";
 import { parseAuthIntent, registerIntentMessage, roleHintFromIntent, type AuthIntent } from "@/features/auth/lib/auth-intent";
+import { clearPasswordFieldsInForm } from "@/features/auth/lib/clear-form-password-fields";
 import { readApiBody } from "@/features/auth/lib/read-api-body";
 
 type RegisterApiSuccess = {
@@ -75,14 +76,17 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
       const confirmPassword = String(fd.get("confirmPassword") ?? "");
 
       if (password !== confirmPassword) {
+        clearPasswordFieldsInForm(form, ["password", "confirmPassword"]);
         setError("Passwords do not match.");
         return;
       }
       if (password.length < 8) {
+        clearPasswordFieldsInForm(form, ["password", "confirmPassword"]);
         setError("Password must be at least 8 characters.");
         return;
       }
 
+      clearPasswordFieldsInForm(form, ["password", "confirmPassword"]);
       setLoading(true);
       try {
         const res = await fetch("/api/auth/register", {
@@ -114,6 +118,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
         }
 
         const rawNext = searchParams.get("next");
+        form.reset();
         window.location.assign(resolvePostLoginRedirect(body.data.session.role, rawNext));
       } catch (err) {
         const msg = err instanceof Error && err.message ? err.message : "Request failed";

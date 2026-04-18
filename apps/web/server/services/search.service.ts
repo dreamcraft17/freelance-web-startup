@@ -4,6 +4,14 @@ import { db, Prisma } from "@acme/database";
 import { clampLimit, clampPage, offsetFromPage } from "@acme/utils";
 import { isFreelancerBoostActiveAt, isJobFeaturedActiveAt } from "../lib/promotion-expiry";
 
+/**
+ * Prisma raw-query safety: this file is the only `$queryRaw` usage in the repo.
+ * User-controlled filters are passed only as `${}` values inside {@link Prisma.sql}
+ * fragments, then combined with {@link Prisma.join} — PostgreSQL receives bound
+ * parameters (no string-built SQL from request input). Do not switch to
+ * `$queryRawUnsafe` / string templates with embedded user text.
+ */
+
 export type JobSearchItem = {
   id: string;
   title: string;
