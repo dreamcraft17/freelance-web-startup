@@ -1,0 +1,11 @@
+---
+description: Markdown docs—auto-sync affected files + Doc revision (v1, v2, …) on every relevant change
+alwaysApply: true
+---
+
+# NearWork documentation (mandatory)
+
+- **Setiap perubahan kode/produk** yang menyentuh perilaku, keamanan, UI, API, DB, atau deploy: **otomatis perbarui semua file `.md` yang terdampak** (bukan sekadar satu README), mengikuti peta di `docs/DOCUMENTATION-MAINTENANCE.md`.
+- **Versi dokumen:** pada **setiap** file `.md` yang isinya Anda ubah, naikkan **`Doc revision`** satu tingkat (`v1` → `v2` → …) dan perbarui **`Last synchronized`** di baris metadata tepat di bawah judul file itu.
+- **Jangan** meninggalkan dokumentasi basi: jika tidak yakin file mana, baca tabel “What to update” di `docs/DOCUMENTATION-MAINTENANCE.md` lalu update semua entri yang relevan untuk jenis perubahan tersebut.
+- **Pengecualian:** jangan menulis rahasia produksi ke `credential.md` atau repo; seed dev saja.

@@ -17,8 +17,10 @@ export function LandingHero() {
       <div className="mx-auto max-w-6xl px-4 pb-12 pt-8 sm:px-6 sm:pb-14 sm:pt-10">
         <div className="grid gap-8 lg:grid-cols-12 lg:items-stretch lg:gap-10">
           <div className="flex flex-col justify-center lg:col-span-7">
-            <p className="nw-section-title">Marketplace</p>
-            <h1 className="mt-2 text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl sm:leading-[1.06] lg:text-[2.75rem] xl:text-[2.9rem]">
+            <p className="text-xs font-medium tracking-tight text-slate-500">
+              Live freelancer directory
+            </p>
+            <h1 className="mt-3 text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl sm:leading-[1.06] lg:text-[2.75rem] xl:text-[2.9rem]">
               Hire freelancers for real work—nearby or remote
             </h1>
             <p className="mt-4 max-w-xl text-lg font-semibold leading-snug text-slate-800">

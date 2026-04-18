@@ -1,13 +1,13 @@
 # NearWork Application Overview
 
-> **Doc revision:** v1  
+> **Doc revision:** v2  
 > Last synchronized: 2026-04-18 (post-accept handoff update applied across product and docs).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
 ## Update status (April 2026)
 
-- **Landing `/` (2026-04-18):** alur marketplace — hero stage putih, search sentral, *popular searches*, strip kategori ikon, preview baris ilustratif, use cases di band brand sangat ringan; footer kompak berkolom.
+- **Landing `/` (2026-04-18):** hero tanpa label bagian generik—mikro-copy “Live freelancer directory” di atas headline; stage putih, search sentral, *popular searches*, strip kategori ikon, preview ilustratif, use cases di band brand ringan; footer kompak berkolom.
 - Public browse/discovery sekarang lebih kuat sebagai product tool (bukan landing template):
   - `/freelancers` dan `/jobs` menekankan scanability + actionable filters.
 - Workspace client/freelancer sudah lebih simetris secara tujuan:
