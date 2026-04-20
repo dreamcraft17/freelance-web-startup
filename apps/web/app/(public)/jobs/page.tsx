@@ -6,6 +6,7 @@ import { JobsPublicEmpty } from "@/features/public/components/JobsPublicEmpty";
 import { JobsPublicFilters } from "@/features/public/components/JobsPublicFilters";
 import { JobsPublicList, type JobsPublicCard } from "@/features/public/components/JobsPublicList";
 import { MarketplacePulse } from "@/components/marketing/MarketplacePulse";
+import { getServerTranslator } from "@/lib/i18n/server-translator";
 import { CategoryService } from "@/server/services/category.service";
 import { JobService } from "@/server/services/job.service";
 import { PublicStatsService } from "@/server/services/public-stats.service";
@@ -89,10 +90,11 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
   const query = parsed.success ? parsed.data : { page: 1, limit: 24 as const };
 
   const jobService = new JobService();
-  const [{ items, total }, categories, pulse] = await Promise.all([
+  const [{ items, total }, categories, pulse, { t }] = await Promise.all([
     jobService.listOpenJobs(query),
     loadCategories(),
-    new PublicStatsService().getMarketplacePulse()
+    new PublicStatsService().getMarketplacePulse(),
+    getServerTranslator()
   ]);
   const jobs = items.map(toPublicJobCard);
 
@@ -116,7 +118,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
           Active client briefs—filter by category, place, and work mode, then open a row for the full scope.
         </p>
         <div className="mt-2">
-          <MarketplacePulse pulse={pulse} />
+          <MarketplacePulse pulse={pulse} t={t} />
         </div>
       </header>
 

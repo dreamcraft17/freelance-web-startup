@@ -7,7 +7,8 @@ import { Suspense, useCallback, useEffect, useId, useMemo, useState } from "reac
 import { Briefcase, Eye, EyeOff, UserRound } from "lucide-react";
 import type { UserRole } from "@acme/types";
 import { resolvePostLoginRedirect, sanitizeReturnUrl } from "@src/lib/return-url";
-import { parseAuthIntent, registerIntentMessage, roleHintFromIntent, type AuthIntent } from "@/features/auth/lib/auth-intent";
+import { parseAuthIntent, registerIntentMessageKey, roleHintFromIntent, type AuthIntent } from "@/features/auth/lib/auth-intent";
+import { useI18n } from "@/features/i18n/I18nProvider";
 import { clearPasswordFieldsInForm } from "@/features/auth/lib/clear-form-password-fields";
 import { readApiBody } from "@/features/auth/lib/read-api-body";
 
@@ -32,6 +33,7 @@ type RegisterFormInnerProps = {
 };
 
 function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "continue" }: RegisterFormInnerProps) {
+  const { t } = useI18n();
   const searchParams = useSearchParams();
   const id = useId();
   const nameId = `${id}-name`;
@@ -137,11 +139,12 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
   const signUpContext =
     nextDest && sanitizeReturnUrl(nextDest, "/") !== "/" ? (
       <p className="text-xs leading-relaxed text-slate-500">
-        After you create your account, we&apos;ll take you back to{" "}
+        {t("auth.registerForm.afterCreate")}{" "}
         <span className="font-medium text-slate-700">{sanitizeReturnUrl(nextDest, "/")}</span>.
       </p>
     ) : null;
-  const intentMessage = registerIntentMessage(intent);
+  const intentKey = registerIntentMessageKey(intent);
+  const intentMessage = intentKey ? t(intentKey) : null;
   const roleOutcome = role === "CLIENT"
     ? {
         title: "Client workspace next",
@@ -159,10 +162,10 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
     <div className="space-y-8 text-slate-900">
       <div className="space-y-2 text-left">
         <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-          Start onboarding
+          {t("auth.registerForm.badge")}
         </span>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Create your account</h1>
-        <p className="text-sm text-slate-500">Join NearWork to hire or get hired</p>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">{t("auth.registerForm.title")}</h1>
+        <p className="text-sm text-slate-500">{t("auth.registerForm.subtitle")}</p>
         {intentMessage ? (
           <p className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs leading-relaxed text-slate-600">
             {intentMessage}

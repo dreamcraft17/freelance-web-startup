@@ -25,39 +25,41 @@ export function parseAuthIntent(raw: string | null | undefined): AuthIntent {
   return ALL_INTENTS.has(v) ? v : "continue";
 }
 
-export function loginIntentMessage(intent: AuthIntent): string | null {
+/** i18n key under `auth.intent.login.*` — use with `t()`. */
+export function loginIntentMessageKey(intent: AuthIntent): string | null {
   switch (intent) {
     case "save-job":
-      return "Log in to save this job.";
+      return "auth.intent.login.saveJob";
     case "save-freelancer":
-      return "Log in to save this freelancer.";
+      return "auth.intent.login.saveFreelancer";
     case "send-message":
-      return "Log in to message on NearWork.";
+      return "auth.intent.login.sendMessage";
     case "submit-bid":
-      return "Log in to submit your bid.";
+      return "auth.intent.login.submitBid";
     case "post-job":
-      return "Log in to post a job.";
+      return "auth.intent.login.postJob";
     case "protected":
-      return "Log in to continue to that page.";
+      return "auth.intent.login.protected";
     default:
       return null;
   }
 }
 
-export function registerIntentMessage(intent: AuthIntent): string | null {
+/** i18n key under `auth.intent.register.*` — use with `t()`. */
+export function registerIntentMessageKey(intent: AuthIntent): string | null {
   switch (intent) {
     case "post-job":
-      return "Create a client account to post a job.";
+      return "auth.intent.register.postJob";
     case "submit-bid":
-      return "Create a freelancer account to submit your bid.";
+      return "auth.intent.register.submitBid";
     case "save-freelancer":
-      return "Create an account to save freelancers and revisit them later.";
+      return "auth.intent.register.saveFreelancer";
     case "save-job":
-      return "Create an account to save jobs and track opportunities.";
+      return "auth.intent.register.saveJob";
     case "send-message":
-      return "Create an account to start messaging.";
+      return "auth.intent.register.sendMessage";
     case "protected":
-      return "Create an account to continue.";
+      return "auth.intent.register.protected";
     default:
       return null;
   }

@@ -1,13 +1,14 @@
 # Audit teknis — Freelance-web (monorepo)
 
-> **Doc revision:** v2  
-> Last synchronized: 2026-04-18 (navbar/brand docs + pooler notes).
+> **Doc revision:** v3  
+> Last synchronized: 2026-04-20 (locale cookie note).
 
 **Lingkup:** `apps/web`, `packages/*`, dan jalur operasional yang mempengaruhi produksi.  
 **Tanggal referensi:** April 2026 (sinkron dengan update terakhir implementasi).
 
 ## Addendum update (April 2026)
 
+- **Cookie preferensi bahasa:** `lang` disetel oleh `POST /api/locale` (nilai `en` \| `id`, path `/`, `SameSite=Lax`, `Secure` di produksi). Bukan secret; tetap jaga agar respons API tidak mem-cache konten sensitif lintas locale tanpa `Vary: Cookie` bila menambahkan cache edge di masa depan.
 - UI telah bergeser dari “template-like” ke pendekatan **product-first** dengan hierarchy yang lebih operasional.
 - Area discovery publik sekarang lebih kuat untuk pemindaian cepat dan keputusan:
   - struktur filter/list lebih jelas,

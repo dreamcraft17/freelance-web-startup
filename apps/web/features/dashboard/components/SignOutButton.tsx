@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { LogOut, Loader2 } from "lucide-react";
 import { signOutCurrentSession } from "@/features/auth/lib/client-auth-actions";
+import { useI18n } from "@/features/i18n/I18nProvider";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -12,6 +13,7 @@ type SignOutButtonProps = {
 };
 
 export function SignOutButton({ compact = false, className }: SignOutButtonProps) {
+  const { t } = useI18n();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -21,7 +23,7 @@ export function SignOutButton({ compact = false, className }: SignOutButtonProps
     startTransition(async () => {
       const result = await signOutCurrentSession();
       if (!result.ok) {
-        setError("Could not sign out");
+        setError(t("authMenu.signOutError"));
         return;
       }
         // Hard navigation guarantees protected UI unmounts immediately.
@@ -44,7 +46,7 @@ export function SignOutButton({ compact = false, className }: SignOutButtonProps
         )}
       >
         {isPending ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <LogOut className="h-4 w-4" aria-hidden />}
-        {isPending ? "Signing out..." : "Sign out"}
+        {isPending ? t("authMenu.signingOut") : t("authMenu.signOut")}
       </Button>
       {error ? <p className="px-1 text-[11px] text-rose-600">{error}</p> : null}
     </div>

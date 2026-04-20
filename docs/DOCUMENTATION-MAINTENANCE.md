@@ -1,7 +1,7 @@
 # Documentation maintenance (NearWork)
 
-> **Doc revision:** v5  
-> Last synchronized: 2026-04-18
+> **Doc revision:** v6  
+> Last synchronized: 2026-04-20
 
 ## AUTO — wajib untuk AI & kontributor
 
@@ -40,7 +40,7 @@ When you change **product behavior**, **security**, **UI patterns**, **env/deplo
 |-------------|----------------|
 | Security (auth, CSRF, limits, headers, secrets) | `README.md`, `audit.md`, `docs/auth-session-persistence.md` |
 | Public discovery / anti-scraping / rate limits | `README.md`, `audit.md`, `features.md`, `docs/application-overview.md` |
-| UI / design tokens / landing / footer | `ui-redesign.md`, `features.md`, `docs/application-overview.md` |
+| UI / design tokens / landing / footer / locale | `ui-redesign.md`, `features.md`, `docs/application-overview.md`, `README.md` |
 | Database / Prisma / migrations | `packages/database/README.md`, `audit.md` if risk-related |
 | Roles / billing / taxonomy | Matching file under `docs/*.md` |
 | **Positioning / “produk apa ini?”** (bahasa non-teknis) | `docs/apa-itu-nearwork.md` (+ tautan di `README.md` bagian Documentation) |

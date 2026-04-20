@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Inter } from "next/font/google";
+import { I18nProvider } from "@/features/i18n/I18nProvider";
+import { getMessagesForLocale } from "@/lib/i18n/dictionaries";
+import { getAppLocale } from "@/lib/i18n/server-locale";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
@@ -16,10 +19,17 @@ export const metadata: Metadata = {
   }
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const locale = await getAppLocale();
+  const messages = getMessagesForLocale(locale);
+
   return (
-    <html lang="en" className={`scroll-smooth ${inter.variable}`}>
-      <body className="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased">{children}</body>
+    <html lang={locale} className={`scroll-smooth ${inter.variable}`} suppressHydrationWarning>
+      <body className="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased">
+        <I18nProvider initialLocale={locale} initialMessages={messages}>
+          {children}
+        </I18nProvider>
+      </body>
     </html>
   );
 }

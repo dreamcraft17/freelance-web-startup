@@ -4,16 +4,20 @@ import Link from "next/link";
 import type { Route } from "next";
 import { usePathname } from "next/navigation";
 import { Settings } from "lucide-react";
+import { useI18n } from "@/features/i18n/I18nProvider";
 import { cn } from "@/lib/utils";
 import { LogoutButton } from "./LogoutButton";
 
 export function SidebarAccountActions() {
+  const { t } = useI18n();
   const pathname = usePathname() ?? "";
   const settingsActive = pathname === "/settings" || pathname.startsWith("/settings/");
 
   return (
     <div className="border-t border-slate-100/90 px-3 py-3">
-      <p className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Account</p>
+      <p className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+        {t("workspace.accountSection")}
+      </p>
       <div className="space-y-1.5">
         <Link
           href={"/settings" as Route}
@@ -25,7 +29,7 @@ export function SidebarAccountActions() {
           )}
         >
           <Settings className="h-4 w-4 shrink-0" aria-hidden />
-          Settings
+          {t("authMenu.settings")}
         </Link>
         <LogoutButton compact className="pt-0.5" />
       </div>

@@ -1,0 +1,222 @@
+{
+  "nav": {
+    "jobs": "Jobs",
+    "jobsHint": "Find work",
+    "freelancers": "Freelancers",
+    "freelancersHint": "Hire talent",
+    "howItWorks": "How it works",
+    "pricing": "Pricing",
+    "help": "Help",
+    "signedIn": "Signed in",
+    "guestMode": "Guest mode",
+    "browseJobs": "Browse jobs",
+    "logIn": "Log in",
+    "register": "Register",
+    "startHiring": "Start hiring",
+    "postAJob": "Post a job",
+    "findJobs": "Find jobs",
+    "dashboard": "Dashboard",
+    "notifications": "Notifications",
+    "messages": "Messages",
+    "explore": "Explore",
+    "account": "Account",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "aria": {
+      "notificationsOne": "1 unread notification",
+      "notificationsSome": "{{count}} unread notifications",
+      "notificationsOverflow": "More than 9 unread notifications",
+      "messagesOne": "1 unread message thread",
+      "messagesSome": "{{count}} unread message threads",
+      "messagesOverflow": "More than 9 unread message threads"
+    },
+    "auth": {
+      "admin": "Admin",
+      "dashboardClient": "Dashboard",
+      "dashboardFreelancer": "Dashboard",
+      "dashboardFallback": "Dashboard",
+      "secondaryPostJob": "Post a job",
+      "secondaryMessages": "Messages"
+    }
+  },
+  "footer": {
+    "product": "Product",
+    "company": "Company",
+    "legal": "Legal",
+    "support": "Support",
+    "findJobs": "Find jobs",
+    "findFreelancers": "Find freelancers",
+    "about": "About",
+    "pricing": "Pricing",
+    "earlyAccess": "Early access",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "help": "Help",
+    "contact": "Contact",
+    "tagline": "Freelance marketplace for local and remote work.",
+    "copyright": "© {{year}} NearWork"
+  },
+  "hero": {
+    "liveDirectory": "Live freelancer directory",
+    "title": "Hire freelancers for real work—nearby or remote",
+    "subtitle": "Search live profiles, compare proposals on open jobs, and keep every conversation tied to the brief.",
+    "locationNote": "City + optional browser location surface nearby talent when freelancers share coordinates.",
+    "howTitle": "How hiring runs",
+    "howStep1": "Post a brief or browse the directory.",
+    "howStep2": "Review proposals and profiles in context.",
+    "howStep3": "Message and decide without leaving the job thread.",
+    "howFootnote": "No sign-in required to search—create an account when you are ready to post or send proposals.",
+    "searchTitle": "Search the live directory",
+    "searchSubtitle": "Real listings · updates with the community",
+    "searchLabel": "Search",
+    "cityLabel": "City",
+    "keywordPlaceholder": "What do you need? e.g. shoot, edit, tutor…",
+    "cityPlaceholder": "City (optional)",
+    "searchButton": "Search",
+    "popularSearches": "Popular searches",
+    "cityHint": "Add a city to bias toward nearby profiles; leave it empty for broader remote results.",
+    "openDirectory": "Open directory",
+    "openJobBoard": "Open job board",
+    "postAJob": "Post a job",
+    "trending": {
+      "weddingPhotographer": "Wedding photographer",
+      "videoEditor": "Video editor",
+      "socialMedia": "Social media",
+      "tutorMath": "Tutor math",
+      "brandDesign": "Brand design"
+    }
+  },
+  "pulse": {
+    "openRoleOne": "1 open role on the board",
+    "openRoles": "{{count}} open roles on the board",
+    "proposalOne": "1 new proposal in the last 24h",
+    "proposals": "{{count}} new proposals in the last 24h",
+    "freelancerOne": "1 freelancer marked available",
+    "freelancers": "{{count}} freelancers marked available"
+  },
+  "workspace": {
+    "label": "Workspace",
+    "bannerLabel": "Workspace",
+    "accountSection": "Account"
+  },
+  "dashboardNav": {
+    "client": {
+      "overview": "Overview",
+      "sectionHiring": "Hiring",
+      "myJobs": "My jobs",
+      "postJob": "Post a job",
+      "nearbyTalent": "Nearby talent",
+      "messages": "Messages",
+      "notifications": "Notifications",
+      "settings": "Settings",
+      "sectionInbox": "Inbox",
+      "sectionAccount": "Account"
+    },
+    "freelancer": {
+      "overview": "Overview",
+      "sectionWork": "Work",
+      "profile": "Profile",
+      "proposals": "Proposals",
+      "nearby": "Nearby",
+      "messages": "Messages",
+      "notifications": "Notifications",
+      "settings": "Settings",
+      "sectionInbox": "Inbox",
+      "sectionAccount": "Account"
+    },
+    "utility": {
+      "freelancerHome": "Freelancer home",
+      "clientHome": "Client home",
+      "messages": "Messages",
+      "notifications": "Notifications",
+      "saved": "Saved",
+      "settings": "Settings",
+      "sectionGoTo": "Go to",
+      "sectionInbox": "Inbox",
+      "sectionAccount": "Account"
+    }
+  },
+  "authMenu": {
+    "freelancer": "Freelancer",
+    "client": "Client",
+    "user": "User",
+    "accountLine": "{{role}} account",
+    "manageHint": "Manage workspace and preferences",
+    "profile": "Profile",
+    "settings": "Settings",
+    "signingOut": "Signing out…",
+    "logOut": "Log out",
+    "signOut": "Sign out",
+    "signOutError": "Could not sign out"
+  },
+  "publicHeader": {
+    "homeAria": "NearWork home"
+  },
+  "locale": {
+    "en": "EN",
+    "id": "ID",
+    "switchTo": "Switch language",
+    "current": "Language"
+  },
+  "auth": {
+    "login": {
+      "title": "Log in",
+      "secureBadge": "Secure sign in",
+      "welcomeBack": "Welcome back",
+      "subtitle": "Log in to your account to continue",
+      "afterSignIn": "After sign in, you'll continue to",
+      "email": "Email",
+      "emailAddress": "Email address",
+      "emailPlaceholder": "name@company.com",
+      "password": "Password",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "submit": "Log in",
+      "submitting": "Signing in…",
+      "noAccount": "New here?",
+      "createAccount": "Create an account",
+      "forgot": "Forgot password?",
+      "errorGeneric": "Could not sign in. Try again.",
+      "errorNetwork": "Could not reach the server. Check your connection, VPN, or ad blockers, then try again.",
+      "errorRequestFailed": "Request failed",
+      "errorSomething": "Something went wrong: {{message}}",
+      "orDivider": "or",
+      "googleContinue": "Continue with Google",
+      "googleComingSoon": "Coming soon",
+      "googleAria": "Continue with Google (coming soon)",
+      "dontHaveAccount": "Don't have an account?",
+      "signUp": "Sign up",
+      "continueClient": "Log in to continue to your client dashboard.",
+      "continueFreelancer": "Log in to continue to your freelancer dashboard.",
+      "continueMessages": "Log in to continue to your messages.",
+      "continueNotifications": "Log in to continue to your notifications.",
+      "continueSettings": "Log in to continue to your settings.",
+      "continueAdmin": "Log in to continue to internal admin.",
+      "continueGeneric": "Log in to continue."
+    },
+    "registerForm": {
+      "badge": "Start onboarding",
+      "title": "Create your account",
+      "subtitle": "Join NearWork to hire or get hired",
+      "afterCreate": "After you create your account, we'll take you back to"
+    },
+    "intent": {
+      "login": {
+        "saveJob": "Log in to save this job.",
+        "saveFreelancer": "Log in to save this freelancer.",
+        "sendMessage": "Log in to message on NearWork.",
+        "submitBid": "Log in to submit your bid.",
+        "postJob": "Log in to post a job.",
+        "protected": "Log in to continue to that page."
+      },
+      "register": {
+        "postJob": "Create a client account to post a job.",
+        "submitBid": "Create a freelancer account to submit your bid.",
+        "saveFreelancer": "Create an account to save freelancers and revisit them later.",
+        "saveJob": "Create an account to save jobs and track opportunities.",
+        "sendMessage": "Create an account to start messaging.",
+        "protected": "Create an account to continue."
+      }
+    }
+  }
+}

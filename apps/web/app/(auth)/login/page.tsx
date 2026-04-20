@@ -1,9 +1,11 @@
 import type { Route } from "next";
 import Link from "next/link";
-import { Globe, Moon } from "lucide-react";
-import { parseAuthIntent } from "@/features/auth/lib/auth-intent";
+import { Moon } from "lucide-react";
 import { LoginForm } from "@/features/auth/components/LoginForm";
 import { BrandLogo } from "@/features/shared/components/BrandLogo";
+import { LocaleSwitcher } from "@/features/i18n/LocaleSwitcher";
+import { parseAuthIntent } from "@/features/auth/lib/auth-intent";
+import { getServerTranslator } from "@/lib/i18n/server-translator";
 
 type PageProps = {
   searchParams: Promise<{ returnUrl?: string; next?: string; intent?: string }>;
@@ -15,6 +17,7 @@ export default async function LoginPage({ searchParams }: PageProps) {
   const returnUrl = sp.returnUrl ?? sp.next;
   const intent = parseAuthIntent(sp.intent);
   const year = new Date().getFullYear();
+  const { t } = await getServerTranslator();
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 px-4 py-8 sm:py-12">
@@ -38,34 +41,28 @@ export default async function LoginPage({ searchParams }: PageProps) {
               href={"/privacy" as Route}
               className="truncate font-medium text-slate-600 underline-offset-4 hover:text-[#3525cd] hover:underline sm:whitespace-normal"
             >
-              Privacy
+              {t("footer.privacy")}
             </Link>
             <Link
               href={"/terms" as Route}
               className="truncate font-medium text-slate-600 underline-offset-4 hover:text-[#3525cd] hover:underline sm:whitespace-normal"
             >
-              Terms
+              {t("footer.terms")}
             </Link>
             <Link
               href={"/help" as Route}
               className="truncate font-medium text-slate-600 underline-offset-4 hover:text-[#3525cd] hover:underline sm:whitespace-normal"
             >
-              Help
+              {t("footer.help")}
             </Link>
           </nav>
 
           <p className="mt-6 text-center text-xs font-medium uppercase leading-relaxed tracking-wide text-slate-400">
-            © {year} NearWork
+            {t("footer.copyright", { year })}
           </p>
 
           <div className="mt-6 flex justify-center gap-3">
-            <button
-              type="button"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-500 shadow-sm transition-colors hover:border-slate-300 hover:bg-white hover:text-slate-800"
-              aria-label="Language (coming soon)"
-            >
-              <Globe className="h-4 w-4" aria-hidden />
-            </button>
+            <LocaleSwitcher />
             <button
               type="button"
               className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-500 shadow-sm transition-colors hover:border-slate-300 hover:bg-white hover:text-slate-800"

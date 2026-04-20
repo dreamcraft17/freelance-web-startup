@@ -1,7 +1,7 @@
 # Phase 2 - Detailed App Structures
 
-> **Doc revision:** v2  
-> Last synchronized: 2026-04-18 (marketing shell note).
+> **Doc revision:** v4  
+> Last synchronized: 2026-04-20 (locale-prefixed SEO routes).
 
 > Update (April 2026): struktur ini bersifat historis perencanaan fase. Implementasi aktual saat ini berpusat di `apps/web` dengan route groups App Router seperti `(public)`, `(marketing)`, `(auth)`, `(app)` dan workspace `client/freelancer/admin` yang sudah aktif.
 >
@@ -12,11 +12,20 @@
 ```txt
 apps/web/
   app/
+    [locale]/
+      page.tsx
+      jobs/
+      freelancers/
+      how-it-works/
+      pricing/
+      early-access/
+      help/
     (public)/
     (auth)/
     (client)/
     (freelancer)/
     api/
+      locale/
       v1/
         jobs/
         bids/
@@ -32,8 +41,13 @@ apps/web/
         reviews/
   components/
   features/
+    i18n/
   hooks/
   lib/
+    i18n/
+  locales/
+    en.json
+    id.json
   server/
     services/
     repositories/

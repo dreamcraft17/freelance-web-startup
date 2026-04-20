@@ -6,6 +6,7 @@ import { FreelancersBrowseList, type PublicFreelancerCard } from "@/features/pub
 import { FreelancersPublicEmpty } from "@/features/public/components/FreelancersPublicEmpty";
 import { FreelancersPublicFilters } from "@/features/public/components/FreelancersPublicFilters";
 import { MarketplacePulse } from "@/components/marketing/MarketplacePulse";
+import { getServerTranslator } from "@/lib/i18n/server-translator";
 import { CategoryService } from "@/server/services/category.service";
 import { GeoService } from "@/server/services/geo.service";
 import type { FreelancerSearchItem } from "@/server/services/search.service";
@@ -96,10 +97,11 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
 
   const search = new SearchService();
   const geoQuery = hasGeoCenter ? { ...query, page: 1 as const, limit: 120 as const } : query;
-  const [{ items, total }, categories, pulse] = await Promise.all([
+  const [{ items, total }, categories, pulse, { t }] = await Promise.all([
     search.searchFreelancers(geoQuery),
     loadCategories(),
-    new PublicStatsService().getMarketplacePulse()
+    new PublicStatsService().getMarketplacePulse(),
+    getServerTranslator()
   ]);
 
   const geo = new GeoService();
@@ -143,7 +145,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
           not.
         </p>
         <div className="mt-2">
-          <MarketplacePulse pulse={pulse} />
+          <MarketplacePulse pulse={pulse} t={t} />
         </div>
       </header>
 

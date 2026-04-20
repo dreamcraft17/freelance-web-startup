@@ -2,12 +2,22 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { AccountStatus } from "@acme/types";
 import { canAccessAdminPage, isStaffRole } from "@/features/admin/lib/access";
+import { LOCALE_COOKIE } from "@/lib/i18n/constants";
+import { resolveLocale } from "@/lib/i18n/resolve-locale";
 import {
   getSessionFromRequest,
   homePathForSessionRole,
   resolvePostLoginRedirect,
   sanitizeReturnUrl
 } from "@src/lib/session";
+
+const LOCALE_PREFIX = /^\/(en|id)(\/|$)/i;
+const SEO_PREFIX_PATH = /^\/(jobs|freelancers|how-it-works|pricing|early-access|help)(\/.*)?$/i;
+
+function preferredLocale(request: NextRequest): "en" | "id" {
+  const cookieLocale = request.cookies.get(LOCALE_COOKIE)?.value;
+  return resolveLocale(cookieLocale, request.headers.get("accept-language"));
+}
 
 function isAuthPublicPath(pathname: string): boolean {
   const p = pathname.toLowerCase();
@@ -50,6 +60,46 @@ export default async function middleware(request: NextRequest) {
     pathname === "/sitemap.xml"
   ) {
     return NextResponse.next();
+  }
+
+  if (pathname === "/") {
+    const locale = preferredLocale(request);
+    const url = request.nextUrl.clone();
+    url.pathname = `/${locale}`;
+    const response = NextResponse.redirect(url);
+    response.cookies.set(LOCALE_COOKIE, locale, {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 365,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production"
+    });
+    return response;
+  }
+
+  const localeMatch = pathname.match(LOCALE_PREFIX);
+  if (localeMatch?.[1]) {
+    const locale = localeMatch[1].toLowerCase() as "en" | "id";
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set("x-nearwork-locale", locale);
+    const response = NextResponse.next({
+      request: {
+        headers: requestHeaders
+      }
+    });
+    response.cookies.set(LOCALE_COOKIE, locale, {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 365,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production"
+    });
+    return response;
+  }
+
+  if (SEO_PREFIX_PATH.test(pathname)) {
+    const locale = preferredLocale(request);
+    const url = request.nextUrl.clone();
+    url.pathname = `/${locale}${pathname}`;
+    return NextResponse.redirect(url);
   }
 
   const session = await getSessionFromRequest(request);
@@ -102,8 +152,16 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Restrict middleware to auth + protected workspaces to reduce per-request overhead on public pages.
   matcher: [
+    "/",
+    "/:locale(en|id)",
+    "/:locale(en|id)/:path*",
+    "/jobs/:path*",
+    "/freelancers/:path*",
+    "/how-it-works/:path*",
+    "/pricing/:path*",
+    "/early-access/:path*",
+    "/help/:path*",
     "/login/:path*",
     "/register/:path*",
     "/forgot-password/:path*",
