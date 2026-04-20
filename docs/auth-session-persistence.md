@@ -1,7 +1,7 @@
 # Auth Session Persistence (NearWork Web)
 
-> **Doc revision:** v2  
-> Last synchronized: 2026-04-18 (marketing shell + navbar unread).
+> **Doc revision:** v3  
+> Last synchronized: 2026-04-20 (navbar user-state + unread message threads).
 
 Dokumen ini menjelaskan bagaimana session login dipertahankan setelah user berhasil login, termasuk format cookie, validasi middleware, dan alur redirect.
 
@@ -13,6 +13,7 @@ Dokumen ini menjelaskan bagaimana session login dipertahankan setelah user berha
 - Redirect post-login untuk staff tetap terpusat dan mengarah default ke `/admin`.
 - Public navbar/header sudah auth-aware secara server-side sehingga state login/logout terlihat konsisten di halaman publik.
 - **`MarketingShell`:** memuat sesi dari cookie dan (untuk akun aktif) **jumlah notifikasi belum dibaca** dari service, lalu meneruskannya ke `MarketingNavBar`—badge angka nyata, bukan indikator palsu.
+- **`MarketingShell`:** selain notifikasi, juga memuat **jumlah thread pesan yang menunggu balasan** (latest message bukan dari user) untuk badge unread messages di navbar.
 - **Chrome marketing:** bar navigasi produk (brand kiri, enam tautan inti tengah, utilitas kanan) tetap konsisten dengan model session di atas.
 
 ## Tujuan

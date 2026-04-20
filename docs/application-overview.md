@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v5  
-> Last synchronized: 2026-04-18 (marketing navbar + pulse + proposals).
+> **Doc revision:** v7  
+> Last synchronized: 2026-04-20 (navbar user-state + message unread signal).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,7 +9,8 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
-- **Navbar marketing (2026-04-18):** `MarketingShell` memakai bar navigasi produk—brand kiri (logo EN), enam tautan inti di tengah dengan hierarki tipografi, utilitas/auth di kanan; indikator halaman aktif garis bawah brand; tanpa kotak logo.
+- **Navbar marketing (2026-04-20):** `MarketingShell` memakai bar navigasi produk—brand kiri (logo EN), pusat dibagi primary marketplace (Jobs, Freelancers) + secondary nav (How it works, Pricing, Help), utilitas/auth di kanan; indikator halaman aktif garis bawah brand; tanpa kotak logo.
+- **State pengguna di navbar (2026-04-20):** guest menampilkan mode guest + CTA `Start hiring`; sesi login menampilkan mode signed-in, unread notifications, unread message-thread count (awaiting reply), dan CTA kontekstual per role.
 - **Sinyal aktivitas (2026-04-18):** baris agregat ringan di landing dan halaman discovery (`/jobs`, `/freelancers`) memperkuat nuansa board hidup; navbar marketing menampilkan jumlah notifikasi belum dibaca yang konsisten dengan data.
 - **Landing `/` (2026-04-18):** hero tanpa label bagian generik—mikro-copy “Live freelancer directory” di atas headline; stage putih, search sentral, *popular searches*, strip kategori ikon, preview ilustratif, use cases di band brand ringan; footer kompak berkolom.
 - Public browse/discovery sekarang lebih kuat sebagai product tool (bukan landing template):

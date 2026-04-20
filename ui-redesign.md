@@ -1,7 +1,7 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v4  
-> Last synchronized: 2026-04-18 (marketing navbar product hierarchy).
+> **Doc revision:** v6  
+> Last synchronized: 2026-04-20 (navbar live-user signals).
 
 ## Goal
 
@@ -11,10 +11,10 @@ Build a grounded, practical, product-first UI across public and authenticated su
 
 ### 2026-04-18 — Marketing navbar (product chrome, not template)
 
-- **`MarketingNavBar`:** layout eksplisit **brand (kiri) · primary links (tengah) · auth/utilitas (kanan)**; semua tautan produk utama ada di kolom tengah dengan **grup** Jobs/Freelancers vs sisanya + divider vertikal ringan.
+- **`MarketingNavBar`:** layout eksplisit **brand (kiri) · primary links (tengah) · auth/utilitas (kanan)**; tengah sekarang memprioritaskan entry marketplace (**Jobs**, **Freelancers**) lalu secondary nav ringan (**How it works**, **Pricing**, **Help**) dengan divider vertikal halus.
 - **Brand:** `BrandLogo` + `logo_EN.png`, **tanpa** kotak/border dekoratif; ukuran gambar naik per breakpoint; hover disederhanakan (opacity).
 - **Nav items:** berat font tidak seragam (discovery lebih tegas, link produk lain `font-medium` + warna sekunder); aktif = **underline / border-b brand** (`#3525cd`), bukan chip background penuh.
-- **Kanan:** tautan guest + CTA dengan hierarki abu; sesi login: ikon + CTA role; **pemisah vertikal** `border-slate-100` memisahkan dari nav utama.
+- **Kanan:** tautan guest + CTA sekarang lebih actionable (`Start hiring`), sesi login menampilkan state ringkas (`Signed in`) + ikon utilitas dengan unread badge (notifikasi + thread pesan menunggu balasan) + CTA role-aware (`Post a job` / `Find jobs`); **pemisah vertikal** `border-slate-100` memisahkan dari nav utama.
 - Header: **tanpa `shadow-sm`** pada bar atas—hanya border bawah + putih, tetap dalam garis “no glass / no gradient”.
 
 ### 2026-04-18 — Trust & activity (no new chrome)
