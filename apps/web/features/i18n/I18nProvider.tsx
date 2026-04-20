@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { createTranslator, type Translator } from "@/lib/i18n/create-translator";
 import type { Messages } from "@/lib/i18n/dictionaries";
 import { getMessagesForLocale } from "@/lib/i18n/dictionaries";
@@ -33,14 +33,25 @@ type I18nProviderProps = {
 
 export function I18nProvider({ children, initialLocale, initialMessages }: I18nProviderProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const [locale, setLocaleState] = useState<AppLocale>(initialLocale);
   const [messages, setMessages] = useState<Messages>(initialMessages);
   const [isLocalePending, startTransition] = useTransition();
+  const routeLocale = useMemo(() => {
+    const match = (pathname ?? "/").match(/^\/(en|id)(\/|$)/i);
+    return match?.[1]?.toLowerCase() as AppLocale | undefined;
+  }, [pathname]);
 
   useEffect(() => {
     setLocaleState(initialLocale);
     setMessages(initialMessages);
   }, [initialLocale, initialMessages]);
+
+  useEffect(() => {
+    if (!routeLocale) return;
+    setLocaleState(routeLocale);
+    setMessages(getMessagesForLocale(routeLocale));
+  }, [routeLocale]);
 
   useEffect(() => {
     if (typeof document !== "undefined") {

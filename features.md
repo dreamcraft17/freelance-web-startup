@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v9  
-> Last synchronized: 2026-04-20 (SEO i18n routes `/en/*` + `/id/*`, hreflang, sitemap).
+> **Doc revision:** v10  
+> Last synchronized: 2026-04-20 (locale switcher source-of-truth = route locale).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,7 +9,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
-- **2026-04-20 — Multilingual SEO (production-safe):** ditambahkan route prefix locale `app/[locale]` untuk halaman SEO (`/en/*`, `/id/*`) mencakup home, jobs (+detail), freelancers (+detail), how-it-works, pricing, early-access, help; tiap halaman pakai metadata lokal + `alternates.languages` (`en`, `id`, `x-default`) dan canonical per-locale; sitemap sekarang mempublikasikan URL dua bahasa.
+- **2026-04-20 — Multilingual SEO (production-safe):** ditambahkan route prefix locale `app/[locale]` untuk halaman SEO (`/en/*`, `/id/*`) mencakup home, jobs (+detail), freelancers (+detail), how-it-works, pricing, early-access, help; tiap halaman pakai metadata lokal + `alternates.languages` (`en`, `id`, `x-default`) dan canonical per-locale; sitemap sekarang mempublikasikan URL dua bahasa. Locale switcher kini **route-aware** sebagai source-of-truth (aktif mengikuti prefix URL), sehingga perpindahan EN/ID langsung memuat konten SSR sesuai route target.
 - **2026-04-20 — Dukungan bahasa (i18n):** kamus di `apps/web/locales/en.json` dan `id.json`; helper `t(key)` lewat `I18nProvider` (client) dan `getServerTranslator()` (server); preferensi disimpan di **cookie `lang`** (`en` \| `id`, 1 tahun, `SameSite=Lax`) + sinkron UI instan; default dari **Accept-Language** lalu fallback `en`; `<html lang>` mengikuti locale; switcher **EN \| ID** (tanpa bendera) di navbar marketing, header workspace, header discovery ringkas, halaman login/register, dan rail akun; label navigasi dashboard memakai `labelKey` / `sectionKey` pada konfigurasi nav.
 - **2026-04-20 — Navbar marketing (`MarketingNavBar`) jadi product navigation:** struktur kiri–tengah–kanan (brand / primary nav / utilitas-auth); logo **`/logo/logo_EN.png`** tetap anchor terkuat; tengah difokuskan ke **Jobs + Freelancers** (dengan intent hint “Find work” / “Hire talent”), lalu secondary nav ringan (How it works, Pricing, Help) dipisah divider halus; state aktif garis bawah brand; area kanan guest berisi Browse jobs, Log in, Register + CTA **Start hiring**; sesi login menampilkan **state “Signed in”**, unread notifications + unread message threads, serta CTA kontekstual (**Client: Post a job**, **Freelancer: Find jobs**).
 - **2026-04-18 — Engagement tanpa dekorasi:** agregat ringan `PublicStatsService` + komponen `MarketplacePulse` (board terbuka, proposal 24 jam, freelancer berstatus available) di landing, `/jobs`, `/freelancers`; badge notifikasi **nyata** di `MarketingNavBar` (count dari DB, tanpa dot palsu); filter discovery punya `datalist` + tautan “Popular”; microcopy **proposal / hire** di job detail, client jobs, dan how-it-works; kartu freelancer menampilkan sinyal kepercayaan dari data yang ada (availability + ulasan berulang).

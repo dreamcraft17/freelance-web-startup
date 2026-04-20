@@ -1,7 +1,8 @@
 "use client";
 
 import type { Route } from "next";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useMemo, useTransition } from "react";
 import { cn } from "@/lib/utils";
 import type { AppLocale } from "@/lib/i18n/types";
 import { useI18n } from "./I18nProvider";
@@ -17,24 +18,29 @@ type LocaleSwitcherProps = {
  */
 export function LocaleSwitcher({ className }: LocaleSwitcherProps) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const router = useRouter();
+  const [isRoutingPending, startRoutingTransition] = useTransition();
   const { locale, setLocale, isLocalePending, t } = useI18n();
+  const routeLocale = useMemo(() => {
+    const match = (pathname ?? "/").match(/^\/(en|id)(\/|$)/i);
+    return match?.[1]?.toLowerCase() as AppLocale | undefined;
+  }, [pathname]);
+  const activeLocale = routeLocale ?? locale;
+  const isPending = isLocalePending || isRoutingPending;
 
   const onSwitchLocale = (next: AppLocale) => {
-    if (next === locale) return;
+    if (next === activeLocale) return;
 
     const currentPath = pathname ?? "/";
     const match = currentPath.match(/^\/(en|id)(\/.*)?$/i);
     if (match) {
       const rest = match[2] ?? "";
-      const target = `/${next}${rest}`;
-      void fetch("/api/locale", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ locale: next }),
-        credentials: "same-origin"
-      }).catch(() => undefined);
-      router.push(target as Route);
+      const search = searchParams.toString();
+      const target = `/${next}${rest}${search ? `?${search}` : ""}`;
+      startRoutingTransition(() => {
+        router.push(target as Route);
+      });
       return;
     }
 
@@ -46,14 +52,14 @@ export function LocaleSwitcher({ className }: LocaleSwitcherProps) {
     <div
       className={cn(
         "inline-flex h-8 shrink-0 items-center rounded-md border border-slate-200/90 bg-white p-0.5 text-[11px] font-semibold tracking-tight text-slate-500 shadow-sm",
-        isLocalePending && "opacity-80",
+        isPending && "opacity-80",
         className
       )}
       role="group"
       aria-label={t("locale.current")}
     >
       {OPTIONS.map((code) => {
-        const active = locale === code;
+        const active = activeLocale === code;
         return (
           <button
             key={code}
@@ -64,7 +70,7 @@ export function LocaleSwitcher({ className }: LocaleSwitcherProps) {
               active
                 ? "bg-slate-900 text-white shadow-sm"
                 : "text-slate-500 hover:bg-slate-50 hover:text-slate-800",
-              isLocalePending && "pointer-events-none"
+              isPending && "pointer-events-none"
             )}
             aria-pressed={active}
             title={`${t("locale.switchTo")}: ${code === "en" ? "English" : "Bahasa Indonesia"}`}
@@ -72,7 +78,7 @@ export function LocaleSwitcher({ className }: LocaleSwitcherProps) {
             <span
               className={cn(
                 "inline-block transition-opacity duration-200",
-                isLocalePending && active && "opacity-70"
+                isPending && active && "opacity-70"
               )}
             >
               {t(`locale.${code}`)}
