@@ -1,7 +1,7 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v9  
-> Last synchronized: 2026-04-20 (switch active-state follows locale route).
+> **Doc revision:** v10  
+> Last synchronized: 2026-04-20 (navbar spacing hardened for Indonesian labels).
 
 ## Goal
 
@@ -16,6 +16,12 @@ Build a grounded, practical, product-first UI across public and authenticated su
 - **Active state:** status aktif tombol EN/ID sekarang diturunkan dari prefix route aktual (bukan state lokal toggle), sehingga UI dan konten server selalu sinkron setelah navigasi.
 - **Cakupan awal:** marketing navbar, `DashboardShell`, `PublicSiteHeader`, hero landing + footer marketing, beberapa string auth (login/register), label nav workspace, menu akun, `MarketplacePulse` pada landing + discovery.
 - **Tanpa bendera**; teks natural per locale (bukan string inline di komponen).
+
+### 2026-04-20 — Navbar resilience (EN/ID content length)
+
+- **Single-row desktop stability:** `MarketingNavBar` menghentikan wrapping di center nav (`flex-wrap` dihapus) dan memindahkan breakpoint desktop utama ke `lg` agar tablet tidak dipaksa menampilkan navbar padat.
+- **Hierarchy dipertegas:** kiri = logo (tetap dominan), tengah = primary+secondary nav (secondary ukuran font lebih kecil), kanan = utility/auth + locale switcher + CTA.
+- **Anti-fragile spacing:** padding horizontal dan gap dituning ulang; utility rendah prioritas (`Browse jobs`, secondary action signed-in) ditampilkan hanya saat lebar cukup (`xl`) agar label Indonesia tidak merusak ritme.
 
 ### 2026-04-18 — Marketing navbar (product chrome, not template)
 
