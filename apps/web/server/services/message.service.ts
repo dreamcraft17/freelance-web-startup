@@ -7,6 +7,33 @@ import { NotificationService } from "./notification.service";
 
 export class MessageService {
   constructor(private readonly notifications = new NotificationService()) {}
+
+  /**
+   * Lightweight unread signal for top-nav badges:
+   * count threads whose latest visible message was sent by someone else.
+   */
+  async countAwaitingReplyThreadsForUser(userId: string): Promise<number> {
+    const rows = await db.messageThreadParticipant.findMany({
+      where: { userId },
+      select: {
+        thread: {
+          select: {
+            messages: {
+              where: { deletedAt: null },
+              orderBy: { createdAt: "desc" },
+              take: 1,
+              select: { senderId: true }
+            }
+          }
+        }
+      }
+    });
+    return rows.reduce((total, row) => {
+      const last = row.thread.messages[0];
+      return last && last.senderId !== userId ? total + 1 : total;
+    }, 0);
+  }
+
   private async assertClientFreelancerPair(clientUserId: string, freelancerUserId: string) {
     const [clientUser, freelancerUser] = await Promise.all([
       db.user.findFirst({

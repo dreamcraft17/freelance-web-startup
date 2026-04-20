@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Bell, Menu, MessageSquare, X } from "lucide-react";
 import { useState } from "react";
+import { UserRole } from "@acme/types";
 import type { SessionPayload } from "@src/lib/session";
 import { AuthUserMenu } from "@/features/dashboard/components/AuthUserMenu";
 import {
@@ -17,14 +18,13 @@ import { cn } from "@/lib/utils";
 
 /** Center column: discovery first (stronger), then product/support (lighter). */
 const navDiscovery = [
-  { href: "/jobs", label: "Jobs" },
-  { href: "/freelancers", label: "Freelancers" }
+  { href: "/jobs", label: "Jobs", hint: "Find work" },
+  { href: "/freelancers", label: "Freelancers", hint: "Hire talent" }
 ] as const;
 
 const navProduct = [
   { href: "/how-it-works", label: "How it works" },
   { href: "/pricing", label: "Pricing" },
-  { href: "/early-access", label: "Early access" },
   { href: "/help", label: "Help" }
 ] as const;
 
@@ -39,14 +39,31 @@ function unreadBadgeLabel(count: number): string {
   return `${count} unread notification${count === 1 ? "" : "s"}`;
 }
 
+function unreadMessagesLabel(count: number): string {
+  if (count <= 0) return "Messages";
+  if (count > 9) return "More than 9 unread message threads";
+  return `${count} unread message thread${count === 1 ? "" : "s"}`;
+}
+
+function contextualSignedInCta(role: UserRole, fallback: { label: string; href: string }): {
+  label: string;
+  href: string;
+} {
+  if (role === UserRole.CLIENT) return { label: "Post a job", href: "/client/jobs/new" };
+  if (role === UserRole.FREELANCER) return { label: "Find jobs", href: "/jobs" };
+  return fallback;
+}
+
 function CenterNavLink({
   href,
   label,
+  hint,
   pathname,
   emphasis
 }: {
   href: string;
   label: string;
+  hint?: string;
   pathname: string;
   emphasis: "discovery" | "product";
 }) {
@@ -54,6 +71,8 @@ function CenterNavLink({
   return (
     <Link
       href={href as Route}
+      title={hint}
+      aria-label={hint ? `${label} — ${hint}` : label}
       className={cn(
         "relative whitespace-nowrap border-b-2 px-2.5 py-3.5 text-sm transition-colors",
         emphasis === "discovery" ? "font-semibold tracking-tight" : "font-medium",
@@ -74,10 +93,12 @@ function CenterNavLink({
 
 export function MarketingNavBar({
   session,
-  unreadNotifications = 0
+  unreadNotifications = 0,
+  unreadMessages = 0
 }: {
   session: SessionPayload | null;
   unreadNotifications?: number;
+  unreadMessages?: number;
 }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -86,6 +107,9 @@ export function MarketingNavBar({
     : null;
   const primary = authSession ? primaryActionForRole(authSession.role) : null;
   const secondary = authSession ? secondaryActionForRole(authSession.role) : null;
+  const signedInCta = authSession && primary
+    ? contextualSignedInCta(authSession.role, primary)
+    : { label: "Dashboard", href: "/" };
 
   return (
     <header className="fixed top-0 z-50 w-full border-b border-slate-200/90 bg-white">
@@ -104,8 +128,8 @@ export function MarketingNavBar({
         <div className="hidden min-w-0 flex-1 items-center justify-center md:flex">
           <div className="flex max-w-full flex-wrap items-center justify-center gap-x-0.5 sm:gap-x-1">
             <div className="flex items-center">
-              {navDiscovery.map(({ href, label }) => (
-                <CenterNavLink key={href} href={href} label={label} pathname={pathname} emphasis="discovery" />
+              {navDiscovery.map(({ href, label, hint }) => (
+                <CenterNavLink key={href} href={href} label={label} hint={hint} pathname={pathname} emphasis="discovery" />
               ))}
             </div>
             <span
@@ -123,6 +147,9 @@ export function MarketingNavBar({
         {/* Utility / auth — visually secondary to main nav */}
         {authSession && primary ? (
           <div className="ml-auto hidden shrink-0 items-center gap-2 border-l border-slate-100 pl-4 md:flex lg:gap-3 lg:pl-6 xl:pl-8">
+            <span className="hidden text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-400 xl:inline">
+              Signed in
+            </span>
             {secondary ? (
               <Link
                 href={secondary.href as Route}
@@ -145,18 +172,26 @@ export function MarketingNavBar({
             </Link>
             <Link
               href={"/messages" as Route}
-              aria-label="Messages"
-              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-slate-200 text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
+              aria-label={unreadMessagesLabel(unreadMessages)}
+              className="relative inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-slate-200 text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
             >
               <MessageSquare className="h-4 w-4" aria-hidden />
+              {unreadMessages > 0 ? (
+                <span className="absolute -right-1 -top-1 flex min-h-[1.125rem] min-w-[1.125rem] items-center justify-center rounded-full bg-slate-800 px-1 text-[10px] font-bold leading-none text-white ring-2 ring-white">
+                  {unreadMessages > 9 ? "9+" : unreadMessages}
+                </span>
+              ) : null}
             </Link>
-            <Link href={primary.href as Route} className="nw-cta-primary px-4 py-2 text-sm font-semibold shadow-none">
-              {primary.label}
+            <Link href={signedInCta.href as Route} className="nw-cta-primary px-4 py-2 text-sm font-semibold shadow-none">
+              {signedInCta.label}
             </Link>
             <AuthUserMenu compact />
           </div>
         ) : (
           <div className="ml-auto hidden shrink-0 items-center gap-1 border-l border-slate-100 pl-4 md:flex lg:gap-2 lg:pl-6 xl:pl-8">
+            <span className="hidden text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-400 xl:inline">
+              Guest mode
+            </span>
             <Link
               href="/jobs"
               className="whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 hover:text-slate-900"
@@ -176,10 +211,10 @@ export function MarketingNavBar({
               Register
             </Link>
             <Link
-              href="/early-access"
+              href="/register?role=CLIENT&intent=post-job"
               className="nw-cta-primary ml-1 px-4 py-2 text-sm font-semibold shadow-none"
             >
-              Early access
+              Start hiring
             </Link>
           </div>
         )}
@@ -205,24 +240,28 @@ export function MarketingNavBar({
             <p className="px-3 pt-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">
               Explore
             </p>
-            {[...navDiscovery, ...navProduct].map(({ href, label }) => (
+            {[...navDiscovery, ...navProduct].map((item) => (
               <Link
-                key={href}
-                href={href}
+                key={item.href}
+                href={item.href}
+                title={"hint" in item ? item.hint : undefined}
                 className={cn(
                   "rounded-lg px-3 py-2.5 text-sm transition hover:bg-slate-50",
-                  href === "/jobs" || href === "/freelancers"
+                  item.href === "/jobs" || item.href === "/freelancers"
                     ? "font-semibold text-slate-900"
                     : "font-medium text-slate-600"
                 )}
                 onClick={() => setOpen(false)}
               >
-                {label}
+                {item.label}
               </Link>
             ))}
             <hr className="my-2 border-slate-100" />
             {authSession && primary ? (
               <>
+                <p className="px-3 pt-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">
+                  Signed in
+                </p>
                 {secondary ? (
                   <Link
                     href={secondary.href as Route}
@@ -249,14 +288,21 @@ export function MarketingNavBar({
                   className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
                   onClick={() => setOpen(false)}
                 >
-                  Messages
+                  <span className="flex items-center justify-between">
+                    Messages
+                    {unreadMessages > 0 ? (
+                      <span className="rounded-full bg-slate-800 px-2 py-0.5 text-[11px] font-semibold text-white">
+                        {unreadMessages > 9 ? "9+" : unreadMessages}
+                      </span>
+                    ) : null}
+                  </span>
                 </Link>
                 <Link
-                  href={primary.href as Route}
+                  href={signedInCta.href as Route}
                   className="rounded-lg bg-[#433C93] px-3 py-2.5 text-center text-sm font-semibold text-white hover:bg-[#4d45a5]"
                   onClick={() => setOpen(false)}
                 >
-                  {primary.label}
+                  {signedInCta.label}
                 </Link>
               </>
             ) : (
@@ -286,11 +332,11 @@ export function MarketingNavBar({
                   Register
                 </Link>
                 <Link
-                  href="/early-access"
+                  href="/register?role=CLIENT&intent=post-job"
                   className="nw-cta-primary mt-1 rounded-lg px-4 py-2.5 text-center text-sm font-semibold"
                   onClick={() => setOpen(false)}
                 >
-                  Early access
+                  Start hiring
                 </Link>
               </>
             )}
