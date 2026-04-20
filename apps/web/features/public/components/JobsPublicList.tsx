@@ -1,6 +1,9 @@
+"use client";
+
 import type { Route } from "next";
 import Link from "next/link";
 import { MapPin } from "lucide-react";
+import { useI18n } from "@/features/i18n/I18nProvider";
 
 /** Public job card shape (matches `SerializableJobCard` from saved jobs UI). */
 export type JobsPublicCard = {
@@ -15,9 +18,6 @@ export type JobsPublicCard = {
   city: string | null;
 };
 
-const workModeLabel = (wm: string) =>
-  wm === "REMOTE" || wm === "ONSITE" || wm === "HYBRID" ? wm.charAt(0) + wm.slice(1).toLowerCase() : wm;
-
 function formatMoney(amount: number | null, currency: string): string {
   if (amount == null || !Number.isFinite(amount)) return "—";
   try {
@@ -25,14 +25,6 @@ function formatMoney(amount: number | null, currency: string): string {
   } catch {
     return `${amount} ${currency}`;
   }
-}
-
-function budgetLabel(job: JobsPublicCard): string {
-  const { budgetMin: min, budgetMax: max, currency, budgetType } = job;
-  if (min != null && max != null) return `${formatMoney(min, currency)} – ${formatMoney(max, currency)}`;
-  if (min != null) return `From ${formatMoney(min, currency)}`;
-  if (max != null) return `Up to ${formatMoney(max, currency)}`;
-  return budgetType.replace(/_/g, " ");
 }
 
 function workModeChipClass(wm: string): string {
@@ -43,6 +35,23 @@ function workModeChipClass(wm: string): string {
 }
 
 export function JobsPublicList({ jobs }: { jobs: JobsPublicCard[] }) {
+  const { t } = useI18n();
+
+  const workModeLabel = (wm: string) => {
+    if (wm === "REMOTE") return t("public.filters.workModeRemote");
+    if (wm === "ONSITE") return t("public.filters.workModeOnSite");
+    if (wm === "HYBRID") return t("public.filters.workModeHybrid");
+    return wm;
+  };
+
+  const budgetLabelLocalized = (job: JobsPublicCard): string => {
+    const { budgetMin: min, budgetMax: max, currency, budgetType } = job;
+    if (min != null && max != null) return `${formatMoney(min, currency)} – ${formatMoney(max, currency)}`;
+    if (min != null) return t("public.jobs.budgetFrom", { amount: formatMoney(min, currency) });
+    if (max != null) return t("public.jobs.budgetUpTo", { amount: formatMoney(max, currency) });
+    return budgetType.replace(/_/g, " ");
+  };
+
   return (
     <ul className="divide-y divide-slate-200 overflow-hidden border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
       {jobs.map((job) => (
@@ -65,14 +74,14 @@ export function JobsPublicList({ jobs }: { jobs: JobsPublicCard[] }) {
               <p className="mt-1.5 line-clamp-2 text-sm font-medium leading-relaxed text-slate-600">{job.description}</p>
             </div>
             <div className="flex shrink-0 flex-col items-start gap-1 border-t border-slate-100 pt-2.5 text-left sm:w-56 sm:border-t-0 sm:items-end sm:pt-0 sm:text-right">
-              <span className="text-[15px] font-bold tabular-nums text-slate-950">{budgetLabel(job)}</span>
+              <span className="text-[15px] font-bold tabular-nums text-slate-950">{budgetLabelLocalized(job)}</span>
               {job.city ? (
                 <span className="inline-flex items-center gap-1 text-xs font-semibold text-slate-700">
                   <MapPin className="h-3.5 w-3.5 shrink-0 text-[#3525cd]" aria-hidden />
                   {job.city}
                 </span>
               ) : (
-                <span className="text-xs font-medium text-slate-400">No city on brief</span>
+                <span className="text-xs font-medium text-slate-400">{t("public.jobs.noCity")}</span>
               )}
             </div>
           </Link>

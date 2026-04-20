@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Loader2, MapPin, Navigation, X } from "lucide-react";
+import { useI18n } from "@/features/i18n/I18nProvider";
 import { useBrowserLocation } from "@/features/public/hooks/useBrowserLocation";
 import { popularFreelancerSearchSuggestions } from "@/features/public/lib/popular-search-suggestions";
 
@@ -22,13 +23,6 @@ type FreelancersPublicFiltersProps = {
   radiusKm?: number;
 };
 
-const workModes: { value: WorkMode; label: string }[] = [
-  { value: "", label: "Any work mode" },
-  { value: "REMOTE", label: "Remote" },
-  { value: "ONSITE", label: "On-site" },
-  { value: "HYBRID", label: "Hybrid" }
-];
-
 export function FreelancersPublicFilters({
   keyword,
   city,
@@ -39,9 +33,16 @@ export function FreelancersPublicFilters({
   lng = null,
   radiusKm = 50
 }: FreelancersPublicFiltersProps) {
+  const { t } = useI18n();
   const router = useRouter();
   const [radius, setRadius] = useState<number>(radiusKm);
-  const { state, coords, error, request, clear, setCoords, setState } = useBrowserLocation();
+  const { state, coords, errorCode, request, clear, setCoords, setState } = useBrowserLocation();
+  const workModes: { value: WorkMode; label: string }[] = [
+    { value: "", label: t("public.filters.workModeAny") },
+    { value: "REMOTE", label: t("public.filters.workModeRemote") },
+    { value: "ONSITE", label: t("public.filters.workModeOnSite") },
+    { value: "HYBRID", label: t("public.filters.workModeHybrid") }
+  ];
 
   const activeCoords = useMemo(() => {
     if (coords) return coords;
@@ -126,18 +127,18 @@ export function FreelancersPublicFilters({
     <div className="nw-discovery-panel">
       <div className="nw-panel-head">
         <div>
-          <p className="nw-section-title">Filters</p>
-          <p className="text-sm font-semibold text-slate-900">Keyword + category narrow the roster</p>
+          <p className="nw-section-title">{t("public.filters.title")}</p>
+          <p className="text-sm font-semibold text-slate-900">{t("public.freelancers.filtersSubtitle")}</p>
         </div>
         <div className="flex shrink-0 gap-2 sm:pb-0">
           <button type="submit" form="freelancers-filter-form" className="nw-cta-primary px-5 py-2.5">
-            Apply
+            {t("public.filters.apply")}
           </button>
           <Link
             href="/freelancers"
             className="inline-flex items-center rounded-md border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
           >
-            Reset
+            {t("public.filters.reset")}
           </Link>
         </div>
       </div>
@@ -152,7 +153,7 @@ export function FreelancersPublicFilters({
         ) : null}
         <div className="min-w-0 flex-1 xl:max-w-[220px]">
           <label htmlFor="fl-kw" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Keyword
+            {t("public.filters.keyword")}
           </label>
           <datalist id="fl-kw-suggestions">
             {popularFreelancerSearchSuggestions.map((term) => (
@@ -165,10 +166,10 @@ export function FreelancersPublicFilters({
             type="search"
             list="fl-kw-suggestions"
             defaultValue={keyword}
-            placeholder="Name, headline, or bio"
+                placeholder={t("public.freelancers.keywordPlaceholder")}
             className="nw-input w-full"
           />
-          <p className="mt-1.5 text-[11px] font-medium text-slate-500">Popular:</p>
+          <p className="mt-1.5 text-[11px] font-medium text-slate-500">{t("public.filters.popular")}</p>
           <div className="mt-1 flex flex-wrap gap-x-2 gap-y-1">
             {popularFreelancerSearchSuggestions.map((term) => (
               <Link
@@ -184,7 +185,7 @@ export function FreelancersPublicFilters({
 
         <div className="min-w-0 flex-1 xl:max-w-[200px]">
           <label htmlFor="fl-cat" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Category
+            {t("public.filters.category")}
           </label>
           <select
             id="fl-cat"
@@ -192,7 +193,7 @@ export function FreelancersPublicFilters({
             defaultValue={categoryId}
             className="nw-input w-full"
           >
-            <option value="">All categories</option>
+            <option value="">{t("public.filters.allCategories")}</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
@@ -200,13 +201,13 @@ export function FreelancersPublicFilters({
             ))}
           </select>
           <p className="mt-1.5 text-[11px] leading-snug text-slate-500">
-            Matches anyone with at least one skill in that category.
+            {t("public.freelancers.categoryHint")}
           </p>
         </div>
 
         <div className="min-w-0 flex-1 xl:max-w-[200px]">
           <label htmlFor="fl-wm" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Work mode
+            {t("public.filters.workMode")}
           </label>
           <select
             id="fl-wm"
@@ -224,24 +225,24 @@ export function FreelancersPublicFilters({
 
         <div className="min-w-0 flex-1 xl:max-w-[200px]">
           <label htmlFor="fl-city" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-            City
+            {t("public.filters.city")}
           </label>
           <input
             id="fl-city"
             name="city"
             type="text"
             defaultValue={city}
-            placeholder="e.g. Jakarta"
+            placeholder={t("public.freelancers.cityPlaceholder")}
             className="nw-input w-full"
           />
           <p className="mt-1.5 text-[11px] leading-snug text-slate-500">
-            NearWork treats city as a first-class signal for on-site and hybrid work—add yours to discover nearby
-            freelancers.
+            {t("public.freelancers.cityHint")}
           </p>
         </div>
 
         <p className="w-full text-[11px] font-medium text-slate-600 xl:col-span-full">
-          Tip: choose <span className="font-bold text-slate-800">Remote</span> when on-site is not required.
+          {t("public.freelancers.tipPrefix")} <span className="font-bold text-slate-800">{t("public.filters.workModeRemote")}</span>{" "}
+          {t("public.freelancers.tipSuffix")}
         </p>
       </form>
 
@@ -249,10 +250,10 @@ export function FreelancersPublicFilters({
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-2">
             <Navigation className="h-4 w-4 shrink-0 text-[#3525cd]" aria-hidden />
-            <p className="text-sm font-bold text-slate-900">Nearby talent</p>
+            <p className="text-sm font-bold text-slate-900">{t("public.freelancers.nearbyTitle")}</p>
             {locationState === "granted" ? (
               <span className="inline-flex items-center rounded border border-[#3525cd]/30 bg-white px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-[#3525cd]">
-                Live sort
+                {t("public.freelancers.nearbyLive")}
               </span>
             ) : null}
           </div>
@@ -263,14 +264,14 @@ export function FreelancersPublicFilters({
             className="inline-flex items-center gap-1.5 rounded-md bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-70"
           >
             {locationState === "requesting" ? <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden /> : <MapPin className="h-3.5 w-3.5" aria-hidden />}
-            {locationState === "requesting" ? "Requesting..." : "Use my location"}
+            {locationState === "requesting" ? t("public.freelancers.nearbyRequesting") : t("public.freelancers.nearbyUseLocation")}
           </button>
         </div>
 
         {locationState === "granted" && activeCoords ? (
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <label className="text-xs font-medium text-slate-600" htmlFor="nearby-radius">
-              Radius
+              {t("public.freelancers.nearbyRadius")}
             </label>
             <select
               id="nearby-radius"
@@ -285,7 +286,7 @@ export function FreelancersPublicFilters({
               ))}
             </select>
             <button type="button" onClick={onApplyLocation} className="rounded-md bg-[#3525cd] px-2.5 py-1.5 text-xs font-semibold text-white transition hover:bg-[#4f46e5]">
-              Apply nearby
+              {t("public.freelancers.nearbyApply")}
             </button>
             <button
               type="button"
@@ -293,17 +294,25 @@ export function FreelancersPublicFilters({
               className="inline-flex items-center gap-1 rounded-md px-2 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100"
             >
               <X className="h-3.5 w-3.5" aria-hidden />
-              Clear location
+              {t("public.freelancers.nearbyClear")}
             </button>
           </div>
         ) : null}
 
         {locationState === "idle" ? (
           <p className="mt-2 text-xs text-slate-500">
-            Optional: allow browser location to prioritize freelancers close to you. City search remains available.
+            {t("public.freelancers.nearbyIdleHint")}
           </p>
         ) : null}
-        {locationState === "denied" && error ? <p className="mt-2 text-xs text-amber-700">{error}</p> : null}
+        {locationState === "denied" && errorCode ? (
+          <p className="mt-2 text-xs text-amber-700">
+            {errorCode === "unsupported"
+              ? t("public.freelancers.nearbyErrorUnsupported")
+              : errorCode === "permission_denied"
+                ? t("public.freelancers.nearbyErrorDenied")
+                : t("public.freelancers.nearbyErrorLookup")}
+          </p>
+        ) : null}
       </div>
     </div>
   );

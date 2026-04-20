@@ -112,11 +112,9 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-12">
       <header className="nw-page-header">
-        <p className="nw-section-title">Jobs discovery</p>
-        <h1 className="nw-page-title">Browse open jobs</h1>
-        <p className="nw-page-description">
-          Active client briefs—filter by category, place, and work mode, then open a row for the full scope.
-        </p>
+        <p className="nw-section-title">{t("public.jobs.sectionTitle")}</p>
+        <h1 className="nw-page-title">{t("public.jobs.pageTitle")}</h1>
+        <p className="nw-page-description">{t("public.jobs.pageDescription")}</p>
         <div className="mt-2">
           <MarketplacePulse pulse={pulse} t={t} />
         </div>
@@ -127,10 +125,10 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
           {total > 0 ? (
             <div className="nw-results-toolbar">
               <span className="text-[15px] font-bold text-slate-950">
-                {total === 1 ? "1 open role" : `${total} open roles`}
+                {total === 1 ? t("public.jobs.resultOne") : t("public.jobs.resultMany", { count: total })}
               </span>
               <span className="max-w-[14rem] text-right text-xs font-medium leading-snug text-slate-600 sm:max-w-none sm:text-left">
-                Title + budget at a glance—open for the full brief.
+                {t("public.jobs.resultHint")}
               </span>
             </div>
           ) : null}
@@ -144,30 +142,30 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
           {totalPages > 1 ? (
             <nav
               className="flex items-center justify-between border-t border-slate-200 pt-6 text-sm"
-              aria-label="Pagination"
+              aria-label={t("public.pagination.label")}
             >
               {page > 1 ? (
                 <Link
                   href={`/jobs${jobsQueryString({ keyword, city, workMode, categoryId, page: page - 1 })}` as Route}
                   className="font-bold text-[#3525cd] hover:underline"
                 >
-                  ← Previous
+                  {t("public.pagination.previous")}
                 </Link>
               ) : (
-                <span className="text-slate-300">← Previous</span>
+                <span className="text-slate-300">{t("public.pagination.previous")}</span>
               )}
               <span className="text-xs font-semibold text-slate-600">
-                Page {page} of {totalPages}
+                {t("public.pagination.pageOf", { page, total: totalPages })}
               </span>
               {page < totalPages ? (
                 <Link
                   href={`/jobs${jobsQueryString({ keyword, city, workMode, categoryId, page: page + 1 })}` as Route}
                   className="font-bold text-[#3525cd] hover:underline"
                 >
-                  Next →
+                  {t("public.pagination.next")}
                 </Link>
               ) : (
-                <span className="text-slate-300">Next →</span>
+                <span className="text-slate-300">{t("public.pagination.next")}</span>
               )}
             </nav>
           ) : null}
@@ -182,11 +180,9 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
             categories={categories}
           />
           <div className="nw-surface-soft space-y-3 border-t-[3px] border-t-[#3525cd] p-4 text-sm">
-            <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-600">For clients</p>
-            <p className="text-base font-bold text-slate-950">Hiring on NearWork?</p>
-            <p className="font-medium text-slate-600">
-              Post a brief with budget and location so the right people can send proposals.
-            </p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-600">{t("public.jobs.sidebarKicker")}</p>
+            <p className="text-base font-bold text-slate-950">{t("public.jobs.sidebarTitle")}</p>
+            <p className="font-medium text-slate-600">{t("public.jobs.sidebarBody")}</p>
             <AuthAwareCtaLink
               href={"/client/jobs/new" as Route}
               intent="post-job"
@@ -194,13 +190,13 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
               registerRoleHint="client"
               className="nw-cta-primary flex w-full justify-center py-3 text-center"
             >
-              Post a job
+              {t("public.jobs.sidebarPrimary")}
             </AuthAwareCtaLink>
             <Link
               href="/freelancers"
               className="block text-center text-xs font-bold text-[#3525cd] hover:underline"
             >
-              Browse freelancers instead
+              {t("public.jobs.sidebarSecondary")}
             </Link>
           </div>
         </aside>

@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useI18n } from "@/features/i18n/I18nProvider";
 import { popularJobSearchSuggestions } from "@/features/public/lib/popular-search-suggestions";
 
 type WorkMode = "" | "REMOTE" | "ONSITE" | "HYBRID";
@@ -13,30 +16,31 @@ type JobsPublicFiltersProps = {
   categories: JobsFilterCategory[];
 };
 
-const workModes: { value: WorkMode; label: string }[] = [
-  { value: "", label: "Any work mode" },
-  { value: "REMOTE", label: "Remote" },
-  { value: "ONSITE", label: "On-site" },
-  { value: "HYBRID", label: "Hybrid" }
-];
-
 export function JobsPublicFilters({ keyword, city, workMode, categoryId, categories }: JobsPublicFiltersProps) {
+  const { t } = useI18n();
+  const workModes: { value: WorkMode; label: string }[] = [
+    { value: "", label: t("public.filters.workModeAny") },
+    { value: "REMOTE", label: t("public.filters.workModeRemote") },
+    { value: "ONSITE", label: t("public.filters.workModeOnSite") },
+    { value: "HYBRID", label: t("public.filters.workModeHybrid") }
+  ];
+
   return (
     <div className="nw-discovery-panel">
       <div className="nw-panel-head">
         <div>
-          <p className="nw-section-title">Filters</p>
-          <p className="text-sm font-semibold text-slate-900">Live board · open roles only</p>
+          <p className="nw-section-title">{t("public.filters.title")}</p>
+          <p className="text-sm font-semibold text-slate-900">{t("public.jobs.filtersSubtitle")}</p>
         </div>
         <div className="flex shrink-0 gap-2">
           <button type="submit" form="jobs-filter-form" className="nw-cta-primary px-5 py-2.5">
-            Apply
+            {t("public.filters.apply")}
           </button>
           <Link
             href="/jobs"
             className="inline-flex items-center rounded-md border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
           >
-            Reset
+            {t("public.filters.reset")}
           </Link>
         </div>
       </div>
@@ -44,7 +48,7 @@ export function JobsPublicFilters({ keyword, city, workMode, categoryId, categor
       <form id="jobs-filter-form" method="get" action="/jobs" className="flex flex-col gap-4 xl:flex-row xl:flex-wrap xl:items-end">
         <div className="min-w-0 flex-1 xl:max-w-[220px]">
           <label htmlFor="jobs-kw" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Keyword
+            {t("public.filters.keyword")}
           </label>
           <datalist id="jobs-kw-suggestions">
             {popularJobSearchSuggestions.map((term) => (
@@ -57,10 +61,10 @@ export function JobsPublicFilters({ keyword, city, workMode, categoryId, categor
             type="search"
             list="jobs-kw-suggestions"
             defaultValue={keyword}
-            placeholder="Title or description"
+            placeholder={t("public.jobs.keywordPlaceholder")}
             className="nw-input w-full"
           />
-          <p className="mt-1.5 text-[11px] font-medium text-slate-500">Popular:</p>
+          <p className="mt-1.5 text-[11px] font-medium text-slate-500">{t("public.filters.popular")}</p>
           <div className="mt-1 flex flex-wrap gap-x-2 gap-y-1">
             {popularJobSearchSuggestions.map((term) => (
               <Link
@@ -76,7 +80,7 @@ export function JobsPublicFilters({ keyword, city, workMode, categoryId, categor
 
         <div className="min-w-0 flex-1 xl:max-w-[200px]">
           <label htmlFor="jobs-cat" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Category
+            {t("public.filters.category")}
           </label>
           <select
             id="jobs-cat"
@@ -84,7 +88,7 @@ export function JobsPublicFilters({ keyword, city, workMode, categoryId, categor
             defaultValue={categoryId}
             className="nw-input w-full"
           >
-            <option value="">All categories</option>
+            <option value="">{t("public.filters.allCategories")}</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
@@ -95,7 +99,7 @@ export function JobsPublicFilters({ keyword, city, workMode, categoryId, categor
 
         <div className="min-w-0 flex-1 xl:max-w-[200px]">
           <label htmlFor="jobs-wm" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Work mode
+            {t("public.filters.workMode")}
           </label>
           <select
             id="jobs-wm"
@@ -113,21 +117,22 @@ export function JobsPublicFilters({ keyword, city, workMode, categoryId, categor
 
         <div className="min-w-0 flex-1 xl:max-w-[200px]">
           <label htmlFor="jobs-city" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Location
+            {t("public.filters.location")}
           </label>
           <input
             id="jobs-city"
             name="city"
             type="text"
             defaultValue={city}
-            placeholder="City (optional)"
+            placeholder={t("public.filters.cityPlaceholder")}
             className="nw-input w-full"
           />
-          <p className="mt-1.5 text-[11px] leading-snug text-slate-500">Matches when the job lists a city.</p>
+          <p className="mt-1.5 text-[11px] leading-snug text-slate-500">{t("public.jobs.locationHint")}</p>
         </div>
 
         <p className="w-full text-[11px] font-medium text-slate-600">
-          Tip: set <span className="font-bold text-slate-800">work mode</span> first, then keyword.
+          {t("public.jobs.tipPrefix")} <span className="font-bold text-slate-800">{t("public.filters.workModeLower")}</span>{" "}
+          {t("public.jobs.tipSuffix")}
         </p>
       </form>
     </div>

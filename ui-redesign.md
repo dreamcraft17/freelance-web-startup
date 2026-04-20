@@ -1,7 +1,7 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v10  
-> Last synchronized: 2026-04-20 (navbar spacing hardened for Indonesian labels).
+> **Doc revision:** v11  
+> Last synchronized: 2026-04-20 (public discovery copy localized EN/ID).
 
 ## Goal
 
@@ -22,6 +22,11 @@ Build a grounded, practical, product-first UI across public and authenticated su
 - **Single-row desktop stability:** `MarketingNavBar` menghentikan wrapping di center nav (`flex-wrap` dihapus) dan memindahkan breakpoint desktop utama ke `lg` agar tablet tidak dipaksa menampilkan navbar padat.
 - **Hierarchy dipertegas:** kiri = logo (tetap dominan), tengah = primary+secondary nav (secondary ukuran font lebih kecil), kanan = utility/auth + locale switcher + CTA.
 - **Anti-fragile spacing:** padding horizontal dan gap dituning ulang; utility rendah prioritas (`Browse jobs`, secondary action signed-in) ditampilkan hanya saat lebar cukup (`xl`) agar label Indonesia tidak merusak ritme.
+
+### 2026-04-20 — Public discovery language consistency
+
+- Halaman `/jobs` dan `/freelancers` (beserta filter/list/empty states) kini memakai key i18n untuk seluruh teks user-facing yang sebelumnya masih hardcoded Inggris.
+- Prompt geolokasi pada filter freelancer juga dilokalisasi via error code (`unsupported`, `permission_denied`, `lookup_failed`) agar pesan tidak campur bahasa.
 
 ### 2026-04-18 — Marketing navbar (product chrome, not template)
 
