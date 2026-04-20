@@ -1,7 +1,10 @@
+"use client";
+
 import type { Route } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { REGISTER_FREELANCER_PROFILE } from "@/features/auth/lib/register-intents";
+import { useI18n } from "@/features/i18n/I18nProvider";
 
 type FreelancersPublicEmptyProps = {
   categorySelected: boolean;
@@ -17,24 +20,26 @@ function SuggestedSteps({ children }: { children: ReactNode }) {
 }
 
 export function FreelancersPublicEmpty({ categorySelected, hasFilters }: FreelancersPublicEmptyProps) {
+  const { t } = useI18n();
+
   if (categorySelected) {
     return (
       <div className="nw-empty-state text-left">
-        <p className="text-base font-semibold text-slate-900">No freelancers in this category yet</p>
+        <p className="text-base font-semibold text-slate-900">{t("public.freelancers.emptyCategoryTitle")}</p>
         <p className="mt-2 max-w-lg text-sm leading-relaxed text-slate-600">
-          Nobody on the directory lists skills under that category right now—that is a real empty state, not a bug.
+          {t("public.freelancers.emptyCategoryBody")}
         </p>
         <SuggestedSteps>
-          <li>Clear category and try a broader keyword.</li>
-          <li>Switch work mode to Any if you over-filtered remote vs on-site.</li>
-          <li>Check open jobs if you are hiring instead of browsing talent.</li>
+          <li>{t("public.freelancers.emptyCategoryStep1")}</li>
+          <li>{t("public.freelancers.emptyCategoryStep2")}</li>
+          <li>{t("public.freelancers.emptyCategoryStep3")}</li>
         </SuggestedSteps>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link href="/freelancers" className="nw-cta-primary px-5 py-2.5">
-            Browse everyone
+            {t("public.freelancers.emptyCategoryPrimary")}
           </Link>
           <Link href="/jobs" className="text-sm font-semibold text-[#433C93] hover:underline">
-            View open jobs →
+            {t("public.freelancers.emptyCategorySecondary")}
           </Link>
         </div>
       </div>
@@ -44,21 +49,21 @@ export function FreelancersPublicEmpty({ categorySelected, hasFilters }: Freelan
   if (hasFilters) {
     return (
       <div className="nw-empty-state text-left">
-        <p className="text-base font-semibold text-slate-900">No freelancers match these filters</p>
+        <p className="text-base font-semibold text-slate-900">{t("public.freelancers.emptyFiltersTitle")}</p>
         <p className="mt-2 max-w-lg text-sm leading-relaxed text-slate-600">
-          The directory is still growing in early access—tight filters often return zero even when people are signing up.
+          {t("public.freelancers.emptyFiltersBody")}
         </p>
         <SuggestedSteps>
-          <li>Remove city or widen radius if you used nearby.</li>
-          <li>Try remote-only for roles that do not need someone on-site.</li>
-          <li>Shorten the keyword to one strong term.</li>
+          <li>{t("public.freelancers.emptyFiltersStep1")}</li>
+          <li>{t("public.freelancers.emptyFiltersStep2")}</li>
+          <li>{t("public.freelancers.emptyFiltersStep3")}</li>
         </SuggestedSteps>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link href="/freelancers" className="nw-cta-primary px-5 py-2.5">
-            Reset filters
+            {t("public.freelancers.emptyFiltersPrimary")}
           </Link>
           <Link href="/jobs" className="text-sm font-semibold text-[#433C93] hover:underline">
-            View open jobs →
+            {t("public.freelancers.emptyFiltersSecondary")}
           </Link>
         </div>
       </div>
@@ -67,22 +72,21 @@ export function FreelancersPublicEmpty({ categorySelected, hasFilters }: Freelan
 
   return (
     <div className="nw-empty-state text-left">
-      <p className="text-base font-semibold text-slate-900">No public profiles yet</p>
+      <p className="text-base font-semibold text-slate-900">{t("public.freelancers.emptyDefaultTitle")}</p>
       <p className="mt-2 max-w-lg text-sm leading-relaxed text-slate-600">
-        When freelancers publish profiles with city and work mode, they show up here automatically—nothing to seed by
-        hand.
+        {t("public.freelancers.emptyDefaultBody")}
       </p>
       <SuggestedSteps>
-        <li>If you are a freelancer, complete your profile and set availability.</li>
-        <li>If you are hiring, post a job so proposals can start.</li>
-        <li>Come back after early-access invites roll out—this list will move first.</li>
+        <li>{t("public.freelancers.emptyDefaultStep1")}</li>
+        <li>{t("public.freelancers.emptyDefaultStep2")}</li>
+        <li>{t("public.freelancers.emptyDefaultStep3")}</li>
       </SuggestedSteps>
       <div className="mt-6 flex flex-wrap gap-3">
         <Link href={REGISTER_FREELANCER_PROFILE as Route} className="nw-cta-primary px-5 py-2.5">
-          Create a freelancer profile
+          {t("public.freelancers.emptyDefaultPrimary")}
         </Link>
         <Link href="/jobs" className="text-sm font-semibold text-[#433C93] hover:underline">
-          Browse jobs →
+          {t("public.freelancers.emptyDefaultSecondary")}
         </Link>
       </div>
     </div>

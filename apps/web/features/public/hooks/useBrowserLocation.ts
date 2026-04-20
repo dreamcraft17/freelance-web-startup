@@ -3,21 +3,22 @@
 import { useCallback, useState } from "react";
 
 export type BrowserLocationState = "idle" | "requesting" | "granted" | "denied";
+export type BrowserLocationErrorCode = "unsupported" | "permission_denied" | "lookup_failed";
 
 export function useBrowserLocation() {
   const [state, setState] = useState<BrowserLocationState>("idle");
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [errorCode, setErrorCode] = useState<BrowserLocationErrorCode | null>(null);
 
   const request = useCallback(() => {
     if (!("geolocation" in navigator)) {
       setState("denied");
-      setError("Geolocation is not supported in this browser.");
+      setErrorCode("unsupported");
       return;
     }
 
     setState("requesting");
-    setError(null);
+    setErrorCode(null);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
@@ -26,9 +27,9 @@ export function useBrowserLocation() {
       (err) => {
         setState("denied");
         if (err.code === err.PERMISSION_DENIED) {
-          setError("Location permission denied. You can still search by city.");
+          setErrorCode("permission_denied");
         } else {
-          setError("Could not determine your location. Try again or use city search.");
+          setErrorCode("lookup_failed");
         }
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 120000 }
@@ -37,10 +38,10 @@ export function useBrowserLocation() {
 
   const clear = useCallback(() => {
     setCoords(null);
-    setError(null);
+    setErrorCode(null);
     setState("idle");
   }, []);
 
-  return { state, coords, error, request, clear, setCoords, setState };
+  return { state, coords, errorCode, request, clear, setCoords, setState };
 }
 

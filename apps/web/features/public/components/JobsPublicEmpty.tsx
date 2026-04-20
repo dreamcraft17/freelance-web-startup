@@ -1,7 +1,10 @@
+"use client";
+
 import type { Route } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
+import { useI18n } from "@/features/i18n/I18nProvider";
 
 type JobsPublicEmptyProps = {
   /** True when user narrowed by category */
@@ -19,21 +22,23 @@ function SuggestedSteps({ children }: { children: ReactNode }) {
 }
 
 export function JobsPublicEmpty({ categorySelected, hasFilters }: JobsPublicEmptyProps) {
+  const { t } = useI18n();
+
   if (categorySelected) {
     return (
       <div className="nw-empty-state text-left">
-        <p className="text-base font-semibold text-slate-900">No jobs yet in this category</p>
+        <p className="text-base font-semibold text-slate-900">{t("public.jobs.emptyCategoryTitle")}</p>
         <p className="mt-2 max-w-lg text-sm leading-relaxed text-slate-600">
-          Nothing open matches that category right now. The board only shows what clients have actually posted.
+          {t("public.jobs.emptyCategoryBody")}
         </p>
         <SuggestedSteps>
-          <li>Clear category and scan the full board.</li>
-          <li>Loosen keyword or city if you stacked filters.</li>
-          <li>Post a brief if you are the one hiring.</li>
+          <li>{t("public.jobs.emptyCategoryStep1")}</li>
+          <li>{t("public.jobs.emptyCategoryStep2")}</li>
+          <li>{t("public.jobs.emptyCategoryStep3")}</li>
         </SuggestedSteps>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link href="/jobs" className="nw-cta-primary px-5 py-2.5">
-            Browse all open jobs
+            {t("public.jobs.emptyCategoryPrimary")}
           </Link>
           <AuthAwareCtaLink
             href={"/client/jobs/new" as Route}
@@ -42,7 +47,7 @@ export function JobsPublicEmpty({ categorySelected, hasFilters }: JobsPublicEmpt
             registerRoleHint="client"
             className="text-sm font-semibold text-[#433C93] hover:underline"
           >
-            Post a job →
+            {t("public.jobs.emptyCategorySecondary")}
           </AuthAwareCtaLink>
         </div>
       </div>
@@ -52,21 +57,21 @@ export function JobsPublicEmpty({ categorySelected, hasFilters }: JobsPublicEmpt
   if (hasFilters) {
     return (
       <div className="nw-empty-state text-left">
-        <p className="text-base font-semibold text-slate-900">No jobs match these filters</p>
+        <p className="text-base font-semibold text-slate-900">{t("public.jobs.emptyFiltersTitle")}</p>
         <p className="mt-2 max-w-lg text-sm leading-relaxed text-slate-600">
-          Early access boards stay sparse—filters are doing their job even when the answer is zero.
+          {t("public.jobs.emptyFiltersBody")}
         </p>
         <SuggestedSteps>
-          <li>Reset work mode to Any, then narrow again.</li>
-          <li>Drop city if the role might be remote.</li>
-          <li>Use one keyword from the job title you remember.</li>
+          <li>{t("public.jobs.emptyFiltersStep1")}</li>
+          <li>{t("public.jobs.emptyFiltersStep2")}</li>
+          <li>{t("public.jobs.emptyFiltersStep3")}</li>
         </SuggestedSteps>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link href="/jobs" className="nw-cta-primary px-5 py-2.5">
-            Clear filters
+            {t("public.jobs.emptyFiltersPrimary")}
           </Link>
           <Link href="/freelancers" className="text-sm font-semibold text-[#433C93] hover:underline">
-            Find freelancers instead →
+            {t("public.jobs.emptyFiltersSecondary")}
           </Link>
         </div>
       </div>
@@ -75,14 +80,14 @@ export function JobsPublicEmpty({ categorySelected, hasFilters }: JobsPublicEmpt
 
   return (
     <div className="nw-empty-state text-left">
-      <p className="text-base font-semibold text-slate-900">No open jobs on the board</p>
+      <p className="text-base font-semibold text-slate-900">{t("public.jobs.emptyDefaultTitle")}</p>
       <p className="mt-2 max-w-lg text-sm leading-relaxed text-slate-600">
-        The public job list is empty until clients post real briefs—there is no demo data behind this view.
+        {t("public.jobs.emptyDefaultBody")}
       </p>
       <SuggestedSteps>
-        <li>Clients: post the first brief with budget and work mode.</li>
-        <li>Freelancers: browse the directory and polish your profile while jobs ramp up.</li>
-        <li>Everyone: early access means the feed will move—bookmark and check back.</li>
+        <li>{t("public.jobs.emptyDefaultStep1")}</li>
+        <li>{t("public.jobs.emptyDefaultStep2")}</li>
+        <li>{t("public.jobs.emptyDefaultStep3")}</li>
       </SuggestedSteps>
       <div className="mt-6 flex flex-wrap gap-3">
         <AuthAwareCtaLink
@@ -92,10 +97,10 @@ export function JobsPublicEmpty({ categorySelected, hasFilters }: JobsPublicEmpt
           registerRoleHint="client"
           className="nw-cta-primary px-5 py-2.5"
         >
-          Post the first job
+          {t("public.jobs.emptyDefaultPrimary")}
         </AuthAwareCtaLink>
         <Link href="/freelancers" className="text-sm font-semibold text-[#433C93] hover:underline">
-          Browse freelancers →
+          {t("public.jobs.emptyDefaultSecondary")}
         </Link>
       </div>
     </div>

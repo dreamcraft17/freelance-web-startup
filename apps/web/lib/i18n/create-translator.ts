@@ -27,6 +27,9 @@ export function createTranslator(messages: unknown): Translator {
   return function t(key: string, params?: TranslateParams): string {
     const raw = readPath(messages, key.split("."));
     if (typeof raw === "string") return applyParams(raw, params);
+    if (process.env.NODE_ENV !== "production") {
+      return `[missing:${key}]`;
+    }
     return key;
   };
 }

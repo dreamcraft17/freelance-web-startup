@@ -138,12 +138,9 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-12">
       <header className="nw-page-header">
-        <p className="nw-section-title">Freelancer discovery</p>
-        <h1 className="nw-page-title">Browse freelancers</h1>
-        <p className="nw-page-description">
-          Live profiles—filter by skill, city, and work mode. Turn on nearby when place matters; go remote when it does
-          not.
-        </p>
+        <p className="nw-section-title">{t("public.freelancers.sectionTitle")}</p>
+        <h1 className="nw-page-title">{t("public.freelancers.pageTitle")}</h1>
+        <p className="nw-page-description">{t("public.freelancers.pageDescription")}</p>
         <div className="mt-2">
           <MarketplacePulse pulse={pulse} t={t} />
         </div>
@@ -153,18 +150,16 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
         <div className="order-2 min-w-0 space-y-6 lg:order-1">
           {hasGeoCenter ? (
             <div className="border border-emerald-200 border-l-[3px] border-l-emerald-600 bg-emerald-50/90 px-4 py-3.5 text-sm leading-relaxed text-emerald-950">
-              <p className="text-xs font-bold uppercase tracking-wide text-emerald-800">Nearby sort on</p>
+              <p className="text-xs font-bold uppercase tracking-wide text-emerald-800">{t("public.freelancers.nearbyBannerTitle")}</p>
               <p className="mt-1 font-semibold text-emerald-950">
-                Within <span className="text-emerald-900">{radiusKm} km</span> · closest first. Distance on cards when
-                coordinates exist.
+                {t("public.freelancers.nearbyBannerBody", { radius: radiusKm })}
               </p>
             </div>
           ) : city.trim() ? (
             <div className="border border-slate-200 border-l-[3px] border-l-[#3525cd] bg-white px-4 py-3.5 text-sm leading-relaxed">
-              <p className="text-xs font-bold uppercase tracking-wide text-[#3525cd]">City match</p>
+              <p className="text-xs font-bold uppercase tracking-wide text-[#3525cd]">{t("public.freelancers.cityMatchTitle")}</p>
               <p className="mt-1 font-semibold text-slate-800">
-                Profiles mentioning <span className="text-slate-950">&ldquo;{city.trim()}&rdquo;</span>—pair with work
-                mode to separate remote vs on-site.
+                {t("public.freelancers.cityMatchBody", { city: city.trim() })}
               </p>
             </div>
           ) : null}
@@ -172,10 +167,10 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
           {nearbyTotal > 0 ? (
             <div className="nw-results-toolbar">
               <span className="text-[15px] font-bold text-slate-950">
-                {nearbyTotal === 1 ? "1 profile" : `${nearbyTotal} profiles`}
+                {nearbyTotal === 1 ? t("public.freelancers.resultOne") : t("public.freelancers.resultMany", { count: nearbyTotal })}
               </span>
               <span className="max-w-[12rem] text-right text-xs font-medium leading-snug text-slate-600 sm:max-w-none sm:text-left">
-                Open a card for the full profile and reviews.
+                {t("public.freelancers.resultHint")}
               </span>
             </div>
           ) : null}
@@ -189,7 +184,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
           {!hasGeoCenter && totalPages > 1 ? (
             <nav
               className="flex items-center justify-between border-t border-slate-200 pt-6 text-sm"
-              aria-label="Pagination"
+              aria-label={t("public.pagination.label")}
             >
               {page > 1 ? (
                 <Link
@@ -198,13 +193,13 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
                   }
                   className="font-bold text-[#3525cd] hover:underline"
                 >
-                  ← Previous
+                  {t("public.pagination.previous")}
                 </Link>
               ) : (
-                <span className="text-slate-300">← Previous</span>
+                <span className="text-slate-300">{t("public.pagination.previous")}</span>
               )}
               <span className="text-xs font-semibold text-slate-600">
-                Page {page} of {totalPages}
+                {t("public.pagination.pageOf", { page, total: totalPages })}
               </span>
               {page < totalPages ? (
                 <Link
@@ -213,10 +208,10 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
                   }
                   className="font-bold text-[#3525cd] hover:underline"
                 >
-                  Next →
+                  {t("public.pagination.next")}
                 </Link>
               ) : (
-                <span className="text-slate-300">Next →</span>
+                <span className="text-slate-300">{t("public.pagination.next")}</span>
               )}
             </nav>
           ) : null}
@@ -234,17 +229,17 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
             radiusKm={radiusKm}
           />
           <div className="nw-surface-soft hidden border-t-[3px] border-t-[#3525cd] p-4 text-sm lg:block">
-            <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-600">For freelancers</p>
-            <p className="mt-1 text-base font-bold text-slate-950">Get seen on this directory</p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-600">{t("public.freelancers.sidebarKicker")}</p>
+            <p className="mt-1 text-base font-bold text-slate-950">{t("public.freelancers.sidebarTitle")}</p>
             <ul className="mt-3 space-y-2 font-medium text-slate-700">
               <li className="border-l-2 border-slate-200 pl-3">
-                <span className="font-bold text-slate-900">Profile</span> — headline, skills, city
+                <span className="font-bold text-slate-900">{t("public.freelancers.sidebarBullet1Title")}</span> — {t("public.freelancers.sidebarBullet1Body")}
               </li>
               <li className="border-l-2 border-slate-200 pl-3">
-                <span className="font-bold text-slate-900">Jobs</span> — match your work mode
+                <span className="font-bold text-slate-900">{t("public.freelancers.sidebarBullet2Title")}</span> — {t("public.freelancers.sidebarBullet2Body")}
               </li>
               <li className="border-l-2 border-[#3525cd]/40 pl-3">
-                <span className="font-bold text-[#3525cd]">Proposals</span> — one workspace
+                <span className="font-bold text-[#3525cd]">{t("public.freelancers.sidebarBullet3Title")}</span> — {t("public.freelancers.sidebarBullet3Body")}
               </li>
             </ul>
             <div className="mt-4 space-y-2">
@@ -252,7 +247,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
                 href={"/freelancer/profile" as Route}
                 className="inline-flex w-full items-center justify-center rounded-md border-2 border-slate-300 bg-white px-3 py-2.5 text-sm font-bold text-slate-800 transition hover:border-slate-400 hover:bg-slate-50"
               >
-                Complete profile
+                {t("public.freelancers.sidebarPrimary")}
               </Link>
               <AuthAwareCtaLink
                 href={"/freelancer/proposals" as Route}
@@ -260,7 +255,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
                 unauthenticatedTo="login"
                 className="nw-cta-primary inline-flex w-full items-center justify-center px-3 py-2.5 text-sm font-semibold"
               >
-                View proposals
+                {t("public.freelancers.sidebarSecondary")}
               </AuthAwareCtaLink>
             </div>
           </div>

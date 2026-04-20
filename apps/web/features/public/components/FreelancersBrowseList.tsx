@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { MapPin, Star } from "lucide-react";
+import { useI18n } from "@/features/i18n/I18nProvider";
 
 export type PublicFreelancerCard = {
   id: string;
@@ -18,13 +21,6 @@ export type PublicFreelancerCard = {
   distanceKm?: number | null;
 };
 
-function workModeLabel(wm: string): string {
-  if (wm === "REMOTE" || wm === "ONSITE" || wm === "HYBRID") {
-    return wm.charAt(0) + wm.slice(1).toLowerCase();
-  }
-  return wm;
-}
-
 function locationLabel(f: PublicFreelancerCard): string | null {
   if (f.city && f.country) return `${f.city}, ${f.country}`;
   if (f.city) return f.city;
@@ -36,37 +32,10 @@ function availabilityLabel(s: string): string {
   return s.replace(/_/g, " ").toLowerCase();
 }
 
-function rateLabel(f: PublicFreelancerCard): string {
-  if (f.hourlyRate == null || !Number.isFinite(f.hourlyRate)) return "Rate on request";
-  try {
-    return `${new Intl.NumberFormat(undefined, { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(f.hourlyRate)}/hr`;
-  } catch {
-    return `${f.hourlyRate}/hr`;
-  }
-}
-
 function specialtyLine(f: PublicFreelancerCard): string | null {
   if (f.primaryCategoryName?.trim()) return f.primaryCategoryName.trim();
   if (f.headline?.trim()) return f.headline.trim();
   return null;
-}
-
-function ratingLine(f: PublicFreelancerCard): string | null {
-  if (f.reviewCount <= 0 || f.averageReviewRating == null || !Number.isFinite(f.averageReviewRating)) return null;
-  const stars = f.averageReviewRating.toFixed(1);
-  const n = f.reviewCount === 1 ? "1 review" : `${f.reviewCount} reviews`;
-  return `${stars} · ${n}`;
-}
-
-/** Real profile signals only—no invented hire counts or response SLAs. */
-function confidenceLine(f: PublicFreelancerCard): string | null {
-  const parts: string[] = [];
-  if (f.availabilityStatus === "AVAILABLE") parts.push("Available on the roster now");
-  if (f.reviewCount >= 3 && f.averageReviewRating != null && Number.isFinite(f.averageReviewRating)) {
-    parts.push("Repeated client reviews on record");
-  }
-  if (parts.length === 0) return null;
-  return parts.join(" · ");
 }
 
 type FreelancersBrowseListProps = {
@@ -76,6 +45,47 @@ type FreelancersBrowseListProps = {
 };
 
 export function FreelancersBrowseList({ freelancers, activeCityFilter }: FreelancersBrowseListProps) {
+  const { t } = useI18n();
+
+  const workModeLabel = (wm: string): string => {
+    if (wm === "REMOTE") return t("public.filters.workModeRemote");
+    if (wm === "ONSITE") return t("public.filters.workModeOnSite");
+    if (wm === "HYBRID") return t("public.filters.workModeHybrid");
+    return wm;
+  };
+
+  const rateLabel = (f: PublicFreelancerCard): string => {
+    if (f.hourlyRate == null || !Number.isFinite(f.hourlyRate)) return t("public.freelancers.rateOnRequest");
+    try {
+      return t("public.freelancers.ratePerHour", {
+        amount: new Intl.NumberFormat(undefined, { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(
+          f.hourlyRate
+        )
+      });
+    } catch {
+      return t("public.freelancers.ratePerHour", { amount: String(f.hourlyRate) });
+    }
+  };
+
+  const ratingLine = (f: PublicFreelancerCard): string | null => {
+    if (f.reviewCount <= 0 || f.averageReviewRating == null || !Number.isFinite(f.averageReviewRating)) return null;
+    const stars = f.averageReviewRating.toFixed(1);
+    return t(f.reviewCount === 1 ? "public.freelancers.reviewOne" : "public.freelancers.reviewMany", {
+      stars,
+      count: f.reviewCount
+    });
+  };
+
+  const confidenceLine = (f: PublicFreelancerCard): string | null => {
+    const parts: string[] = [];
+    if (f.availabilityStatus === "AVAILABLE") parts.push(t("public.freelancers.confidenceAvailable"));
+    if (f.reviewCount >= 3 && f.averageReviewRating != null && Number.isFinite(f.averageReviewRating)) {
+      parts.push(t("public.freelancers.confidenceReviews"));
+    }
+    if (parts.length === 0) return null;
+    return parts.join(" · ");
+  };
+
   if (freelancers.length === 0) {
     return null;
   }
@@ -118,7 +128,7 @@ export function FreelancersBrowseList({ freelancers, activeCityFilter }: Freelan
               {spec ? (
                 <p className="mt-1.5 line-clamp-2 text-sm font-semibold text-slate-800">{spec}</p>
               ) : (
-                <p className="mt-1.5 text-sm font-medium italic text-slate-400">Open profile for details</p>
+                <p className="mt-1.5 text-sm font-medium italic text-slate-400">{t("public.freelancers.openProfileDetails")}</p>
               )}
 
               {showHeadlineBelow ? (
@@ -136,7 +146,7 @@ export function FreelancersBrowseList({ freelancers, activeCityFilter }: Freelan
                     <span>{loc}</span>
                   </p>
                 ) : (
-                  <p className="text-xs font-medium text-slate-400">Location not listed</p>
+                  <p className="text-xs font-medium text-slate-400">{t("public.freelancers.locationNotListed")}</p>
                 )}
 
                 <div className="mt-2.5 flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1 border-t border-slate-200/80 pt-2.5">
@@ -147,7 +157,7 @@ export function FreelancersBrowseList({ freelancers, activeCityFilter }: Freelan
                       {rating}
                     </span>
                   ) : (
-                    <span className="text-[11px] font-semibold text-slate-400">No reviews yet</span>
+                    <span className="text-[11px] font-semibold text-slate-400">{t("public.freelancers.noReviewsYet")}</span>
                   )}
                 </div>
 
