@@ -8,7 +8,7 @@ export type PublicSessionLite = {
 };
 
 export type AuthNavAction = {
-  label: string;
+  labelKey: string;
   href: string;
 };
 
@@ -23,19 +23,19 @@ function isStaffRole(role: UserRole): boolean {
 
 export function primaryActionForRole(role: UserRole): AuthNavAction {
   if (isStaffRole(role)) {
-    return { label: "Admin", href: "/admin" };
+    return { labelKey: "nav.auth.admin", href: "/admin" };
   }
   if (role === UserRole.CLIENT) {
-    return { label: "Dashboard", href: "/client" };
+    return { labelKey: "nav.auth.dashboardClient", href: "/client" };
   }
   if (role === UserRole.FREELANCER) {
-    return { label: "Dashboard", href: "/freelancer" };
+    return { labelKey: "nav.auth.dashboardFreelancer", href: "/freelancer" };
   }
-  return { label: "Dashboard", href: homePathForSessionRole(role) };
+  return { labelKey: "nav.auth.dashboardFallback", href: homePathForSessionRole(role) };
 }
 
 export function secondaryActionForRole(role: UserRole): AuthNavAction | null {
-  if (role === UserRole.CLIENT) return { label: "Post a job", href: "/client/jobs/new" };
-  if (role === UserRole.FREELANCER) return { label: "Messages", href: "/messages" };
+  if (role === UserRole.CLIENT) return { labelKey: "nav.auth.secondaryPostJob", href: "/client/jobs/new" };
+  if (role === UserRole.FREELANCER) return { labelKey: "nav.auth.secondaryMessages", href: "/messages" };
   return null;
 }

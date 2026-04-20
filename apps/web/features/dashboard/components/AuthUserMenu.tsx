@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { ChevronDown, Loader2, LogOut, Settings, User } from "lucide-react";
 import { getSessionSnapshot, signOutCurrentSession } from "@/features/auth/lib/client-auth-actions";
+import { useI18n } from "@/features/i18n/I18nProvider";
 import { cn } from "@/lib/utils";
 
 type SessionDto = {
@@ -44,6 +45,7 @@ type AuthUserMenuProps = {
 };
 
 export function AuthUserMenu({ compact = false, variant = "default" }: AuthUserMenuProps) {
+  const { t } = useI18n();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -79,7 +81,12 @@ export function AuthUserMenu({ compact = false, variant = "default" }: AuthUserM
   }, []);
 
   const initials = useMemo(() => initialsFromSession(session), [session]);
-  const roleLabel = session?.role === "FREELANCER" ? "Freelancer" : session?.role === "CLIENT" ? "Client" : "User";
+  const roleLabel =
+    session?.role === "FREELANCER"
+      ? t("authMenu.freelancer")
+      : session?.role === "CLIENT"
+        ? t("authMenu.client")
+        : t("authMenu.user");
   const profileHref = profileHrefForRole(session?.role ?? null);
   const settingsHref = settingsHrefForRole(session?.role ?? null);
 
@@ -89,7 +96,7 @@ export function AuthUserMenu({ compact = false, variant = "default" }: AuthUserM
     startTransition(async () => {
       const result = await signOutCurrentSession();
       if (!result.ok) {
-        setError("Could not sign out");
+        setError(t("authMenu.signOutError"));
         return;
       }
       setOpen(false);
@@ -132,8 +139,8 @@ export function AuthUserMenu({ compact = false, variant = "default" }: AuthUserM
           )}
         >
           <div className="border-b border-slate-100 px-3 pb-2 pt-2">
-            <p className="text-xs font-semibold text-slate-800">{roleLabel} account</p>
-            <p className="text-[11px] text-slate-500">Manage workspace and preferences</p>
+            <p className="text-xs font-semibold text-slate-800">{t("authMenu.accountLine", { role: roleLabel })}</p>
+            <p className="text-[11px] text-slate-500">{t("authMenu.manageHint")}</p>
           </div>
           <div className="p-1">
             <Link
@@ -141,14 +148,14 @@ export function AuthUserMenu({ compact = false, variant = "default" }: AuthUserM
               className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-slate-700 transition hover:bg-slate-50 hover:text-slate-900"
             >
               <User className="h-4 w-4 text-slate-400" aria-hidden />
-              Profile
+              {t("authMenu.profile")}
             </Link>
             <Link
               href={settingsHref as Route}
               className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-slate-700 transition hover:bg-slate-50 hover:text-slate-900"
             >
               <Settings className="h-4 w-4 text-slate-400" aria-hidden />
-              Settings
+              {t("authMenu.settings")}
             </Link>
             <button
               type="button"
@@ -157,7 +164,7 @@ export function AuthUserMenu({ compact = false, variant = "default" }: AuthUserM
               className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm text-rose-700 transition hover:bg-rose-50 disabled:opacity-60"
             >
               {isPending ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <LogOut className="h-4 w-4" aria-hidden />}
-              {isPending ? "Signing out..." : "Log out"}
+              {isPending ? t("authMenu.signingOut") : t("authMenu.logOut")}
             </button>
           </div>
           {error ? <p className="px-3 pb-2 text-[11px] text-rose-600">{error}</p> : null}

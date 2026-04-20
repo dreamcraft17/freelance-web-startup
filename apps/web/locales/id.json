@@ -1,0 +1,222 @@
+{
+  "nav": {
+    "jobs": "Lowongan",
+    "jobsHint": "Cari pekerjaan",
+    "freelancers": "Freelancer",
+    "freelancersHint": "Rekrut talenta",
+    "howItWorks": "Cara kerja",
+    "pricing": "Harga",
+    "help": "Bantuan",
+    "signedIn": "Sudah masuk",
+    "guestMode": "Mode tamu",
+    "browseJobs": "Jelajahi lowongan",
+    "logIn": "Masuk",
+    "register": "Daftar",
+    "startHiring": "Mulai merekrut",
+    "postAJob": "Pasang lowongan",
+    "findJobs": "Cari lowongan",
+    "dashboard": "Dasbor",
+    "notifications": "Notifikasi",
+    "messages": "Pesan",
+    "explore": "Jelajahi",
+    "account": "Akun",
+    "openMenu": "Buka menu",
+    "closeMenu": "Tutup menu",
+    "aria": {
+      "notificationsOne": "1 notifikasi belum dibaca",
+      "notificationsSome": "{{count}} notifikasi belum dibaca",
+      "notificationsOverflow": "Lebih dari 9 notifikasi belum dibaca",
+      "messagesOne": "1 percakapan belum dibaca",
+      "messagesSome": "{{count}} percakapan belum dibaca",
+      "messagesOverflow": "Lebih dari 9 percakapan belum dibaca"
+    },
+    "auth": {
+      "admin": "Admin",
+      "dashboardClient": "Dasbor",
+      "dashboardFreelancer": "Dasbor",
+      "dashboardFallback": "Dasbor",
+      "secondaryPostJob": "Pasang lowongan",
+      "secondaryMessages": "Pesan"
+    }
+  },
+  "footer": {
+    "product": "Produk",
+    "company": "Perusahaan",
+    "legal": "Legal",
+    "support": "Dukungan",
+    "findJobs": "Cari lowongan",
+    "findFreelancers": "Cari freelancer",
+    "about": "Tentang",
+    "pricing": "Harga",
+    "earlyAccess": "Akses awal",
+    "privacy": "Privasi",
+    "terms": "Syarat",
+    "help": "Bantuan",
+    "contact": "Kontak",
+    "tagline": "Marketplace freelance untuk pekerjaan lokal dan jarak jauh.",
+    "copyright": "© {{year}} NearWork"
+  },
+  "hero": {
+    "liveDirectory": "Direktori freelancer aktif",
+    "title": "Rekrut freelancer untuk pekerjaan nyata—dekat Anda atau jarak jauh",
+    "subtitle": "Cari profil langsung, bandingkan proposal di lowongan terbuka, dan jaga setiap percakapan tetap pada brief.",
+    "locationNote": "Kota + lokasi browser opsional menonjolkan talenta terdekat saat freelancer membagikan koordinat.",
+    "howTitle": "Alur merekrut",
+    "howStep1": "Pasang brief atau jelajahi direktori.",
+    "howStep2": "Tinjau proposal dan profil dalam konteks.",
+    "howStep3": "Chat dan putuskan tanpa keluar dari utas lowongan.",
+    "howFootnote": "Tanpa masuk untuk mencari—buat akun saat siap memasang lowongan atau mengirim proposal.",
+    "searchTitle": "Cari direktori langsung",
+    "searchSubtitle": "Listing nyata · berkembang bersama komunitas",
+    "searchLabel": "Cari",
+    "cityLabel": "Kota",
+    "keywordPlaceholder": "Apa yang Anda butuhkan? mis. foto, edit, les…",
+    "cityPlaceholder": "Kota (opsional)",
+    "searchButton": "Cari",
+    "popularSearches": "Pencarian populer",
+    "cityHint": "Tambahkan kota untuk mengutamakan profil terdekat; kosongkan untuk hasil jarak jauh yang lebih luas.",
+    "openDirectory": "Buka direktori",
+    "openJobBoard": "Buka papan lowongan",
+    "postAJob": "Pasang lowongan",
+    "trending": {
+      "weddingPhotographer": "Fotografer pernikahan",
+      "videoEditor": "Editor video",
+      "socialMedia": "Media sosial",
+      "tutorMath": "Les matematika",
+      "brandDesign": "Desain merek"
+    }
+  },
+  "pulse": {
+    "openRoleOne": "1 lowongan terbuka di papan",
+    "openRoles": "{{count}} lowongan terbuka di papan",
+    "proposalOne": "1 proposal baru dalam 24 jam terakhir",
+    "proposals": "{{count}} proposal baru dalam 24 jam terakhir",
+    "freelancerOne": "1 freelancer menandai ketersediaan",
+    "freelancers": "{{count}} freelancer menandai ketersediaan"
+  },
+  "workspace": {
+    "label": "Ruang kerja",
+    "bannerLabel": "Ruang kerja",
+    "accountSection": "Akun"
+  },
+  "dashboardNav": {
+    "client": {
+      "overview": "Ringkasan",
+      "sectionHiring": "Rekrutmen",
+      "myJobs": "Lowongan saya",
+      "postJob": "Pasang lowongan",
+      "nearbyTalent": "Talenta terdekat",
+      "messages": "Pesan",
+      "notifications": "Notifikasi",
+      "settings": "Pengaturan",
+      "sectionInbox": "Kotak masuk",
+      "sectionAccount": "Akun"
+    },
+    "freelancer": {
+      "overview": "Ringkasan",
+      "sectionWork": "Pekerjaan",
+      "profile": "Profil",
+      "proposals": "Proposal",
+      "nearby": "Terdekat",
+      "messages": "Pesan",
+      "notifications": "Notifikasi",
+      "settings": "Pengaturan",
+      "sectionInbox": "Kotak masuk",
+      "sectionAccount": "Akun"
+    },
+    "utility": {
+      "freelancerHome": "Beranda freelancer",
+      "clientHome": "Beranda klien",
+      "messages": "Pesan",
+      "notifications": "Notifikasi",
+      "saved": "Disimpan",
+      "settings": "Pengaturan",
+      "sectionGoTo": "Ke",
+      "sectionInbox": "Kotak masuk",
+      "sectionAccount": "Akun"
+    }
+  },
+  "authMenu": {
+    "freelancer": "Freelancer",
+    "client": "Klien",
+    "user": "Pengguna",
+    "accountLine": "Akun {{role}}",
+    "manageHint": "Kelola ruang kerja dan preferensi",
+    "profile": "Profil",
+    "settings": "Pengaturan",
+    "signingOut": "Keluar…",
+    "logOut": "Keluar",
+    "signOut": "Keluar",
+    "signOutError": "Tidak dapat keluar"
+  },
+  "publicHeader": {
+    "homeAria": "Beranda NearWork"
+  },
+  "locale": {
+    "en": "EN",
+    "id": "ID",
+    "switchTo": "Ganti bahasa",
+    "current": "Bahasa"
+  },
+  "auth": {
+    "login": {
+      "title": "Masuk",
+      "secureBadge": "Masuk aman",
+      "welcomeBack": "Selamat datang kembali",
+      "subtitle": "Masuk ke akun Anda untuk melanjutkan",
+      "afterSignIn": "Setelah masuk, Anda akan melanjutkan ke",
+      "email": "Email",
+      "emailAddress": "Alamat email",
+      "emailPlaceholder": "nama@perusahaan.com",
+      "password": "Kata sandi",
+      "showPassword": "Tampilkan kata sandi",
+      "hidePassword": "Sembunyikan kata sandi",
+      "submit": "Masuk",
+      "submitting": "Memproses…",
+      "noAccount": "Baru di sini?",
+      "createAccount": "Buat akun",
+      "forgot": "Lupa kata sandi?",
+      "errorGeneric": "Tidak dapat masuk. Coba lagi.",
+      "errorNetwork": "Tidak dapat menjangkau server. Periksa koneksi, VPN, atau pemblokir iklan, lalu coba lagi.",
+      "errorRequestFailed": "Permintaan gagal",
+      "errorSomething": "Terjadi kesalahan: {{message}}",
+      "orDivider": "atau",
+      "googleContinue": "Lanjutkan dengan Google",
+      "googleComingSoon": "Segera hadir",
+      "googleAria": "Lanjutkan dengan Google (segera hadir)",
+      "dontHaveAccount": "Belum punya akun?",
+      "signUp": "Daftar",
+      "continueClient": "Masuk untuk melanjutkan ke dasbor klien Anda.",
+      "continueFreelancer": "Masuk untuk melanjutkan ke dasbor freelancer Anda.",
+      "continueMessages": "Masuk untuk melanjutkan ke pesan Anda.",
+      "continueNotifications": "Masuk untuk melanjutkan ke notifikasi Anda.",
+      "continueSettings": "Masuk untuk melanjutkan ke pengaturan Anda.",
+      "continueAdmin": "Masuk untuk melanjutkan ke admin internal.",
+      "continueGeneric": "Masuk untuk melanjutkan."
+    },
+    "registerForm": {
+      "badge": "Mulai onboarding",
+      "title": "Buat akun Anda",
+      "subtitle": "Gabung NearWork untuk merekrut atau dicari kerja",
+      "afterCreate": "Setelah akun dibuat, kami akan mengarahkan Anda kembali ke"
+    },
+    "intent": {
+      "login": {
+        "saveJob": "Masuk untuk menyimpan lowongan ini.",
+        "saveFreelancer": "Masuk untuk menyimpan freelancer ini.",
+        "sendMessage": "Masuk untuk mengirim pesan di NearWork.",
+        "submitBid": "Masuk untuk mengirim proposal Anda.",
+        "postJob": "Masuk untuk memasang lowongan.",
+        "protected": "Masuk untuk melanjutkan ke halaman tersebut."
+      },
+      "register": {
+        "postJob": "Buat akun klien untuk memasang lowongan.",
+        "submitBid": "Buat akun freelancer untuk mengirim proposal Anda.",
+        "saveFreelancer": "Buat akun untuk menyimpan freelancer dan mengunjungi lagi nanti.",
+        "saveJob": "Buat akun untuk menyimpan lowongan dan memantau peluang.",
+        "sendMessage": "Buat akun untuk mulai mengirim pesan.",
+        "protected": "Buat akun untuk melanjutkan."
+      }
+    }
+  }
+}

@@ -6,7 +6,8 @@ import { useCallback, useId, useMemo, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import type { UserRole } from "@acme/types";
 import { resolvePostLoginRedirect, sanitizeReturnUrl } from "@src/lib/return-url";
-import { buildLoginToRegisterHref, loginIntentMessage, type AuthIntent } from "@/features/auth/lib/auth-intent";
+import { buildLoginToRegisterHref, loginIntentMessageKey, type AuthIntent } from "@/features/auth/lib/auth-intent";
+import { useI18n } from "@/features/i18n/I18nProvider";
 import { clearPasswordFieldsInForm } from "@/features/auth/lib/clear-form-password-fields";
 import { readApiBody } from "@/features/auth/lib/read-api-body";
 
@@ -28,7 +29,19 @@ export type LoginFormProps = {
   intent?: AuthIntent;
 };
 
+function returnUrlMessageKey(safeReturn: string): string | null {
+  if (safeReturn === "/") return null;
+  if (safeReturn === "/client" || safeReturn.startsWith("/client/")) return "auth.login.continueClient";
+  if (safeReturn === "/freelancer" || safeReturn.startsWith("/freelancer/")) return "auth.login.continueFreelancer";
+  if (safeReturn === "/messages" || safeReturn.startsWith("/messages/")) return "auth.login.continueMessages";
+  if (safeReturn === "/notifications" || safeReturn.startsWith("/notifications/")) return "auth.login.continueNotifications";
+  if (safeReturn === "/settings" || safeReturn.startsWith("/settings/")) return "auth.login.continueSettings";
+  if (safeReturn === "/admin" || safeReturn.startsWith("/admin/")) return "auth.login.continueAdmin";
+  return "auth.login.continueGeneric";
+}
+
 export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
+  const { t } = useI18n();
   const formId = useId();
   const emailId = `${formId}-email`;
   const passwordId = `${formId}-password`;
@@ -42,23 +55,13 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
   }, [intent, returnUrl]);
 
   const contextMessage = useMemo(() => {
-    const direct = loginIntentMessage(intent);
-    if (direct) return direct;
+    const directKey = loginIntentMessageKey(intent);
+    if (directKey) return t(directKey);
 
     const safe = sanitizeReturnUrl(returnUrl ?? null, "/");
-    if (safe === "/") return null;
-    if (safe === "/client" || safe.startsWith("/client/")) return "Log in to continue to your client dashboard.";
-    if (safe === "/freelancer" || safe.startsWith("/freelancer/")) {
-      return "Log in to continue to your freelancer dashboard.";
-    }
-    if (safe === "/messages" || safe.startsWith("/messages/")) return "Log in to continue to your messages.";
-    if (safe === "/notifications" || safe.startsWith("/notifications/")) {
-      return "Log in to continue to your notifications.";
-    }
-    if (safe === "/settings" || safe.startsWith("/settings/")) return "Log in to continue to your settings.";
-    if (safe === "/admin" || safe.startsWith("/admin/")) return "Log in to continue to internal admin.";
-    return "Log in to continue.";
-  }, [intent, returnUrl]);
+    const key = returnUrlMessageKey(safe);
+    return key ? t(key) : null;
+  }, [intent, returnUrl, t]);
 
   const destinationHint = useMemo(() => {
     const safe = sanitizeReturnUrl(returnUrl ?? null, "/");
@@ -95,7 +98,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
           const msg =
             !body.success && typeof body.error === "string" && body.error.length > 0
               ? body.error
-              : "Could not sign in. Try again.";
+              : t("auth.login.errorGeneric");
           setError(msg);
           return;
         }
@@ -104,27 +107,27 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
         form.reset();
         window.location.assign(resolvePostLoginRedirect(role, returnUrl));
       } catch (err) {
-        const msg = err instanceof Error && err.message ? err.message : "Request failed";
+        const msg = err instanceof Error && err.message ? err.message : t("auth.login.errorRequestFailed");
         setError(
           /failed to fetch|networkerror|load failed/i.test(msg)
-            ? "Could not reach the server. Check your connection, VPN, or ad blockers, then try again."
-            : `Something went wrong: ${msg}`
+            ? t("auth.login.errorNetwork")
+            : t("auth.login.errorSomething", { message: msg })
         );
       } finally {
         setLoading(false);
       }
     },
-    [returnUrl]
+    [returnUrl, t]
   );
 
   return (
     <div className="space-y-8 text-slate-900">
       <div className="space-y-2 text-left">
         <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-          Secure sign in
+          {t("auth.login.secureBadge")}
         </span>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Welcome back</h1>
-        <p className="text-sm text-slate-500">Log in to your account to continue</p>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">{t("auth.login.welcomeBack")}</h1>
+        <p className="text-sm text-slate-500">{t("auth.login.subtitle")}</p>
         {contextMessage ? (
           <p className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs leading-relaxed text-slate-600">
             {contextMessage}
@@ -132,7 +135,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
         ) : null}
         {destinationHint ? (
           <p className="text-xs text-slate-500">
-            After sign in, you&apos;ll continue to{" "}
+            {t("auth.login.afterSignIn")}{" "}
             <span className="font-medium text-slate-700">{destinationHint}</span>.
           </p>
         ) : null}
@@ -150,7 +153,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
 
         <div className="space-y-2">
           <label htmlFor={emailId} className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Email address
+            {t("auth.login.emailAddress")}
           </label>
           <input
             id={emailId}
@@ -158,7 +161,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
             type="email"
             autoComplete="email"
             required
-            placeholder="name@company.com"
+            placeholder={t("auth.login.emailPlaceholder")}
             disabled={loading}
             className="block w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-900 shadow-sm outline-none transition-colors placeholder:text-slate-400 focus:border-[#3525cd] focus:ring-2 focus:ring-[#3525cd]/35 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-60"
           />
@@ -167,13 +170,13 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
         <div className="space-y-2">
           <div className="flex items-center justify-between gap-2">
             <label htmlFor={passwordId} className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Password
+              {t("auth.login.password")}
             </label>
             <Link
               href={"/forgot-password" as Route}
               className="text-xs font-medium text-[#3525cd] hover:text-[#4f46e5]"
             >
-              Forgot password?
+              {t("auth.login.forgot")}
             </Link>
           </div>
           <div className="relative">
@@ -191,7 +194,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
               onClick={() => setShowPassword((v) => !v)}
               disabled={loading}
               aria-pressed={showPassword}
-              aria-label={showPassword ? "Hide password" : "Show password"}
+              aria-label={showPassword ? t("auth.login.hidePassword") : t("auth.login.showPassword")}
               className="absolute right-1 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 disabled:pointer-events-none disabled:opacity-50"
             >
               {showPassword ? <EyeOff className="h-4 w-4" aria-hidden /> : <Eye className="h-4 w-4" aria-hidden />}
@@ -204,7 +207,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
           disabled={loading}
           className="flex w-full items-center justify-center rounded-lg bg-[#3525cd] px-4 py-3 text-sm font-semibold text-white shadow-md transition-colors hover:bg-[#4f46e5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3525cd] disabled:pointer-events-none disabled:opacity-60"
         >
-          {loading ? "Signing in…" : "Log in"}
+          {loading ? t("auth.login.submitting") : t("auth.login.submit")}
         </button>
       </form>
 
@@ -213,7 +216,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
           <span className="w-full border-t border-slate-200" />
         </div>
         <div className="relative flex justify-center text-xs font-medium uppercase tracking-wide text-slate-400">
-          <span className="bg-white px-3">or</span>
+          <span className="bg-white px-3">{t("auth.login.orDivider")}</span>
         </div>
       </div>
 
@@ -221,17 +224,17 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
         type="button"
         disabled={loading}
         className="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 shadow-sm transition-colors hover:bg-slate-50 disabled:pointer-events-none disabled:opacity-60"
-        title="Coming soon"
-        aria-label="Continue with Google (coming soon)"
+        title={t("auth.login.googleComingSoon")}
+        aria-label={t("auth.login.googleAria")}
       >
         <GoogleMark className="h-5 w-5 shrink-0" aria-hidden />
-        Continue with Google
+        {t("auth.login.googleContinue")}
       </button>
 
       <p className="text-center text-sm text-slate-500">
-        Don&apos;t have an account?{" "}
+        {t("auth.login.dontHaveAccount")}{" "}
         <Link href={signUpHref as Route} className="font-semibold text-[#3525cd] hover:text-[#4f46e5]">
-          Sign up
+          {t("auth.login.signUp")}
         </Link>
       </p>
     </div>

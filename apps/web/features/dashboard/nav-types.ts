@@ -1,6 +1,7 @@
 export type DashboardNavItem = {
   href: string;
-  label: string;
-  /** Optional group label — rendered when it changes from the previous item */
-  section?: string;
+  /** i18n key (e.g. `dashboardNav.client.overview`) */
+  labelKey: string;
+  /** Optional section heading key — shown when it changes from the previous item */
+  sectionKey?: string;
 };

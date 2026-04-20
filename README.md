@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v4  
-> Last synchronized: 2026-04-18 — marketing navbar + brand path; see `docs/DOCUMENTATION-MAINTENANCE.md`.
+> **Doc revision:** v6  
+> Last synchronized: 2026-04-20 — multilingual SEO routes (`/en/*`, `/id/*`) + hreflang/sitemap; see `docs/DOCUMENTATION-MAINTENANCE.md`.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -17,6 +17,13 @@ Platform ini dirancang untuk mendukung **semua jenis freelance**, bukan hanya pr
 ---
 
 ## ✨ Core Features
+
+### 🔹 Locale / i18n (apps/web)
+
+- Kamus JSON: `apps/web/locales/en.json`, `apps/web/locales/id.json`.
+- Preferensi: cookie **`lang`** (`en` \| `id`); API: `POST /api/locale` dengan body JSON `{ "locale": "en" | "id" }`.
+- Provider: `I18nProvider` di root layout; server helpers: `getAppLocale()`, `getServerTranslator()`.
+- SEO routes: `app/[locale]` untuk halaman publik (`/en/*`, `/id/*`) dengan metadata per-locale + `alternates.languages` (`en`, `id`, `x-default`).
 
 ### 🔹 Marketplace Core
 - Client dapat membuat job/project

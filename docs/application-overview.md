@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v7  
-> Last synchronized: 2026-04-20 (navbar user-state + message unread signal).
+> **Doc revision:** v9  
+> Last synchronized: 2026-04-20 (locale-prefixed SEO routes + hreflang).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,8 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **SEO multilingual (2026-04-20):** halaman publik inti tersedia di URL terpisah per bahasa (`/en/*`, `/id/*`) via `app/[locale]`; metadata Next.js per locale memuat canonical lokal + hreflang `en`, `id`, `x-default`.
+- **Bahasa pengguna (2026-04-20):** aplikasi mendukung **English** dan **Bahasa Indonesia**; locale aktif dibaca di server dari cookie `lang` + header `Accept-Language`; pengalihan bahasa memperbarui cookie dan mem-refresh tree RSC agar konten server ikut locale.
 - **Navbar marketing (2026-04-20):** `MarketingShell` memakai bar navigasi produk—brand kiri (logo EN), pusat dibagi primary marketplace (Jobs, Freelancers) + secondary nav (How it works, Pricing, Help), utilitas/auth di kanan; indikator halaman aktif garis bawah brand; tanpa kotak logo.
 - **State pengguna di navbar (2026-04-20):** guest menampilkan mode guest + CTA `Start hiring`; sesi login menampilkan mode signed-in, unread notifications, unread message-thread count (awaiting reply), dan CTA kontekstual per role.
 - **Sinyal aktivitas (2026-04-18):** baris agregat ringan di landing dan halaman discovery (`/jobs`, `/freelancers`) memperkuat nuansa board hidup; navbar marketing menampilkan jumlah notifikasi belum dibaca yang konsisten dengan data.

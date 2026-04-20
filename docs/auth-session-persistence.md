@@ -1,12 +1,13 @@
 # Auth Session Persistence (NearWork Web)
 
-> **Doc revision:** v3  
-> Last synchronized: 2026-04-20 (navbar user-state + unread message threads).
+> **Doc revision:** v4  
+> Last synchronized: 2026-04-20 (locale cookie `lang` — terpisah dari session).
 
 Dokumen ini menjelaskan bagaimana session login dipertahankan setelah user berhasil login, termasuk format cookie, validasi middleware, dan alur redirect.
 
 ## Update status (April 2026)
 
+- **Preferensi bahasa (2026-04-20):** cookie **`lang`** (`en` \| `id`) disetel oleh `POST /api/locale`; ini **bukan** cookie session dan tidak memuat identitas—hanya untuk SSR + UI i18n (`getAppLocale()` di layout).
 - **Mutasi API (2026-04-18):** CSRF double-submit (`acme_csrf` + header `X-CSRF-Token`) pada route yang memanggil `assertMutationCsrf`; logout mempertimbangkan sesi.
 - **Produksi:** `SESSION_SECRET` divalidasi saat startup Node (`apps/web/instrumentation.ts`) ketika `NODE_ENV=production`.
 - Session persistence tetap berbasis cookie tunggal (`acme_session`) dan tidak berubah secara arsitektur.

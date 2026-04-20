@@ -1,4 +1,8 @@
+"use client";
+
 import type { ReactNode } from "react";
+import { LocaleSwitcher } from "@/features/i18n/LocaleSwitcher";
+import { useI18n } from "@/features/i18n/I18nProvider";
 import { cn } from "@/lib/utils";
 import { BrandLogo } from "@/features/shared/components/BrandLogo";
 import { DashboardNav } from "./DashboardNav";
@@ -22,15 +26,20 @@ type DashboardShellProps = {
  * Navigation is configuration-driven (pass `navItems` from route layout).
  */
 export function DashboardShell({ navItems, children, className, topBanner }: DashboardShellProps) {
+  const { t } = useI18n();
+
   return (
     <div className="nw-page min-h-screen">
       <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white shadow-[0_1px_0_rgba(15,23,42,0.04)] md:hidden">
         <div className="flex items-start justify-between gap-3 border-b border-slate-100/80 px-3 pb-2.5 pt-3">
           <div>
             <BrandLogo imageClassName="h-5 w-auto" alt="NearWork logo" />
-            <p className="mt-0.5 text-[11px] text-slate-500">Workspace</p>
+            <p className="mt-0.5 text-[11px] text-slate-500">{t("workspace.label")}</p>
           </div>
-          <AuthUserMenu compact />
+          <div className="flex shrink-0 items-center gap-2">
+            <LocaleSwitcher />
+            <AuthUserMenu compact />
+          </div>
         </div>
         <DashboardNav items={navItems} variant="mobile" />
       </header>
@@ -48,14 +57,17 @@ export function DashboardShell({ navItems, children, className, topBanner }: Das
 
         <main className={cn("relative flex min-h-0 min-w-0 flex-1 flex-col", className)}>
           <div className="relative mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-10">
-            <div className="mb-5 hidden justify-end md:flex">
+            <div className="mb-5 hidden items-center justify-end gap-3 md:flex">
+              <LocaleSwitcher />
               <AuthUserMenu />
             </div>
             {topBanner ? (
               <div className="mb-8 lg:mb-10">
                 <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
                   <div className="border-b border-slate-100 px-4 py-2 sm:px-5">
-                    <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Workspace</p>
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                      {t("workspace.bannerLabel")}
+                    </p>
                   </div>
                   <div className="p-4 sm:p-5">{topBanner}</div>
                 </div>

@@ -1,7 +1,7 @@
 # Apa itu NearWork?
 
-> **Doc revision:** v2  
-> Last synchronized: 2026-04-18 (public chrome / navigasi).
+> **Doc revision:** v3  
+> Last synchronized: 2026-04-20 (pilihan bahasa EN/ID di UI).
 
 Dokumen ini menjawab secara singkat: **produk ini apa**, **untuk siapa**, dan **apa yang dilakukan user di dalamnya**—tanpa detail teknis implementasi.
 
@@ -12,6 +12,8 @@ Dokumen ini menjawab secara singkat: **produk ini apa**, **untuk siapa**, dan **
 **NearWork** adalah **marketplace kerja freelance**: tempat **client** memasang kebutuhan kerja (job), **freelancer** mengajukan penawaran (bid/proposal), dan kedua pihak berkolaborasi dalam alur yang terstruktur—bisa untuk kerja **jarak jauh (remote)** atau **di lokasi (on-site / hybrid)**.
 
 Repo monorepo ini (nama kerja: **Freelance-web**) adalah **aplikasi web** yang menjalankan produk NearWork (UI, API, database, autentikasi).
+
+Pengguna dapat memilih **Bahasa Indonesia** atau **English** pada antarmuka (preferensi tersimpan untuk kunjungan berikutnya).
 
 ---
 

@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Route } from "next";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useI18n } from "@/features/i18n/I18nProvider";
 import { cn } from "@/lib/utils";
 import { BrandLogo } from "@/features/shared/components/BrandLogo";
 import { getActiveNavHref } from "../lib/dashboard-nav-active";
@@ -15,6 +16,7 @@ type DashboardNavProps = {
 };
 
 export function DashboardNav({ items, variant }: DashboardNavProps) {
+  const { t } = useI18n();
   const pathname = usePathname() ?? "";
   const [hash, setHash] = useState("");
 
@@ -34,7 +36,7 @@ export function DashboardNav({ items, variant }: DashboardNavProps) {
           const isActive = item.href === activeHref;
           return (
             <Link
-              key={`${item.href}-${item.label}`}
+              key={`${item.href}-${item.labelKey}`}
               href={item.href as Route}
               prefetch
               className={cn(
@@ -44,7 +46,7 @@ export function DashboardNav({ items, variant }: DashboardNavProps) {
                   : "bg-slate-100/90 text-slate-600 hover:bg-slate-200/90 hover:text-slate-900"
               )}
             >
-              {item.label}
+              {t(item.labelKey)}
             </Link>
           );
         })}
@@ -57,16 +59,16 @@ export function DashboardNav({ items, variant }: DashboardNavProps) {
     <nav className="flex flex-col gap-0.5 px-3 py-4" aria-label="Workspace">
       <div className="mb-2 border-b border-slate-100/90 px-2 pb-4">
         <BrandLogo imageClassName="h-6 w-auto" alt="NearWork logo" />
-        <p className="mt-1 text-xs leading-snug text-slate-500">Workspace</p>
+        <p className="mt-1 text-xs leading-snug text-slate-500">{t("workspace.label")}</p>
       </div>
       {items.map((item, index) => {
-        const section = item.section;
+        const section = item.sectionKey ? t(item.sectionKey) : undefined;
         const showHeading = Boolean(section && section !== lastSection);
         if (section) lastSection = section;
         const isActive = item.href === activeHref;
 
         return (
-          <div key={`${item.href}-${item.label}`}>
+          <div key={`${item.href}-${item.labelKey}`}>
             {showHeading ? (
               <p
                 className={cn(
@@ -87,7 +89,7 @@ export function DashboardNav({ items, variant }: DashboardNavProps) {
                   : "border-l-[3px] border-l-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900"
               )}
             >
-              {item.label}
+              {t(item.labelKey)}
             </Link>
           </div>
         );

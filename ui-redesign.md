@@ -1,13 +1,20 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v6  
-> Last synchronized: 2026-04-20 (navbar live-user signals).
+> **Doc revision:** v8  
+> Last synchronized: 2026-04-20 (route-aware locale switch + localized SEO metadata).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-04-20 — Locale switcher (EN / ID)
+
+- **Kontrol:** segmen teks **EN \| ID** dengan lebar minimum per segmen (mengurangi layout shift); transisi halus saat refresh RSC (`useTransition` + `router.refresh()` setelah `POST /api/locale`).
+- **Route-aware switch:** pada URL SEO ber-prefix locale, toggle berpindah lintas halaman ekuivalen (`/id/jobs` ↔ `/en/jobs`) agar URL crawlable tetap konsisten per bahasa.
+- **Cakupan awal:** marketing navbar, `DashboardShell`, `PublicSiteHeader`, hero landing + footer marketing, beberapa string auth (login/register), label nav workspace, menu akun, `MarketplacePulse` pada landing + discovery.
+- **Tanpa bendera**; teks natural per locale (bukan string inline di komponen).
 
 ### 2026-04-18 — Marketing navbar (product chrome, not template)
 
