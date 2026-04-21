@@ -1,7 +1,7 @@
 # Audit teknis — Freelance-web (monorepo)
 
-> **Doc revision:** v3  
-> Last synchronized: 2026-04-20 (locale cookie note).
+> **Doc revision:** v4  
+> Last synchronized: 2026-04-20 (UGC translation API + server-side key handling).
 
 **Lingkup:** `apps/web`, `packages/*`, dan jalur operasional yang mempengaruhi produksi.  
 **Tanggal referensi:** April 2026 (sinkron dengan update terakhir implementasi).
@@ -9,6 +9,7 @@
 ## Addendum update (April 2026)
 
 - **Cookie preferensi bahasa:** `lang` disetel oleh `POST /api/locale` (nilai `en` \| `id`, path `/`, `SameSite=Lax`, `Secure` di produksi). Bukan secret; tetap jaga agar respons API tidak mem-cache konten sensitif lintas locale tanpa `Vary: Cookie` bila menambahkan cache edge di masa depan.
+- **Google Translate untuk UGC job:** kunci API (`GOOGLE_TRANSLATE_API_KEY`) dipakai hanya di server saat create job; terjemahan disimpan ke DB untuk mencegah panggilan API per-request. Risiko biaya dibatasi oleh rate limit create job yang sudah ada; jangan pernah mengekspos key ke client bundle.
 - UI telah bergeser dari “template-like” ke pendekatan **product-first** dengan hierarchy yang lebih operasional.
 - Area discovery publik sekarang lebih kuat untuk pemindaian cepat dan keputusan:
   - struktur filter/list lebih jelas,

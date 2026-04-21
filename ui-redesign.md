@@ -1,7 +1,7 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v11  
-> Last synchronized: 2026-04-20 (public discovery copy localized EN/ID).
+> **Doc revision:** v14  
+> Last synchronized: 2026-04-20 (UGC translation indicators + original/translated toggle on job detail).
 
 ## Goal
 
@@ -27,6 +27,21 @@ Build a grounded, practical, product-first UI across public and authenticated su
 
 - Halaman `/jobs` dan `/freelancers` (beserta filter/list/empty states) kini memakai key i18n untuk seluruh teks user-facing yang sebelumnya masih hardcoded Inggris.
 - Prompt geolokasi pada filter freelancer juga dilokalisasi via error code (`unsupported`, `permission_denied`, `lookup_failed`) agar pesan tidak campur bahasa.
+
+### 2026-04-20 — Marketing language consistency
+
+- Copy halaman marketing utama (`How it works`, `Pricing`, `Early access`, `Help`) sekarang diambil dari kamus locale, bukan literal string dalam komponen.
+
+### 2026-04-20 — Remaining public/fallback localization
+
+- Halaman detail lowongan `/jobs/[jobId]` dipindah ke key i18n untuk string operasional (decision hints, table headings, conversation cues, CTA), agar mode `/id/*` tidak mixed-language saat client/freelancer review proposal.
+- Halaman legal `/terms` dan `/privacy`, plus fallback `/forbidden`, `/forgot-password`, dan `/search/nearby` kini menggunakan translator server (`getServerTranslator`) dan dictionary EN/ID.
+
+### 2026-04-20 — User-generated job translation UX
+
+- Konten job user-generated (judul/deskripsi) kini ditampilkan per-locale berdasarkan cache translasi server-side, sehingga copy job bisa otomatis lintas bahasa tanpa menerjemahkan UI komponen.
+- Listing job menampilkan indikator sumber bahasa saat konten ditampilkan dalam mode terjemahan.
+- Detail job menambahkan kontrol ringan **Show original / Show translated** untuk transparansi ketika pengguna ingin melihat teks sumber.
 
 ### 2026-04-18 — Marketing navbar (product chrome, not template)
 

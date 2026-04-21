@@ -12,9 +12,12 @@ import { BidConversationAction } from "@/components/client-jobs/BidConversationA
 import { JobService } from "@/server/services/job.service";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { getServerTranslator } from "@/lib/i18n/server-translator";
+import type { Translator } from "@/lib/i18n/create-translator";
 
 type PageProps = {
   params: Promise<{ jobId: string }>;
+  searchParams: Promise<{ view?: string }>;
 };
 
 function formatMoney(amount: unknown, currency: string): string {
@@ -35,14 +38,14 @@ function budgetLine(job: {
   budgetMax: unknown;
   currency: string;
   budgetType: string;
-}): string {
+}, t: Translator): string {
   const min = job.budgetMin;
   const max = job.budgetMax;
   if (min != null && max != null) {
     return `${formatMoney(min, job.currency)} – ${formatMoney(max, job.currency)}`;
   }
-  if (min != null) return `From ${formatMoney(min, job.currency)}`;
-  if (max != null) return `Up to ${formatMoney(max, job.currency)}`;
+  if (min != null) return t("public.jobDetail.budgetFrom", { amount: formatMoney(min, job.currency) });
+  if (max != null) return t("public.jobDetail.budgetUpTo", { amount: formatMoney(max, job.currency) });
   return job.budgetType.replace(/_/g, " ");
 }
 
@@ -65,45 +68,48 @@ function locationParts(
   return out.length > 0 ? out.join(" · ") : null;
 }
 
-function formatRelativeTime(d: Date): string {
+function formatRelativeTime(d: Date, t: Translator): string {
   const diffMs = Date.now() - d.getTime();
   const mins = Math.floor(diffMs / 60000);
-  if (mins < 60) return `${Math.max(1, mins)}m ago`;
+  if (mins < 60) return t("public.jobDetail.timeMinutesAgo", { count: Math.max(1, mins) });
   const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs}h ago`;
+  if (hrs < 24) return t("public.jobDetail.timeHoursAgo", { count: hrs });
   const days = Math.floor(hrs / 24);
-  if (days < 7) return `${days}d ago`;
+  if (days < 7) return t("public.jobDetail.timeDaysAgo", { count: days });
   return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric" }).format(d);
 }
 
-function profileStrengthHint(completeness: number | null | undefined): string {
-  if (completeness == null) return "Profile details limited";
-  if (completeness >= 85) return "Profile looks strong";
-  if (completeness >= 60) return "Profile is moderately complete";
-  return "Profile still sparse";
+function profileStrengthHint(completeness: number | null | undefined, t: Translator): string {
+  if (completeness == null) return t("public.jobDetail.profileLimited");
+  if (completeness >= 85) return t("public.jobDetail.profileStrong");
+  if (completeness >= 60) return t("public.jobDetail.profileModerate");
+  return t("public.jobDetail.profileSparse");
 }
 
-function bidDecisionHint(status: string): string {
-  if (status === BidStatus.SHORTLISTED) return "Ready to hire when you're confident";
-  if (status === BidStatus.SUBMITTED) return "Shortlist to compare later";
-  if (status === BidStatus.ACCEPTED) return "Hiring decision completed";
-  return "No decision needed";
+function bidDecisionHint(status: string, t: Translator): string {
+  if (status === BidStatus.SHORTLISTED) return t("public.jobDetail.bidHintShortlisted");
+  if (status === BidStatus.SUBMITTED) return t("public.jobDetail.bidHintSubmitted");
+  if (status === BidStatus.ACCEPTED) return t("public.jobDetail.bidHintAccepted");
+  return t("public.jobDetail.bidHintDefault");
 }
 
-function contractStatusHint(status: string): string {
-  if (status === "PENDING") return "Waiting for kickoff details";
-  if (status === "IN_PROGRESS" || status === "ACTIVE") return "Work is now underway";
-  if (status === "COMPLETED") return "Contract completed";
-  return "Contract is available";
+function contractStatusHint(status: string, t: Translator): string {
+  if (status === "PENDING") return t("public.jobDetail.contractPending");
+  if (status === "IN_PROGRESS" || status === "ACTIVE") return t("public.jobDetail.contractInProgress");
+  if (status === "COMPLETED") return t("public.jobDetail.contractCompleted");
+  return t("public.jobDetail.contractAvailable");
 }
 
-export default async function JobDetailPage({ params }: PageProps) {
+export default async function JobDetailPage({ params, searchParams }: PageProps) {
+  const { t, locale } = await getServerTranslator();
   const { jobId: rawId } = await params;
+  const sp = await searchParams;
+  const forceOriginal = sp.view === "original";
   const jobId = rawId?.trim() ?? "";
   if (!jobId) notFound();
 
   const jobService = new JobService();
-  const job = await jobService.getJobByIdForPublic(jobId);
+  const job = await jobService.getJobByIdForPublic(jobId, forceOriginal ? "source" : locale);
   if (!job) notFound();
   const session = await getSessionFromCookies();
 
@@ -223,46 +229,68 @@ export default async function JobDetailPage({ params }: PageProps) {
     <div className="mx-auto max-w-3xl px-4 py-8 md:px-6">
       <nav className="text-muted-foreground mb-6 text-sm">
         <Link href="/jobs" className="hover:text-foreground underline-offset-4 hover:underline">
-          Browse jobs
+          {t("public.jobs.pageTitle")}
         </Link>
         <span className="mx-2">/</span>
-        <span className="text-foreground">Details</span>
+        <span className="text-foreground">{t("public.jobDetail.details")}</span>
       </nav>
 
       <PageHeader
         title={job.title}
         description={
-          [categoryLabel, job.workMode, jobLocation].filter(Boolean).join(" · ") || "Open role"
+          [categoryLabel, job.workMode, jobLocation].filter(Boolean).join(" · ") || t("public.jobDetail.openRole")
         }
         actions={<SaveJobButton jobId={job.id} />}
       />
+      {job.language !== locale ? (
+        <div className="mb-4 flex flex-wrap items-center gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700">
+          <span>
+            {job.isTranslated
+              ? t("public.jobDetail.translatedFrom", {
+                  language: job.translationSource === "id" ? t("public.jobs.langIndonesian") : t("public.jobs.langEnglish")
+                })
+              : t("public.jobDetail.originalLanguageOnly")}
+          </span>
+          <div className="flex items-center gap-2 font-semibold">
+            <Link href={`/jobs/${job.id}?view=translated` as Route} className="text-[#3525cd] hover:underline">
+              {t("public.jobDetail.showTranslated")}
+            </Link>
+            <span>·</span>
+            <Link href={`/jobs/${job.id}?view=original` as Route} className="text-[#3525cd] hover:underline">
+              {t("public.jobDetail.showOriginal")}
+            </Link>
+          </div>
+        </div>
+      ) : null}
       <p className="mb-8 text-xs font-medium text-slate-600">
         {isClientOwner
-          ? "Shortlist to compare later—hire when you are confident every scope detail is clear."
-          : "Send a proposal with price and timing—clients compare you in context with the brief."}
+          ? t("public.jobDetail.ownerHint")
+          : t("public.jobDetail.freelancerHint")}
       </p>
 
       <div className="space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Budget</CardTitle>
-            <CardDescription>{budgetLine(job)}</CardDescription>
+            <CardTitle className="text-base">{t("public.jobDetail.budget")}</CardTitle>
+            <CardDescription>{budgetLine(job, t)}</CardDescription>
           </CardHeader>
           {bidDeadline ? (
-            <CardContent className="text-muted-foreground pt-0 text-sm">Proposals close {bidDeadline}</CardContent>
+            <CardContent className="text-muted-foreground pt-0 text-sm">
+              {t("public.jobDetail.proposalsClose", { date: bidDeadline })}
+            </CardContent>
           ) : null}
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Category</CardTitle>
+            <CardTitle className="text-base">{t("public.filters.category")}</CardTitle>
             <CardDescription>{categoryLabel}</CardDescription>
           </CardHeader>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Client</CardTitle>
+            <CardTitle className="text-base">{t("public.jobDetail.client")}</CardTitle>
             <CardDescription>
               {job.clientProfile.displayName}
               {job.clientProfile.companyName ? ` · ${job.clientProfile.companyName}` : ""}
@@ -272,38 +300,40 @@ export default async function JobDetailPage({ params }: PageProps) {
             {job.clientProfile.industry ? <p>{job.clientProfile.industry}</p> : null}
             {clientLocation ? <p>{clientLocation}</p> : null}
             {!job.clientProfile.industry && !clientLocation ? (
-              <p className="text-muted-foreground/80">No additional client details.</p>
+              <p className="text-muted-foreground/80">{t("public.jobDetail.noClientDetails")}</p>
             ) : null}
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">{isClientOwner ? "Proposal review" : "Send a proposal"}</CardTitle>
+            <CardTitle className="text-base">
+              {isClientOwner ? t("public.jobDetail.proposalReview") : t("public.jobDetail.sendProposal")}
+            </CardTitle>
             <CardDescription>
               {isClientOwner
                 ? acceptedBid
-                  ? "Hiring decision is complete. Continue with contract and coordination for delivery."
-                  : "Compare freelancers by price, profile readiness, and location signals. Start with pending decisions."
-                : "Sending a proposal requires a signed-in freelancer account. Browse this page freely; sign in or register when you are ready."}
+                  ? t("public.jobDetail.ownerAcceptedDesc")
+                  : t("public.jobDetail.ownerCompareDesc")
+                : t("public.jobDetail.freelancerActionDesc")}
             </CardDescription>
           </CardHeader>
           {isClientOwner ? (
             <CardContent className="space-y-4">
               {acceptedBid ? (
                 <div className="rounded-md border border-emerald-200 bg-emerald-50/50 px-4 py-3">
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-emerald-700">Hired freelancer</p>
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-emerald-700">{t("public.jobDetail.hiredFreelancer")}</p>
                   <div className="mt-1 flex flex-wrap items-center gap-2">
                     <p className="text-sm font-semibold text-emerald-900">{acceptedBid.freelancer.fullName}</p>
                     <span className="text-xs text-emerald-700">@{acceptedBid.freelancer.username}</span>
                     <span className="text-xs text-emerald-700">
                       {acceptedBid.contract
-                        ? `Contract ${acceptedBid.contract.status.replace(/_/g, " ").toLowerCase()}`
-                        : "Contract setup pending"}
+                        ? t("public.jobDetail.contractStatusLine", { status: acceptedBid.contract.status.replace(/_/g, " ").toLowerCase() })
+                        : t("public.jobDetail.contractSetupPending")}
                     </span>
                   </div>
                   <p className="mt-1 text-xs text-emerald-700">
-                    {acceptedBid.contract ? contractStatusHint(acceptedBid.contract.status) : "Open contract details when available."}
+                    {acceptedBid.contract ? contractStatusHint(acceptedBid.contract.status, t) : t("public.jobDetail.openContractWhenAvailable")}
                   </p>
                   <div className="mt-3 flex flex-wrap items-center gap-3 text-xs font-semibold">
                     {acceptedBid.contract ? (
@@ -313,7 +343,7 @@ export default async function JobDetailPage({ params }: PageProps) {
                         target="_blank"
                         rel="noreferrer"
                       >
-                        Open contract
+                        {t("public.jobDetail.openContract")}
                       </a>
                     ) : null}
                     {acceptedBid.contract && contractThreadMap.get(acceptedBid.contract.id) ? (
@@ -321,14 +351,14 @@ export default async function JobDetailPage({ params }: PageProps) {
                         href={`/messages?thread=${contractThreadMap.get(acceptedBid.contract.id)}` as Route}
                         className="text-slate-700 hover:underline"
                       >
-                        Open conversation
+                        {t("public.jobDetail.openConversation")}
                       </Link>
                     ) : (
                       <Link
                         href={"/messages" as Route}
                         className="text-slate-700 hover:underline"
                       >
-                        Continue coordination
+                        {t("public.jobDetail.continueCoordination")}
                       </Link>
                     )}
                   </div>
@@ -337,43 +367,43 @@ export default async function JobDetailPage({ params }: PageProps) {
 
               <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
                 <div className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Pending decision</p>
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t("public.jobDetail.pendingDecision")}</p>
                   <p className="mt-1 text-lg font-semibold tabular-nums text-slate-900">{pendingDecisionCount}</p>
-                  <p className="text-[11px] text-slate-500">Shortlist to compare, accept when ready</p>
+                  <p className="text-[11px] text-slate-500">{t("public.jobDetail.pendingDecisionHint")}</p>
                 </div>
                 <div className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Shortlisted</p>
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t("public.jobDetail.shortlisted")}</p>
                   <p className="mt-1 text-lg font-semibold tabular-nums text-slate-900">{shortlistedCount}</p>
-                  <p className="text-[11px] text-slate-500">Focused candidates for final decision</p>
+                  <p className="text-[11px] text-slate-500">{t("public.jobDetail.shortlistedHint")}</p>
                 </div>
                 <div className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Total bids</p>
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t("public.jobDetail.totalBids")}</p>
                   <p className="mt-1 text-lg font-semibold tabular-nums text-slate-900">{bidRows.length}</p>
-                  <p className="text-[11px] text-slate-500">Use price + profile + response signals</p>
+                  <p className="text-[11px] text-slate-500">{t("public.jobDetail.totalBidsHint")}</p>
                 </div>
                 <div className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Awaiting reply</p>
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t("public.jobDetail.awaitingReply")}</p>
                   <p className="mt-1 text-lg font-semibold tabular-nums text-slate-900">{awaitingReplyCount}</p>
-                  <p className="text-[11px] text-slate-500">Conversation may need your follow-up</p>
+                  <p className="text-[11px] text-slate-500">{t("public.jobDetail.awaitingReplyHint")}</p>
                 </div>
               </div>
 
               {bidRows.length === 0 ? (
                 <div className="rounded-md border border-dashed border-slate-300 bg-white px-4 py-6 text-sm text-slate-600">
-                  No proposals yet. Keep this job open or refine the brief so freelancers can respond with confidence.
+                  {t("public.jobDetail.noProposalsYet")}
                 </div>
               ) : (
                 <div className="overflow-x-auto rounded-lg border border-slate-200">
                   <table className="w-full min-w-[940px] border-collapse text-left text-sm">
                     <thead>
                       <tr className="border-b border-slate-100 bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                        <th className="px-3 py-2.5">Freelancer</th>
-                        <th className="px-3 py-2.5">Price</th>
-                        <th className="px-3 py-2.5">Profile strength</th>
-                        <th className="px-3 py-2.5">Location / mode</th>
-                        <th className="px-3 py-2.5">Conversation</th>
-                        <th className="px-3 py-2.5">Status</th>
-                        <th className="px-3 py-2.5 text-right">Next action</th>
+                        <th className="px-3 py-2.5">{t("public.jobDetail.tableFreelancer")}</th>
+                        <th className="px-3 py-2.5">{t("public.jobDetail.tablePrice")}</th>
+                        <th className="px-3 py-2.5">{t("public.jobDetail.tableProfileStrength")}</th>
+                        <th className="px-3 py-2.5">{t("public.jobDetail.tableLocationMode")}</th>
+                        <th className="px-3 py-2.5">{t("public.jobDetail.tableConversation")}</th>
+                        <th className="px-3 py-2.5">{t("public.jobDetail.tableStatus")}</th>
+                        <th className="px-3 py-2.5 text-right">{t("public.jobDetail.tableNextAction")}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
@@ -398,13 +428,13 @@ export default async function JobDetailPage({ params }: PageProps) {
                                 <p className="font-semibold text-slate-900">{bid.freelancer.fullName}</p>
                                 {isAccepted ? (
                                   <span className="inline-flex rounded-md bg-emerald-100 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
-                                    Hired
+                                    {t("public.jobDetail.hired")}
                                   </span>
                                 ) : null}
                               </div>
                               <p className="text-xs text-slate-500">@{bid.freelancer.username}</p>
                               <p className="mt-0.5 text-xs text-slate-500">
-                                Submitted{" "}
+                                {t("public.jobDetail.submitted")}{" "}
                                 {new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric" }).format(
                                   bid.createdAt
                                 )}
@@ -413,27 +443,27 @@ export default async function JobDetailPage({ params }: PageProps) {
                             <td className="px-3 py-3">
                               <p className="font-semibold text-slate-900">{formatMoney(bid.bidAmount, job.currency)}</p>
                               {bid.estimatedDays != null ? (
-                                <p className="text-xs text-slate-500">~{bid.estimatedDays} day timeline</p>
+                                <p className="text-xs text-slate-500">{t("public.jobDetail.dayTimeline", { count: bid.estimatedDays })}</p>
                               ) : null}
                             </td>
                             <td className="px-3 py-3 text-xs text-slate-600">
                               {profile?.profileCompleteness != null ? (
                                 <div>
                                   <p className="font-medium text-slate-800">{profile.profileCompleteness}% complete</p>
-                                  <p className="text-[11px] text-slate-500">{profileStrengthHint(profile.profileCompleteness)}</p>
+                                  <p className="text-[11px] text-slate-500">{profileStrengthHint(profile.profileCompleteness, t)}</p>
                                 </div>
                               ) : (
-                                <span className="text-slate-500">Not available</span>
+                                <span className="text-slate-500">{t("public.jobDetail.notAvailable")}</span>
                               )}
                             </td>
                             <td className="px-3 py-3 text-xs text-slate-600">
                               <div>
-                                <p>{[profile?.city, profile?.workMode].filter(Boolean).join(" · ") || "Not specified"}</p>
+                                <p>{[profile?.city, profile?.workMode].filter(Boolean).join(" · ") || t("public.jobDetail.notSpecified")}</p>
                                 {job.city && profile?.city ? (
                                   <p className="text-[11px] text-slate-500">
                                     {job.city.toLowerCase() === profile.city.toLowerCase()
-                                      ? "Location relevant (same city)"
-                                      : "Different city from job"}
+                                      ? t("public.jobDetail.locationRelevant")
+                                      : t("public.jobDetail.locationDifferent")}
                                   </p>
                                 ) : null}
                               </div>
@@ -441,7 +471,7 @@ export default async function JobDetailPage({ params }: PageProps) {
                             <td className="px-3 py-3 text-xs">
                               {!convo ? (
                                 <div className="text-slate-500">
-                                  <p>No conversation yet</p>
+                                  <p>{t("public.jobDetail.noConversationYet")}</p>
                                   <div className="mt-1">
                                     <BidConversationAction
                                       threadId={null}
@@ -454,16 +484,18 @@ export default async function JobDetailPage({ params }: PageProps) {
                                 <div className={convo.awaitingReply ? "text-[#433C93]" : "text-slate-600"}>
                                   <p className="font-medium">
                                     {convo.awaitingReply
-                                      ? "Unread message"
+                                      ? t("public.jobDetail.unreadMessage")
                                       : convo.hasMessages
-                                        ? "Conversation active"
-                                        : "Thread active"}
+                                        ? t("public.jobDetail.conversationActive")
+                                        : t("public.jobDetail.threadActive")}
                                   </p>
                                   <p className="text-[11px] text-slate-500">
-                                    {convo.awaitingReply ? "Waiting for your reply" : "Conversation ongoing"}
+                                    {convo.awaitingReply ? t("public.jobDetail.waitingReply") : t("public.jobDetail.conversationOngoing")}
                                   </p>
                                   <p className="text-slate-500">
-                                    {convo.lastMessageAt ? `Last message ${formatRelativeTime(convo.lastMessageAt)}` : "No messages yet"}
+                                    {convo.lastMessageAt
+                                      ? t("public.jobDetail.lastMessage", { time: formatRelativeTime(convo.lastMessageAt, t) })
+                                      : t("public.jobDetail.noMessagesYet")}
                                   </p>
                                   <div className="mt-1">
                                     <BidConversationAction
@@ -480,7 +512,7 @@ export default async function JobDetailPage({ params }: PageProps) {
                                 <span className="inline-flex rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
                                   {bid.status.replace(/_/g, " ").toLowerCase()}
                                 </span>
-                                <p className="mt-1 text-[11px] text-slate-500">{bidDecisionHint(bid.status)}</p>
+                                <p className="mt-1 text-[11px] text-slate-500">{bidDecisionHint(bid.status, t)}</p>
                               </div>
                             </td>
                             <td className="px-3 py-3 text-right">
@@ -496,10 +528,10 @@ export default async function JobDetailPage({ params }: PageProps) {
 
               <div className="flex flex-wrap items-center gap-3 text-sm">
                 <Link href={"/client/jobs" as Route} className="font-semibold text-[#433C93] hover:underline">
-                  Review all jobs
+                  {t("public.jobDetail.reviewAllJobs")}
                 </Link>
                 <Link href={"/messages" as Route} className="font-semibold text-slate-600 hover:underline">
-                  Open messages
+                  {t("public.jobDetail.openMessages")}
                 </Link>
               </div>
             </CardContent>
@@ -509,20 +541,20 @@ export default async function JobDetailPage({ params }: PageProps) {
                 href={loginReturnTo(returnToThisJob, "submit-bid") as Route}
                 className="inline-flex justify-center rounded-lg bg-[#3525cd] px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-[#4f46e5]"
               >
-                Sign in to send a proposal
+                {t("public.jobDetail.signInToSend")}
               </Link>
               <Link
                 href={registerFreelancerReturnToJob(job.id) as Route}
                 className="inline-flex justify-center rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-center text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
               >
-                Register as freelancer
+                {t("public.jobDetail.registerAsFreelancer")}
               </Link>
             </CardContent>
           )}
         </Card>
 
         <div>
-          <h2 className="mb-3 text-lg font-semibold tracking-tight">Description</h2>
+          <h2 className="mb-3 text-lg font-semibold tracking-tight">{t("public.jobDetail.description")}</h2>
           <Separator className="mb-4" />
           <p className="text-muted-foreground whitespace-pre-wrap text-sm leading-relaxed">{job.description}</p>
         </div>

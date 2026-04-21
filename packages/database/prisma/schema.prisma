@@ -391,6 +391,11 @@ model Job {
   title       String
   slug        String @unique
   description String @db.Text
+  language    String @default("en") @db.VarChar(2)
+  titleEn     String?
+  titleId     String?
+  descriptionEn String? @db.Text
+  descriptionId String? @db.Text
 
   budgetType BudgetType
   budgetMin  Decimal?   @db.Decimal(12, 2)

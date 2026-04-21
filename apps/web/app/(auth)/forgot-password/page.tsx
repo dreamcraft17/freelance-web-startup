@@ -1,9 +1,15 @@
 import { AuthLayoutShell } from "@/features/auth/components/AuthLayoutShell";
 import { ForgotPasswordForm } from "@/features/auth/components/ForgotPasswordForm";
+import { getServerTranslator } from "@/lib/i18n/server-translator";
 
-export default function ForgotPasswordPage() {
+export default async function ForgotPasswordPage() {
+  const { t } = await getServerTranslator();
+
   return (
-    <AuthLayoutShell title="Reset password" description="We will email you a link when auth is wired.">
+    <AuthLayoutShell
+      title={t("auth.forgotPassword.title")}
+      description={t("auth.forgotPassword.description")}
+    >
       <ForgotPasswordForm />
     </AuthLayoutShell>
   );

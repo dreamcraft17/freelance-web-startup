@@ -1,41 +1,38 @@
 import Link from "next/link";
+import { getServerTranslator } from "@/lib/i18n/server-translator";
 
-export default function EarlyAccessPage() {
+export default async function EarlyAccessPage() {
+  const { t } = await getServerTranslator();
+
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 md:px-6 md:py-10">
       <header className="nw-page-header mb-8">
-        <p className="nw-section-title">NearWork</p>
-        <h1 className="nw-page-title md:text-4xl">Early access</h1>
-        <p className="nw-page-description text-base leading-relaxed">
-          We are shipping in public: real jobs, real freelancers, and honest limits—while we finish payments and edge
-          cases.
-        </p>
+        <p className="nw-section-title">{t("marketing.earlyAccess.sectionTitle")}</p>
+        <h1 className="nw-page-title md:text-4xl">{t("marketing.earlyAccess.pageTitle")}</h1>
+        <p className="nw-page-description text-base leading-relaxed">{t("marketing.earlyAccess.description")}</p>
       </header>
 
       <div className="grid gap-4 text-sm leading-relaxed text-slate-700">
         <section className="nw-surface p-5">
-          <h2 className="text-base font-semibold text-slate-900">Why early access exists</h2>
-          <p className="mt-2">
-            A marketplace only works if briefs and bids feel trustworthy. We would rather grow with a small, vocal
-            community than fake scale.
-          </p>
+          <h2 className="text-base font-semibold text-slate-900">{t("marketing.earlyAccess.whyTitle")}</h2>
+          <p className="mt-2">{t("marketing.earlyAccess.whyBody")}</p>
         </section>
         <section className="nw-surface p-5">
-          <h2 className="text-base font-semibold text-slate-900">What you can do today</h2>
+          <h2 className="text-base font-semibold text-slate-900">{t("marketing.earlyAccess.todayTitle")}</h2>
           <ul className="mt-2 list-inside list-disc space-y-1">
-            <li>Browse open jobs and freelancer profiles</li>
-            <li>Post jobs and collect bids (as a client)</li>
-            <li>Lean on city and work mode when nearby work matters</li>
+            <li>{t("marketing.earlyAccess.todayItem1")}</li>
+            <li>{t("marketing.earlyAccess.todayItem2")}</li>
+            <li>{t("marketing.earlyAccess.todayItem3")}</li>
           </ul>
         </section>
         <section className="nw-surface p-5">
-          <h2 className="text-base font-semibold text-slate-900">What is still evolving</h2>
+          <h2 className="text-base font-semibold text-slate-900">{t("marketing.earlyAccess.evolvingTitle")}</h2>
           <p className="mt-2">
-            Payouts, dispute tooling, and some polish paths are not finished. If something breaks, use{" "}
+            {t("marketing.earlyAccess.evolvingPrefix")}{" "}
             <Link href="/help" className="font-semibold text-[#3525cd] hover:underline">
-              Help
+              {t("nav.help")}
             </Link>{" "}
-            so we can prioritize fixes.
+            {t("marketing.earlyAccess.evolvingSuffix")}
           </p>
         </section>
       </div>
@@ -45,19 +42,19 @@ export default function EarlyAccessPage() {
           href="/register"
           className="nw-cta-primary inline-flex justify-center px-6 py-3 text-center"
         >
-          Join with an account
+          {t("marketing.earlyAccess.ctaJoin")}
         </Link>
         <Link
           href="/freelancers"
           className="inline-flex justify-center rounded-md border border-slate-200 bg-white px-6 py-3 text-center text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
         >
-          Find freelancers near you
+          {t("marketing.earlyAccess.ctaFreelancers")}
         </Link>
         <Link
           href="/jobs"
           className="inline-flex justify-center rounded-lg border border-transparent px-6 py-3 text-center text-sm font-semibold text-[#3525cd] hover:underline"
         >
-          Start searching now
+          {t("marketing.earlyAccess.ctaJobs")}
         </Link>
       </div>
     </div>
