@@ -5,14 +5,14 @@ import { localizedMetadata, normalizeLocale } from "@/lib/i18n/seo";
 
 const copy = {
   en: {
-    title: "NearWork | Freelance marketplace for local and remote work",
+    title: "Find Freelancers Near You or Remote | NearWork",
     description:
-      "Find freelancers nearby or remote, compare proposals, and hire faster on NearWork."
+      "Hire freelancers for real work. Search by skill and city, compare local and remote profiles, and keep bids plus chat in one hiring flow."
   },
   id: {
-    title: "NearWork | Marketplace freelance untuk kerja lokal dan remote",
+    title: "Cari Freelancer Terdekat atau Remote | NearWork",
     description:
-      "Temukan freelancer terdekat atau remote, bandingkan proposal, dan rekrut lebih cepat di NearWork."
+      "Cari freelancer untuk kerja nyata: jasa freelancer terdekat atau remote, bandingkan profil dan proposal, lalu rekrut dari satu alur."
   }
 } as const;
 
