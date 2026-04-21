@@ -10,6 +10,8 @@ export type JobsPublicCard = {
   id: string;
   title: string;
   description: string;
+  translationSource: "en" | "id";
+  isTranslated: boolean;
   budgetMin: number | null;
   budgetMax: number | null;
   currency: string;
@@ -65,6 +67,14 @@ export function JobsPublicList({ jobs }: { jobs: JobsPublicCard[] }) {
                 <h2 className="text-base font-bold leading-snug text-slate-950 group-hover:text-[#3525cd] sm:text-[17px]">
                   {job.title}
                 </h2>
+                {job.isTranslated ? (
+                  <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
+                    {t("public.jobs.translatedFrom", {
+                      language:
+                        job.translationSource === "id" ? t("public.jobs.langIndonesian") : t("public.jobs.langEnglish")
+                    })}
+                  </span>
+                ) : null}
                 <span
                   className={`shrink-0 rounded border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${workModeChipClass(job.workMode)}`}
                 >

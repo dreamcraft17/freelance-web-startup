@@ -11,6 +11,7 @@ import {
   jobCreateUserLimiter,
   sensitiveMutateIpLimiter
 } from "@/server/security";
+import { getAppLocale } from "@/lib/i18n/server-locale";
 
 const jobService = new JobService();
 
@@ -23,7 +24,8 @@ export async function GET(request: Request) {
 
     const parsed = parseSearchParams(url, searchJobsSchema);
     if (!parsed.ok) return parsed.response;
-    const data = await jobService.listOpenJobs(parsed.data);
+    const locale = await getAppLocale();
+    const data = await jobService.listOpenJobs(parsed.data, locale);
     return jsonOk(data);
   });
 }

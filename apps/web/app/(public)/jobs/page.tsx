@@ -28,6 +28,8 @@ function toPublicJobCard(job: {
   id: string;
   title: string;
   description: string;
+  translationSource: "en" | "id";
+  isTranslated: boolean;
   budgetMin: { toString(): string } | null;
   budgetMax: { toString(): string } | null;
   currency: string;
@@ -41,6 +43,8 @@ function toPublicJobCard(job: {
     id: job.id,
     title: job.title,
     description: job.description,
+    translationSource: job.translationSource,
+    isTranslated: job.isTranslated,
     budgetMin: Number.isFinite(min) ? min : null,
     budgetMax: Number.isFinite(max) ? max : null,
     currency: job.currency,
@@ -90,11 +94,11 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
   const query = parsed.success ? parsed.data : { page: 1, limit: 24 as const };
 
   const jobService = new JobService();
-  const [{ items, total }, categories, pulse, { t }] = await Promise.all([
-    jobService.listOpenJobs(query),
+  const { t, locale } = await getServerTranslator();
+  const [{ items, total }, categories, pulse] = await Promise.all([
+    jobService.listOpenJobs(query, locale),
     loadCategories(),
-    new PublicStatsService().getMarketplacePulse(),
-    getServerTranslator()
+    new PublicStatsService().getMarketplacePulse()
   ]);
   const jobs = items.map(toPublicJobCard);
 

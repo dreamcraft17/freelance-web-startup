@@ -11,6 +11,7 @@ import {
   publicReadIpLimiter,
   sensitiveMutateIpLimiter
 } from "@/server/security";
+import { getAppLocale } from "@/lib/i18n/server-locale";
 
 const jobService = new JobService();
 
@@ -25,7 +26,8 @@ export async function GET(request: Request, context: RouteContext) {
     const params = await context.params;
     const jobId = params.jobId?.trim();
     if (!jobId) return jsonFail("Invalid job id", 400, "INVALID_ID");
-    const data = await jobService.getJobByIdForPublic(jobId);
+    const locale = await getAppLocale();
+    const data = await jobService.getJobByIdForPublic(jobId, locale);
     if (!data) return jsonFail("Job not found", 404, "NOT_FOUND");
     return jsonOk(data);
   });

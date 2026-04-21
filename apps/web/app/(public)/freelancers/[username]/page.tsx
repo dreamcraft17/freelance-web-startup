@@ -2,12 +2,14 @@ import { notFound } from "next/navigation";
 import { db } from "@acme/database";
 import { PageHeader } from "@/features/shared/components/PageHeader";
 import { SaveFreelancerButton } from "@/features/saved/components/SaveFreelancerButton";
+import { getServerTranslator } from "@/lib/i18n/server-translator";
 
 type PageProps = {
   params: Promise<{ username: string }>;
 };
 
 export default async function FreelancerPublicProfilePage({ params }: PageProps) {
+  const { t } = await getServerTranslator();
   const { username: raw } = await params;
   const username = raw?.trim() ?? "";
   if (!username) notFound();
@@ -37,7 +39,7 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
         actions={<SaveFreelancerButton freelancerProfileId={profile.id} />}
       />
 
-      <p className="text-muted-foreground text-sm">{meta || "Freelancer profile"}</p>
+      <p className="text-muted-foreground text-sm">{meta || t("public.freelancers.profileFallback")}</p>
     </div>
   );
 }

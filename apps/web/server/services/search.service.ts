@@ -3,6 +3,7 @@ import { AvailabilityStatus, JobStatus, WorkMode } from "@acme/types";
 import { db, Prisma } from "@acme/database";
 import { clampLimit, clampPage, offsetFromPage } from "@acme/utils";
 import { isFreelancerBoostActiveAt, isJobFeaturedActiveAt } from "../lib/promotion-expiry";
+import type { AppLocale } from "@/lib/i18n/types";
 
 /**
  * Prisma raw-query safety: this file is the only `$queryRaw` usage in the repo.
@@ -17,6 +18,8 @@ export type JobSearchItem = {
   title: string;
   slug: string;
   description: string;
+  translationSource: AppLocale;
+  isTranslated: boolean;
   budgetType: string;
   budgetMin: number | null;
   budgetMax: number | null;
@@ -90,8 +93,13 @@ function mapJob(
   row: {
     id: string;
     title: string;
+    titleEn: string | null;
+    titleId: string | null;
     slug: string;
     description: string;
+    descriptionEn: string | null;
+    descriptionId: string | null;
+    language: string;
     budgetType: string;
     budgetMin: { toString(): string } | null;
     budgetMax: { toString(): string } | null;
@@ -105,14 +113,20 @@ function mapJob(
     isFeatured: boolean;
     featuredUntil: Date | null;
   },
-  now: Date
+  now: Date,
+  locale: AppLocale
 ): JobSearchItem {
   const featuredUntilIso = row.featuredUntil?.toISOString() ?? null;
+  const source = row.language === "id" ? "id" : "en";
+  const preferredTitle = locale === "id" ? row.titleId : row.titleEn;
+  const preferredDescription = locale === "id" ? row.descriptionId : row.descriptionEn;
   return {
     id: row.id,
-    title: row.title,
+    title: preferredTitle ?? row.title,
     slug: row.slug,
-    description: row.description,
+    description: preferredDescription ?? row.description,
+    translationSource: source,
+    isTranslated: locale !== source && Boolean(preferredTitle && preferredDescription),
     budgetType: row.budgetType,
     budgetMin: num(row.budgetMin),
     budgetMax: num(row.budgetMax),
@@ -184,23 +198,24 @@ function mapFreelancer(
   };
 }
 
-type JobSearchOptions = { publicVisibilityOnly: boolean };
+type JobSearchOptions = { publicVisibilityOnly: boolean; locale: AppLocale };
 
 export class SearchService {
   /**
    * Public job board + search API: featured (non-expired) first, then recency.
    */
   async searchJobs(input: SearchJobsQueryDto): Promise<{ items: JobSearchItem[]; total: number }> {
-    return this.searchJobsInternal(input, { publicVisibilityOnly: false });
+    return this.searchJobsInternal(input, { publicVisibilityOnly: false, locale: "en" });
   }
 
   /**
    * Same ranking rules as {@link searchJobs}, restricted to `visibility = PUBLIC` (home/listing pages).
    */
   async listPublicOpenJobsPaginated(
-    input: SearchJobsQueryDto
+    input: SearchJobsQueryDto,
+    locale: AppLocale = "en"
   ): Promise<{ items: JobSearchItem[]; total: number }> {
-    return this.searchJobsInternal(input, { publicVisibilityOnly: true });
+    return this.searchJobsInternal(input, { publicVisibilityOnly: true, locale });
   }
 
   private async searchJobsInternal(
@@ -232,7 +247,14 @@ export class SearchService {
     if (input.keyword?.trim()) {
       const q = `%${input.keyword.trim()}%`;
       parts.push(
-        Prisma.sql`(j."title" ILIKE ${q} OR j."description" ILIKE ${q})`
+        Prisma.sql`(
+          j."title" ILIKE ${q}
+          OR j."description" ILIKE ${q}
+          OR j."titleEn" ILIKE ${q}
+          OR j."titleId" ILIKE ${q}
+          OR j."descriptionEn" ILIKE ${q}
+          OR j."descriptionId" ILIKE ${q}
+        )`
       );
     }
 
@@ -243,8 +265,13 @@ export class SearchService {
         {
           id: string;
           title: string;
+          titleEn: string | null;
+          titleId: string | null;
           slug: string;
           description: string;
+          descriptionEn: string | null;
+          descriptionId: string | null;
+          language: string;
           budgetType: string;
           budgetMin: { toString(): string } | null;
           budgetMax: { toString(): string } | null;
@@ -262,8 +289,13 @@ export class SearchService {
         SELECT
           j."id",
           j."title",
+          j."titleEn",
+          j."titleId",
           j."slug",
           j."description",
+          j."descriptionEn",
+          j."descriptionId",
+          j."language",
           j."budgetType"::text AS "budgetType",
           j."budgetMin",
           j."budgetMax",
@@ -300,7 +332,7 @@ export class SearchService {
 
     const total = Number(countRows[0]?.count ?? 0n);
     return {
-      items: rows.map((r) => mapJob(r, now)),
+      items: rows.map((r) => mapJob(r, now, opts.locale)),
       total
     };
   }

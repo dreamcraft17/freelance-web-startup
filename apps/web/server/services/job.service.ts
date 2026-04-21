@@ -7,6 +7,8 @@ import { JobPolicy } from "../policies/job.policy";
 import type { JobSearchItem } from "./search.service";
 import { SearchService } from "./search.service";
 import { PaymentService } from "./payment.service";
+import type { AppLocale } from "@/lib/i18n/types";
+import { buildJobTranslations } from "../lib/job-translation";
 
 export { MONETIZATION_PRICING_PLACEHOLDER } from "./subscription.service";
 
@@ -15,6 +17,8 @@ export type OpenJobListItem = {
   id: string;
   title: string;
   description: string;
+  translationSource: "en" | "id";
+  isTranslated: boolean;
   budgetType: string;
   budgetMin: { toString(): string } | null;
   budgetMax: { toString(): string } | null;
@@ -37,6 +41,8 @@ function jobSearchItemToOpenListItem(j: JobSearchItem): OpenJobListItem {
     id: j.id,
     title: j.title,
     description: j.description,
+    translationSource: j.translationSource,
+    isTranslated: j.isTranslated,
     budgetType: j.budgetType,
     budgetMin: decShim(j.budgetMin),
     budgetMax: decShim(j.budgetMax),
@@ -63,7 +69,11 @@ export class JobService {
   async createDraftJob(actor: AuthActor, dto: CreateJobDto) {
     JobPolicy.assertActorMayPerformClientWrites(actor);
     const clientProfileId = await this.clientRepo.requireClientProfileIdForUser(actor.userId);
-    return this.jobRepo.createOpenJob(clientProfileId, dto);
+    const translation = await buildJobTranslations({
+      title: dto.title,
+      description: dto.description
+    });
+    return this.jobRepo.createOpenJob(clientProfileId, dto, translation);
   }
 
   async closeJob(actor: AuthActor, jobId: string) {
@@ -74,12 +84,15 @@ export class JobService {
   }
 
   /** Open, public-visibility job with category, subcategory, and client summary for listing/detail UIs. */
-  async getJobByIdForPublic(jobId: string) {
-    return this.jobRepo.findByIdPublic(jobId);
+  async getJobByIdForPublic(jobId: string, locale: AppLocale | "source" = "en") {
+    return this.jobRepo.findByIdPublic(jobId, locale);
   }
 
-  async listOpenJobs(query: SearchJobsQueryDto): Promise<{ items: OpenJobListItem[]; total: number }> {
-    const { items, total } = await this.searchService.listPublicOpenJobsPaginated(query);
+  async listOpenJobs(
+    query: SearchJobsQueryDto,
+    locale: AppLocale = "en"
+  ): Promise<{ items: OpenJobListItem[]; total: number }> {
+    const { items, total } = await this.searchService.listPublicOpenJobsPaginated(query, locale);
     return { items: items.map(jobSearchItemToOpenListItem), total };
   }
 

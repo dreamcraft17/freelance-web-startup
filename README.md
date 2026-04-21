@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v6  
-> Last synchronized: 2026-04-20 — multilingual SEO routes (`/en/*`, `/id/*`) + hreflang/sitemap; see `docs/DOCUMENTATION-MAINTENANCE.md`.
+> **Doc revision:** v8  
+> Last synchronized: 2026-04-20 — UGC translation cache for jobs (Google Translate API) + locale-aware rendering.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -24,6 +24,9 @@ Platform ini dirancang untuk mendukung **semua jenis freelance**, bukan hanya pr
 - Preferensi: cookie **`lang`** (`en` \| `id`); API: `POST /api/locale` dengan body JSON `{ "locale": "en" | "id" }`.
 - Provider: `I18nProvider` di root layout; server helpers: `getAppLocale()`, `getServerTranslator()`.
 - SEO routes: `app/[locale]` untuk halaman publik (`/en/*`, `/id/*`) dengan metadata per-locale + `alternates.languages` (`en`, `id`, `x-default`).
+- Cakupan terbaru: halaman detail job (`/jobs/[jobId]`), legal (`/terms`, `/privacy`), forbidden, dan nearby search sudah membaca kamus EN/ID.
+- **UGC translation (jobs only):** saat job dibuat, server mendeteksi bahasa (`id`/`en`) lalu menyimpan teks asli + terjemahan cache (`titleId`, `titleEn`, `descriptionId`, `descriptionEn`, `language`) agar render per-locale tidak memanggil API setiap request.
+- Integrasi translate berjalan **server-side only** via `GOOGLE_TRANSLATE_API_KEY` (jangan expose ke frontend).
 
 ### 🔹 Marketplace Core
 - Client dapat membuat job/project

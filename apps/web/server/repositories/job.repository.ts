@@ -2,6 +2,7 @@ import { db } from "@acme/database";
 import type { CreateJobDto, UpdateJobDto } from "@acme/validators";
 import { JobStatus, JobVisibility, WorkMode } from "@acme/types";
 import { NotFoundError } from "../errors/domain-errors";
+import type { AppLocale } from "@/lib/i18n/types";
 
 function slugifyTitle(title: string): string {
   const base = title
@@ -13,6 +14,29 @@ function slugifyTitle(title: string): string {
 }
 
 export class JobRepository {
+  private localizedText(params: {
+    locale: AppLocale | "source";
+    title: string;
+    description: string;
+    titleEn: string | null;
+    titleId: string | null;
+    descriptionEn: string | null;
+    descriptionId: string | null;
+    language: string;
+  }) {
+    const source = params.language === "id" ? "id" : "en";
+    const targetLocale = params.locale === "source" ? source : params.locale;
+    const preferredTitle = targetLocale === "id" ? params.titleId : params.titleEn;
+    const preferredDescription = targetLocale === "id" ? params.descriptionId : params.descriptionEn;
+
+    return {
+      title: preferredTitle ?? params.title,
+      description: preferredDescription ?? params.description,
+      translationSource: source,
+      isTranslated: targetLocale !== source && Boolean(preferredTitle && preferredDescription)
+    };
+  }
+
   async requireOpenJobForBid(jobId: string) {
     const job = await db.job.findFirst({
       where: { id: jobId, deletedAt: null, status: JobStatus.OPEN },
@@ -63,7 +87,17 @@ export class JobRepository {
   }
 
   /** Persists a new listing immediately visible for bidding (`OPEN`). */
-  async createOpenJob(clientProfileId: string, dto: CreateJobDto) {
+  async createOpenJob(
+    clientProfileId: string,
+    dto: CreateJobDto,
+    translation: {
+      language: AppLocale;
+      titleEn: string | null;
+      titleId: string | null;
+      descriptionEn: string | null;
+      descriptionId: string | null;
+    }
+  ) {
     const slug = `${slugifyTitle(dto.title)}-${Date.now().toString(36)}`;
 
     return db.job.create({
@@ -74,6 +108,11 @@ export class JobRepository {
         title: dto.title,
         slug,
         description: dto.description,
+        language: translation.language,
+        titleEn: translation.titleEn,
+        titleId: translation.titleId,
+        descriptionEn: translation.descriptionEn,
+        descriptionId: translation.descriptionId,
         budgetType: dto.budgetType,
         budgetMin: dto.budgetMin,
         budgetMax: dto.budgetMax,
@@ -87,8 +126,8 @@ export class JobRepository {
   }
 
   /** Open, public-visibility listing suitable for the job board and public detail page. */
-  async findByIdPublic(jobId: string) {
-    return db.job.findFirst({
+  async findByIdPublic(jobId: string, locale: AppLocale | "source" = "en") {
+    const row = await db.job.findFirst({
       where: {
         id: jobId,
         deletedAt: null,
@@ -99,6 +138,11 @@ export class JobRepository {
         id: true,
         title: true,
         description: true,
+        language: true,
+        titleEn: true,
+        titleId: true,
+        descriptionEn: true,
+        descriptionId: true,
         budgetType: true,
         budgetMin: true,
         budgetMax: true,
@@ -127,6 +171,8 @@ export class JobRepository {
         }
       }
     });
+    if (!row) return null;
+    return { ...row, ...this.localizedText({ ...row, locale }) };
   }
 
   async listPublicPaginated(params: { skip: number; take: number }) {

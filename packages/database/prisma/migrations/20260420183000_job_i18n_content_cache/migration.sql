@@ -1,0 +1,6 @@
+ALTER TABLE "Job"
+ADD COLUMN "language" VARCHAR(2) NOT NULL DEFAULT 'en',
+ADD COLUMN "titleEn" TEXT,
+ADD COLUMN "titleId" TEXT,
+ADD COLUMN "descriptionEn" TEXT,
+ADD COLUMN "descriptionId" TEXT;

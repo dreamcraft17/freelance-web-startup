@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v12  
-> Last synchronized: 2026-04-20 (public jobs/freelancers copy fully dictionary-backed).
+> **Doc revision:** v15  
+> Last synchronized: 2026-04-20 (job UGC translation pipeline enabled for EN/ID).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -13,6 +13,9 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 - **Switch bahasa (2026-04-20):** EN/ID switcher mengikuti locale di route sebagai sumber kebenaran; saat ganti bahasa, aplikasi menavigasi ke route locale ekuivalen dan konten SSR langsung ikut locale baru.
 - **Navbar multilingual (2026-04-20):** tata letak `MarketingNavBar` diperkuat untuk panjang teks EN/ID (khususnya Bahasa Indonesia): desktop tetap satu baris stabil, center nav tidak wrapping, dan item utilitas diprioritaskan menurut lebar viewport.
 - **Public discovery i18n (2026-04-20):** surface publik `/jobs` dan `/freelancers` sekarang mengandalkan kamus locale untuk heading, filter labels, result toolbar, paginasi, CTA panel, list labels, dan empty states sehingga tampilan Indonesia tidak lagi bercampur bahasa Inggris.
+- **Marketing i18n (2026-04-20):** halaman `/how-it-works`, `/pricing`, `/early-access`, `/help` memakai key i18n yang sama untuk EN/ID, sehingga route locale menampilkan bahasa yang konsisten pada konten utama.
+- **Public detail/legal i18n (2026-04-20):** detail lowongan `/jobs/[jobId]` dan halaman legal `/terms`, `/privacy` sekarang dictionary-backed EN/ID; fallback pages (`/forbidden`, `/forgot-password`, `/search/nearby`) juga mengikuti locale aktif.
+- **UGC translation jobs (2026-04-20):** judul/deskripsi lowongan diterjemahkan server-side saat pembuatan job (Google Translate API), lalu hasil disimpan di kolom cache DB agar rendering `/jobs` dan `/jobs/[jobId]` bisa langsung memilih bahasa sesuai locale tanpa panggilan API berulang.
 - **Bahasa pengguna (2026-04-20):** aplikasi mendukung **English** dan **Bahasa Indonesia**; locale aktif dibaca di server dari cookie `lang` + header `Accept-Language`; pengalihan bahasa memperbarui cookie dan mem-refresh tree RSC agar konten server ikut locale.
 - **Navbar marketing (2026-04-20):** `MarketingShell` memakai bar navigasi produk—brand kiri (logo EN), pusat dibagi primary marketplace (Jobs, Freelancers) + secondary nav (How it works, Pricing, Help), utilitas/auth di kanan; indikator halaman aktif garis bawah brand; tanpa kotak logo.
 - **State pengguna di navbar (2026-04-20):** guest menampilkan mode guest + CTA `Start hiring`; sesi login menampilkan mode signed-in, unread notifications, unread message-thread count (awaiting reply), dan CTA kontekstual per role.
