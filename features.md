@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v18  
-> Last synchronized: 2026-04-20 (hero/search layout restructured into product-tool composition).
+> **Doc revision:** v19  
+> Last synchronized: 2026-04-20 (homepage navbar hierarchy + hero/search tool redesign).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -17,6 +17,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 - **2026-04-20 — Homepage depth & hierarchy pass:** hero landing diperkuat tanpa gradient/glass (headline lebih dominan, spacing lebih rapat, search block dijadikan product interaction utama dengan border/elevation halus, panel “how hiring runs” diberi struktur langkah yang lebih jelas, dan urutan CTA disetel ulang agar primary action lebih tegas daripada secondary actions).
 - **2026-04-20 — Homepage SEO & copy upgrade:** metadata `title`/`description` route `/[locale]` diperjelas dengan intent keyword (hire/cari freelancer nearby + remote) dan copy landing direvisi agar lebih product-first: H1 tegas, alur hiring operasional, CTA berbasis aksi nyata, serta section categories/preview/use-cases/final strip kini konsisten EN/ID via dictionary keys.
 - **2026-04-20 — Hero/search restructure:** landing top area kini memakai komposisi dua-lapis (top: headline + flow panel, bottom: search tool block) dengan bobot visual search sebagai interaksi utama; panel flow dipadatkan dan CTA diurutkan primary (`Post a job`) lalu secondary (`Browse freelancers`, `Open job board`).
+- **2026-04-20 — Navbar hierarchy redesign:** navbar publik diperjelas sebagai product navigation (logo lebih dominan, center nav primary vs secondary, right rail fokus EN/ID + auth + `Start hiring`) untuk mengurangi rasa template dan memperkuat action-first UX.
 - **2026-04-20 — Navbar multilingual hardening:** layout marketing navbar disetel ulang agar label Indonesia yang lebih panjang tetap rapi: center nav tidak wrapping, breakpoint desktop dinaikkan ke `lg`, spacing antar-zona dipadatkan, bobot tipografi dibedakan (primary > secondary > utility), dan utility berprioritas rendah muncul saat ruang memadai.
 - **2026-04-20 — Dukungan bahasa (i18n):** kamus di `apps/web/locales/en.json` dan `id.json`; helper `t(key)` lewat `I18nProvider` (client) dan `getServerTranslator()` (server); preferensi disimpan di **cookie `lang`** (`en` \| `id`, 1 tahun, `SameSite=Lax`) + sinkron UI instan; default dari **Accept-Language** lalu fallback `en`; `<html lang>` mengikuti locale; switcher **EN \| ID** (tanpa bendera) di navbar marketing, header workspace, header discovery ringkas, halaman login/register, dan rail akun; label navigasi dashboard memakai `labelKey` / `sectionKey` pada konfigurasi nav.
 - **2026-04-20 — Navbar marketing (`MarketingNavBar`) jadi product navigation:** struktur kiri–tengah–kanan (brand / primary nav / utilitas-auth); logo **`/logo/logo_EN.png`** tetap anchor terkuat; tengah difokuskan ke **Jobs + Freelancers** (dengan intent hint “Find work” / “Hire talent”), lalu secondary nav ringan (How it works, Pricing, Help) dipisah divider halus; state aktif garis bawah brand; area kanan guest berisi Browse jobs, Log in, Register + CTA **Start hiring**; sesi login menampilkan **state “Signed in”**, unread notifications + unread message threads, serta CTA kontekstual (**Client: Post a job**, **Freelancer: Find jobs**).
