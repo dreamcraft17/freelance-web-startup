@@ -14,6 +14,20 @@ function slugifyTitle(title: string): string {
 }
 
 export class JobRepository {
+  async getJobTranslationSnapshot(jobId: string) {
+    const row = await db.job.findFirst({
+      where: { id: jobId, deletedAt: null },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        language: true
+      }
+    });
+    if (!row) throw new NotFoundError("Job not found");
+    return row;
+  }
+
   private localizedText(params: {
     locale: AppLocale | "source";
     title: string;
@@ -193,15 +207,37 @@ export class JobRepository {
     return { items, total };
   }
 
-  async updatePartial(jobId: string, dto: UpdateJobDto) {
+  async updatePartial(
+    jobId: string,
+    dto: UpdateJobDto,
+    translation?: {
+      language: AppLocale;
+      titleEn: string | null;
+      titleId: string | null;
+      descriptionEn: string | null;
+      descriptionId: string | null;
+    }
+  ) {
     const data: {
       title?: string;
       description?: string;
       status?: JobStatus;
+      language?: string;
+      titleEn?: string | null;
+      titleId?: string | null;
+      descriptionEn?: string | null;
+      descriptionId?: string | null;
     } = {};
     if (dto.title !== undefined) data.title = dto.title;
     if (dto.description !== undefined) data.description = dto.description;
     if (dto.status !== undefined) data.status = dto.status as JobStatus;
+    if (translation) {
+      data.language = translation.language;
+      data.titleEn = translation.titleEn;
+      data.titleId = translation.titleId;
+      data.descriptionEn = translation.descriptionEn;
+      data.descriptionId = translation.descriptionId;
+    }
 
     return db.job.update({
       where: { id: jobId },

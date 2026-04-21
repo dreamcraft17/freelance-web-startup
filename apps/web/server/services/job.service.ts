@@ -100,7 +100,23 @@ export class JobService {
     JobPolicy.assertActorMayPerformClientWrites(actor);
     const ownerUserId = await this.jobRepo.getOwnerUserId(jobId);
     JobPolicy.assertClientOwnsJob(actor, ownerUserId);
-    return this.jobRepo.updatePartial(jobId, dto);
+    const current = await this.jobRepo.getJobTranslationSnapshot(jobId);
+    const nextTitle = dto.title ?? current.title;
+    const nextDescription = dto.description ?? current.description;
+
+    const titleChanged = nextTitle !== current.title;
+    const descriptionChanged = nextDescription !== current.description;
+    const contentChanged = titleChanged || descriptionChanged;
+
+    if (!contentChanged) {
+      return this.jobRepo.updatePartial(jobId, dto);
+    }
+
+    const translation = await buildJobTranslations({
+      title: nextTitle,
+      description: nextDescription
+    });
+    return this.jobRepo.updatePartial(jobId, dto, translation);
   }
 
   /**
