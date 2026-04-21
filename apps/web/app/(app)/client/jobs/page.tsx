@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { db } from "@acme/database";
 import { BidStatus, JobStatus } from "@acme/types";
 import { getSessionFromCookies } from "@src/lib/auth";
+import { getAppLocale } from "@/lib/i18n/server-locale";
 import {
   ClientJobsManager,
   type ClientJobListRow
@@ -24,6 +25,7 @@ export default async function ClientJobsPage({
   }
 
   const sp = await searchParams;
+  const locale = await getAppLocale();
   const statusFilter = statusFromSearchParam(sp.status);
 
   const clientProfile = await db.clientProfile.findFirst({
@@ -45,6 +47,9 @@ export default async function ClientJobsPage({
     select: {
       id: true,
       title: true,
+      titleEn: true,
+      titleId: true,
+      language: true,
       status: true,
       workMode: true,
       city: true,
@@ -131,7 +136,7 @@ export default async function ClientJobsPage({
     ...(bidMap.get(j.id) ?? { submitted: 0, shortlisted: 0, accepted: 0, latestBidAt: null }),
     ...(messageMap.get(j.id) ?? { conversationCount: 0, awaitingReplyCount: 0, latestMessageAt: null }),
     id: j.id,
-    title: j.title,
+    title: locale === "id" ? (j.titleId ?? j.title) : (j.titleEn ?? j.title),
     status: j.status,
     workMode: j.workMode,
     categoryName: j.category?.name ?? null,

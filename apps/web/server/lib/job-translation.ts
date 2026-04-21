@@ -46,12 +46,16 @@ export async function translateText(text: string, targetLang: AppLocale): Promis
       body: JSON.stringify({ q: trimmed, target: targetLang, format: "text" }),
       cache: "no-store"
     });
-    if (!response.ok) return null;
+    if (!response.ok) {
+      console.warn("[nearwork:translate] translate_failed", { targetLang, status: response.status });
+      return null;
+    }
     const payload = (await response.json()) as {
       data?: { translations?: Array<{ translatedText?: string }> };
     };
     return payload.data?.translations?.[0]?.translatedText?.trim() || null;
   } catch {
+    console.warn("[nearwork:translate] translate_exception", { targetLang });
     return null;
   }
 }
@@ -59,6 +63,7 @@ export async function translateText(text: string, targetLang: AppLocale): Promis
 export async function buildJobTranslations(input: {
   title: string;
   description: string;
+  sourceLanguage?: AppLocale;
 }): Promise<{
   language: AppLocale;
   titleEn: string | null;
@@ -67,7 +72,7 @@ export async function buildJobTranslations(input: {
   descriptionId: string | null;
 }> {
   const probe = `${input.title}\n${input.description}`;
-  const language = await detectLanguage(probe);
+  const language = input.sourceLanguage ?? (await detectLanguage(probe));
 
   if (language === "id") {
     const [titleEn, descriptionEn] = await Promise.all([
