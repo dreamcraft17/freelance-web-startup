@@ -58,13 +58,14 @@
   },
   "hero": {
     "liveDirectory": "Direktori freelancer aktif",
-    "title": "Rekrut freelancer untuk pekerjaan nyata—dekat Anda atau jarak jauh",
-    "subtitle": "Cari profil langsung, bandingkan proposal di lowongan terbuka, dan jaga setiap percakapan tetap pada brief.",
-    "locationNote": "Kota + lokasi browser opsional menonjolkan talenta terdekat saat freelancer membagikan koordinat.",
+    "title": "Cari freelancer untuk kerja nyata - terdekat atau remote",
+    "subtitle": "Cari berdasarkan skill dan kota, lihat profil yang relevan, lalu rekrut tanpa chat yang tercecer.",
+    "supportingLine": "Semua proposal dan percakapan tetap nempel ke lowongan.",
+    "locationNote": "Pakai kota untuk jasa freelancer terdekat, atau kosongkan untuk hasil remote freelancer.",
     "howTitle": "Alur merekrut",
-    "howStep1": "Pasang brief atau jelajahi direktori.",
-    "howStep2": "Tinjau proposal dan profil dalam konteks.",
-    "howStep3": "Chat dan putuskan tanpa keluar dari utas lowongan.",
+    "howStep1": "Pasang lowongan atau cari freelancer.",
+    "howStep2": "Bandingkan proposal dan profil.",
+    "howStep3": "Chat dan rekrut dalam satu tempat.",
     "howFootnote": "Tanpa masuk untuk mencari—buat akun saat siap memasang lowongan atau mengirim proposal.",
     "searchTitle": "Cari direktori langsung",
     "searchSubtitle": "Listing nyata · berkembang bersama komunitas",
@@ -84,6 +85,63 @@
       "socialMedia": "Media sosial",
       "tutorMath": "Les matematika",
       "brandDesign": "Desain merek"
+    }
+  },
+  "landing": {
+    "categories": {
+      "kicker": "Mulai dari kategori",
+      "title": "Cari freelancer sesuai kebutuhan",
+      "subtitle": "Pilih kategori, lalu sempitkan dengan kota atau langsung cari yang remote.",
+      "secondaryCta": "Butuh lowongan aktif? Buka job board ->",
+      "items": {
+        "design": "Desain",
+        "photo": "Foto",
+        "video": "Video",
+        "tutor": "Tutor",
+        "marketing": "Marketing",
+        "localFix": "Jasa lokal"
+      }
+    },
+    "preview": {
+      "kicker": "Preview hasil",
+      "title": "Data yang lo lihat saat hiring",
+      "disclaimer": "Contoh tampilan - bukan user asli",
+      "railBids": "Proposal dalam konteks",
+      "railProof": "Profil dengan bukti kerja",
+      "railThread": "Satu thread per lowongan",
+      "ctaFreelancers": "Buka direktori ->",
+      "ctaJobs": "Buka job board ->"
+    },
+    "useCases": {
+      "kicker": "Alur hiring",
+      "title": "Pola kerja yang paling sering dipakai",
+      "subtitle": "Pakai nearby untuk kerja lokal, remote untuk kerja online, atau hybrid kalau dua-duanya kepakai.",
+      "onsite": {
+        "kicker": "On-site",
+        "title": "Fotografer event di kota lo",
+        "body": "Pakai filter kota dan nearby buat shortlist freelancer yang bisa datang langsung."
+      },
+      "remote": {
+        "kicker": "Remote",
+        "title": "Editor video buat konten mingguan",
+        "body": "Bandingkan proposal dari sisi turnaround, revisi, dan scope sebelum deal."
+      },
+      "hybrid": {
+        "kicker": "Hybrid",
+        "title": "Tutor dengan sesi offline dan online",
+        "body": "Sepakati ekspektasi lokasi dan jadwal dari brief pertama."
+      },
+      "ctaFreelancers": "Cari freelancer",
+      "ctaJobs": "Lihat lowongan",
+      "ctaHow": "Cara kerja"
+    },
+    "finalCta": {
+      "kicker": "Langkah berikutnya",
+      "title": "Cari dulu, lalu pasang lowongan saat siap rekrut",
+      "subtitle": "NearWork bikin alur cari freelancer lokal dan remote tetap rapi dalam satu workflow.",
+      "primary": "Cari freelancer",
+      "secondary": "Buka job board",
+      "tertiary": "Pasang lowongan"
     }
   },
   "pulse": {

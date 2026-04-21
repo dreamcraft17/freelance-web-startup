@@ -58,13 +58,14 @@
   },
   "hero": {
     "liveDirectory": "Live freelancer directory",
-    "title": "Hire freelancers for real work—nearby or remote",
-    "subtitle": "Search live profiles, compare proposals on open jobs, and keep every conversation tied to the brief.",
-    "locationNote": "City + optional browser location surface nearby talent when freelancers share coordinates.",
+    "title": "Find freelancers for real work - nearby or remote",
+    "subtitle": "Search by skill and city, review real profiles, and hire without scattered chats.",
+    "supportingLine": "All bids and conversations stay tied to the job.",
+    "locationNote": "Use city when you need a local freelancer, or leave it empty for remote freelancer results.",
     "howTitle": "How hiring runs",
-    "howStep1": "Post a brief or browse the directory.",
-    "howStep2": "Review proposals and profiles in context.",
-    "howStep3": "Message and decide without leaving the job thread.",
+    "howStep1": "Post a job or browse freelancers.",
+    "howStep2": "Compare bids and profiles.",
+    "howStep3": "Chat and hire in one place.",
     "howFootnote": "No sign-in required to search—create an account when you are ready to post or send proposals.",
     "searchTitle": "Search the live directory",
     "searchSubtitle": "Real listings · updates with the community",
@@ -84,6 +85,63 @@
       "socialMedia": "Social media",
       "tutorMath": "Tutor math",
       "brandDesign": "Brand design"
+    }
+  },
+  "landing": {
+    "categories": {
+      "kicker": "Browse lanes",
+      "title": "Hire freelancers by category",
+      "subtitle": "Start from a lane, then narrow by city or go fully remote.",
+      "secondaryCta": "Need active briefs? Open job board ->",
+      "items": {
+        "design": "Design",
+        "photo": "Photo",
+        "video": "Video",
+        "tutor": "Tutor",
+        "marketing": "Marketing",
+        "localFix": "Local fix"
+      }
+    },
+    "preview": {
+      "kicker": "Result preview",
+      "title": "What hiring data looks like",
+      "disclaimer": "Illustrative rows - not real users",
+      "railBids": "Bids in context",
+      "railProof": "Profiles with proof",
+      "railThread": "One thread per job",
+      "ctaFreelancers": "Browse directory ->",
+      "ctaJobs": "Open job board ->"
+    },
+    "useCases": {
+      "kicker": "Hiring flow",
+      "title": "How teams use NearWork",
+      "subtitle": "Use nearby for local work, remote for async work, or hybrid when both matter.",
+      "onsite": {
+        "kicker": "On-site",
+        "title": "Event photographer in your city",
+        "body": "Use city and nearby signals to shortlist freelancers who can show up."
+      },
+      "remote": {
+        "kicker": "Remote",
+        "title": "Video editor for weekly content",
+        "body": "Compare bids on turnaround, revisions, and scope before hiring."
+      },
+      "hybrid": {
+        "kicker": "Hybrid",
+        "title": "Tutor with local and online sessions",
+        "body": "Set location and schedule expectations from the first brief."
+      },
+      "ctaFreelancers": "Find freelancers",
+      "ctaJobs": "Browse jobs",
+      "ctaHow": "How it works"
+    },
+    "finalCta": {
+      "kicker": "Next step",
+      "title": "Browse first, then post when you are ready to hire freelancers",
+      "subtitle": "NearWork keeps local and remote hiring in one practical workflow.",
+      "primary": "Find freelancers",
+      "secondary": "Open job board",
+      "tertiary": "Post a job"
     }
   },
   "pulse": {

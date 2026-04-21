@@ -30,7 +30,7 @@ export function LandingHero({ pulse, t }: { pulse: MarketplacePulseStats; t: Tra
             <p className="mt-3.5 max-w-xl text-lg font-medium leading-snug text-slate-800">{t("hero.subtitle")}</p>
             <p className="mt-3.5 flex items-start gap-2 text-sm font-medium text-slate-600">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#3525cd]" aria-hidden />
-              <span>{t("hero.locationNote")}</span>
+              <span>{t("hero.supportingLine")}</span>
             </p>
           </div>
 

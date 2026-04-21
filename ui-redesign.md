@@ -1,7 +1,7 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v15  
-> Last synchronized: 2026-04-20 (landing hero/search depth and CTA hierarchy refinement).
+> **Doc revision:** v16  
+> Last synchronized: 2026-04-20 (SEO-aware homepage copy and product section messaging).
 
 ## Goal
 
@@ -16,6 +16,12 @@ Build a grounded, practical, product-first UI across public and authenticated su
 - Panel kanan “How hiring runs” diperlakukan sebagai guide panel: kontras permukaan naik tipis, numbering steps diberi penanda visual yang lebih jelas, dan footnote dipisah dengan garis struktur.
 - Hierarki CTA diperjelas dengan urutan visual: `Post a job` sebagai primary, discovery actions sebagai secondary, tanpa efek dekoratif berlebih.
 - Rhythm section tetap minimal: hero stage diberi border atas/bawah agar transisi antar-bagian terasa intentional, bukan flat.
+
+### 2026-04-20 — SEO + product copy pass
+
+- H1 homepage disetel ke bahasa yang lebih operasional dan keyword-aware (nearby + remote freelancer intent) tanpa stuffing.
+- Copy section publik (`categories`, `result preview`, `use cases`, `final CTA`) dipindahkan ke dictionary agar EN/ID konsisten, dengan tone praktis (bukan startup fluff).
+- CTA label disejajarkan ke aksi marketplace nyata: menemukan freelancer, membuka job board, memasang lowongan.
 
 ### 2026-04-20 — Locale switcher (EN / ID)
 

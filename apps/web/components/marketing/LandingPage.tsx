@@ -11,10 +11,10 @@ export async function LandingPage() {
   return (
     <main className="nw-page pb-16 text-[#191c1e] selection:bg-[#3525cd]/15 selection:text-slate-950">
       <LandingHero pulse={pulse} t={t} />
-      <LandingCategoryChips />
-      <LandingProductPreview />
-      <LandingUseCases />
-      <LandingFinalCta />
+      <LandingCategoryChips t={t} />
+      <LandingProductPreview t={t} />
+      <LandingUseCases t={t} />
+      <LandingFinalCta t={t} />
     </main>
   );
 }

@@ -1,6 +1,7 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { MapPin } from "lucide-react";
+import type { Translator } from "@/lib/i18n/create-translator";
 
 type PreviewRow = {
   kind: "Freelancer" | "Job";
@@ -58,15 +59,15 @@ function ListingAvatar({ initials, kind }: { initials: string; kind: PreviewRow[
   );
 }
 
-export function LandingProductPreview() {
+export function LandingProductPreview({ t }: { t: Translator }) {
   return (
     <section className="mx-auto max-w-6xl px-4 pb-8 pt-10 sm:px-6 sm:pb-10 sm:pt-12">
       <div className="flex flex-col gap-2 border-b-2 border-slate-200 pb-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="nw-section-title">Live-style layout</p>
-          <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-950 sm:text-2xl">What you will see in results</h2>
+          <p className="nw-section-title">{t("landing.preview.kicker")}</p>
+          <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-950 sm:text-2xl">{t("landing.preview.title")}</h2>
         </div>
-        <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Illustrative rows · not real users</p>
+        <p className="text-xs font-bold uppercase tracking-wide text-slate-500">{t("landing.preview.disclaimer")}</p>
       </div>
 
       <ul className="mt-6 overflow-hidden rounded-xl border-2 border-slate-200 bg-white shadow-sm">
@@ -130,18 +131,18 @@ export function LandingProductPreview() {
 
       <div className="mt-8 flex flex-col gap-4 border-t border-slate-200 pt-6 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
         <p className="text-xs font-bold uppercase tracking-wide text-slate-600">
-          <span className="text-slate-900">Bids in context</span>
+          <span className="text-slate-900">{t("landing.preview.railBids")}</span>
           <span className="mx-2 font-normal text-slate-300">·</span>
-          <span className="text-slate-900">Profiles with proof</span>
+          <span className="text-slate-900">{t("landing.preview.railProof")}</span>
           <span className="mx-2 font-normal text-slate-300">·</span>
-          <span className="text-slate-900">One thread per job</span>
+          <span className="text-slate-900">{t("landing.preview.railThread")}</span>
         </p>
         <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-bold">
           <Link href={"/freelancers" as Route} className="text-[#3525cd] transition hover:underline">
-            Go to live freelancers →
+            {t("landing.preview.ctaFreelancers")}
           </Link>
           <Link href={"/jobs" as Route} className="text-[#3525cd] transition hover:underline">
-            Go to live jobs →
+            {t("landing.preview.ctaJobs")}
           </Link>
         </div>
       </div>

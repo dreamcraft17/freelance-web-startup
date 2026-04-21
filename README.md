@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v9  
-> Last synchronized: 2026-04-20 — homepage hero/search hierarchy refined with subtle depth (no gradient/glass).
+> **Doc revision:** v10  
+> Last synchronized: 2026-04-20 — homepage SEO title/description + product-first bilingual copy refresh.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -27,6 +27,7 @@ Platform ini dirancang untuk mendukung **semua jenis freelance**, bukan hanya pr
 - Cakupan terbaru: halaman detail job (`/jobs/[jobId]`), legal (`/terms`, `/privacy`), forbidden, dan nearby search sudah membaca kamus EN/ID.
 - **UGC translation (jobs only):** saat job dibuat, server mendeteksi bahasa (`id`/`en`) lalu menyimpan teks asli + terjemahan cache (`titleId`, `titleEn`, `descriptionId`, `descriptionEn`, `language`) agar render per-locale tidak memanggil API setiap request.
 - Integrasi translate berjalan **server-side only** via `GOOGLE_TRANSLATE_API_KEY` (jangan expose ke frontend).
+- Homepage publik (`/[locale]`) sekarang memakai metadata SEO yang lebih kuat per bahasa (title + description keyword-intent), serta copy produk yang lebih operasional untuk angle local freelancer + remote freelancer.
 
 ### 🔹 Marketplace Core
 - Client dapat membuat job/project
