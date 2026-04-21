@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v11  
-> Last synchronized: 2026-04-20 — homepage hero/search restructured into tool-first interface.
+> **Doc revision:** v12  
+> Last synchronized: 2026-04-20 — public navbar hierarchy and homepage tool-first UX refined.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)

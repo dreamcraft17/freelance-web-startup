@@ -1,7 +1,7 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v17  
-> Last synchronized: 2026-04-20 (hero/search structural redesign as product tool UI).
+> **Doc revision:** v18  
+> Last synchronized: 2026-04-20 (navbar hierarchy overhaul + hero/search tool-first composition).
 
 ## Goal
 
@@ -29,6 +29,12 @@ Build a grounded, practical, product-first UI across public and authenticated su
 - Search block diperbesar dan dipertegas sebagai interaksi utama (input lebih tinggi, border lebih kuat, tombol submit lebih dominant dan sejajar dengan input).
 - Panel kanan “How hiring runs” dipadatkan menjadi system panel (spacing lebih rapat, step list lebih kompak, aksen border kiri brand).
 - CTA strip ditata primary-first (`Post a job`) lalu secondary discovery actions agar hierarchy keputusan lebih jelas.
+
+### 2026-04-20 — Navbar non-template pass
+
+- `MarketingNavBar` disusun ulang menurut prioritas produk: logo lebih dominan di kiri, center nav dibagi primary (`Jobs`, `Freelancers`) vs secondary (`How it works`, `Pricing`, `Help`), area kanan fokus language switch + auth + CTA.
+- Link utilitas guest yang kurang prioritas dihapus dari desktop right rail agar tidak mengganggu action hierarchy.
+- State visual nav dipertegas dengan underline halus dan perbedaan bobot tipografi discovery vs product links, bukan pola tombol dekoratif.
 
 ### 2026-04-20 — Locale switcher (EN / ID)
 

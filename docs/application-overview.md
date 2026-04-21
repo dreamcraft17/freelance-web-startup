@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v18  
-> Last synchronized: 2026-04-20 (homepage hero/search turned into product-tool layout).
+> **Doc revision:** v19  
+> Last synchronized: 2026-04-20 (navbar hierarchy and homepage tool-first UX strengthened).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -19,6 +19,7 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 - **Homepage visual hierarchy (2026-04-20):** landing hero, search block, dan panel guidance diperkuat dengan kontras permukaan + elevasi tipis berbasis border/shadow halus (tanpa gradient/glass), sehingga interaksi utama lebih menonjol dan struktur halaman terasa lebih product-like.
 - **Homepage SEO + copy (2026-04-20):** route `/[locale]` memakai metadata keyword-intent per bahasa (EN/ID) dan copy publik direvisi ke gaya product-first (hiring flow, nearby vs remote framing, CTA operasional) agar positioning marketplace lebih jelas.
 - **Homepage interface composition (2026-04-20):** struktur hero disusun ulang menjadi dua layer kerja (context panel + tool panel) agar pengalaman awal terasa seperti alat hiring aktif, bukan section marketing datar.
+- **Navbar product hierarchy (2026-04-20):** struktur nav publik menekankan prioritas alur hiring (logo kuat, primary discovery links, secondary product links, CTA `Start hiring`) agar orientasi pengguna lebih cepat ke aksi inti.
 - **Bahasa pengguna (2026-04-20):** aplikasi mendukung **English** dan **Bahasa Indonesia**; locale aktif dibaca di server dari cookie `lang` + header `Accept-Language`; pengalihan bahasa memperbarui cookie dan mem-refresh tree RSC agar konten server ikut locale.
 - **Navbar marketing (2026-04-20):** `MarketingShell` memakai bar navigasi produk—brand kiri (logo EN), pusat dibagi primary marketplace (Jobs, Freelancers) + secondary nav (How it works, Pricing, Help), utilitas/auth di kanan; indikator halaman aktif garis bawah brand; tanpa kotak logo.
 - **State pengguna di navbar (2026-04-20):** guest menampilkan mode guest + CTA `Start hiring`; sesi login menampilkan mode signed-in, unread notifications, unread message-thread count (awaiting reply), dan CTA kontekstual per role.

@@ -63,15 +63,15 @@ function CenterNavLink({
       title={hint}
       aria-label={hint ? `${label} — ${hint}` : label}
       className={cn(
-        "relative whitespace-nowrap border-b-2 px-2 py-3.5 transition-colors",
-        emphasis === "discovery" ? "text-[14px] font-semibold tracking-tight" : "text-[13px] font-medium",
+        "relative whitespace-nowrap border-b-2 px-2 py-3 transition-colors",
+        emphasis === "discovery" ? "text-[14px] font-semibold tracking-tight" : "text-[13px] font-medium tracking-tight",
         active
           ? "border-[#3525cd] text-[#3525cd]"
           : cn(
               "border-transparent",
               emphasis === "discovery"
-                ? "text-slate-800 hover:text-slate-950"
-                : "text-slate-600 hover:text-slate-900"
+                ? "text-slate-900 hover:text-slate-950"
+                : "text-slate-600 hover:text-slate-800"
             )
       )}
     >
@@ -118,12 +118,12 @@ export function MarketingNavBar({
 
   return (
     <header className="fixed top-0 z-50 w-full border-b border-slate-200/90 bg-white">
-      <nav className="mx-auto flex min-h-[4.25rem] max-w-7xl items-center px-4 sm:px-6 lg:px-8 xl:px-10">
-        <div className="flex shrink-0 items-center py-1 pr-3 sm:pr-4 lg:pr-6">
+      <nav className="mx-auto flex min-h-[4.5rem] max-w-7xl items-center px-4 sm:px-6 lg:px-8 xl:px-10">
+        <div className="flex shrink-0 items-center py-1 pr-3 sm:pr-4 lg:pr-5">
           <BrandLogo
             href={"/" as Route}
-            className="inline-flex max-w-[min(86vw,280px)] items-center outline-none transition duration-200 hover:opacity-[0.88] motion-reduce:transition-none sm:max-w-[min(64vw,320px)] lg:max-w-[340px] xl:max-w-[390px]"
-            imageClassName="h-9 w-auto object-contain object-left sm:h-10 lg:h-11 lg:max-h-[2.75rem]"
+            className="inline-flex max-w-[min(86vw,280px)] items-center outline-none transition duration-200 hover:opacity-[0.88] motion-reduce:transition-none sm:max-w-[min(64vw,330px)] lg:max-w-[350px] xl:max-w-[400px]"
+            imageClassName="h-10 w-auto object-contain object-left sm:h-10 lg:h-12 lg:max-h-[3rem]"
             alt="NearWork"
           />
         </div>
@@ -198,32 +198,23 @@ export function MarketingNavBar({
             <AuthUserMenu compact />
           </div>
         ) : (
-          <div className="ml-auto hidden shrink-0 items-center gap-1 border-l border-slate-100 pl-3 lg:flex xl:gap-1.5 xl:pl-4">
-            <span className="hidden text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-400 2xl:inline">
-              {t("nav.guestMode")}
-            </span>
-            <Link
-              href="/jobs"
-              className="hidden whitespace-nowrap rounded-md px-2 py-2 text-[13px] font-medium text-slate-700 transition hover:bg-slate-50 hover:text-slate-900 xl:inline-flex"
-            >
-              {t("nav.browseJobs")}
-            </Link>
+          <div className="ml-auto hidden shrink-0 items-center gap-1.5 border-l border-slate-100 pl-3 lg:flex xl:pl-4">
+            <LocaleSwitcher />
             <Link
               href="/login"
-              className="whitespace-nowrap rounded-md px-2 py-2 text-[13px] font-medium text-slate-500 transition hover:bg-slate-50 hover:text-slate-800"
+              className="whitespace-nowrap rounded-md px-2 py-2 text-[13px] font-medium text-slate-600 transition hover:text-slate-900"
             >
               {t("nav.logIn")}
             </Link>
             <Link
               href="/register"
-              className="whitespace-nowrap rounded-md px-2 py-2 text-[13px] font-medium text-slate-500 transition hover:bg-slate-50 hover:text-slate-800"
+              className="whitespace-nowrap rounded-md px-2 py-2 text-[13px] font-medium text-slate-600 transition hover:text-slate-900"
             >
               {t("nav.register")}
             </Link>
-            <LocaleSwitcher />
             <Link
               href="/register?role=CLIENT&intent=post-job"
-              className="nw-cta-primary ml-0.5 whitespace-nowrap px-3 py-2 text-[13px] font-semibold shadow-none xl:px-3.5"
+              className="nw-cta-primary ml-0.5 whitespace-nowrap px-3.5 py-2.5 text-[13px] font-semibold shadow-none xl:px-4"
             >
               {t("nav.startHiring")}
             </Link>
