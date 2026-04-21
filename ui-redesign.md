@@ -1,7 +1,7 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v16  
-> Last synchronized: 2026-04-20 (SEO-aware homepage copy and product section messaging).
+> **Doc revision:** v17  
+> Last synchronized: 2026-04-20 (hero/search structural redesign as product tool UI).
 
 ## Goal
 
@@ -22,6 +22,13 @@ Build a grounded, practical, product-first UI across public and authenticated su
 - H1 homepage disetel ke bahasa yang lebih operasional dan keyword-aware (nearby + remote freelancer intent) tanpa stuffing.
 - Copy section publik (`categories`, `result preview`, `use cases`, `final CTA`) dipindahkan ke dictionary agar EN/ID konsisten, dengan tone praktis (bukan startup fluff).
 - CTA label disejajarkan ke aksi marketplace nyata: menemukan freelancer, membuka job board, memasang lowongan.
+
+### 2026-04-20 — Hero/search structural pass
+
+- Hero dibagi eksplisit jadi dua layer: **top layer** (headline + hiring system panel) dan **bottom layer** (search tool block) agar terasa seperti interface kerja, bukan banner.
+- Search block diperbesar dan dipertegas sebagai interaksi utama (input lebih tinggi, border lebih kuat, tombol submit lebih dominant dan sejajar dengan input).
+- Panel kanan “How hiring runs” dipadatkan menjadi system panel (spacing lebih rapat, step list lebih kompak, aksen border kiri brand).
+- CTA strip ditata primary-first (`Post a job`) lalu secondary discovery actions agar hierarchy keputusan lebih jelas.
 
 ### 2026-04-20 — Locale switcher (EN / ID)
 
