@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v8  
-> Last synchronized: 2026-04-20 — UGC translation cache for jobs (Google Translate API) + locale-aware rendering.
+> **Doc revision:** v9  
+> Last synchronized: 2026-04-20 — homepage hero/search hierarchy refined with subtle depth (no gradient/glass).
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)

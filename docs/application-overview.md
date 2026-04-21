@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v15  
-> Last synchronized: 2026-04-20 (job UGC translation pipeline enabled for EN/ID).
+> **Doc revision:** v16  
+> Last synchronized: 2026-04-20 (homepage hero/search hierarchy and depth improved).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -16,6 +16,7 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 - **Marketing i18n (2026-04-20):** halaman `/how-it-works`, `/pricing`, `/early-access`, `/help` memakai key i18n yang sama untuk EN/ID, sehingga route locale menampilkan bahasa yang konsisten pada konten utama.
 - **Public detail/legal i18n (2026-04-20):** detail lowongan `/jobs/[jobId]` dan halaman legal `/terms`, `/privacy` sekarang dictionary-backed EN/ID; fallback pages (`/forbidden`, `/forgot-password`, `/search/nearby`) juga mengikuti locale aktif.
 - **UGC translation jobs (2026-04-20):** judul/deskripsi lowongan diterjemahkan server-side saat pembuatan job (Google Translate API), lalu hasil disimpan di kolom cache DB agar rendering `/jobs` dan `/jobs/[jobId]` bisa langsung memilih bahasa sesuai locale tanpa panggilan API berulang.
+- **Homepage visual hierarchy (2026-04-20):** landing hero, search block, dan panel guidance diperkuat dengan kontras permukaan + elevasi tipis berbasis border/shadow halus (tanpa gradient/glass), sehingga interaksi utama lebih menonjol dan struktur halaman terasa lebih product-like.
 - **Bahasa pengguna (2026-04-20):** aplikasi mendukung **English** dan **Bahasa Indonesia**; locale aktif dibaca di server dari cookie `lang` + header `Accept-Language`; pengalihan bahasa memperbarui cookie dan mem-refresh tree RSC agar konten server ikut locale.
 - **Navbar marketing (2026-04-20):** `MarketingShell` memakai bar navigasi produk—brand kiri (logo EN), pusat dibagi primary marketplace (Jobs, Freelancers) + secondary nav (How it works, Pricing, Help), utilitas/auth di kanan; indikator halaman aktif garis bawah brand; tanpa kotak logo.
 - **State pengguna di navbar (2026-04-20):** guest menampilkan mode guest + CTA `Start hiring`; sesi login menampilkan mode signed-in, unread notifications, unread message-thread count (awaiting reply), dan CTA kontekstual per role.

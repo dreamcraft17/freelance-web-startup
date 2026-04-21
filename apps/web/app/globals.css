@@ -125,7 +125,7 @@
 
   /** Full-width landing bands — rhythm without cards-everywhere */
   .nw-hero-stage {
-    @apply border-b border-slate-200 bg-white;
+    @apply border-y border-slate-200 bg-white;
   }
 
   .nw-section-mist {

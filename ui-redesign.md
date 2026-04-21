@@ -1,13 +1,21 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v14  
-> Last synchronized: 2026-04-20 (UGC translation indicators + original/translated toggle on job detail).
+> **Doc revision:** v15  
+> Last synchronized: 2026-04-20 (landing hero/search depth and CTA hierarchy refinement).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-04-20 — Homepage depth without gimmicks
+
+- Hero typography dan spacing disetel ulang: headline diperbesar/ditajamkan, subtitle tetap tenang namun lebih terpisah dari body hint agar focal point langsung terbaca.
+- Search area ditingkatkan jadi **product block** utama: border lebih tegas, elevasi lembut, padding lebih lapang, serta input rows dengan permukaan konsisten.
+- Panel kanan “How hiring runs” diperlakukan sebagai guide panel: kontras permukaan naik tipis, numbering steps diberi penanda visual yang lebih jelas, dan footnote dipisah dengan garis struktur.
+- Hierarki CTA diperjelas dengan urutan visual: `Post a job` sebagai primary, discovery actions sebagai secondary, tanpa efek dekoratif berlebih.
+- Rhythm section tetap minimal: hero stage diberi border atas/bawah agar transisi antar-bagian terasa intentional, bukan flat.
 
 ### 2026-04-20 — Locale switcher (EN / ID)
 
