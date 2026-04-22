@@ -1,3 +1,4 @@
+import type { Route } from "next";
 import Link from "next/link";
 import { Compass, LocateFixed, Radar, Zap } from "lucide-react";
 import type { Translator } from "@/lib/i18n/create-translator";
@@ -14,11 +15,11 @@ const quickFilters: { labelKey: string; href: string }[] = [
   { labelKey: "landing.activity.filters.remote", href: "/freelancers?workMode=REMOTE" }
 ];
 
-function withIntent(href: string, intent: LandingIntent): string {
+function withIntent(href: string, intent: LandingIntent): Route {
   const [pathname, query = ""] = href.split("?");
   const params = new URLSearchParams(query);
   params.set("intent", intent);
-  return `${pathname}?${params.toString()}`;
+  return `${pathname}?${params.toString()}` as Route;
 }
 
 export function LandingActivityStrip({ t, intent }: { t: Translator; intent: LandingIntent }) {

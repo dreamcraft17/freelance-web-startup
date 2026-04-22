@@ -33,7 +33,7 @@ export function buildLocaleAlternates(path: string): {
 } {
   const canonicalEn = absolute(withLocalePath("en", path));
   const canonicalId = absolute(withLocalePath("id", path));
-  const xDefault = absolute("/");
+  const xDefault = canonicalId;
   return {
     canonicalEn,
     canonicalId,

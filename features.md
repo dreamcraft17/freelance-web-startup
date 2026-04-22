@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v28  
-> Last synchronized: 2026-04-22 (public locale default changed to Indonesian with preference-safe persistence).
+> **Doc revision:** v29  
+> Last synchronized: 2026-04-22 (locale priority refined: URL > cookie > browser primary language > id fallback; seo x-default aligned).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -18,6 +18,8 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 - **2026-04-22 — Homepage action-clarity iteration:** ditambahkan mode switch `I want to hire` / `I want to work` di bawah area search untuk mengubah prioritas aksi; search kini punya quick filters (`Nearby`, `Remote`, `Budget`) + budget selector sederhana; hierarki CTA dipadatkan menjadi satu primary action per mode dengan secondary actions yang lebih ringan.
 - **2026-04-22 — Intent persistence (`?intent=hire|work`):** mode homepage sekarang dibaca dari URL query saat load (default aman: `hire`), switch mode mengubah query sebagai single source of truth, dan CTA/shortcut relevan menjaga intent agar pengalaman tetap konsisten saat refresh/navigasi tanpa state client ganda.
 - **2026-04-22 — Default bahasa publik ke Indonesia:** resolver locale kini fallback ke `id` untuk pengunjung baru tanpa preferensi; preferensi pengguna yang sudah memilih bahasa tetap dihormati via cookie `lang`; route root tetap redirect server-side ke locale prefix (`/id` default) sehingga tidak ada flicker EN -> ID.
+- **2026-04-22 — Refinement prioritas locale global:** urutan resolusi dipertegas menjadi route locale eksplisit -> cookie preferensi -> primary browser language (`Accept-Language` entry pertama) -> fallback `id`; ini menghindari bias fallback berlebih untuk visitor internasional dengan browser EN.
+- **2026-04-22 — SEO multilingual tuning:** `x-default` untuk alternates kini diarahkan langsung ke `/id` canonical (bukan `/` redirect) agar sinyal canonical/hreflang lebih bersih untuk crawler.
 - **2026-04-20 — Multilingual SEO (production-safe):** ditambahkan route prefix locale `app/[locale]` untuk halaman SEO (`/en/*`, `/id/*`) mencakup home, jobs (+detail), freelancers (+detail), how-it-works, pricing, early-access, help; tiap halaman pakai metadata lokal + `alternates.languages` (`en`, `id`, `x-default`) dan canonical per-locale; sitemap sekarang mempublikasikan URL dua bahasa. Locale switcher kini **route-aware** sebagai source-of-truth (aktif mengikuti prefix URL), sehingga perpindahan EN/ID langsung memuat konten SSR sesuai route target.
 - **2026-04-20 — Konsistensi locale publik (`/jobs`, `/freelancers`):** string UI yang masih hardcoded Inggris dipindah ke kamus `en.json` / `id.json` (header, toolbar hasil, paginasi, panel samping, filter, list labels, empty states, nearby/location prompts). Komponen publik sekarang membaca `t()` secara konsisten agar halaman Indonesia tidak lagi bercampur bahasa.
 - **2026-04-20 — Lokalisasi halaman marketing:** konten user-facing di `/how-it-works`, `/pricing`, `/early-access`, `/help` dipindah ke kamus locale agar halaman `/id/*` tidak menampilkan copy Inggris; fallback teks pada profil publik freelancer juga dilokalisasi.

@@ -21,11 +21,15 @@ const trendingSearchKeys: { labelKey: string; href: string }[] = [
   { labelKey: "hero.trending.brandDesign", href: "/freelancers?keyword=brand+design" }
 ];
 
-function withIntent(href: string, intent: LandingIntent): string {
+function withIntent(href: string, intent: LandingIntent): Route {
   const [pathname, query = ""] = href.split("?");
   const params = new URLSearchParams(query);
   params.set("intent", intent);
-  return `${pathname}?${params.toString()}`;
+  return `${pathname}?${params.toString()}` as Route;
+}
+
+function modeHref(homePath: string, intent: LandingIntent): Route {
+  return `${homePath}?intent=${intent}` as Route;
 }
 
 export function LandingHero({ t, intent, homePath }: { t: Translator; intent: LandingIntent; homePath: string }) {
@@ -198,13 +202,13 @@ export function LandingHero({ t, intent, homePath }: { t: Translator; intent: La
           <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">{t("hero.modeSwitchLabel")}</p>
           <div className="mt-2 inline-flex rounded-lg border border-slate-200 bg-white p-1">
             <Link
-              href={`${homePath}?intent=hire`}
+              href={modeHref(homePath, "hire")}
               className={`rounded-md px-3 py-1.5 text-xs font-bold transition ${isHireMode ? "bg-[#3525cd] text-white" : "text-slate-600 hover:bg-slate-100"}`}
             >
               {t("hero.modeHire")}
             </Link>
             <Link
-              href={`${homePath}?intent=work`}
+              href={modeHref(homePath, "work")}
               className={`rounded-md px-3 py-1.5 text-xs font-bold transition ${!isHireMode ? "bg-[#3525cd] text-white" : "text-slate-600 hover:bg-slate-100"}`}
             >
               {t("hero.modeWork")}
