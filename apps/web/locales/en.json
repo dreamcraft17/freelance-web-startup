@@ -647,6 +647,7 @@
       "hidePassword": "Hide password",
       "submit": "Log in",
       "submitting": "Signing in…",
+      "signingIn": "Signing you in...",
       "noAccount": "New here?",
       "createAccount": "Create an account",
       "forgot": "Forgot password?",
