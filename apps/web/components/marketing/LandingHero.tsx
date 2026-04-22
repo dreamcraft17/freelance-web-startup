@@ -1,6 +1,6 @@
 import type { Route } from "next";
 import Link from "next/link";
-import { ArrowRight, MapPin, Search, Sparkles } from "lucide-react";
+import { ArrowRight, CheckCircle2, MapPin, Search, ShieldCheck, Sparkles } from "lucide-react";
 import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
 import { MarketplacePulse, type MarketplacePulseStats } from "@/components/marketing/MarketplacePulse";
 import { popularFreelancerSearchSuggestions } from "@/features/public/lib/popular-search-suggestions";
@@ -15,6 +15,12 @@ const trendingSearchKeys: { labelKey: string; href: Route }[] = [
 ];
 
 export function LandingHero({ pulse, t }: { pulse: MarketplacePulseStats; t: Translator }) {
+  const trustCues = [
+    { icon: ShieldCheck, label: t("hero.trust.verifiedAccounts") },
+    { icon: CheckCircle2, label: t("hero.trust.structuredProposals") },
+    { icon: CheckCircle2, label: t("hero.trust.hiringThread") }
+  ];
+
   return (
     <section className="nw-hero-stage">
       <div className="mx-auto max-w-6xl px-4 pb-14 pt-8 sm:px-6 sm:pb-16 sm:pt-10">
@@ -33,6 +39,18 @@ export function LandingHero({ pulse, t }: { pulse: MarketplacePulseStats; t: Tra
               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#3525cd]" aria-hidden />
               <span>{t("hero.supportingLine")}</span>
             </p>
+            <p className="mt-1.5 text-xs font-semibold uppercase tracking-wide text-slate-500">{t("hero.liveUrgencyLine")}</p>
+            <div className="mt-4 flex flex-wrap gap-2.5">
+              {trustCues.map(({ icon: Icon, label }) => (
+                <span
+                  key={label}
+                  className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-semibold text-slate-700"
+                >
+                  <Icon className="h-3.5 w-3.5 text-[#3525cd]" aria-hidden />
+                  {label}
+                </span>
+              ))}
+            </div>
           </div>
 
           <aside className="flex flex-col gap-4 border border-slate-200 bg-slate-50/90 p-4 sm:p-[1.125rem] lg:col-span-4 lg:border-l-[3px] lg:border-l-[#3525cd]">
@@ -69,6 +87,13 @@ export function LandingHero({ pulse, t }: { pulse: MarketplacePulseStats; t: Tra
               <p className="text-base font-bold text-slate-950">{t("hero.searchTitle")}</p>
               <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">{t("hero.searchSubtitle")}</p>
             </div>
+            <Link
+              href="/jobs"
+              className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wide text-[#3525cd] hover:underline"
+            >
+              {t("hero.quickBrowse")}
+              <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+            </Link>
           </div>
           <form
             action="/freelancers"
