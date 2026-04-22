@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v14  
-> Last synchronized: 2026-04-22 — homepage activity-signal and decision-speed UX refined.
+> **Doc revision:** v16  
+> Last synchronized: 2026-04-22 — homepage structural layout redesign for stronger marketplace feel.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -30,6 +30,8 @@ Platform ini dirancang untuk mendukung **semua jenis freelance**, bukan hanya pr
 - Homepage publik (`/[locale]`) sekarang memakai metadata SEO yang lebih kuat per bahasa (title + description keyword-intent), serta copy produk yang lebih operasional untuk angle local freelancer + remote freelancer.
 - Homepage publik menambahkan lapisan marketplace yang lebih aktif: category browse lane horizontal di bawah search, hero trust cues + quick browse link, dan listing preview row-style dengan atribut operasional (harga, lokasi, tags, action links) agar entry ke discovery lebih terasa seperti produk live.
 - Refinement terbaru menambah activity signals ringan di row preview, merapikan alignment data untuk compare cepat, mempertegas category lane sebagai navigasi, dan menambah cue urgensi operasional di hero tanpa elemen dekoratif berlebih.
+- Pass lanjutan memperkuat confidence memilih: tiap row punya alasan pemilihan singkat, top rows diberi penekanan ringan, CTA utama per-row dibuat lebih tegas daripada aksi sekunder, dan harga dilengkapi konteks value.
+- Upgrade struktur terbaru memecah layout hero menjadi komposisi asimetris, menambahkan mini visual board fungsional, mengubah kategori ke grid entry points berbasis ikon, dan menambah thumbnail-style anchors di listing agar eksplorasi terasa lebih aktif.
 
 ### 🔹 Marketplace Core
 - Client dapat membuat job/project

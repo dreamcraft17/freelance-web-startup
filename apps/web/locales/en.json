@@ -80,7 +80,16 @@
     "openJobBoard": "Open job board",
     "postAJob": "Post a job",
     "quickBrowse": "Browse active briefs",
-    "liveUrgencyLine": "Live listings update daily across nearby and remote lanes.",
+    "liveUrgencyLine": "New freelancers and active jobs are added daily.",
+    "searchTrustLine": "All bids and chats stay tied to your job thread.",
+    "visualPanelTitle": "Live board snapshot",
+    "visualPanelHint": "Scan supply, demand, and proposal flow before you search.",
+    "statFreelancers": "Available",
+    "statJobs": "Open jobs",
+    "statProposals24h": "Proposals 24h",
+    "statBidsContext": "Board status",
+    "quickActionBrowseFreelancers": "Browse freelancers",
+    "quickActionBrowseJobs": "Browse jobs",
     "trust": {
       "verifiedAccounts": "Verified accounts",
       "structuredProposals": "Structured proposal flow",
@@ -101,6 +110,7 @@
       "subtitle": "Start from a lane, then narrow by city or go fully remote.",
       "secondaryCta": "Need active briefs? Open job board ->",
       "entryLabel": "Browse lane",
+      "entrySubline": "Open",
       "items": {
         "design": "Design",
         "photo": "Photo",
@@ -117,11 +127,21 @@
       "railBids": "Bids in context",
       "railProof": "Profiles with proof",
       "railThread": "One thread per job",
-      "viewAction": "View",
-      "openAction": "Open",
+      "featured": "Featured",
+      "primaryAction": {
+        "job": "Open job",
+        "freelancer": "View profile"
+      },
+      "secondaryAction": "View details",
       "viewProfileLink": "View profile",
       "openJobLink": "Open job",
       "compareLink": "Compare options",
+      "why": {
+        "respondsFast": "Why choose this: responds fast.",
+        "popularChoice": "Why choose this: popular choice with active demand.",
+        "recentlyHired": "Why choose this: recently hired in similar work.",
+        "topRatedLocal": "Why choose this: top rated in nearby market."
+      },
       "signal": {
         "new": "New",
         "activeNow": "Active now",

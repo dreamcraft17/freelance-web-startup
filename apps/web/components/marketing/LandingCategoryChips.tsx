@@ -1,7 +1,7 @@
 import type { Route } from "next";
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
-import { Camera, GraduationCap, Megaphone, Palette, Video, Wrench } from "lucide-react";
+import { ArrowUpRight, Camera, GraduationCap, Megaphone, Palette, Video, Wrench } from "lucide-react";
 import type { Translator } from "@/lib/i18n/create-translator";
 
 type CategoryChip = {
@@ -44,21 +44,26 @@ export function LandingCategoryChips({ t }: { t: Translator }) {
           </Link>
         </div>
 
-        <div className="-mx-1 flex gap-3 overflow-x-auto pb-1 pt-1 [scrollbar-width:thin] sm:flex-wrap sm:overflow-visible">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
           {categories.map(({ labelKey, href, icon: Icon, tone }) => (
             <Link
               key={labelKey}
               href={href}
-              className="group flex min-w-[9.5rem] shrink-0 snap-start flex-col items-start gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3.5 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-[#3525cd]/45 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/25 sm:min-w-0 sm:flex-1 sm:max-w-[11.5rem]"
+              className="group flex min-h-[9.5rem] flex-col items-start justify-between rounded-lg border border-slate-200 bg-white px-4 py-3.5 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-[#3525cd]/45 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/25"
             >
-              <span
-                className={`flex h-11 w-11 items-center justify-center rounded-lg border-2 transition group-hover:scale-[1.03] ${toneIconWrap[tone]}`}
-              >
-                <Icon className="h-6 w-6" strokeWidth={2} aria-hidden />
+              <div>
+                <span
+                  className={`flex h-11 w-11 items-center justify-center rounded-lg border-2 transition group-hover:scale-[1.03] ${toneIconWrap[tone]}`}
+                >
+                  <Icon className="h-6 w-6" strokeWidth={2} aria-hidden />
+                </span>
+                <span className="mt-2.5 block text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t("landing.categories.entryLabel")}</span>
+                <span className="mt-1 block text-sm font-bold leading-tight text-slate-900 group-hover:text-[#3525cd]">{t(labelKey)}</span>
+              </div>
+              <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wide text-slate-500 group-hover:text-[#3525cd]">
+                {t("landing.categories.entrySubline")}
+                <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
               </span>
-              <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t("landing.categories.entryLabel")}</span>
-              <span className="text-sm font-bold leading-tight text-slate-900 group-hover:text-[#3525cd]">{t(labelKey)}</span>
-              <span className="h-0.5 w-full rounded-full bg-transparent transition group-hover:bg-[#3525cd]/35" aria-hidden />
             </Link>
           ))}
         </div>
