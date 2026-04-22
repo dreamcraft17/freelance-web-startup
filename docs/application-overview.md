@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v32  
-> Last synchronized: 2026-04-22 (login submit feedback polished with reusable auth overlay pattern).
+> **Doc revision:** v33  
+> Last synchronized: 2026-04-22 (auth submit overlay pattern extended to register and forgot-password).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -21,6 +21,7 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 - **Locale priority enforcement (2026-04-22):** jika URL locale tidak ada dan cookie preferensi kosong, sistem langsung fallback ke `id`; `Accept-Language` tidak dipakai untuk override default routing publik.
 - **Login UX feedback (2026-04-22):** halaman login menampilkan overlay proses saat submit agar user mendapat sinyal jelas ketika autentikasi berjalan; interaksi form dikunci sementara request berlangsung untuk mencegah multiple submit.
 - **Auth overlay reuse baseline (2026-04-22):** pola overlay loading auth diekstrak menjadi komponen reusable agar flow register/forgot-password bisa mengadopsi UX submit konsisten di iterasi berikutnya.
+- **Auth submit consistency rollout (2026-04-22):** flow register dan forgot-password kini sudah memakai pola overlay reusable yang sama dengan login (overlay tenang, spinner status, kontrol disabled, anti double-submit, teks loading terlokalisasi per flow).
 - **SEO alternates refinement (2026-04-22):** `hreflang` tetap EN/ID + `x-default`, dengan `x-default` langsung ke URL canonical default locale untuk mencegah duplicate/redirect ambiguity.
 - **SEO multilingual (2026-04-20):** halaman publik inti tersedia di URL terpisah per bahasa (`/en/*`, `/id/*`) via `app/[locale]`; metadata Next.js per locale memuat canonical lokal + hreflang `en`, `id`, `x-default`.
 - **Switch bahasa (2026-04-20):** EN/ID switcher mengikuti locale di route sebagai sumber kebenaran; saat ganti bahasa, aplikasi menavigasi ke route locale ekuivalen dan konten SSR langsung ikut locale baru.

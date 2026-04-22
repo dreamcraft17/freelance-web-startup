@@ -1,7 +1,7 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v31  
-> Last synchronized: 2026-04-22 (login loading feedback polished and extracted into reusable auth overlay).
+> **Doc revision:** v32  
+> Last synchronized: 2026-04-22 (auth loading feedback made consistent across register + forgot-password).
 
 ## Goal
 
@@ -84,6 +84,12 @@ Build a grounded, practical, product-first UI across public and authenticated su
 - Tombol submit dan kontrol form tetap disabled selama loading, dengan guard tambahan untuk mencegah submit berulang.
 - Overlay memakai transisi opacity singkat (200ms) supaya muncul/lenyap halus tanpa flicker kasar.
 - Komponen overlay submit auth diekstrak agar bisa dipakai ulang pada flow auth lain tanpa duplikasi markup/transisi.
+
+### 2026-04-22 — Auth submit consistency pass
+
+- Pola `AuthSubmitOverlay` kini diterapkan ke register dan forgot-password agar perilaku submit auth seragam di seluruh flow.
+- Kedua form menonaktifkan semua input/aksi saat loading, menampilkan spinner inline di tombol utama, dan mencegah duplicate submit dari klik berulang.
+- Teks feedback loading dipisah per flow di kamus EN/ID (`creating account`, `sending reset link`) agar status proses tetap jelas dan kontekstual.
 
 ### 2026-04-20 — Homepage depth without gimmicks
 
