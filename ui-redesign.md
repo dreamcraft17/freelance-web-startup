@@ -1,7 +1,7 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v29  
-> Last synchronized: 2026-04-22 (locale default routing simplified to cookie-or-id only).
+> **Doc revision:** v31  
+> Last synchronized: 2026-04-22 (login loading feedback polished and extracted into reusable auth overlay).
 
 ## Goal
 
@@ -77,6 +77,13 @@ Build a grounded, practical, product-first UI across public and authenticated su
 
 - Routing locale publik disederhanakan agar deterministik: URL locale eksplisit -> cookie preferensi -> `id`.
 - `Accept-Language` tidak lagi dipakai untuk keputusan default routing, sehingga first-time visitor tanpa preferensi selalu masuk ke `/id`.
+
+### 2026-04-22 — Login interaction feedback
+
+- Saat submit login, UI kini menampilkan overlay gelap ringan di seluruh viewport dengan spinner + teks proses agar user paham request sedang berjalan.
+- Tombol submit dan kontrol form tetap disabled selama loading, dengan guard tambahan untuk mencegah submit berulang.
+- Overlay memakai transisi opacity singkat (200ms) supaya muncul/lenyap halus tanpa flicker kasar.
+- Komponen overlay submit auth diekstrak agar bisa dipakai ulang pada flow auth lain tanpa duplikasi markup/transisi.
 
 ### 2026-04-20 — Homepage depth without gimmicks
 

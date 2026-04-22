@@ -14,9 +14,30 @@ import {
 const LOCALE_PREFIX = /^\/(en|id)(\/|$)/i;
 const SEO_PREFIX_PATH = /^\/(jobs|freelancers|how-it-works|pricing|early-access|help)(\/.*)?$/i;
 
+function localeDebugEnabled(): boolean {
+  if (process.env.NODE_ENV === "production") return false;
+  return process.env.NEARWORK_DEBUG_LOCALE === "1";
+}
+
 function preferredLocale(request: NextRequest): "en" | "id" {
   const cookieLocale = request.cookies.get(LOCALE_COOKIE)?.value;
-  return resolveLocale(cookieLocale, null);
+  const acceptLanguage = request.headers.get("accept-language");
+  const resolved = resolveLocale(cookieLocale, null);
+
+  // Temporary internal log for locale verification in development.
+  if (localeDebugEnabled()) {
+    const urlLocaleMatch = request.nextUrl.pathname.match(LOCALE_PREFIX);
+    const urlLocale = urlLocaleMatch?.[1]?.toLowerCase() ?? "none";
+    console.info("[nearwork][locale-debug]", {
+      pathname: request.nextUrl.pathname,
+      urlLocale,
+      langCookie: cookieLocale ?? "none",
+      acceptLanguage: acceptLanguage ?? "none",
+      resolvedLocale: resolved
+    });
+  }
+
+  return resolved;
 }
 
 function isAuthPublicPath(pathname: string): boolean {
