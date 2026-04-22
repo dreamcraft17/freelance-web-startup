@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v24  
-> Last synchronized: 2026-04-22 (homepage activity strip added for live exploration shortcuts).
+> **Doc revision:** v26  
+> Last synchronized: 2026-04-22 (homepage action-clarity pass: hire/work mode switch, quick filters, CTA hierarchy).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -14,6 +14,8 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 - **2026-04-22 — Homepage decision-confidence pass:** setiap row preview kini menampilkan alasan memilih listing (`responds fast`, `popular choice`, `top rated local`) sebagai sinyal sekunder; beberapa row diberi penekanan ringan sebagai item unggulan tanpa memecah konsistensi list; CTA per-row diprioritaskan ke satu aksi utama (job/freelancer specific) dengan aksi sekunder ber-bobot lebih rendah; harga dilengkapi konteks value agar keputusan lebih cepat.
 - **2026-04-22 — Homepage layout hierarchy upgrade:** area hero dipecah dari satu kontainer datar menjadi komposisi asimetris (headline/search kiri + visual board kanan), blok pencarian dipertegas sebagai tool strip mandiri, kategori diubah ke grid entry points berbasis ikon (lebih navigational), dan baris preview ditingkatkan dengan thumbnail-style visual anchors agar rasa marketplace lebih aktif dan tidak text-heavy.
 - **2026-04-22 — Marketplace activity strip:** ditambahkan strip ringkas tepat di bawah hero untuk memperkuat rasa board aktif + eksplorasi cepat: status live (`open jobs`, proposal 24 jam), trending lanes, quick filters (`nearby`/`remote`), dan shortcut ke active briefs. Strip sengaja kompak (satu glance) agar actionable tanpa menambah noise section.
+- **2026-04-22 — Public homepage metrics removal:** panel `Live board snapshot` dihapus dari hero dan counter numerik di activity strip dihilangkan agar homepage tidak menampilkan statistik sistem mentah; area tersebut diganti jalur aksi user-facing (browse/filter/active briefs) supaya tiap blok langsung membantu search, browse, dan keputusan.
+- **2026-04-22 — Homepage action-clarity iteration:** ditambahkan mode switch `I want to hire` / `I want to work` di bawah area search untuk mengubah prioritas aksi; search kini punya quick filters (`Nearby`, `Remote`, `Budget`) + budget selector sederhana; hierarki CTA dipadatkan menjadi satu primary action per mode dengan secondary actions yang lebih ringan.
 - **2026-04-20 — Multilingual SEO (production-safe):** ditambahkan route prefix locale `app/[locale]` untuk halaman SEO (`/en/*`, `/id/*`) mencakup home, jobs (+detail), freelancers (+detail), how-it-works, pricing, early-access, help; tiap halaman pakai metadata lokal + `alternates.languages` (`en`, `id`, `x-default`) dan canonical per-locale; sitemap sekarang mempublikasikan URL dua bahasa. Locale switcher kini **route-aware** sebagai source-of-truth (aktif mengikuti prefix URL), sehingga perpindahan EN/ID langsung memuat konten SSR sesuai route target.
 - **2026-04-20 — Konsistensi locale publik (`/jobs`, `/freelancers`):** string UI yang masih hardcoded Inggris dipindah ke kamus `en.json` / `id.json` (header, toolbar hasil, paginasi, panel samping, filter, list labels, empty states, nearby/location prompts). Komponen publik sekarang membaca `t()` secara konsisten agar halaman Indonesia tidak lagi bercampur bahasa.
 - **2026-04-20 — Lokalisasi halaman marketing:** konten user-facing di `/how-it-works`, `/pricing`, `/early-access`, `/help` dipindah ke kamus locale agar halaman `/id/*` tidak menampilkan copy Inggris; fallback teks pada profil publik freelancer juga dilokalisasi.

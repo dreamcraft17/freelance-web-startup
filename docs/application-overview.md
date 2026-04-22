@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v24  
-> Last synchronized: 2026-04-22 (homepage activity strip and quick exploration shortcuts).
+> **Doc revision:** v26  
+> Last synchronized: 2026-04-22 (homepage mode switch and search-action usability upgrade).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -14,6 +14,8 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 - **Homepage decision-confidence pass (2026-04-22):** row preview kini menampilkan alasan pemilihan listing, penekanan halus untuk item unggulan, konteks value pada harga, dan hirarki aksi utama/sekunder yang lebih jelas agar pengguna bisa memilih lebih yakin.
 - **Homepage structural redesign (2026-04-22):** komposisi hero kini asimetris dan lebih terbuka (headline/tool kiri, visual board kanan), kategori dipresentasikan sebagai grid entry points, dan preview listing memakai thumbnail-style anchors untuk meningkatkan rasa produk marketplace aktif.
 - **Homepage activity strip (2026-04-22):** area tepat setelah hero kini memiliki strip ringkas berisi sinyal aktivitas + jalur eksplorasi cepat (trending lanes, quick filters nearby/remote, active briefs) untuk mempercepat langkah browse pengguna.
+- **Homepage analytics removal (2026-04-22):** panel statistik publik dan angka sistem mentah tidak lagi ditampilkan di landing; diganti fokus ke shortcut eksplorasi agar user langsung bisa mencari, membandingkan, dan membuka listing.
+- **Homepage action clarity (2026-04-22):** mode switch hire/work ditambahkan tepat setelah search untuk memprioritaskan jalur aksi berbeda; quick filters dan budget selector di search mempermudah langkah awal user dari browse ke action.
 - **SEO multilingual (2026-04-20):** halaman publik inti tersedia di URL terpisah per bahasa (`/en/*`, `/id/*`) via `app/[locale]`; metadata Next.js per locale memuat canonical lokal + hreflang `en`, `id`, `x-default`.
 - **Switch bahasa (2026-04-20):** EN/ID switcher mengikuti locale di route sebagai sumber kebenaran; saat ganti bahasa, aplikasi menavigasi ke route locale ekuivalen dan konten SSR langsung ikut locale baru.
 - **Navbar multilingual (2026-04-20):** tata letak `MarketingNavBar` diperkuat untuk panjang teks EN/ID (khususnya Bahasa Indonesia): desktop tetap satu baris stabil, center nav tidak wrapping, dan item utilitas diprioritaskan menurut lebar viewport.
