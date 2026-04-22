@@ -1,7 +1,7 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v27  
-> Last synchronized: 2026-04-22 (public i18n default set to Indonesian, no-flicker server resolution).
+> **Doc revision:** v28  
+> Last synchronized: 2026-04-22 (locale priority + multilingual seo canonical refinement).
 
 ## Goal
 
@@ -67,6 +67,11 @@ Build a grounded, practical, product-first UI across public and authenticated su
 - Resolver i18n publik sekarang fallback ke `id` ketika cookie preferensi tidak ada dan browser tidak mengirim sinyal `en`/`id` yang valid.
 - Root route tetap diselesaikan di middleware (redirect server-side ke locale prefix) agar tidak terjadi flash konten bahasa yang salah.
 - Pilihan bahasa user yang tersimpan (`lang`) tetap diprioritaskan sepenuhnya.
+
+### 2026-04-22 — Global locale priority refinement
+
+- Resolusi browser language kini memakai **primary language token** pada `Accept-Language`, sehingga perilaku lebih natural untuk user global (EN-first browser -> EN).
+- Multilingual SEO alternates disetel agar `x-default` menunjuk canonical default locale (`/id`) untuk mengurangi redirect hop pada crawler.
 
 ### 2026-04-20 — Homepage depth without gimmicks
 
