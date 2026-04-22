@@ -79,6 +79,13 @@
     "openDirectory": "Open directory",
     "openJobBoard": "Open job board",
     "postAJob": "Post a job",
+    "quickBrowse": "Browse active briefs",
+    "liveUrgencyLine": "Live listings update daily across nearby and remote lanes.",
+    "trust": {
+      "verifiedAccounts": "Verified accounts",
+      "structuredProposals": "Structured proposal flow",
+      "hiringThread": "Hiring thread per listing"
+    },
     "trending": {
       "weddingPhotographer": "Wedding photographer",
       "videoEditor": "Video editor",
@@ -93,6 +100,7 @@
       "title": "Hire freelancers by category",
       "subtitle": "Start from a lane, then narrow by city or go fully remote.",
       "secondaryCta": "Need active briefs? Open job board ->",
+      "entryLabel": "Browse lane",
       "items": {
         "design": "Design",
         "photo": "Photo",
@@ -109,6 +117,16 @@
       "railBids": "Bids in context",
       "railProof": "Profiles with proof",
       "railThread": "One thread per job",
+      "viewAction": "View",
+      "openAction": "Open",
+      "viewProfileLink": "View profile",
+      "openJobLink": "Open job",
+      "compareLink": "Compare options",
+      "signal": {
+        "new": "New",
+        "activeNow": "Active now",
+        "recentlyUpdated": "Recently updated"
+      },
       "ctaFreelancers": "Browse directory ->",
       "ctaJobs": "Open job board ->"
     },

@@ -79,6 +79,13 @@
     "openDirectory": "Buka direktori",
     "openJobBoard": "Buka papan lowongan",
     "postAJob": "Pasang lowongan",
+    "quickBrowse": "Lihat brief aktif",
+    "liveUrgencyLine": "Listing aktif diperbarui setiap hari untuk jalur nearby dan remote.",
+    "trust": {
+      "verifiedAccounts": "Akun terverifikasi",
+      "structuredProposals": "Alur proposal terstruktur",
+      "hiringThread": "Satu thread per listing"
+    },
     "trending": {
       "weddingPhotographer": "Fotografer pernikahan",
       "videoEditor": "Editor video",
@@ -93,6 +100,7 @@
       "title": "Cari freelancer sesuai kebutuhan",
       "subtitle": "Pilih kategori, lalu sempitkan dengan kota atau langsung cari yang remote.",
       "secondaryCta": "Butuh lowongan aktif? Buka job board ->",
+      "entryLabel": "Jalur pencarian",
       "items": {
         "design": "Desain",
         "photo": "Foto",
@@ -109,6 +117,16 @@
       "railBids": "Proposal dalam konteks",
       "railProof": "Profil dengan bukti kerja",
       "railThread": "Satu thread per lowongan",
+      "viewAction": "Lihat",
+      "openAction": "Buka",
+      "viewProfileLink": "Lihat profil",
+      "openJobLink": "Buka lowongan",
+      "compareLink": "Bandingkan opsi",
+      "signal": {
+        "new": "Baru",
+        "activeNow": "Aktif sekarang",
+        "recentlyUpdated": "Baru diperbarui"
+      },
       "ctaFreelancers": "Buka direktori ->",
       "ctaJobs": "Buka job board ->"
     },

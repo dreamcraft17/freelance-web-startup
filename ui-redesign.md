@@ -1,13 +1,27 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v18  
-> Last synchronized: 2026-04-20 (navbar hierarchy overhaul + hero/search tool-first composition).
+> **Doc revision:** v20  
+> Last synchronized: 2026-04-22 (homepage activity signals, scanability, and nav-lane refinement).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-04-22 — Marketplace energy (without gimmicks)
+
+- Hero tetap mempertahankan struktur dua kolom, namun diperkaya dengan trust cues kecil dan entry point browse cepat ke brief aktif agar fokus user bergeser ke interaksi, bukan sekadar membaca copy.
+- Strip kategori di bawah search diperkuat sebagai horizontal browse lane yang benar-benar clickable dan mudah dipindai (ikon + label kategori, target area lebih tegas, ritme mobile scroll tetap nyaman).
+- Section preview ditata ulang menjadi board row-style yang lebih operasional: tiap baris menampilkan atribut inti (lokasi, harga, meta status, tags) plus CTA aksi langsung (`View` / `Open`), bukan hanya kartu simetris.
+- Kedalaman visual ditingkatkan lewat separasi section berbasis border/surface/spacing (bukan gradient atau glow), sehingga halaman terasa seperti produk aktif.
+
+### 2026-04-22 — Activity/decision refinement
+
+- Tiap baris preview sekarang memiliki activity indicator sekunder (`New`/`Active now`) + status update ringkas agar halaman terasa hidup tanpa menambah noise visual.
+- Susunan kolom kanan disejajarkan (location -> price -> primary actions -> micro links) untuk mempercepat perbandingan antar row.
+- Kategori diubah dari rasa “chip” menjadi rasa “navigation lane”: label utilitas kecil + label utama + underline hover sehingga entry point terasa seperti bagian sistem browse.
+- Hero mendapat satu baris urgensi ringan terkait ritme update listing agar user menangkap bahwa board aktif, bukan konten statis.
 
 ### 2026-04-20 — Homepage depth without gimmicks
 

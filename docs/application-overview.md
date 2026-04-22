@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v19  
-> Last synchronized: 2026-04-20 (navbar hierarchy and homepage tool-first UX strengthened).
+> **Doc revision:** v21  
+> Last synchronized: 2026-04-22 (homepage activity signals and decision-speed refinement).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,8 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Homepage marketplace pass (2026-04-22):** landing publik sekarang menonjolkan browsing entry points yang lebih nyata: browse lane kategori horizontal di bawah search, hero dengan trust cues dan quick link ke brief aktif, serta preview row-style yang menampilkan atribut kerja (harga, lokasi, tag) + aksi langsung.
+- **Homepage activity refinement (2026-04-22):** section preview kini menambahkan sinyal aktivitas ringan dan alignment data untuk scan/compare lebih cepat; kategori dipertegas sebagai lane navigasi; hero menambahkan satu cue urgensi operasional tentang update listing yang rutin.
 - **SEO multilingual (2026-04-20):** halaman publik inti tersedia di URL terpisah per bahasa (`/en/*`, `/id/*`) via `app/[locale]`; metadata Next.js per locale memuat canonical lokal + hreflang `en`, `id`, `x-default`.
 - **Switch bahasa (2026-04-20):** EN/ID switcher mengikuti locale di route sebagai sumber kebenaran; saat ganti bahasa, aplikasi menavigasi ke route locale ekuivalen dan konten SSR langsung ikut locale baru.
 - **Navbar multilingual (2026-04-20):** tata letak `MarketingNavBar` diperkuat untuk panjang teks EN/ID (khususnya Bahasa Indonesia): desktop tetap satu baris stabil, center nav tidak wrapping, dan item utilitas diprioritaskan menurut lebar viewport.

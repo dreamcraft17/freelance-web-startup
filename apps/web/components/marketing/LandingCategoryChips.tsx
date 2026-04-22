@@ -49,14 +49,16 @@ export function LandingCategoryChips({ t }: { t: Translator }) {
             <Link
               key={labelKey}
               href={href}
-              className="group flex min-w-[7.5rem] shrink-0 snap-start flex-col items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-4 text-center shadow-sm transition hover:border-[#3525cd]/35 hover:shadow-md sm:min-w-0 sm:flex-1 sm:max-w-[10.5rem]"
+              className="group flex min-w-[9.5rem] shrink-0 snap-start flex-col items-start gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3.5 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-[#3525cd]/45 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/25 sm:min-w-0 sm:flex-1 sm:max-w-[11.5rem]"
             >
               <span
-                className={`flex h-12 w-12 items-center justify-center rounded-xl border-2 transition group-hover:scale-[1.03] ${toneIconWrap[tone]}`}
+                className={`flex h-11 w-11 items-center justify-center rounded-lg border-2 transition group-hover:scale-[1.03] ${toneIconWrap[tone]}`}
               >
                 <Icon className="h-6 w-6" strokeWidth={2} aria-hidden />
               </span>
-              <span className="text-sm font-bold text-slate-900">{t(labelKey)}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t("landing.categories.entryLabel")}</span>
+              <span className="text-sm font-bold leading-tight text-slate-900 group-hover:text-[#3525cd]">{t(labelKey)}</span>
+              <span className="h-0.5 w-full rounded-full bg-transparent transition group-hover:bg-[#3525cd]/35" aria-hidden />
             </Link>
           ))}
         </div>
