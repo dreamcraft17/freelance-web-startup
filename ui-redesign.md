@@ -1,7 +1,7 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v23  
-> Last synchronized: 2026-04-22 (homepage compact activity strip for fast marketplace entry).
+> **Doc revision:** v25  
+> Last synchronized: 2026-04-22 (homepage mode switch and action hierarchy refinement).
 
 ## Goal
 
@@ -43,6 +43,18 @@ Build a grounded, practical, product-first UI across public and authenticated su
 - Di bawah hero ditambahkan strip aktivitas ringan yang langsung mendorong aksi: live counters (`open jobs`, proposal 24h), trending lanes, quick filters nearby/remote, dan shortcut `active briefs`.
 - Komponen ini didesain sebagai **strip kompak**, bukan section baru yang berat, agar terbaca dalam satu glance dan langsung bisa diklik.
 - Gaya visual tetap utilitarian (border + neutral surfaces), tanpa gradient/glow/glass atau elemen dekoratif non-fungsional.
+
+### 2026-04-22 — Remove non-actionable metrics
+
+- Blok hero `Live board snapshot` dihapus karena bersifat analytics-style dan kurang membantu keputusan user publik.
+- Counter numerik (`open jobs`, `proposals`) di activity strip diganti dengan shortcut aksi (active now, new today, trending lanes, nearby/remote filters).
+- Prinsip diperketat: homepage publik hanya menampilkan elemen yang mendorong aksi langsung (search, browse, compare, open listings).
+
+### 2026-04-22 — Mode-based action clarity
+
+- Di bawah search ditambahkan mode switch `I want to hire` / `I want to work` untuk membantu pengguna memilih jalur tindakan sejak awal.
+- CTA area sekarang mengikuti mode aktif: satu primary action dominan per mode, sementara secondary actions diturunkan bobot visualnya.
+- Search block ditingkatkan dengan quick filters nearby/remote/budget + budget selector ringan agar eksplorasi lebih cepat tanpa menambah clutter.
 
 ### 2026-04-20 — Homepage depth without gimmicks
 

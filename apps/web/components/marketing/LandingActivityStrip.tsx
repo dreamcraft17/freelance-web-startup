@@ -2,7 +2,6 @@ import type { Route } from "next";
 import Link from "next/link";
 import { Compass, LocateFixed, Radar, Zap } from "lucide-react";
 import type { Translator } from "@/lib/i18n/create-translator";
-import type { MarketplacePulseStats } from "@/components/marketing/MarketplacePulse";
 
 const trendLanes: { labelKey: string; href: Route }[] = [
   { labelKey: "landing.activity.lanes.design", href: "/freelancers?keyword=design" },
@@ -15,7 +14,7 @@ const quickFilters: { labelKey: string; href: Route }[] = [
   { labelKey: "landing.activity.filters.remote", href: "/freelancers?workMode=REMOTE" }
 ];
 
-export function LandingActivityStrip({ t, pulse }: { t: Translator; pulse: MarketplacePulseStats }) {
+export function LandingActivityStrip({ t }: { t: Translator }) {
   return (
     <section className="border-b border-slate-200 bg-slate-50/80">
       <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3 sm:px-6">
@@ -24,12 +23,12 @@ export function LandingActivityStrip({ t, pulse }: { t: Translator; pulse: Marke
             <Radar className="h-3.5 w-3.5 text-[#3525cd]" aria-hidden />
             {t("landing.activity.liveNow")}
           </span>
-          <span className="rounded-md border border-slate-200 bg-white px-2 py-0.5 text-slate-700">
-            {t("landing.activity.openJobs", { count: pulse.openPublicJobs })}
-          </span>
-          <span className="rounded-md border border-slate-200 bg-white px-2 py-0.5 text-slate-700">
-            {t("landing.activity.newProposals", { count: pulse.bidsLast24h })}
-          </span>
+          <Link href="/jobs" className="rounded-md border border-slate-200 bg-white px-2 py-0.5 text-slate-700 hover:border-[#3525cd]/45 hover:text-[#3525cd]">
+            {t("landing.activity.activeNow")}
+          </Link>
+          <Link href="/freelancers" className="rounded-md border border-slate-200 bg-white px-2 py-0.5 text-slate-700 hover:border-[#3525cd]/45 hover:text-[#3525cd]">
+            {t("landing.activity.newToday")}
+          </Link>
         </div>
 
         <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
