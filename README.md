@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v22  
-> Last synchronized: 2026-04-22 — locale priority refined for global behavior + seo x-default canonicalized.
+> **Doc revision:** v23  
+> Last synchronized: 2026-04-22 — first-visit locale now consistently Indonesian unless user preference exists.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -37,7 +37,7 @@ Platform ini dirancang untuk mendukung **semua jenis freelance**, bukan hanya pr
 - Iterasi terbaru menambah mode switch `hire/work`, quick filters search (nearby/remote/budget), dan CTA hierarchy yang lebih tegas (satu primary action per mode) agar user lebih cepat masuk ke aksi.
 - Mode `hire/work` kini juga persist di URL (`?intent=hire|work`) agar state tetap konsisten saat refresh/share link, sekaligus menjaga sinkronisasi mode switch dan CTA tanpa flicker client-state.
 - Perilaku bahasa publik kini default ke Indonesia (`id`) untuk pengunjung baru; preferensi yang sudah dipilih user tetap dihormati melalui cookie `lang`, dan redirect locale dilakukan server-side untuk menghindari flicker.
-- Refinement lanjutan: jika belum ada preferensi tersimpan, locale mengikuti bahasa browser utama (`id*`/`en*`) lalu fallback ke `id`; multilingual alternates juga disetel agar `x-default` langsung ke canonical default locale.
+- Refinement terbaru: routing locale publik sekarang memakai urutan URL locale -> cookie preferensi -> fallback `id`; `Accept-Language` tidak lagi dipakai untuk override default first-visit behavior.
 
 ### 🔹 Marketplace Core
 - Client dapat membuat job/project

@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v29  
-> Last synchronized: 2026-04-22 (locale resolution priority refined for global visitors + seo alternates cleanup).
+> **Doc revision:** v30  
+> Last synchronized: 2026-04-22 (public locale routing now URL/cookie-driven with fixed Indonesian fallback).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -18,7 +18,7 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 - **Homepage action clarity (2026-04-22):** mode switch hire/work ditambahkan tepat setelah search untuk memprioritaskan jalur aksi berbeda; quick filters dan budget selector di search mempermudah langkah awal user dari browse ke action.
 - **Homepage intent persistence (2026-04-22):** intent mode (`hire`/`work`) kini dibaca dari query URL dan dipakai sebagai source of truth untuk state switch + CTA, sehingga pengalaman tetap stabil saat reload dan share URL.
 - **Default locale publik (2026-04-22):** pengunjung baru tanpa preferensi bahasa sekarang diarahkan ke konten Indonesia (`/id`) secara server-side; cookie `lang` tetap menjadi prioritas jika user sudah memilih `EN`/`ID`.
-- **Locale priority refinement (2026-04-22):** bila tidak ada cookie, sistem kini mengevaluasi bahasa browser dari entry pertama `Accept-Language` (`id*` -> ID, `en*` -> EN, lainnya -> ID) agar pengalaman internasional lebih natural.
+- **Locale priority enforcement (2026-04-22):** jika URL locale tidak ada dan cookie preferensi kosong, sistem langsung fallback ke `id`; `Accept-Language` tidak dipakai untuk override default routing publik.
 - **SEO alternates refinement (2026-04-22):** `hreflang` tetap EN/ID + `x-default`, dengan `x-default` langsung ke URL canonical default locale untuk mencegah duplicate/redirect ambiguity.
 - **SEO multilingual (2026-04-20):** halaman publik inti tersedia di URL terpisah per bahasa (`/en/*`, `/id/*`) via `app/[locale]`; metadata Next.js per locale memuat canonical lokal + hreflang `en`, `id`, `x-default`.
 - **Switch bahasa (2026-04-20):** EN/ID switcher mengikuti locale di route sebagai sumber kebenaran; saat ganti bahasa, aplikasi menavigasi ke route locale ekuivalen dan konten SSR langsung ikut locale baru.

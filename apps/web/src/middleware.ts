@@ -16,7 +16,7 @@ const SEO_PREFIX_PATH = /^\/(jobs|freelancers|how-it-works|pricing|early-access|
 
 function preferredLocale(request: NextRequest): "en" | "id" {
   const cookieLocale = request.cookies.get(LOCALE_COOKIE)?.value;
-  return resolveLocale(cookieLocale, request.headers.get("accept-language"));
+  return resolveLocale(cookieLocale, null);
 }
 
 function isAuthPublicPath(pathname: string): boolean {

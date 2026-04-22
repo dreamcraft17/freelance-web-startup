@@ -3,20 +3,15 @@ import type { AppLocale } from "./types";
 import { isAppLocale } from "./types";
 
 /**
- * Resolve active locale from stored preference and browser languages.
+ * Resolve active locale from stored preference, with deterministic default.
  * Priority:
  * 1) stored preference (cookie)
- * 2) browser primary language token (Accept-Language first entry)
- * 3) default fallback
+ * 2) default fallback
+ *
+ * Note: Accept-Language is intentionally not used for default routing here.
  */
-export function resolveLocale(cookieValue: string | null | undefined, acceptLanguage: string | null | undefined): AppLocale {
+export function resolveLocale(cookieValue: string | null | undefined, _acceptLanguage: string | null | undefined): AppLocale {
   if (isAppLocale(cookieValue)) return cookieValue;
-
-  if (acceptLanguage && acceptLanguage.trim().length > 0) {
-    const primary = acceptLanguage.split(",")[0]?.trim().split(";")[0]?.toLowerCase() ?? "";
-    if (primary === "id" || primary.startsWith("id-")) return "id";
-    if (primary === "en" || primary.startsWith("en-")) return "en";
-  }
 
   return DEFAULT_LOCALE;
 }

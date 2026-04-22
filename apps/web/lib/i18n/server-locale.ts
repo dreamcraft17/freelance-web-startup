@@ -11,6 +11,5 @@ export async function getAppLocale(): Promise<AppLocale> {
   }
 
   const cookieVal = (await cookies()).get(LOCALE_COOKIE)?.value;
-  const accept = h.get("accept-language");
-  return resolveLocale(cookieVal, accept);
+  return resolveLocale(cookieVal, null);
 }

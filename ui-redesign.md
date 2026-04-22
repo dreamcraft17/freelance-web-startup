@@ -1,7 +1,7 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v28  
-> Last synchronized: 2026-04-22 (locale priority + multilingual seo canonical refinement).
+> **Doc revision:** v29  
+> Last synchronized: 2026-04-22 (locale default routing simplified to cookie-or-id only).
 
 ## Goal
 
@@ -72,6 +72,11 @@ Build a grounded, practical, product-first UI across public and authenticated su
 
 - Resolusi browser language kini memakai **primary language token** pada `Accept-Language`, sehingga perilaku lebih natural untuk user global (EN-first browser -> EN).
 - Multilingual SEO alternates disetel agar `x-default` menunjuk canonical default locale (`/id`) untuk mengurangi redirect hop pada crawler.
+
+### 2026-04-22 — Force first-visit Indonesian default
+
+- Routing locale publik disederhanakan agar deterministik: URL locale eksplisit -> cookie preferensi -> `id`.
+- `Accept-Language` tidak lagi dipakai untuk keputusan default routing, sehingga first-time visitor tanpa preferensi selalu masuk ke `/id`.
 
 ### 2026-04-20 — Homepage depth without gimmicks
 
