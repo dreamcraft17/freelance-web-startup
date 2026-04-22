@@ -11,6 +11,7 @@ import { parseAuthIntent, registerIntentMessageKey, roleHintFromIntent, type Aut
 import { useI18n } from "@/features/i18n/I18nProvider";
 import { clearPasswordFieldsInForm } from "@/features/auth/lib/clear-form-password-fields";
 import { readApiBody } from "@/features/auth/lib/read-api-body";
+import { AuthSubmitOverlay } from "@/features/auth/components/AuthSubmitOverlay";
 
 type RegisterApiSuccess = {
   success: true;
@@ -69,6 +70,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
   const submit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+      if (loading) return;
       setError(null);
       const form = e.currentTarget;
       const fd = new FormData(form);
@@ -133,7 +135,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
         setLoading(false);
       }
     },
-    [role, searchParams]
+    [loading, role, searchParams]
   );
 
   const signUpContext =
@@ -160,6 +162,8 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
 
   return (
     <div className="space-y-8 text-slate-900">
+      <AuthSubmitOverlay active={loading} message={t("auth.registerForm.signingUp")} />
+
       <div className="space-y-2 text-left">
         <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
           {t("auth.registerForm.badge")}
@@ -374,7 +378,10 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
           disabled={loading}
           className="flex w-full items-center justify-center rounded-lg bg-[#3525cd] px-4 py-3 text-sm font-semibold text-white shadow-md transition-colors hover:bg-[#4f46e5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3525cd] disabled:pointer-events-none disabled:opacity-60"
         >
-          {loading ? "Creating account…" : "Create account"}
+          {loading ? (
+            <span className="mr-2 h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/60 border-t-white" aria-hidden />
+          ) : null}
+          {loading ? t("auth.registerForm.submitting") : t("auth.registerForm.submit")}
         </button>
       </form>
 

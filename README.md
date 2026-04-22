@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v25  
-> Last synchronized: 2026-04-22 — login loading UX polished with reusable auth overlay.
+> **Doc revision:** v26  
+> Last synchronized: 2026-04-22 — auth submit overlay now applied across register + forgot-password flows.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -40,6 +40,7 @@ Platform ini dirancang untuk mendukung **semua jenis freelance**, bukan hanya pr
 - Refinement terbaru: routing locale publik sekarang memakai urutan URL locale -> cookie preferensi -> fallback `id`; `Accept-Language` tidak lagi dipakai untuk override default first-visit behavior.
 - Form login kini punya feedback loading yang lebih jelas (overlay + indikator proses + lock interaksi) agar user tahu sistem sedang memproses saat klik masuk.
 - Pola overlay loading auth juga diekstrak ke komponen reusable agar mudah diterapkan ke register/forgot-password tanpa duplikasi.
+- Flow register dan forgot-password kini memakai pola submit overlay yang sama (fullscreen dim + centered status + disabled controls + anti double-submit) dengan copy loading terlokalisasi per halaman.
 
 ### 🔹 Marketplace Core
 - Client dapat membuat job/project

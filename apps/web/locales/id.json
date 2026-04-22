@@ -673,11 +673,19 @@
       "badge": "Mulai onboarding",
       "title": "Buat akun Anda",
       "subtitle": "Gabung NearWork untuk merekrut atau dicari kerja",
-      "afterCreate": "Setelah akun dibuat, kami akan mengarahkan Anda kembali ke"
+      "afterCreate": "Setelah akun dibuat, kami akan mengarahkan Anda kembali ke",
+      "submit": "Buat akun",
+      "submitting": "Memproses…",
+      "signingUp": "Sedang membuat akun..."
     },
     "forgotPassword": {
       "title": "Reset kata sandi",
-      "description": "Kami akan mengirim link lewat email saat alur auth sudah terhubung."
+      "description": "Kami akan mengirim link lewat email saat alur auth sudah terhubung.",
+      "submit": "Kirim link reset",
+      "submitting": "Memproses…",
+      "sending": "Sedang mengirim link reset...",
+      "noticePending": "Permintaan diterima. Pengiriman email reset akan aktif setelah alur auth selesai dihubungkan.",
+      "backToLogin": "Kembali ke masuk"
     },
     "intent": {
       "login": {

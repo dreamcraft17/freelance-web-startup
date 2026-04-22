@@ -673,11 +673,19 @@
       "badge": "Start onboarding",
       "title": "Create your account",
       "subtitle": "Join NearWork to hire or get hired",
-      "afterCreate": "After you create your account, we'll take you back to"
+      "afterCreate": "After you create your account, we'll take you back to",
+      "submit": "Create account",
+      "submitting": "Processing...",
+      "signingUp": "Creating your account..."
     },
     "forgotPassword": {
       "title": "Reset password",
-      "description": "We will email you a link when auth is wired."
+      "description": "We will email you a link when auth is wired.",
+      "submit": "Send reset link",
+      "submitting": "Processing...",
+      "sending": "Sending reset link...",
+      "noticePending": "Request captured. Reset email delivery will be enabled once auth wiring is complete.",
+      "backToLogin": "Back to log in"
     },
     "intent": {
       "login": {

@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v32  
-> Last synchronized: 2026-04-22 (login loading overlay polished + reusable auth submit overlay extracted).
+> **Doc revision:** v33  
+> Last synchronized: 2026-04-22 (auth submit overlay pattern extended to register + forgot-password flows).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -21,6 +21,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 - **2026-04-22 — Deterministic public locale default:** urutan resolusi kini dipertegas menjadi route locale eksplisit -> cookie preferensi -> fallback `id`; `Accept-Language` tidak lagi menentukan routing default agar first-time visitor selalu konsisten ke Indonesia.
 - **2026-04-22 — Login loading UX improvement:** form login sekarang menampilkan overlay semitransparan + indikator proses saat submit, mengunci interaksi sementara request berjalan, dan mencegah double-submit agar user mendapat feedback jelas “sedang diproses”.
 - **2026-04-22 — Reusable auth loading overlay:** pola overlay submit auth diekstrak menjadi komponen reusable (`AuthSubmitOverlay`) dan dipakai login; teks loading dipisah (`Signing you in...` / `Sedang masuk...`) untuk feedback pusat layar, sementara label tombol tetap `Processing...` / `Memproses…`.
+- **2026-04-22 — Auth submit consistency rollout:** `AuthSubmitOverlay` kini diterapkan juga di register dan forgot-password; kedua form menambahkan guard anti-submit ganda, state disabled yang konsisten saat request berjalan, inline spinner tombol, serta teks loading terlokalisasi per flow.
 - **2026-04-22 — SEO multilingual tuning:** `x-default` untuk alternates kini diarahkan langsung ke `/id` canonical (bukan `/` redirect) agar sinyal canonical/hreflang lebih bersih untuk crawler.
 - **2026-04-20 — Multilingual SEO (production-safe):** ditambahkan route prefix locale `app/[locale]` untuk halaman SEO (`/en/*`, `/id/*`) mencakup home, jobs (+detail), freelancers (+detail), how-it-works, pricing, early-access, help; tiap halaman pakai metadata lokal + `alternates.languages` (`en`, `id`, `x-default`) dan canonical per-locale; sitemap sekarang mempublikasikan URL dua bahasa. Locale switcher kini **route-aware** sebagai source-of-truth (aktif mengikuti prefix URL), sehingga perpindahan EN/ID langsung memuat konten SSR sesuai route target.
 - **2026-04-20 — Konsistensi locale publik (`/jobs`, `/freelancers`):** string UI yang masih hardcoded Inggris dipindah ke kamus `en.json` / `id.json` (header, toolbar hasil, paginasi, panel samping, filter, list labels, empty states, nearby/location prompts). Komponen publik sekarang membaca `t()` secara konsisten agar halaman Indonesia tidak lagi bercampur bahasa.
