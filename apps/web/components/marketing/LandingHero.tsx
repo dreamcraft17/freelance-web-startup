@@ -1,6 +1,15 @@
 import type { Route } from "next";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, MapPin, Search, ShieldCheck, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  BriefcaseBusiness,
+  CheckCircle2,
+  MapPin,
+  Search,
+  ShieldCheck,
+  Sparkles,
+  UsersRound
+} from "lucide-react";
 import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
 import { MarketplacePulse, type MarketplacePulseStats } from "@/components/marketing/MarketplacePulse";
 import { popularFreelancerSearchSuggestions } from "@/features/public/lib/popular-search-suggestions";
@@ -24,9 +33,8 @@ export function LandingHero({ pulse, t }: { pulse: MarketplacePulseStats; t: Tra
   return (
     <section className="nw-hero-stage">
       <div className="mx-auto max-w-6xl px-4 pb-14 pt-8 sm:px-6 sm:pb-16 sm:pt-10">
-        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-5 shadow-[0_2px_8px_rgba(15,23,42,0.04)] sm:px-6 sm:py-6">
-          <div className="grid gap-7 lg:grid-cols-12 lg:items-start lg:gap-8">
-          <div className="flex flex-col justify-center lg:col-span-8">
+        <div className="grid gap-7 lg:grid-cols-12 lg:items-start lg:gap-8">
+          <div className="flex flex-col justify-center lg:col-span-7">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">{t("hero.liveDirectory")}</p>
             <div className="mt-1.5">
               <MarketplacePulse pulse={pulse} t={t} />
@@ -53,13 +61,45 @@ export function LandingHero({ pulse, t }: { pulse: MarketplacePulseStats; t: Tra
             </div>
           </div>
 
-          <aside className="flex flex-col gap-4 border border-slate-200 bg-slate-50/90 p-4 sm:p-[1.125rem] lg:col-span-4 lg:border-l-[3px] lg:border-l-[#3525cd]">
-            <div>
+          <aside className="grid gap-3 lg:col-span-5">
+            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-[0_1px_3px_rgba(15,23,42,0.07)] sm:p-5">
+              <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#3525cd]">{t("hero.visualPanelTitle")}</p>
+              <p className="mt-1 text-sm font-semibold text-slate-700">{t("hero.visualPanelHint")}</p>
+              <div className="mt-3 grid grid-cols-2 gap-2.5">
+                <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t("hero.statFreelancers")}</p>
+                  <p className="mt-0.5 text-lg font-bold text-slate-950">{pulse.freelancersAvailable}</p>
+                </div>
+                <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t("hero.statJobs")}</p>
+                  <p className="mt-0.5 text-lg font-bold text-slate-950">{pulse.openPublicJobs}</p>
+                </div>
+                <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t("hero.statProposals24h")}</p>
+                  <p className="mt-0.5 text-lg font-bold text-slate-950">{pulse.bidsLast24h}</p>
+                </div>
+                <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t("hero.statBidsContext")}</p>
+                  <p className="mt-0.5 text-lg font-bold text-slate-950">Live</p>
+                </div>
+              </div>
+              <div className="mt-3 flex items-center gap-3 text-xs font-bold">
+                <Link href="/freelancers" className="inline-flex items-center gap-1 text-[#3525cd] hover:underline">
+                  <UsersRound className="h-3.5 w-3.5" aria-hidden />
+                  {t("hero.quickActionBrowseFreelancers")}
+                </Link>
+                <Link href="/jobs" className="inline-flex items-center gap-1 text-[#3525cd] hover:underline">
+                  <BriefcaseBusiness className="h-3.5 w-3.5" aria-hidden />
+                  {t("hero.quickActionBrowseJobs")}
+                </Link>
+              </div>
+            </div>
+            <div className="flex flex-col gap-4 border border-slate-200 bg-slate-50/90 p-4 sm:p-[1.125rem] lg:border-l-[3px] lg:border-l-[#3525cd]">
               <p className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em] text-[#3525cd]">
                 <Sparkles className="h-3.5 w-3.5" aria-hidden />
                 {t("hero.howTitle")}
               </p>
-              <ol className="mt-3.5 space-y-2.5 text-sm font-semibold leading-snug text-slate-900">
+              <ol className="space-y-2.5 text-sm font-semibold leading-snug text-slate-900">
                 <li className="flex items-start gap-2">
                   <span className="inline-flex h-[1.125rem] w-[1.125rem] shrink-0 items-center justify-center rounded-full border border-[#3525cd]/30 bg-white font-mono text-[10px] font-bold text-[#3525cd]">1</span>
                   <span>{t("hero.howStep1")}</span>
@@ -73,19 +113,19 @@ export function LandingHero({ pulse, t }: { pulse: MarketplacePulseStats; t: Tra
                   <span>{t("hero.howStep3")}</span>
                 </li>
               </ol>
+              <p className="border-t border-slate-300/80 pt-3 text-[11px] font-medium leading-relaxed text-slate-600">
+                {t("hero.howFootnote")}
+              </p>
             </div>
-            <p className="border-t border-slate-300/80 pt-3 text-[11px] font-medium leading-relaxed text-slate-600">
-              {t("hero.howFootnote")}
-            </p>
           </aside>
         </div>
-        </div>
 
-        <div className="mt-6 rounded-2xl border-2 border-slate-300 bg-slate-50/60 p-3 shadow-[0_10px_22px_rgba(15,23,42,0.08)] sm:p-4">
+        <div className="mt-8 border-y-2 border-slate-300 bg-white p-3 sm:p-4">
           <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
             <div>
               <p className="text-base font-bold text-slate-950">{t("hero.searchTitle")}</p>
               <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">{t("hero.searchSubtitle")}</p>
+              <p className="mt-1 text-xs font-semibold text-slate-600">{t("hero.searchTrustLine")}</p>
             </div>
             <Link
               href="/jobs"

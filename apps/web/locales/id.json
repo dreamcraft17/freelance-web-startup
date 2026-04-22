@@ -80,7 +80,16 @@
     "openJobBoard": "Buka papan lowongan",
     "postAJob": "Pasang lowongan",
     "quickBrowse": "Lihat brief aktif",
-    "liveUrgencyLine": "Listing aktif diperbarui setiap hari untuk jalur nearby dan remote.",
+    "liveUrgencyLine": "Freelancer baru dan lowongan aktif bertambah setiap hari.",
+    "searchTrustLine": "Semua proposal dan chat tetap terikat ke thread lowongan.",
+    "visualPanelTitle": "Snapshot board aktif",
+    "visualPanelHint": "Lihat supply, demand, dan arus proposal sebelum mulai cari.",
+    "statFreelancers": "Tersedia",
+    "statJobs": "Lowongan terbuka",
+    "statProposals24h": "Proposal 24j",
+    "statBidsContext": "Status board",
+    "quickActionBrowseFreelancers": "Cari freelancer",
+    "quickActionBrowseJobs": "Lihat lowongan",
     "trust": {
       "verifiedAccounts": "Akun terverifikasi",
       "structuredProposals": "Alur proposal terstruktur",
@@ -101,6 +110,7 @@
       "subtitle": "Pilih kategori, lalu sempitkan dengan kota atau langsung cari yang remote.",
       "secondaryCta": "Butuh lowongan aktif? Buka job board ->",
       "entryLabel": "Jalur pencarian",
+      "entrySubline": "Buka",
       "items": {
         "design": "Desain",
         "photo": "Foto",
@@ -117,11 +127,21 @@
       "railBids": "Proposal dalam konteks",
       "railProof": "Profil dengan bukti kerja",
       "railThread": "Satu thread per lowongan",
-      "viewAction": "Lihat",
-      "openAction": "Buka",
+      "featured": "Unggulan",
+      "primaryAction": {
+        "job": "Buka lowongan",
+        "freelancer": "Lihat profil"
+      },
+      "secondaryAction": "Lihat detail",
       "viewProfileLink": "Lihat profil",
       "openJobLink": "Buka lowongan",
       "compareLink": "Bandingkan opsi",
+      "why": {
+        "respondsFast": "Kenapa pilih ini: respons cepat.",
+        "popularChoice": "Kenapa pilih ini: pilihan populer dengan demand aktif.",
+        "recentlyHired": "Kenapa pilih ini: baru direkrut untuk kerja serupa.",
+        "topRatedLocal": "Kenapa pilih ini: rating lokal sangat baik."
+      },
       "signal": {
         "new": "Baru",
         "activeNow": "Aktif sekarang",

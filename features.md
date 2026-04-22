@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v21  
-> Last synchronized: 2026-04-22 (homepage activity-signal refinement: listing scanability, category nav clarity, hero live urgency).
+> **Doc revision:** v23  
+> Last synchronized: 2026-04-22 (homepage layout hierarchy upgrade: open hero composition, visual board block, category grid anchors, denser marketplace rows).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -11,6 +11,8 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 - **2026-04-22 — Homepage marketplace density pass:** section kategori horizontal ditingkatkan menjadi browse lanes yang lebih scanable (icon-first chips, target klik lebih jelas); hero menambahkan trust cues + quick browse entry ke active briefs; preview listing diperkuat sebagai row-style board dengan atribut operasional (harga, lokasi, tag kerja, action links) agar halaman terasa seperti marketplace aktif, bukan landing statis.
 - **2026-04-22 — Homepage activity refinement pass:** listing preview menambahkan sinyal aktivitas ringan (`New`/`Active now` + konteks update), kolom kanan dirapikan agar price/location/actions lebih mudah dibandingkan lintas baris, kategori diperkuat sebagai lane navigasi (hierarki label + hover state lebih tegas), serta hero menambahkan satu baris urgensi produk tentang listing live yang rutin diperbarui.
+- **2026-04-22 — Homepage decision-confidence pass:** setiap row preview kini menampilkan alasan memilih listing (`responds fast`, `popular choice`, `top rated local`) sebagai sinyal sekunder; beberapa row diberi penekanan ringan sebagai item unggulan tanpa memecah konsistensi list; CTA per-row diprioritaskan ke satu aksi utama (job/freelancer specific) dengan aksi sekunder ber-bobot lebih rendah; harga dilengkapi konteks value agar keputusan lebih cepat.
+- **2026-04-22 — Homepage layout hierarchy upgrade:** area hero dipecah dari satu kontainer datar menjadi komposisi asimetris (headline/search kiri + visual board kanan), blok pencarian dipertegas sebagai tool strip mandiri, kategori diubah ke grid entry points berbasis ikon (lebih navigational), dan baris preview ditingkatkan dengan thumbnail-style visual anchors agar rasa marketplace lebih aktif dan tidak text-heavy.
 - **2026-04-20 — Multilingual SEO (production-safe):** ditambahkan route prefix locale `app/[locale]` untuk halaman SEO (`/en/*`, `/id/*`) mencakup home, jobs (+detail), freelancers (+detail), how-it-works, pricing, early-access, help; tiap halaman pakai metadata lokal + `alternates.languages` (`en`, `id`, `x-default`) dan canonical per-locale; sitemap sekarang mempublikasikan URL dua bahasa. Locale switcher kini **route-aware** sebagai source-of-truth (aktif mengikuti prefix URL), sehingga perpindahan EN/ID langsung memuat konten SSR sesuai route target.
 - **2026-04-20 — Konsistensi locale publik (`/jobs`, `/freelancers`):** string UI yang masih hardcoded Inggris dipindah ke kamus `en.json` / `id.json` (header, toolbar hasil, paginasi, panel samping, filter, list labels, empty states, nearby/location prompts). Komponen publik sekarang membaca `t()` secara konsisten agar halaman Indonesia tidak lagi bercampur bahasa.
 - **2026-04-20 — Lokalisasi halaman marketing:** konten user-facing di `/how-it-works`, `/pricing`, `/early-access`, `/help` dipindah ke kamus locale agar halaman `/id/*` tidak menampilkan copy Inggris; fallback teks pada profil publik freelancer juga dilokalisasi.

@@ -1,7 +1,7 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v20  
-> Last synchronized: 2026-04-22 (homepage activity signals, scanability, and nav-lane refinement).
+> **Doc revision:** v22  
+> Last synchronized: 2026-04-22 (homepage structural redesign with asymmetry and stronger visual anchors).
 
 ## Goal
 
@@ -22,6 +22,21 @@ Build a grounded, practical, product-first UI across public and authenticated su
 - Susunan kolom kanan disejajarkan (location -> price -> primary actions -> micro links) untuk mempercepat perbandingan antar row.
 - Kategori diubah dari rasa “chip” menjadi rasa “navigation lane”: label utilitas kecil + label utama + underline hover sehingga entry point terasa seperti bagian sistem browse.
 - Hero mendapat satu baris urgensi ringan terkait ritme update listing agar user menangkap bahwa board aktif, bukan konten statis.
+
+### 2026-04-22 — Decision confidence pass
+
+- Preview rows menambahkan alasan “why choose this” dalam bentuk inline signal sekunder (mis. respon cepat, populer, rating lokal kuat) agar pengguna punya dasar memilih tanpa membuka detail dulu.
+- Satu-dua row diberi emphasis ringan (`featured`) lewat surface + rail halus untuk menunjukkan prioritas, tetap menjaga ritme list board.
+- Hirarki aksi per-row dipertegas: satu tombol utama per context (`Open job` / `View profile`) dengan aksi sekunder diturunkan bobot visualnya.
+- Harga tidak berdiri sendiri: ditambah konteks value singkat (`starting at...` / budget context) supaya scan harga langsung bermakna untuk keputusan.
+
+### 2026-04-22 — Structural hierarchy redesign
+
+- Hero tidak lagi dibungkus satu “soft card” besar; layout dibuat lebih terbuka dan asimetris untuk mengurangi rasa template linear.
+- Kolom kanan hero diganti menjadi visual block berbentuk mini board (stat tiles + quick browse links + process panel) agar ada anchor visual fungsional.
+- Search diposisikan sebagai strip tool mandiri dengan pemisah section yang lebih tegas, bukan sekadar card lain di dalam card.
+- Kategori beralih dari lane chip ke grid entry points berbasis ikon + label aksi agar terasa seperti navigasi marketplace.
+- Preview listing menambah thumbnail-style media anchors agar hasil browse tidak didominasi teks polos.
 
 ### 2026-04-20 — Homepage depth without gimmicks
 
