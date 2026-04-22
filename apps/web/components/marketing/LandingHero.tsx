@@ -11,8 +11,9 @@ import {
 import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
 import { popularFreelancerSearchSuggestions } from "@/features/public/lib/popular-search-suggestions";
 import type { Translator } from "@/lib/i18n/create-translator";
+import type { LandingIntent } from "@/components/marketing/LandingPage";
 
-const trendingSearchKeys: { labelKey: string; href: Route }[] = [
+const trendingSearchKeys: { labelKey: string; href: string }[] = [
   { labelKey: "hero.trending.weddingPhotographer", href: "/freelancers?keyword=wedding+photographer" },
   { labelKey: "hero.trending.videoEditor", href: "/freelancers?keyword=video+editor" },
   { labelKey: "hero.trending.socialMedia", href: "/freelancers?keyword=social+media" },
@@ -20,7 +21,15 @@ const trendingSearchKeys: { labelKey: string; href: Route }[] = [
   { labelKey: "hero.trending.brandDesign", href: "/freelancers?keyword=brand+design" }
 ];
 
-export function LandingHero({ t }: { t: Translator }) {
+function withIntent(href: string, intent: LandingIntent): string {
+  const [pathname, query = ""] = href.split("?");
+  const params = new URLSearchParams(query);
+  params.set("intent", intent);
+  return `${pathname}?${params.toString()}`;
+}
+
+export function LandingHero({ t, intent, homePath }: { t: Translator; intent: LandingIntent; homePath: string }) {
+  const isHireMode = intent === "hire";
   const trustCues = [
     { icon: ShieldCheck, label: t("hero.trust.verifiedAccounts") },
     { icon: CheckCircle2, label: t("hero.trust.structuredProposals") },
@@ -90,7 +99,7 @@ export function LandingHero({ t }: { t: Translator }) {
               <p className="mt-1 text-xs font-semibold text-slate-600">{t("hero.searchTrustLine")}</p>
             </div>
             <Link
-              href="/jobs"
+              href={withIntent("/jobs", intent)}
               className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wide text-[#3525cd] hover:underline"
             >
               {t("hero.quickBrowse")}
@@ -102,6 +111,7 @@ export function LandingHero({ t }: { t: Translator }) {
             method="get"
             className="flex w-full flex-col gap-2.5 lg:flex-row lg:items-stretch"
           >
+            <input type="hidden" name="intent" value={intent} />
             <datalist id="landing-kw-suggestions">
               {popularFreelancerSearchSuggestions.map((term) => (
                 <option key={term} value={term} />
@@ -150,13 +160,13 @@ export function LandingHero({ t }: { t: Translator }) {
 
           <div className="mt-3 flex flex-wrap items-center gap-2 text-xs font-semibold">
             <span className="text-slate-500">{t("hero.quickFiltersLabel")}</span>
-            <Link href="/search/nearby" className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-slate-700 hover:border-[#3525cd]/45 hover:text-[#3525cd]">
+            <Link href={withIntent("/search/nearby", intent)} className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-slate-700 hover:border-[#3525cd]/45 hover:text-[#3525cd]">
               {t("hero.quickFilterNearby")}
             </Link>
-            <Link href="/freelancers?workMode=REMOTE" className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-slate-700 hover:border-[#3525cd]/45 hover:text-[#3525cd]">
+            <Link href={withIntent("/freelancers?workMode=REMOTE", intent)} className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-slate-700 hover:border-[#3525cd]/45 hover:text-[#3525cd]">
               {t("hero.quickFilterRemote")}
             </Link>
-            <Link href="/freelancers?budget=1m-5m" className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-slate-700 hover:border-[#3525cd]/45 hover:text-[#3525cd]">
+            <Link href={withIntent("/freelancers?budget=1m-5m", intent)} className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-slate-700 hover:border-[#3525cd]/45 hover:text-[#3525cd]">
               {t("hero.quickFilterBudget")}
             </Link>
           </div>
@@ -172,7 +182,7 @@ export function LandingHero({ t }: { t: Translator }) {
               {trendingSearchKeys.map(({ labelKey, href }) => (
                 <Link
                   key={labelKey}
-                  href={href}
+                  href={withIntent(href, intent)}
                   className="inline-flex items-center rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-bold text-slate-800 shadow-sm transition hover:border-[#3525cd]/40 hover:text-[#3525cd]"
                 >
                   {t(labelKey)}
@@ -186,69 +196,69 @@ export function LandingHero({ t }: { t: Translator }) {
 
         <div className="mt-7 border-t border-slate-200 pt-6">
           <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">{t("hero.modeSwitchLabel")}</p>
-          <input id="mode-hire" type="radio" name="landing-mode" className="peer/hire sr-only" defaultChecked />
-          <input id="mode-work" type="radio" name="landing-mode" className="peer/work sr-only" />
           <div className="mt-2 inline-flex rounded-lg border border-slate-200 bg-white p-1">
-            <label
-              htmlFor="mode-hire"
-              className="cursor-pointer rounded-md px-3 py-1.5 text-xs font-bold text-slate-600 transition peer-checked/hire:bg-[#3525cd] peer-checked/hire:text-white"
+            <Link
+              href={`${homePath}?intent=hire`}
+              className={`rounded-md px-3 py-1.5 text-xs font-bold transition ${isHireMode ? "bg-[#3525cd] text-white" : "text-slate-600 hover:bg-slate-100"}`}
             >
               {t("hero.modeHire")}
-            </label>
-            <label
-              htmlFor="mode-work"
-              className="cursor-pointer rounded-md px-3 py-1.5 text-xs font-bold text-slate-600 transition peer-checked/work:bg-[#3525cd] peer-checked/work:text-white"
+            </Link>
+            <Link
+              href={`${homePath}?intent=work`}
+              className={`rounded-md px-3 py-1.5 text-xs font-bold transition ${!isHireMode ? "bg-[#3525cd] text-white" : "text-slate-600 hover:bg-slate-100"}`}
             >
               {t("hero.modeWork")}
-            </label>
-          </div>
-
-          <div className="mt-4 hidden flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-3 sm:gap-y-2.5 peer-checked/hire:flex peer-checked/work:hidden">
-            <AuthAwareCtaLink
-              href={"/client/jobs/new" as Route}
-              intent="post-job"
-              unauthenticatedTo="register"
-              registerRoleHint="client"
-              className="nw-cta-primary inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-bold sm:ml-0"
-            >
-              {t("hero.modeHirePrimary")}
-              <ArrowRight className="h-4 w-4" aria-hidden />
-            </AuthAwareCtaLink>
-            <Link
-              href="/freelancers"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 transition hover:border-slate-400"
-            >
-              {t("hero.modeHireSecondaryOne")}
-            </Link>
-            <Link
-              href="/jobs"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 transition hover:border-slate-400"
-            >
-              {t("hero.modeHireSecondaryTwo")}
             </Link>
           </div>
 
-          <div className="mt-4 hidden flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-3 sm:gap-y-2.5 peer-checked/work:flex peer-checked/hire:hidden">
-            <Link
-              href="/jobs"
-              className="nw-cta-primary inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-bold sm:ml-0"
-            >
-              {t("hero.modeWorkPrimary")}
-              <ArrowRight className="h-4 w-4" aria-hidden />
-            </Link>
-            <Link
-              href="/freelancers"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 transition hover:border-slate-400"
-            >
-              {t("hero.modeWorkSecondaryOne")}
-            </Link>
-            <Link
-              href="/register"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 transition hover:border-slate-400"
-            >
-              {t("hero.modeWorkSecondaryTwo")}
-            </Link>
-          </div>
+          {isHireMode ? (
+            <div className="mt-4 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-3 sm:gap-y-2.5">
+              <AuthAwareCtaLink
+                href={"/client/jobs/new" as Route}
+                intent="post-job"
+                unauthenticatedTo="register"
+                registerRoleHint="client"
+                className="nw-cta-primary inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-bold sm:ml-0"
+              >
+                {t("hero.modeHirePrimary")}
+                <ArrowRight className="h-4 w-4" aria-hidden />
+              </AuthAwareCtaLink>
+              <Link
+                href={withIntent("/freelancers", intent)}
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 transition hover:border-slate-400"
+              >
+                {t("hero.modeHireSecondaryOne")}
+              </Link>
+              <Link
+                href={withIntent("/jobs", intent)}
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 transition hover:border-slate-400"
+              >
+                {t("hero.modeHireSecondaryTwo")}
+              </Link>
+            </div>
+          ) : (
+            <div className="mt-4 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-3 sm:gap-y-2.5">
+              <Link
+                href={withIntent("/jobs", intent)}
+                className="nw-cta-primary inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-bold sm:ml-0"
+              >
+                {t("hero.modeWorkPrimary")}
+                <ArrowRight className="h-4 w-4" aria-hidden />
+              </Link>
+              <Link
+                href={withIntent("/freelancers", intent)}
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 transition hover:border-slate-400"
+              >
+                {t("hero.modeWorkSecondaryOne")}
+              </Link>
+              <Link
+                href="/register"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 transition hover:border-slate-400"
+              >
+                {t("hero.modeWorkSecondaryTwo")}
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </section>

@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v26  
-> Last synchronized: 2026-04-22 (homepage mode switch and search-action usability upgrade).
+> **Doc revision:** v28  
+> Last synchronized: 2026-04-22 (public default locale now Indonesian with server-side redirect stability).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -16,6 +16,8 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 - **Homepage activity strip (2026-04-22):** area tepat setelah hero kini memiliki strip ringkas berisi sinyal aktivitas + jalur eksplorasi cepat (trending lanes, quick filters nearby/remote, active briefs) untuk mempercepat langkah browse pengguna.
 - **Homepage analytics removal (2026-04-22):** panel statistik publik dan angka sistem mentah tidak lagi ditampilkan di landing; diganti fokus ke shortcut eksplorasi agar user langsung bisa mencari, membandingkan, dan membuka listing.
 - **Homepage action clarity (2026-04-22):** mode switch hire/work ditambahkan tepat setelah search untuk memprioritaskan jalur aksi berbeda; quick filters dan budget selector di search mempermudah langkah awal user dari browse ke action.
+- **Homepage intent persistence (2026-04-22):** intent mode (`hire`/`work`) kini dibaca dari query URL dan dipakai sebagai source of truth untuk state switch + CTA, sehingga pengalaman tetap stabil saat reload dan share URL.
+- **Default locale publik (2026-04-22):** pengunjung baru tanpa preferensi bahasa sekarang diarahkan ke konten Indonesia (`/id`) secara server-side; cookie `lang` tetap menjadi prioritas jika user sudah memilih `EN`/`ID`.
 - **SEO multilingual (2026-04-20):** halaman publik inti tersedia di URL terpisah per bahasa (`/en/*`, `/id/*`) via `app/[locale]`; metadata Next.js per locale memuat canonical lokal + hreflang `en`, `id`, `x-default`.
 - **Switch bahasa (2026-04-20):** EN/ID switcher mengikuti locale di route sebagai sumber kebenaran; saat ganti bahasa, aplikasi menavigasi ke route locale ekuivalen dan konten SSR langsung ikut locale baru.
 - **Navbar multilingual (2026-04-20):** tata letak `MarketingNavBar` diperkuat untuk panjang teks EN/ID (khususnya Bahasa Indonesia): desktop tetap satu baris stabil, center nav tidak wrapping, dan item utilitas diprioritaskan menurut lebar viewport.

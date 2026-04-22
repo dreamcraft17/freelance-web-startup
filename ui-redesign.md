@@ -1,7 +1,7 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v25  
-> Last synchronized: 2026-04-22 (homepage mode switch and action hierarchy refinement).
+> **Doc revision:** v27  
+> Last synchronized: 2026-04-22 (public i18n default set to Indonesian, no-flicker server resolution).
 
 ## Goal
 
@@ -55,6 +55,18 @@ Build a grounded, practical, product-first UI across public and authenticated su
 - Di bawah search ditambahkan mode switch `I want to hire` / `I want to work` untuk membantu pengguna memilih jalur tindakan sejak awal.
 - CTA area sekarang mengikuti mode aktif: satu primary action dominan per mode, sementara secondary actions diturunkan bobot visualnya.
 - Search block ditingkatkan dengan quick filters nearby/remote/budget + budget selector ringan agar eksplorasi lebih cepat tanpa menambah clutter.
+
+### 2026-04-22 — URL-persisted intent
+
+- Mode switch kini menggunakan query `?intent=hire|work` sebagai sumber kebenaran, sehingga state tetap konsisten saat refresh atau saat URL dibagikan.
+- Render awal homepage membaca `searchParams` di server (tanpa local-state race), lalu menurunkan intent yang sama ke mode switch, CTA, dan shortcut links.
+- Propagasi intent dilakukan selektif ke navigasi browse utama agar konteks tidak hilang, tanpa menambah query secara berlebihan ke semua rute.
+
+### 2026-04-22 — Locale default behavior
+
+- Resolver i18n publik sekarang fallback ke `id` ketika cookie preferensi tidak ada dan browser tidak mengirim sinyal `en`/`id` yang valid.
+- Root route tetap diselesaikan di middleware (redirect server-side ke locale prefix) agar tidak terjadi flash konten bahasa yang salah.
+- Pilihan bahasa user yang tersimpan (`lang`) tetap diprioritaskan sepenuhnya.
 
 ### 2026-04-20 — Homepage depth without gimmicks
 

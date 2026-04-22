@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { LandingPage } from "@/components/marketing/LandingPage";
+import { resolveLandingIntent } from "@/components/marketing/LandingPage";
 import { localizedMetadata, normalizeLocale } from "@/lib/i18n/seo";
 
 const copy = {
@@ -33,12 +34,19 @@ export async function generateMetadata({
 }
 
 export default async function LocalizedHomePage({
-  params
+  params,
+  searchParams
 }: {
   params: Promise<{ locale: string }>;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { locale } = await params;
-  if (!normalizeLocale(locale)) notFound();
+  const resolvedLocale = normalizeLocale(locale);
+  if (!resolvedLocale) notFound();
 
-  return <LandingPage />;
+  const resolvedSearch = searchParams ? await searchParams : undefined;
+  const intentValue = resolvedSearch?.intent;
+  const intent = resolveLandingIntent(Array.isArray(intentValue) ? intentValue[0] : intentValue);
+
+  return <LandingPage intent={intent} homePath={`/${resolvedLocale}`} />;
 }

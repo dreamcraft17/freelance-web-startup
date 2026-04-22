@@ -6,12 +6,24 @@ import { LandingCategoryChips } from "@/components/marketing/LandingCategoryChip
 import { LandingFinalCta } from "@/components/marketing/LandingFinalCta";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
 
-export async function LandingPage() {
+export type LandingIntent = "hire" | "work";
+
+export function resolveLandingIntent(intent: string | undefined): LandingIntent {
+  return intent === "work" ? "work" : "hire";
+}
+
+export async function LandingPage({
+  intent = "hire",
+  homePath = "/"
+}: {
+  intent?: LandingIntent;
+  homePath?: string;
+}) {
   const { t } = await getServerTranslator();
   return (
     <main className="nw-page pb-16 text-[#191c1e] selection:bg-[#3525cd]/15 selection:text-slate-950">
-      <LandingHero t={t} />
-      <LandingActivityStrip t={t} />
+      <LandingHero t={t} intent={intent} homePath={homePath} />
+      <LandingActivityStrip t={t} intent={intent} />
       <LandingCategoryChips t={t} />
       <LandingProductPreview t={t} />
       <LandingUseCases t={t} />
