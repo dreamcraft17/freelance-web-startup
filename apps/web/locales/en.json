@@ -180,6 +180,23 @@
       "primary": "Find freelancers",
       "secondary": "Open job board",
       "tertiary": "Post a job"
+    },
+    "activity": {
+      "liveNow": "Live now",
+      "openJobs": "{{count}} open jobs",
+      "newProposals": "{{count}} proposals in 24h",
+      "trending": "Trending lanes",
+      "quickFilters": "Quick filters",
+      "activeBriefs": "Active briefs",
+      "lanes": {
+        "design": "Design",
+        "video": "Video",
+        "tutor": "Tutor"
+      },
+      "filters": {
+        "nearby": "Nearby mode",
+        "remote": "Remote mode"
+      }
     }
   },
   "pulse": {

@@ -1,7 +1,7 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v22  
-> Last synchronized: 2026-04-22 (homepage structural redesign with asymmetry and stronger visual anchors).
+> **Doc revision:** v23  
+> Last synchronized: 2026-04-22 (homepage compact activity strip for fast marketplace entry).
 
 ## Goal
 
@@ -37,6 +37,12 @@ Build a grounded, practical, product-first UI across public and authenticated su
 - Search diposisikan sebagai strip tool mandiri dengan pemisah section yang lebih tegas, bukan sekadar card lain di dalam card.
 - Kategori beralih dari lane chip ke grid entry points berbasis ikon + label aksi agar terasa seperti navigasi marketplace.
 - Preview listing menambah thumbnail-style media anchors agar hasil browse tidak didominasi teks polos.
+
+### 2026-04-22 — Compact activity strip
+
+- Di bawah hero ditambahkan strip aktivitas ringan yang langsung mendorong aksi: live counters (`open jobs`, proposal 24h), trending lanes, quick filters nearby/remote, dan shortcut `active briefs`.
+- Komponen ini didesain sebagai **strip kompak**, bukan section baru yang berat, agar terbaca dalam satu glance dan langsung bisa diklik.
+- Gaya visual tetap utilitarian (border + neutral surfaces), tanpa gradient/glow/glass atau elemen dekoratif non-fungsional.
 
 ### 2026-04-20 — Homepage depth without gimmicks
 

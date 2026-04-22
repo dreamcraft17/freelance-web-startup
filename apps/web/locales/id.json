@@ -180,6 +180,23 @@
       "primary": "Cari freelancer",
       "secondary": "Buka job board",
       "tertiary": "Pasang lowongan"
+    },
+    "activity": {
+      "liveNow": "Aktif sekarang",
+      "openJobs": "{{count}} lowongan terbuka",
+      "newProposals": "{{count}} proposal dalam 24j",
+      "trending": "Jalur tren",
+      "quickFilters": "Filter cepat",
+      "activeBriefs": "Brief aktif",
+      "lanes": {
+        "design": "Desain",
+        "video": "Video",
+        "tutor": "Tutor"
+      },
+      "filters": {
+        "nearby": "Mode nearby",
+        "remote": "Mode remote"
+      }
     }
   },
   "pulse": {

@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v23  
-> Last synchronized: 2026-04-22 (homepage structural hierarchy and marketplace-anchor upgrade).
+> **Doc revision:** v24  
+> Last synchronized: 2026-04-22 (homepage activity strip and quick exploration shortcuts).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -13,6 +13,7 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 - **Homepage activity refinement (2026-04-22):** section preview kini menambahkan sinyal aktivitas ringan dan alignment data untuk scan/compare lebih cepat; kategori dipertegas sebagai lane navigasi; hero menambahkan satu cue urgensi operasional tentang update listing yang rutin.
 - **Homepage decision-confidence pass (2026-04-22):** row preview kini menampilkan alasan pemilihan listing, penekanan halus untuk item unggulan, konteks value pada harga, dan hirarki aksi utama/sekunder yang lebih jelas agar pengguna bisa memilih lebih yakin.
 - **Homepage structural redesign (2026-04-22):** komposisi hero kini asimetris dan lebih terbuka (headline/tool kiri, visual board kanan), kategori dipresentasikan sebagai grid entry points, dan preview listing memakai thumbnail-style anchors untuk meningkatkan rasa produk marketplace aktif.
+- **Homepage activity strip (2026-04-22):** area tepat setelah hero kini memiliki strip ringkas berisi sinyal aktivitas + jalur eksplorasi cepat (trending lanes, quick filters nearby/remote, active briefs) untuk mempercepat langkah browse pengguna.
 - **SEO multilingual (2026-04-20):** halaman publik inti tersedia di URL terpisah per bahasa (`/en/*`, `/id/*`) via `app/[locale]`; metadata Next.js per locale memuat canonical lokal + hreflang `en`, `id`, `x-default`.
 - **Switch bahasa (2026-04-20):** EN/ID switcher mengikuti locale di route sebagai sumber kebenaran; saat ganti bahasa, aplikasi menavigasi ke route locale ekuivalen dan konten SSR langsung ikut locale baru.
 - **Navbar multilingual (2026-04-20):** tata letak `MarketingNavBar` diperkuat untuk panjang teks EN/ID (khususnya Bahasa Indonesia): desktop tetap satu baris stabil, center nav tidak wrapping, dan item utilitas diprioritaskan menurut lebar viewport.
