@@ -42,6 +42,7 @@ function toPublicCard(f: FreelancerSearchItem, distanceKm?: number | null): Publ
     availabilityStatus: f.availabilityStatus,
     reviewCount: f.reviewCount,
     averageReviewRating: f.averageReviewRating,
+    createdAt: f.createdAt,
     distanceKm: rounded
   };
 }

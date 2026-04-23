@@ -1,7 +1,7 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v32  
-> Last synchronized: 2026-04-22 (auth loading feedback made consistent across register + forgot-password).
+> **Doc revision:** v34  
+> Last synchronized: 2026-04-22 (freelancers discovery redesigned as stronger marketplace directory).
 
 ## Goal
 
@@ -90,6 +90,19 @@ Build a grounded, practical, product-first UI across public and authenticated su
 - Pola `AuthSubmitOverlay` kini diterapkan ke register dan forgot-password agar perilaku submit auth seragam di seluruh flow.
 - Kedua form menonaktifkan semua input/aksi saat loading, menampilkan spinner inline di tombol utama, dan mencegah duplicate submit dari klik berulang.
 - Teks feedback loading dipisah per flow di kamus EN/ID (`creating account`, `sending reset link`) agar status proses tetap jelas dan kontekstual.
+
+### 2026-04-22 — Auth copy localization pass
+
+- Register form kini sepenuhnya dictionary-driven (labels, placeholder, role selection copy, outcome hints, password helpers, CTA pairing, dan validation/error texts).
+- Forgot-password tidak lagi meminjam key login untuk label email; key locale khusus flow ini ditambahkan untuk menjaga struktur namespace auth tetap rapi.
+- Login flow dipertahankan tanpa perubahan logic, dengan verifikasi bahwa semua user-facing copy sudah berasal dari kamus locale.
+
+### 2026-04-22 — Freelancers directory refinement pass
+
+- Result listing `/freelancers` kini bergeser dari grid cards ke row-style directory agar user lebih cepat scan dan membandingkan kandidat pada sumbu yang konsisten (nama, spesialisasi, lokasi/mode, rate, rating, availability).
+- Sinyal pemilihan sekunder ditambahkan secara praktis (mis. `Responds fast`, `Available this week`, `Nearby`, `Popular choice`, `Top rated local`) berdasarkan data yang sudah ada (availability, jarak, review/rating, recency profile).
+- Hirarki aksi dipertegas dengan satu CTA primer per row (`View profile`) sehingga keputusan berikutnya jelas, sementara elemen lain berfungsi sebagai konteks pembanding.
+- Panel filter dipadatkan agar terasa sebagai alat navigasi (bukan form panjang): hint chips untuk orientasi filter + petunjuk mode kerja + guide rate context di dekat kontrol.
 
 ### 2026-04-20 — Homepage depth without gimmicks
 
