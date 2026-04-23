@@ -81,12 +81,12 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
 
       if (password !== confirmPassword) {
         clearPasswordFieldsInForm(form, ["password", "confirmPassword"]);
-        setError("Passwords do not match.");
+        setError(t("auth.registerForm.errorPasswordMismatch"));
         return;
       }
       if (password.length < 8) {
         clearPasswordFieldsInForm(form, ["password", "confirmPassword"]);
-        setError("Password must be at least 8 characters.");
+        setError(t("auth.registerForm.errorPasswordLength"));
         return;
       }
 
@@ -116,7 +116,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
           const msg =
             !body.success && typeof body.error === "string" && body.error.length > 0
               ? body.error
-              : "Could not create account. Try again.";
+              : t("auth.registerForm.errorGeneric");
           setError(msg);
           return;
         }
@@ -125,17 +125,17 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
         form.reset();
         window.location.assign(resolvePostLoginRedirect(body.data.session.role, rawNext));
       } catch (err) {
-        const msg = err instanceof Error && err.message ? err.message : "Request failed";
+        const msg = err instanceof Error && err.message ? err.message : t("auth.registerForm.errorRequestFailed");
         setError(
           /failed to fetch|networkerror|load failed/i.test(msg)
-            ? "Could not reach the server. Check your connection, VPN, or ad blockers, then try again."
-            : `Something went wrong: ${msg}`
+            ? t("auth.registerForm.errorNetwork")
+            : t("auth.registerForm.errorSomething", { message: msg })
         );
       } finally {
         setLoading(false);
       }
     },
-    [loading, role, searchParams]
+    [loading, role, searchParams, t]
   );
 
   const signUpContext =
@@ -149,12 +149,20 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
   const intentMessage = intentKey ? t(intentKey) : null;
   const roleOutcome = role === "CLIENT"
     ? {
-        title: "Client workspace next",
-        bullets: ["Post jobs in minutes", "Receive bids from freelancers", "Shortlist and message talent"]
+        title: t("auth.registerForm.outcomeClientTitle"),
+        bullets: [
+          t("auth.registerForm.outcomeClientBulletOne"),
+          t("auth.registerForm.outcomeClientBulletTwo"),
+          t("auth.registerForm.outcomeClientBulletThree")
+        ]
       }
     : {
-        title: "Freelancer workspace next",
-        bullets: ["Set up your profile", "Apply to open jobs", "Message clients and track proposals"]
+        title: t("auth.registerForm.outcomeFreelancerTitle"),
+        bullets: [
+          t("auth.registerForm.outcomeFreelancerBulletOne"),
+          t("auth.registerForm.outcomeFreelancerBulletTwo"),
+          t("auth.registerForm.outcomeFreelancerBulletThree")
+        ]
       };
 
   const inputClass =
@@ -190,7 +198,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
 
         <div className="space-y-2">
           <label htmlFor={nameId} className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Full name
+            {t("auth.registerForm.fullNameLabel")}
           </label>
           <input
             id={nameId}
@@ -200,7 +208,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
             required
             minLength={2}
             maxLength={120}
-            placeholder="Alex Morgan"
+            placeholder={t("auth.registerForm.fullNamePlaceholder")}
             disabled={loading}
             className={inputClass}
           />
@@ -208,7 +216,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
 
         <div className="space-y-2">
           <label htmlFor={emailId} className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Email address
+            {t("auth.registerForm.emailLabel")}
           </label>
           <input
             id={emailId}
@@ -216,7 +224,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
             type="email"
             autoComplete="email"
             required
-            placeholder="name@company.com"
+            placeholder={t("auth.registerForm.emailPlaceholder")}
             disabled={loading}
             className={inputClass}
           />
@@ -224,11 +232,10 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
 
         <fieldset className="space-y-3" aria-describedby={`${roleLegendId}-hint`}>
           <legend id={roleLegendId} className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-            I am joining as
+            {t("auth.registerForm.joinAsLegend")}
           </legend>
           <p id={`${roleLegendId}-hint`} className="sr-only">
-            Tab to move between Freelancer and Client. Press Space to select. When a radio is focused, use Left
-            and Right arrow keys to change the option.
+            {t("auth.registerForm.joinAsHint")}
           </p>
           <div className="flex flex-col gap-2 sm:flex-row sm:rounded-xl sm:border sm:border-slate-200 sm:bg-slate-100 sm:p-1">
             <label
@@ -258,11 +265,11 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
                   <span
                     className={`text-sm font-semibold ${role === "FREELANCER" ? "text-[#221a80]" : "text-slate-900"}`}
                   >
-                    Freelancer
+                    {t("auth.registerForm.freelancerLabel")}
                   </span>
                 </span>
                 <span className="mt-1 block text-xs leading-snug text-slate-500">
-                  Create a profile and apply to jobs
+                  {t("auth.registerForm.freelancerDescription")}
                 </span>
               </span>
             </label>
@@ -293,10 +300,10 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
                   <span
                     className={`text-sm font-semibold ${role === "CLIENT" ? "text-[#221a80]" : "text-slate-900"}`}
                   >
-                    Client
+                    {t("auth.registerForm.clientLabel")}
                   </span>
                 </span>
-                <span className="mt-1 block text-xs leading-snug text-slate-500">Post jobs and receive bids</span>
+                <span className="mt-1 block text-xs leading-snug text-slate-500">{t("auth.registerForm.clientDescription")}</span>
               </span>
             </label>
           </div>
@@ -316,7 +323,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
 
         <div className="space-y-2">
           <label htmlFor={passwordId} className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Password
+            {t("auth.registerForm.passwordLabel")}
           </label>
           <div className="relative">
             <input
@@ -335,18 +342,18 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
               onClick={() => setShowPassword((v) => !v)}
               disabled={loading}
               aria-pressed={showPassword}
-              aria-label={showPassword ? "Hide password" : "Show password"}
+              aria-label={showPassword ? t("auth.registerForm.hidePassword") : t("auth.registerForm.showPassword")}
               className="absolute right-1 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 disabled:pointer-events-none disabled:opacity-50"
             >
               {showPassword ? <EyeOff className="h-4 w-4" aria-hidden /> : <Eye className="h-4 w-4" aria-hidden />}
             </button>
           </div>
-          <p className="text-xs text-slate-400">At least 8 characters.</p>
+          <p className="text-xs text-slate-400">{t("auth.registerForm.passwordHint")}</p>
         </div>
 
         <div className="space-y-2">
           <label htmlFor={confirmId} className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Confirm password
+            {t("auth.registerForm.confirmPasswordLabel")}
           </label>
           <div className="relative">
             <input
@@ -365,7 +372,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
               onClick={() => setShowConfirm((v) => !v)}
               disabled={loading}
               aria-pressed={showConfirm}
-              aria-label={showConfirm ? "Hide confirm password" : "Show confirm password"}
+              aria-label={showConfirm ? t("auth.registerForm.hideConfirmPassword") : t("auth.registerForm.showConfirmPassword")}
               className="absolute right-1 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 disabled:pointer-events-none disabled:opacity-50"
             >
               {showConfirm ? <EyeOff className="h-4 w-4" aria-hidden /> : <Eye className="h-4 w-4" aria-hidden />}
@@ -390,7 +397,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
           <span className="w-full border-t border-slate-200" />
         </div>
         <div className="relative flex justify-center text-xs font-medium uppercase tracking-wide text-slate-400">
-          <span className="bg-white px-3">or</span>
+          <span className="bg-white px-3">{t("auth.login.orDivider")}</span>
         </div>
       </div>
 
@@ -398,17 +405,17 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
         type="button"
         disabled={loading}
         className="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 shadow-sm transition-colors hover:bg-slate-50 disabled:pointer-events-none disabled:opacity-60"
-        title="Coming soon"
-        aria-label="Continue with Google (coming soon)"
+        title={t("auth.login.googleComingSoon")}
+        aria-label={t("auth.login.googleAria")}
       >
         <GoogleMark className="h-5 w-5 shrink-0" aria-hidden />
-        Continue with Google
+        {t("auth.login.googleContinue")}
       </button>
 
       <p className="text-center text-sm text-slate-500">
-        Already have an account?{" "}
+        {t("auth.registerForm.haveAccount")}{" "}
         <Link href={loginHref as Route} className="font-semibold text-[#3525cd] hover:text-[#4f46e5]">
-          Log in
+          {t("auth.login.submit")}
         </Link>
       </p>
     </div>
@@ -422,9 +429,10 @@ type RegisterFormProps = {
 };
 
 export function RegisterForm({ initialNext, initialRoleHint, initialIntent }: RegisterFormProps) {
+  const { t } = useI18n();
   return (
     <Suspense
-      fallback={<p className="text-center text-sm text-slate-500">Loading signup…</p>}
+      fallback={<p className="text-center text-sm text-slate-500">{t("auth.registerForm.loadingSignup")}</p>}
     >
       <RegisterFormInner initialNext={initialNext} initialRoleHint={initialRoleHint} initialIntent={initialIntent} />
     </Suspense>

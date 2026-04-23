@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v33  
-> Last synchronized: 2026-04-22 (auth submit overlay pattern extended to register and forgot-password).
+> **Doc revision:** v35  
+> Last synchronized: 2026-04-22 (freelancers discovery page now optimized for compare + choose actions).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -22,6 +22,8 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 - **Login UX feedback (2026-04-22):** halaman login menampilkan overlay proses saat submit agar user mendapat sinyal jelas ketika autentikasi berjalan; interaksi form dikunci sementara request berlangsung untuk mencegah multiple submit.
 - **Auth overlay reuse baseline (2026-04-22):** pola overlay loading auth diekstrak menjadi komponen reusable agar flow register/forgot-password bisa mengadopsi UX submit konsisten di iterasi berikutnya.
 - **Auth submit consistency rollout (2026-04-22):** flow register dan forgot-password kini sudah memakai pola overlay reusable yang sama dengan login (overlay tenang, spinner status, kontrol disabled, anti double-submit, teks loading terlokalisasi per flow).
+- **Auth i18n consistency pass (2026-04-22):** copy user-facing pada login/register/forgot-password kini sepenuhnya berbasis kamus EN/ID (termasuk label form, role copy, helper, dan error register), tanpa perubahan logic autentikasi.
+- **Freelancers directory UX pass (2026-04-22):** halaman `/freelancers` direstruktur sebagai directory comparison surface: result hierarchy dipadatkan untuk scan cepat lintas kandidat, confidence signals ditampilkan sebagai cue sekunder yang actionable, dan CTA utama per kandidat disederhanakan ke satu aksi jelas (`View profile`) agar pengguna lebih cepat memilih dan bertindak.
 - **SEO alternates refinement (2026-04-22):** `hreflang` tetap EN/ID + `x-default`, dengan `x-default` langsung ke URL canonical default locale untuk mencegah duplicate/redirect ambiguity.
 - **SEO multilingual (2026-04-20):** halaman publik inti tersedia di URL terpisah per bahasa (`/en/*`, `/id/*`) via `app/[locale]`; metadata Next.js per locale memuat canonical lokal + hreflang `en`, `id`, `x-default`.
 - **Switch bahasa (2026-04-20):** EN/ID switcher mengikuti locale di route sebagai sumber kebenaran; saat ganti bahasa, aplikasi menavigasi ke route locale ekuivalen dan konten SSR langsung ikut locale baru.

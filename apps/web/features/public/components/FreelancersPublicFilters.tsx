@@ -143,6 +143,18 @@ export function FreelancersPublicFilters({
         </div>
       </div>
 
+      <div className="mb-3 flex flex-wrap gap-1.5">
+        <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
+          {t("public.freelancers.filterHintRole")}
+        </span>
+        <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
+          {t("public.freelancers.filterHintMode")}
+        </span>
+        <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
+          {t("public.freelancers.filterHintRate")}
+        </span>
+      </div>
+
       <form id="freelancers-filter-form" method="get" action="/freelancers" className="flex flex-col gap-4 xl:flex-row xl:flex-wrap xl:items-end">
         {activeCoords ? (
           <>
@@ -221,6 +233,9 @@ export function FreelancersPublicFilters({
               </option>
             ))}
           </select>
+          <p className="mt-1.5 text-[11px] leading-snug text-slate-500">
+            {t("public.freelancers.workModeHint")}
+          </p>
         </div>
 
         <div className="min-w-0 flex-1 xl:max-w-[200px]">
@@ -238,6 +253,11 @@ export function FreelancersPublicFilters({
           <p className="mt-1.5 text-[11px] leading-snug text-slate-500">
             {t("public.freelancers.cityHint")}
           </p>
+        </div>
+
+        <div className="w-full rounded border border-slate-200 bg-slate-50 px-3 py-2.5 text-[11px] leading-relaxed text-slate-600">
+          <span className="font-semibold text-slate-700">{t("public.freelancers.rateGuideLabel")}</span>{" "}
+          {t("public.freelancers.rateGuideBody")}
         </div>
 
         <p className="w-full text-[11px] font-medium text-slate-600 xl:col-span-full">

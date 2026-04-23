@@ -40,7 +40,7 @@ export function ForgotPasswordForm() {
       ) : null}
 
       <div className="space-y-2">
-        <Label htmlFor="email">{t("auth.login.email")}</Label>
+        <Label htmlFor="email">{t("auth.forgotPassword.emailLabel")}</Label>
         <Input id="email" name="email" type="email" autoComplete="email" required disabled={loading} />
       </div>
       <Button type="submit" className="w-full" disabled={loading}>
