@@ -1,7 +1,7 @@
 # @acme/database
 
-> **Doc revision:** v2  
-> Last synchronized: 2026-04-18 (Prisma singleton + public read patterns).
+> **Doc revision:** v3  
+> Last synchronized: 2026-04-24 (search query compatibility fallback + reduced parallel query pressure).
 
 PostgreSQL access via **Prisma**: schema, migrations, and generated client.
 
@@ -86,6 +86,7 @@ Then sign in at `/login` and open `/admin`. **Do not use default passwords in pr
 
 - **`@acme/database` export `db`:** satu `PrismaClient` per proses Node, disimpan di **`globalThis`** supaya hot reload / bundler tidak membuat banyak instance (mengurangi risiko **“max clients reached”** pada pool kecil, mis. Supabase session mode).
 - **Kueri agregat ringan publik:** gunakan **`$transaction`** berurutan bila beberapa `count` harus jalan dalam satu permintaan HTTP—lebih ramah koneksi daripada `Promise.all` paralel pada pool `pool_size` kecil.
+- **Kompatibilitas skema lintas environment:** jika ada rollout bertahap kolom baru (contoh translasi `titleEn/titleId/descriptionEn/descriptionId`), pastikan query read-path punya fallback aman agar environment yang belum termigrasi tidak langsung gagal runtime.
 
 ## Documentation
 

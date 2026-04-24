@@ -13,6 +13,38 @@ import type { AppLocale } from "@/lib/i18n/types";
  * `$queryRawUnsafe` / string templates with embedded user text.
  */
 
+type JobColumnSupport = {
+  language: boolean;
+  titleEn: boolean;
+  titleId: boolean;
+  descriptionEn: boolean;
+  descriptionId: boolean;
+};
+
+let jobColumnSupportPromise: Promise<JobColumnSupport> | null = null;
+
+async function getJobColumnSupport(): Promise<JobColumnSupport> {
+  if (jobColumnSupportPromise) return jobColumnSupportPromise;
+  jobColumnSupportPromise = (async () => {
+    const rows = await db.$queryRaw<{ column_name: string }[]>`
+      SELECT column_name
+      FROM information_schema.columns
+      WHERE table_schema = current_schema()
+        AND table_name = 'Job'
+        AND column_name IN ('language', 'titleEn', 'titleId', 'descriptionEn', 'descriptionId')
+    `;
+    const existing = new Set(rows.map((r) => r.column_name));
+    return {
+      language: existing.has("language"),
+      titleEn: existing.has("titleEn"),
+      titleId: existing.has("titleId"),
+      descriptionEn: existing.has("descriptionEn"),
+      descriptionId: existing.has("descriptionId")
+    };
+  })();
+  return jobColumnSupportPromise;
+}
+
 export type JobSearchItem = {
   id: string;
   title: string;
@@ -226,6 +258,7 @@ export class SearchService {
     const limit = clampLimit(input.limit);
     const skip = offsetFromPage({ page, limit });
     const now = new Date();
+    const col = await getJobColumnSupport();
 
     const parts: Prisma.Sql[] = [
       Prisma.sql`j."deletedAt" IS NULL`,
@@ -257,56 +290,54 @@ export class SearchService {
     }
     if (input.keyword?.trim()) {
       const q = `%${input.keyword.trim()}%`;
-      parts.push(
-        Prisma.sql`(
-          j."title" ILIKE ${q}
-          OR j."description" ILIKE ${q}
-          OR j."titleEn" ILIKE ${q}
-          OR j."titleId" ILIKE ${q}
-          OR j."descriptionEn" ILIKE ${q}
-          OR j."descriptionId" ILIKE ${q}
-        )`
-      );
+      const keywordParts: Prisma.Sql[] = [
+        Prisma.sql`j."title" ILIKE ${q}`,
+        Prisma.sql`j."description" ILIKE ${q}`
+      ];
+      if (col.titleEn) keywordParts.push(Prisma.sql`j."titleEn" ILIKE ${q}`);
+      if (col.titleId) keywordParts.push(Prisma.sql`j."titleId" ILIKE ${q}`);
+      if (col.descriptionEn) keywordParts.push(Prisma.sql`j."descriptionEn" ILIKE ${q}`);
+      if (col.descriptionId) keywordParts.push(Prisma.sql`j."descriptionId" ILIKE ${q}`);
+      parts.push(Prisma.sql`(${Prisma.join(keywordParts, " OR ")})`);
     }
 
     const whereSql = Prisma.join(parts, " AND ");
 
-    const [rows, countRows] = await Promise.all([
-      db.$queryRaw<
-        {
-          id: string;
-          title: string;
-          titleEn: string | null;
-          titleId: string | null;
-          slug: string;
-          description: string;
-          descriptionEn: string | null;
-          descriptionId: string | null;
-          language: string;
-          budgetType: string;
-          budgetMin: { toString(): string } | null;
-          budgetMax: { toString(): string } | null;
-          currency: string;
-          workMode: string;
-          city: string | null;
-          categoryId: string;
-          subcategoryId: string | null;
-          bidDeadline: Date | null;
-          createdAt: Date;
-          isFeatured: boolean;
-          featuredUntil: Date | null;
-        }[]
-      >`
+    const rows = await db.$queryRaw<
+      {
+        id: string;
+        title: string;
+        titleEn: string | null;
+        titleId: string | null;
+        slug: string;
+        description: string;
+        descriptionEn: string | null;
+        descriptionId: string | null;
+        language: string;
+        budgetType: string;
+        budgetMin: { toString(): string } | null;
+        budgetMax: { toString(): string } | null;
+        currency: string;
+        workMode: string;
+        city: string | null;
+        categoryId: string;
+        subcategoryId: string | null;
+        bidDeadline: Date | null;
+        createdAt: Date;
+        isFeatured: boolean;
+        featuredUntil: Date | null;
+      }[]
+    >`
         SELECT
           j."id",
           j."title",
-          j."titleEn",
-          j."titleId",
+          ${col.titleEn ? Prisma.sql`j."titleEn"` : Prisma.sql`NULL::text`} AS "titleEn",
+          ${col.titleId ? Prisma.sql`j."titleId"` : Prisma.sql`NULL::text`} AS "titleId",
           j."slug",
           j."description",
-          j."descriptionEn",
-          j."descriptionId",
-          j."language",
+          ${col.descriptionEn ? Prisma.sql`j."descriptionEn"` : Prisma.sql`NULL::text`} AS "descriptionEn",
+          ${col.descriptionId ? Prisma.sql`j."descriptionId"` : Prisma.sql`NULL::text`} AS "descriptionId",
+          ${col.language ? Prisma.sql`j."language"` : Prisma.sql`'en'::text`} AS "language",
           j."budgetType"::text AS "budgetType",
           j."budgetMin",
           j."budgetMax",
@@ -333,13 +364,12 @@ export class SearchService {
           ) DESC,
           j."createdAt" DESC
         LIMIT ${limit} OFFSET ${skip}
-      `,
-      db.$queryRaw<{ count: bigint }[]>`
-        SELECT COUNT(*)::bigint AS count
-        FROM "Job" j
-        WHERE ${whereSql}
-      `
-    ]);
+      `;
+    const countRows = await db.$queryRaw<{ count: bigint }[]>`
+      SELECT COUNT(*)::bigint AS count
+      FROM "Job" j
+      WHERE ${whereSql}
+    `;
 
     const total = Number(countRows[0]?.count ?? 0n);
     return {

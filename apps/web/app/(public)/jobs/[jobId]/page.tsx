@@ -1,11 +1,11 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CheckCircle2 } from "lucide-react";
 import { BidStatus, UserRole } from "@acme/types";
 import { db } from "@acme/database";
 import { getSessionFromCookies } from "@src/lib/auth";
 import { loginReturnTo, registerFreelancerReturnToJob } from "@/features/auth/lib/register-intents";
-import { PageHeader } from "@/features/shared/components/PageHeader";
 import { SaveJobButton } from "@/features/saved/components/SaveJobButton";
 import { BidDecisionAction } from "@/components/client-jobs/BidDecisionAction";
 import { BidConversationAction } from "@/components/client-jobs/BidConversationAction";
@@ -136,6 +136,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
         }
       })
     : [];
+  const publicBidCount = await db.bid.count({ where: { jobId: job.id } });
 
   const jobThreads = isClientOwner
     ? await db.messageThread.findMany({
@@ -224,9 +225,20 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
       : null;
 
   const returnToThisJob = `/jobs/${job.id}`;
+  const postedAtLabel = formatRelativeTime(job.createdAt, t);
+  const showFreelancerApplyPanel = !isClientOwner;
+  const isActiveHiring = job.isFeatured && (!job.featuredUntil || job.featuredUntil.getTime() > Date.now());
+  const topSignals: string[] = [];
+  if (isActiveHiring) topSignals.push(t("public.jobDetail.signalActiveHiring"));
+  if (Date.now() - job.createdAt.getTime() <= 24 * 60 * 60 * 1000) topSignals.push(t("public.jobDetail.signalNewJob"));
+  if ((Number(job.budgetMax ?? 0) || Number(job.budgetMin ?? 0)) >= 3000000) topSignals.push(t("public.jobDetail.signalGoodBudgetFit"));
+  if (job.city && job.workMode !== "REMOTE") topSignals.push(t("public.jobDetail.signalNearbyProject"));
+  if (job.description.trim().length <= 220) topSignals.push(t("public.jobDetail.signalQuickBrief"));
+  if (publicBidCount > 0 && publicBidCount <= 3) topSignals.push(t("public.jobDetail.signalLowCompetition"));
+  if (topSignals.length === 0) topSignals.push(t("public.jobDetail.signalReviewWorth"));
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8 md:px-6">
+    <div className="mx-auto max-w-6xl px-4 py-8 md:px-6">
       <nav className="text-muted-foreground mb-6 text-sm">
         <Link href="/jobs" className="hover:text-foreground underline-offset-4 hover:underline">
           {t("public.jobs.pageTitle")}
@@ -235,13 +247,86 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
         <span className="text-foreground">{t("public.jobDetail.details")}</span>
       </nav>
 
-      <PageHeader
-        title={job.title}
-        description={
-          [categoryLabel, job.workMode, jobLocation].filter(Boolean).join(" · ") || t("public.jobDetail.openRole")
-        }
-        actions={<SaveJobButton jobId={job.id} />}
-      />
+      <section className="mb-6 border border-slate-200 bg-white p-5 sm:p-6">
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr),auto] lg:items-start">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">{job.title}</h1>
+              <SaveJobButton jobId={job.id} />
+            </div>
+            <p className="mt-2 text-sm font-medium text-slate-600">
+              {[categoryLabel, job.workMode, jobLocation].filter(Boolean).join(" · ") || t("public.jobDetail.openRole")}
+            </p>
+            <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-slate-700">{job.description}</p>
+
+            <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="rounded border border-slate-200 bg-slate-50 px-3 py-2">
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t("public.jobDetail.budget")}</p>
+                <p className="mt-0.5 text-sm font-bold text-slate-900">{budgetLine(job, t)}</p>
+              </div>
+              <div className="rounded border border-slate-200 bg-slate-50 px-3 py-2">
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t("public.jobDetail.locationLabel")}</p>
+                <p className="mt-0.5 text-sm font-bold text-slate-900">{jobLocation || t("public.jobDetail.notSpecified")}</p>
+              </div>
+              <div className="rounded border border-slate-200 bg-slate-50 px-3 py-2">
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t("public.filters.workMode")}</p>
+                <p className="mt-0.5 text-sm font-bold text-slate-900">
+                  {job.workMode === "REMOTE"
+                    ? t("public.filters.workModeRemote")
+                    : job.workMode === "ONSITE"
+                      ? t("public.filters.workModeOnSite")
+                      : job.workMode === "HYBRID"
+                        ? t("public.filters.workModeHybrid")
+                        : job.workMode}
+                </p>
+              </div>
+              <div className="rounded border border-slate-200 bg-slate-50 px-3 py-2">
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t("public.jobDetail.postedLabel")}</p>
+                <p className="mt-0.5 text-sm font-bold text-slate-900">{postedAtLabel}</p>
+              </div>
+            </div>
+
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {topSignals.slice(0, 4).map((signal) => (
+                <span
+                  key={signal}
+                  className="rounded border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-700"
+                >
+                  {signal}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {showFreelancerApplyPanel ? (
+            <aside className="w-full border border-slate-200 bg-slate-50 p-4 lg:sticky lg:top-24 lg:w-72">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{t("public.jobDetail.applyKicker")}</p>
+              <p className="mt-1 text-sm font-semibold text-slate-800">{t("public.jobDetail.applyDescription")}</p>
+              <div className="mt-3 space-y-2">
+                <Link
+                  href={loginReturnTo(returnToThisJob, "submit-bid") as Route}
+                  className="nw-cta-primary inline-flex w-full justify-center px-4 py-2.5 text-sm font-semibold"
+                >
+                  {t("public.jobDetail.sendProposal")}
+                </Link>
+                <p className="text-xs text-slate-600">{t("public.jobDetail.applyReassurance")}</p>
+                {publicBidCount > 0 && publicBidCount <= 3 ? (
+                  <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-[#3525cd]" aria-hidden />
+                    {t("public.jobDetail.lowCompetitionHint", { count: publicBidCount })}
+                  </p>
+                ) : null}
+                <Link
+                  href={registerFreelancerReturnToJob(job.id) as Route}
+                  className="inline-flex w-full justify-center rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
+                >
+                  {t("public.jobDetail.registerAsFreelancer")}
+                </Link>
+              </div>
+            </aside>
+          ) : null}
+        </div>
+      </section>
       {job.language !== locale ? (
         <div className="mb-4 flex flex-wrap items-center gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700">
           <span>
