@@ -19,12 +19,14 @@ export type OpenJobListItem = {
   description: string;
   translationSource: "en" | "id";
   isTranslated: boolean;
+  categoryId: string;
   budgetType: string;
   budgetMin: { toString(): string } | null;
   budgetMax: { toString(): string } | null;
   currency: string;
   workMode: string;
   city: string | null;
+  createdAt: string;
   isFeatured: boolean;
   featuredUntil: Date | null;
   /** Matches search ranking: true only while `featuredUntil` is unset or in the future. */
@@ -43,12 +45,14 @@ function jobSearchItemToOpenListItem(j: JobSearchItem): OpenJobListItem {
     description: j.description,
     translationSource: j.translationSource,
     isTranslated: j.isTranslated,
+    categoryId: j.categoryId,
     budgetType: j.budgetType,
     budgetMin: decShim(j.budgetMin),
     budgetMax: decShim(j.budgetMax),
     currency: j.currency,
     workMode: j.workMode,
     city: j.city,
+    createdAt: j.createdAt,
     isFeatured: j.isFeatured,
     featuredUntil: j.featuredUntil ? new Date(j.featuredUntil) : null,
     isFeaturedActive: j.isFeaturedActive

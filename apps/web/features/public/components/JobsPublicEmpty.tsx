@@ -70,9 +70,18 @@ export function JobsPublicEmpty({ categorySelected, hasFilters }: JobsPublicEmpt
           <Link href="/jobs" className="nw-cta-primary px-5 py-2.5">
             {t("public.jobs.emptyFiltersPrimary")}
           </Link>
-          <Link href="/freelancers" className="text-sm font-semibold text-[#433C93] hover:underline">
+          <Link href="/jobs?workMode=REMOTE" className="text-sm font-semibold text-[#433C93] hover:underline">
             {t("public.jobs.emptyFiltersSecondary")}
           </Link>
+          <AuthAwareCtaLink
+            href={"/freelancer/profile" as Route}
+            intent="protected"
+            unauthenticatedTo="register"
+            registerRoleHint="freelancer"
+            className="text-sm font-semibold text-[#433C93] hover:underline"
+          >
+            {t("public.jobs.emptyFiltersTertiary")}
+          </AuthAwareCtaLink>
         </div>
       </div>
     );

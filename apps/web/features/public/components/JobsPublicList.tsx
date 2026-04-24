@@ -12,12 +12,15 @@ export type JobsPublicCard = {
   description: string;
   translationSource: "en" | "id";
   isTranslated: boolean;
+  categoryName: string | null;
   budgetMin: number | null;
   budgetMax: number | null;
   currency: string;
   budgetType: string;
   workMode: string;
   city: string | null;
+  createdAt: string;
+  isFeaturedActive: boolean;
 };
 
 function formatMoney(amount: number | null, currency: string): string {
@@ -27,13 +30,6 @@ function formatMoney(amount: number | null, currency: string): string {
   } catch {
     return `${amount} ${currency}`;
   }
-}
-
-function workModeChipClass(wm: string): string {
-  if (wm === "REMOTE") return "border-slate-300 bg-slate-50 text-slate-800";
-  if (wm === "ONSITE") return "border-amber-300/70 bg-amber-50 text-amber-950";
-  if (wm === "HYBRID") return "border-[#3525cd]/35 bg-[#3525cd]/[0.07] text-[#3525cd]";
-  return "border-slate-200 bg-white text-slate-700";
 }
 
 export function JobsPublicList({ jobs }: { jobs: JobsPublicCard[] }) {
@@ -54,47 +50,81 @@ export function JobsPublicList({ jobs }: { jobs: JobsPublicCard[] }) {
     return budgetType.replace(/_/g, " ");
   };
 
+  const timeAgoLabel = (iso: string): string => {
+    const ts = Date.parse(iso);
+    if (!Number.isFinite(ts)) return t("public.jobs.postedUnknown");
+    const diffMs = Date.now() - ts;
+    const hours = Math.floor(diffMs / (1000 * 60 * 60));
+    if (hours < 24) return t("public.jobs.postedHoursAgo", { count: Math.max(1, hours) });
+    const days = Math.floor(hours / 24);
+    return t("public.jobs.postedDaysAgo", { count: Math.max(1, days) });
+  };
+
+  const whyApplySignal = (job: JobsPublicCard): string => {
+    const ageHours = Math.floor((Date.now() - Date.parse(job.createdAt)) / (1000 * 60 * 60));
+    if (job.isFeaturedActive) return t("public.jobs.signalActiveHiring");
+    if (Number.isFinite(ageHours) && ageHours <= 24) return t("public.jobs.signalNewJob");
+    if ((job.budgetMax ?? job.budgetMin ?? 0) >= 3000000) return t("public.jobs.signalGoodBudgetFit");
+    if (job.city && job.workMode !== "REMOTE") return t("public.jobs.signalNearbyProject");
+    if ((job.description || "").trim().length <= 180) return t("public.jobs.signalQuickBrief");
+    return t("public.jobs.signalReviewBrief");
+  };
+
   return (
-    <ul className="divide-y divide-slate-200 overflow-hidden border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
+    <ul className="space-y-2.5">
       {jobs.map((job) => (
         <li key={job.id}>
-          <Link
-            href={`/jobs/${job.id}` as Route}
-            className="group flex flex-col gap-1 px-4 py-4 transition-colors hover:bg-slate-50/90 sm:flex-row sm:items-start sm:justify-between sm:gap-6 sm:px-5 sm:py-4"
-          >
-            <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <h2 className="text-base font-bold leading-snug text-slate-950 group-hover:text-[#3525cd] sm:text-[17px]">
-                  {job.title}
-                </h2>
-                {job.isTranslated ? (
-                  <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
-                    {t("public.jobs.translatedFrom", {
-                      language:
-                        job.translationSource === "id" ? t("public.jobs.langIndonesian") : t("public.jobs.langEnglish")
-                    })}
+          <article className="border border-slate-200 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
+            <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr),auto] lg:items-start">
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="rounded border border-slate-300 bg-white px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-800">
+                    {workModeLabel(job.workMode)}
                   </span>
-                ) : null}
-                <span
-                  className={`shrink-0 rounded border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${workModeChipClass(job.workMode)}`}
-                >
-                  {workModeLabel(job.workMode)}
-                </span>
+                  {job.categoryName ? (
+                    <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-700">
+                      {job.categoryName}
+                    </span>
+                  ) : null}
+                  {job.isTranslated ? (
+                    <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
+                      {t("public.jobs.translatedFrom", {
+                        language:
+                          job.translationSource === "id" ? t("public.jobs.langIndonesian") : t("public.jobs.langEnglish")
+                      })}
+                    </span>
+                  ) : null}
+                  <span className="rounded border border-[#3525cd]/35 bg-[#3525cd]/[0.07] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#3525cd]">
+                    {whyApplySignal(job)}
+                  </span>
+                </div>
+
+                <h2 className="mt-1.5 text-base font-bold leading-snug text-slate-950 sm:text-[17px]">{job.title}</h2>
+                <p className="mt-1.5 line-clamp-2 text-sm font-medium leading-relaxed text-slate-600">{job.description}</p>
+
+                <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-slate-200 pt-2.5">
+                  <span className="text-sm font-bold tabular-nums text-slate-950">{budgetLabelLocalized(job)}</span>
+                  {job.city ? (
+                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-slate-700">
+                      <MapPin className="h-3.5 w-3.5 shrink-0 text-[#3525cd]" aria-hidden />
+                      {job.city}
+                    </span>
+                  ) : (
+                    <span className="text-xs font-medium text-slate-400">{t("public.jobs.noCity")}</span>
+                  )}
+                  <span className="text-xs font-medium text-slate-500">{timeAgoLabel(job.createdAt)}</span>
+                </div>
+
+                <p className="mt-2 text-[11px] text-slate-600">{t("public.jobs.applyConfidenceLine")}</p>
               </div>
-              <p className="mt-1.5 line-clamp-2 text-sm font-medium leading-relaxed text-slate-600">{job.description}</p>
+
+              <div className="flex shrink-0 items-start">
+                <Link href={`/jobs/${job.id}` as Route} className="nw-cta-primary inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold">
+                  {t("public.jobs.primaryActionViewJob")}
+                </Link>
+              </div>
             </div>
-            <div className="flex shrink-0 flex-col items-start gap-1 border-t border-slate-100 pt-2.5 text-left sm:w-56 sm:border-t-0 sm:items-end sm:pt-0 sm:text-right">
-              <span className="text-[15px] font-bold tabular-nums text-slate-950">{budgetLabelLocalized(job)}</span>
-              {job.city ? (
-                <span className="inline-flex items-center gap-1 text-xs font-semibold text-slate-700">
-                  <MapPin className="h-3.5 w-3.5 shrink-0 text-[#3525cd]" aria-hidden />
-                  {job.city}
-                </span>
-              ) : (
-                <span className="text-xs font-medium text-slate-400">{t("public.jobs.noCity")}</span>
-              )}
-            </div>
-          </Link>
+          </article>
         </li>
       ))}
     </ul>

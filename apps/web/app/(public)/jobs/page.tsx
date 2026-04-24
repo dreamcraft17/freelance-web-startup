@@ -30,13 +30,16 @@ function toPublicJobCard(job: {
   description: string;
   translationSource: "en" | "id";
   isTranslated: boolean;
+  categoryId: string;
   budgetMin: { toString(): string } | null;
   budgetMax: { toString(): string } | null;
   currency: string;
   budgetType: string;
   workMode: string;
   city: string | null;
-}): JobsPublicCard {
+  createdAt: string;
+  isFeaturedActive: boolean;
+}, categoryName: string | null): JobsPublicCard {
   const min = job.budgetMin != null ? Number(job.budgetMin) : null;
   const max = job.budgetMax != null ? Number(job.budgetMax) : null;
   return {
@@ -45,12 +48,15 @@ function toPublicJobCard(job: {
     description: job.description,
     translationSource: job.translationSource,
     isTranslated: job.isTranslated,
+    categoryName,
     budgetMin: Number.isFinite(min) ? min : null,
     budgetMax: Number.isFinite(max) ? max : null,
     currency: job.currency,
     budgetType: job.budgetType,
     workMode: job.workMode,
-    city: job.city
+    city: job.city,
+    createdAt: job.createdAt,
+    isFeaturedActive: job.isFeaturedActive
   };
 }
 
@@ -59,6 +65,8 @@ function jobsQueryString(args: {
   city: string;
   workMode: string;
   categoryId: string;
+  minBudget: string;
+  postedWithinDays: string;
   page: number;
 }): string {
   const u = new URLSearchParams();
@@ -66,6 +74,8 @@ function jobsQueryString(args: {
   if (args.city.trim()) u.set("city", args.city.trim());
   if (args.workMode) u.set("workMode", args.workMode);
   if (args.categoryId.trim()) u.set("categoryId", args.categoryId.trim());
+  if (args.minBudget.trim()) u.set("minBudget", args.minBudget.trim());
+  if (args.postedWithinDays.trim()) u.set("postedWithinDays", args.postedWithinDays.trim());
   if (args.page > 1) u.set("page", String(args.page));
   const s = u.toString();
   return s ? `?${s}` : "";
@@ -89,7 +99,9 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
     keyword: raw.keyword,
     city: raw.city,
     workMode: raw.workMode === "" ? undefined : raw.workMode,
-    categoryId: raw.categoryId
+    categoryId: raw.categoryId,
+    minBudget: raw.minBudget,
+    postedWithinDays: raw.postedWithinDays
   });
   const query = parsed.success ? parsed.data : { page: 1, limit: 24 as const };
 
@@ -100,17 +112,25 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
     loadCategories(),
     new PublicStatsService().getMarketplacePulse()
   ]);
-  const jobs = items.map(toPublicJobCard);
+  const categoryMap = new Map(categories.map((c) => [c.id, c.name]));
+  const jobs = items.map((job) => toPublicJobCard(job, categoryMap.get(job.categoryId) ?? null));
 
   const keyword = query.keyword ?? "";
   const city = query.city ?? "";
   const workMode = (query.workMode ?? "") as "" | "REMOTE" | "ONSITE" | "HYBRID";
   const categoryId = query.categoryId ?? "";
   const page = query.page;
+  const minBudget = query.minBudget != null ? String(query.minBudget) : "";
+  const postedWithinDays = query.postedWithinDays != null ? String(query.postedWithinDays) : "";
   const totalPages = Math.max(1, Math.ceil(total / query.limit));
 
   const hasFilters =
-    Boolean(keyword.trim()) || Boolean(city.trim()) || Boolean(workMode) || Boolean(categoryId.trim());
+    Boolean(keyword.trim()) ||
+    Boolean(city.trim()) ||
+    Boolean(workMode) ||
+    Boolean(categoryId.trim()) ||
+    Boolean(minBudget) ||
+    Boolean(postedWithinDays);
   const categorySelected = Boolean(categoryId.trim());
 
   return (
@@ -150,7 +170,9 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
             >
               {page > 1 ? (
                 <Link
-                  href={`/jobs${jobsQueryString({ keyword, city, workMode, categoryId, page: page - 1 })}` as Route}
+                  href={
+                    `/jobs${jobsQueryString({ keyword, city, workMode, categoryId, minBudget, postedWithinDays, page: page - 1 })}` as Route
+                  }
                   className="font-bold text-[#3525cd] hover:underline"
                 >
                   {t("public.pagination.previous")}
@@ -163,7 +185,9 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
               </span>
               {page < totalPages ? (
                 <Link
-                  href={`/jobs${jobsQueryString({ keyword, city, workMode, categoryId, page: page + 1 })}` as Route}
+                  href={
+                    `/jobs${jobsQueryString({ keyword, city, workMode, categoryId, minBudget, postedWithinDays, page: page + 1 })}` as Route
+                  }
                   className="font-bold text-[#3525cd] hover:underline"
                 >
                   {t("public.pagination.next")}
@@ -181,6 +205,8 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
             city={city}
             workMode={workMode}
             categoryId={categoryId}
+            minBudget={minBudget}
+            postedWithinDays={postedWithinDays}
             categories={categories}
           />
           <div className="nw-surface-soft space-y-3 border-t-[3px] border-t-[#3525cd] p-4 text-sm">
