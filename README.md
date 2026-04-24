@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v35  
-> Last synchronized: 2026-04-22 — jobs flow refined from discovery into stronger apply conversion.
+> **Doc revision:** v36  
+> Last synchronized: 2026-04-24 — proposal submission flow now includes guided structure + loading feedback on job detail.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -50,6 +50,7 @@ Platform ini dirancang untuk mendukung **semua jenis freelance**, bukan hanya pr
 - Refinement CTA final: aksi utama profile freelancer diperjelas menjadi `Start discussion`, ditopang reassurance copy (“diskusi dulu sebelum komitmen”) dan panel aksi sticky di desktop agar jalur konversi tetap terlihat tanpa scroll panjang.
 - Halaman publik `/jobs` kini dipoles sebagai job board yang lebih decision-first: filter budget + recency ditambahkan, row hasil menampilkan signal `why apply`, waktu posting, kategori kerja, confidence line proposal-context, dan CTA utama `View job` yang lebih tegas untuk alur scan -> compare -> apply.
 - Halaman detail job (`/jobs/[jobId]`) kini menampilkan top decision section yang lebih konversi-oriented untuk freelancer: budget/lokasi/mode/posting time + sinyal “worth applying”, panel CTA `Send proposal` yang terlihat di atas (sticky desktop), dan reassurance bahwa proposal memulai diskusi tanpa komitmen instan.
+- Panel `Send proposal` untuk freelancer login sekarang ditingkatkan dari CTA-only menjadi form terstruktur ringan (intro, pendekatan, timeline/ketersediaan, harga, estimasi hari) dengan placeholder guidance dan loading overlay saat submit agar proses apply lebih jelas dan minim ragu.
 
 ### 🔹 Marketplace Core
 - Client dapat membuat job/project

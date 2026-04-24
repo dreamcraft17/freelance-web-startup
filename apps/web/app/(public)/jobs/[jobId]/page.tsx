@@ -7,6 +7,7 @@ import { db } from "@acme/database";
 import { getSessionFromCookies } from "@src/lib/auth";
 import { loginReturnTo, registerFreelancerReturnToJob } from "@/features/auth/lib/register-intents";
 import { SaveJobButton } from "@/features/saved/components/SaveJobButton";
+import { JobProposalForm } from "@/features/public/components/JobProposalForm";
 import { BidDecisionAction } from "@/components/client-jobs/BidDecisionAction";
 import { BidConversationAction } from "@/components/client-jobs/BidConversationAction";
 import { JobService } from "@/server/services/job.service";
@@ -227,6 +228,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
   const returnToThisJob = `/jobs/${job.id}`;
   const postedAtLabel = formatRelativeTime(job.createdAt, t);
   const showFreelancerApplyPanel = !isClientOwner;
+  const isFreelancerViewer = Boolean(session && session.role === UserRole.FREELANCER && !isClientOwner);
   const isActiveHiring = job.isFeatured && (!job.featuredUntil || job.featuredUntil.getTime() > Date.now());
   const topSignals: string[] = [];
   if (isActiveHiring) topSignals.push(t("public.jobDetail.signalActiveHiring"));
@@ -303,13 +305,46 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
               <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{t("public.jobDetail.applyKicker")}</p>
               <p className="mt-1 text-sm font-semibold text-slate-800">{t("public.jobDetail.applyDescription")}</p>
               <div className="mt-3 space-y-2">
-                <Link
-                  href={loginReturnTo(returnToThisJob, "submit-bid") as Route}
-                  className="nw-cta-primary inline-flex w-full justify-center px-4 py-2.5 text-sm font-semibold"
-                >
-                  {t("public.jobDetail.sendProposal")}
-                </Link>
-                <p className="text-xs text-slate-600">{t("public.jobDetail.applyReassurance")}</p>
+                {isFreelancerViewer ? (
+                  <JobProposalForm
+                    jobId={job.id}
+                    currency={job.currency}
+                    labels={{
+                      title: t("public.jobDetail.formGuideTitle"),
+                      subtitle: t("public.jobDetail.formGuideSubtitle"),
+                      introLabel: t("public.jobDetail.formIntroLabel"),
+                      introPlaceholder: t("public.jobDetail.formIntroPlaceholder"),
+                      approachLabel: t("public.jobDetail.formApproachLabel"),
+                      approachPlaceholder: t("public.jobDetail.formApproachPlaceholder"),
+                      timelineLabel: t("public.jobDetail.formTimelineLabel"),
+                      timelinePlaceholder: t("public.jobDetail.formTimelinePlaceholder"),
+                      amountLabel: t("public.jobDetail.formAmountLabel"),
+                      daysLabel: t("public.jobDetail.formDaysLabel"),
+                      reassurance: t("public.jobDetail.applyReassurance"),
+                      firstStep: t("public.jobDetail.formFirstStep"),
+                      send: t("public.jobDetail.sendProposal"),
+                      sending: t("public.jobDetail.sendingProposal"),
+                      loadingOverlay: t("public.jobDetail.sendingProposalOverlay"),
+                      success: t("public.jobDetail.proposalSent"),
+                      genericError: t("public.jobDetail.proposalError"),
+                      networkError: t("public.jobDetail.proposalNetworkError")
+                    }}
+                    onSubmitted={() => {
+                      // Keep UI status/proposal table up to date after submit.
+                      window.location.reload();
+                    }}
+                  />
+                ) : (
+                  <>
+                    <Link
+                      href={loginReturnTo(returnToThisJob, "submit-bid") as Route}
+                      className="nw-cta-primary inline-flex w-full justify-center px-4 py-2.5 text-sm font-semibold"
+                    >
+                      {t("public.jobDetail.sendProposal")}
+                    </Link>
+                    <p className="text-xs text-slate-600">{t("public.jobDetail.applyReassurance")}</p>
+                  </>
+                )}
                 {publicBidCount > 0 && publicBidCount <= 3 ? (
                   <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700">
                     <CheckCircle2 className="h-3.5 w-3.5 text-[#3525cd]" aria-hidden />

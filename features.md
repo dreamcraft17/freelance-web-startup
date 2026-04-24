@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v43  
-> Last synchronized: 2026-04-24 (jobs raw search compatibility fix for missing translation columns + connection pressure reduction).
+> **Doc revision:** v45  
+> Last synchronized: 2026-04-24 (API now degrades gracefully when Prisma pool is exhausted).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,6 +9,8 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
+- **2026-04-24 — API resilience for DB pool exhaustion:** wrapper API global (`withApiHandler`) kini mengenali error Prisma saat koneksi pool session penuh (`EMAXCONNSESSION` / `max clients reached`) dan mengembalikan respons `503` dengan kode terstruktur + `Retry-After`, sehingga tidak lagi muncul sebagai unhandled internal error generik.
+- **2026-04-24 — Proposal submission UX guidance (job detail):** panel apply freelancer di `/jobs/[jobId]` sekarang menyediakan form proposal terstruktur (intro singkat, pendekatan kerja, timeline/ketersediaan, harga, estimasi hari) alih-alih hanya CTA login/blank input; ditambah placeholder guidance, reassurance non-commitment, dan loading overlay saat submit agar alur apply terasa jelas, aman, dan cepat dimulai.
 - **2026-04-24 — Stabilization: jobs raw search compatibility + pool pressure reduction:** service search jobs sekarang kompatibel untuk environment DB yang belum punya kolom translasi (`titleEn/titleId/descriptionEn/descriptionId`) dengan fallback query aman sehingga tidak lagi gagal `column ... does not exist`; eksekusi query list/count juga dibuat berurutan (bukan paralel) untuk menurunkan beban koneksi simultan pada mode pool session kecil.
 - **2026-04-22 — Homepage marketplace density pass:** section kategori horizontal ditingkatkan menjadi browse lanes yang lebih scanable (icon-first chips, target klik lebih jelas); hero menambahkan trust cues + quick browse entry ke active briefs; preview listing diperkuat sebagai row-style board dengan atribut operasional (harga, lokasi, tag kerja, action links) agar halaman terasa seperti marketplace aktif, bukan landing statis.
 - **2026-04-22 — Homepage activity refinement pass:** listing preview menambahkan sinyal aktivitas ringan (`New`/`Active now` + konteks update), kolom kanan dirapikan agar price/location/actions lebih mudah dibandingkan lintas baris, kategori diperkuat sebagai lane navigasi (hierarki label + hover state lebih tegas), serta hero menambahkan satu baris urgensi produk tentang listing live yang rutin diperbarui.
