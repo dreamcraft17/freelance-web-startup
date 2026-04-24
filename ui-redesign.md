@@ -1,7 +1,7 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v40  
-> Last synchronized: 2026-04-22 (jobs discovery transformed to practical job-board decision surface).
+> **Doc revision:** v41  
+> Last synchronized: 2026-04-22 (jobs detail page tuned for apply conversion confidence).
 
 ## Goal
 
@@ -141,6 +141,12 @@ Build a grounded, practical, product-first UI across public and authenticated su
 - Ditambahkan sinyal `why apply` berbasis data tersedia (`Active hiring`, `New job`, `Good budget fit`, `Nearby project`, `Quick brief`) agar freelancer cepat memilah lowongan yang layak direview dulu.
 - CTA per-row dipertegas ke satu aksi utama (`View job`) dan ditambah apply-confidence line bahwa proposal terikat konteks brief/job thread, bukan komitmen langsung.
 - Filter panel ditingkatkan dengan budget-fit dan posted-recency controls plus hint chips, supaya narrowing jobs terasa seperti alat kerja, bukan form wall generik.
+
+### 2026-04-22 — Job detail apply-conversion pass
+
+- Top section `/jobs/[jobId]` diperkuat sebagai decision header (ringkasan title + summary + budget/location/work mode + posted recency) agar freelancer cepat menilai kelayakan apply.
+- Ditambahkan sinyal `why apply` berbasis data yang tersedia (active hiring, new job, good budget fit, nearby project, quick brief, low competition bila proposal masih sedikit).
+- Panel aksi apply dipindah ke area atas dengan CTA utama `Send proposal`, dibuat sticky di desktop, dan dilengkapi reassurance bahwa proposal hanya memulai diskusi, belum komitmen final.
 
 ### 2026-04-20 — Homepage depth without gimmicks
 

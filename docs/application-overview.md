@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v41  
-> Last synchronized: 2026-04-22 (jobs discovery now optimized for freelancer scan-compare-apply flow).
+> **Doc revision:** v42  
+> Last synchronized: 2026-04-22 (jobs detail flow now optimized for confident proposal conversion).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -30,6 +30,7 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 - **Freelancer profile hiring-language pass (2026-04-22):** label/terminologi section kini konsisten menggambarkan evaluasi jasa kerja (summary kerja, scope layanan, pengalaman relevan), sehingga seluruh halaman memperkuat konteks “menilai kandidat untuk direkrut”.
 - **Freelancer profile CTA confidence pass (2026-04-22):** jalur aksi utama kini menekankan percakapan awal yang aman (diskusi dulu sebelum komitmen), dengan CTA yang tetap terlihat di panel sticky desktop untuk mengurangi drop-off setelah user selesai mengevaluasi profile.
 - **Jobs discovery decision-flow pass (2026-04-22):** halaman `/jobs` kini mengurutkan informasi untuk keputusan freelancer (relevansi peran, budget context, lokasi/mode kerja, recency, apply signal) dan menyediakan filter budget+recency agar proses memilih lowongan yang layak dilamar lebih cepat serta lebih yakin.
+- **Jobs apply-conversion detail pass (2026-04-22):** halaman `/jobs/[jobId]` kini menempatkan CTA proposal pada top conversion area dengan konteks keputusan lengkap + reassurance non-commitment, sehingga user bergerak lebih cepat dari “membaca brief” ke “mulai kirim proposal”.
 - **SEO alternates refinement (2026-04-22):** `hreflang` tetap EN/ID + `x-default`, dengan `x-default` langsung ke URL canonical default locale untuk mencegah duplicate/redirect ambiguity.
 - **SEO multilingual (2026-04-20):** halaman publik inti tersedia di URL terpisah per bahasa (`/en/*`, `/id/*`) via `app/[locale]`; metadata Next.js per locale memuat canonical lokal + hreflang `en`, `id`, `x-default`.
 - **Switch bahasa (2026-04-20):** EN/ID switcher mengikuti locale di route sebagai sumber kebenaran; saat ganti bahasa, aplikasi menavigasi ke route locale ekuivalen dan konten SSR langsung ikut locale baru.
