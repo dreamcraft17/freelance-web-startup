@@ -1,7 +1,7 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v34  
-> Last synchronized: 2026-04-22 (freelancers discovery redesigned as stronger marketplace directory).
+> **Doc revision:** v40  
+> Last synchronized: 2026-04-22 (jobs discovery transformed to practical job-board decision surface).
 
 ## Goal
 
@@ -103,6 +103,44 @@ Build a grounded, practical, product-first UI across public and authenticated su
 - Sinyal pemilihan sekunder ditambahkan secara praktis (mis. `Responds fast`, `Available this week`, `Nearby`, `Popular choice`, `Top rated local`) berdasarkan data yang sudah ada (availability, jarak, review/rating, recency profile).
 - Hirarki aksi dipertegas dengan satu CTA primer per row (`View profile`) sehingga keputusan berikutnya jelas, sementara elemen lain berfungsi sebagai konteks pembanding.
 - Panel filter dipadatkan agar terasa sebagai alat navigasi (bukan form panjang): hint chips untuk orientasi filter + petunjuk mode kerja + guide rate context di dekat kontrol.
+
+### 2026-04-22 — Freelancers decision-confidence refinement
+
+- Tag generik dikurangi; diganti micro-copy alasan memilih yang lebih manusiawi dan berbasis konteks data (`strong reviews in category`, `frequently hired`, `nearby project fit`, `budget-friendly option`).
+- Persepsi ranking diperkuat tanpa dekorasi berlebih: dua hasil teratas mendapat penanda hierarki ringan (`Best match`, `Recommended`) + border emphasis tipis.
+- Trust signal dipromosikan ke bagian atas row (rating + review count) agar terbaca di scan pertama, bukan tertimbun di area footer kartu.
+- CTA `View profile` tetap satu-satunya aksi utama, kini diposisikan sebagai next-step natural setelah membaca alasan pemilihan.
+
+### 2026-04-22 — Freelancer public profile conversion pass
+
+- Profil publik freelancer (`/freelancers/[username]`) diubah dari halaman ringkas berbasis bio menjadi halaman keputusan dengan hierarchy jelas: summary atas + trust facts + next action.
+- Bagian atas kini menonjolkan jawaban inti untuk klien (apa jasa, cocok atau tidak, trust level, lokasi/mode, konteks harga, availability) dalam format scan cepat.
+- Ditambahkan section `Why choose this freelancer` berbasis sinyal data nyata (review quality, nearby fit, availability, rate context, profile completeness) tanpa klaim palsu.
+- CTA primer dipusatkan ke satu aksi (`Contact freelancer`), sedangkan aksi sekunder diturunkan bobot visual agar jalur konversi lebih jelas.
+
+### 2026-04-22 — Freelancer profile de-socialization pass
+
+- Penekanan visual identitas sosial (handle-style indicator) di hero dihapus agar fokus tetap pada evaluasi jasa.
+- Label sumber review diganti menjadi konteks proyek terverifikasi, bukan identitas personal reviewer.
+- Aksi sekunder yang tidak mendorong keputusan hiring langsung diturunkan dari panel utama supaya CTA kontak terasa sebagai langkah natural berikutnya.
+
+### 2026-04-22 — Hiring language final pass
+
+- Terminologi section profile diselaraskan ke bahasa evaluasi perekrutan: `Work summary`, `Service scope`, `Relevant experience` (dan padanan ID: `Ringkasan kerja`, `Layanan yang ditawarkan`, `Pengalaman relevan`).
+- Copy fallback/bantu juga digeser ke orientasi kerja (work overview/service listing), bukan narasi persona.
+
+### 2026-04-22 — Conversion CTA confidence pass
+
+- Label CTA utama diperkuat menjadi aksi diskusi (`Start discussion`) agar user memahami langkah berikutnya adalah membuka percakapan hiring, bukan komit instan.
+- Ditambahkan reassurance micro-copy di dekat CTA untuk menurunkan hesitation: user bisa membahas scope/timeline/terms sebelum commit.
+- Panel aksi atas dibuat sticky pada desktop sehingga CTA tetap terlihat saat user menilai detail profile lebih bawah.
+
+### 2026-04-22 — Jobs board decision-flow pass
+
+- Listing `/jobs` dipindahkan dari list dasar ke row layout yang lebih mudah dibandingkan lintas lowongan: work mode + kategori + budget + lokasi + waktu posting terlihat dalam satu ritme scan.
+- Ditambahkan sinyal `why apply` berbasis data tersedia (`Active hiring`, `New job`, `Good budget fit`, `Nearby project`, `Quick brief`) agar freelancer cepat memilah lowongan yang layak direview dulu.
+- CTA per-row dipertegas ke satu aksi utama (`View job`) dan ditambah apply-confidence line bahwa proposal terikat konteks brief/job thread, bukan komitmen langsung.
+- Filter panel ditingkatkan dengan budget-fit dan posted-recency controls plus hint chips, supaya narrowing jobs terasa seperti alat kerja, bukan form wall generik.
 
 ### 2026-04-20 — Homepage depth without gimmicks
 

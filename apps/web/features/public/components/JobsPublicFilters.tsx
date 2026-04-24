@@ -13,10 +13,20 @@ type JobsPublicFiltersProps = {
   city: string;
   workMode: WorkMode;
   categoryId: string;
+  minBudget: string;
+  postedWithinDays: string;
   categories: JobsFilterCategory[];
 };
 
-export function JobsPublicFilters({ keyword, city, workMode, categoryId, categories }: JobsPublicFiltersProps) {
+export function JobsPublicFilters({
+  keyword,
+  city,
+  workMode,
+  categoryId,
+  minBudget,
+  postedWithinDays,
+  categories
+}: JobsPublicFiltersProps) {
   const { t } = useI18n();
   const workModes: { value: WorkMode; label: string }[] = [
     { value: "", label: t("public.filters.workModeAny") },
@@ -43,6 +53,18 @@ export function JobsPublicFilters({ keyword, city, workMode, categoryId, categor
             {t("public.filters.reset")}
           </Link>
         </div>
+      </div>
+
+      <div className="mb-3 flex flex-wrap gap-1.5">
+        <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
+          {t("public.jobs.filterHintRelevant")}
+        </span>
+        <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
+          {t("public.jobs.filterHintBudget")}
+        </span>
+        <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
+          {t("public.jobs.filterHintRecent")}
+        </span>
       </div>
 
       <form id="jobs-filter-form" method="get" action="/jobs" className="flex flex-col gap-4 xl:flex-row xl:flex-wrap xl:items-end">
@@ -94,6 +116,30 @@ export function JobsPublicFilters({ keyword, city, workMode, categoryId, categor
                 {c.name}
               </option>
             ))}
+          </select>
+        </div>
+
+        <div className="min-w-0 flex-1 xl:max-w-[200px]">
+          <label htmlFor="jobs-min-budget" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+            {t("public.jobs.budgetFilterLabel")}
+          </label>
+          <select id="jobs-min-budget" name="minBudget" defaultValue={minBudget} className="nw-input w-full">
+            <option value="">{t("public.jobs.budgetFilterAny")}</option>
+            <option value="500000">{t("public.jobs.budgetFilter500k")}</option>
+            <option value="1000000">{t("public.jobs.budgetFilter1m")}</option>
+            <option value="3000000">{t("public.jobs.budgetFilter3m")}</option>
+          </select>
+        </div>
+
+        <div className="min-w-0 flex-1 xl:max-w-[200px]">
+          <label htmlFor="jobs-posted" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+            {t("public.jobs.postedFilterLabel")}
+          </label>
+          <select id="jobs-posted" name="postedWithinDays" defaultValue={postedWithinDays} className="nw-input w-full">
+            <option value="">{t("public.jobs.postedFilterAny")}</option>
+            <option value="1">{t("public.jobs.postedFilter24h")}</option>
+            <option value="7">{t("public.jobs.postedFilter7d")}</option>
+            <option value="30">{t("public.jobs.postedFilter30d")}</option>
           </select>
         </div>
 

@@ -117,7 +117,10 @@ export const searchJobsSchema = paginationSchema
     keyword: z.string().max(120).optional(),
     city: z.string().max(120).optional(),
     workMode: z.enum(["REMOTE", "ONSITE", "HYBRID"]).optional(),
-    categoryId: z.string().max(48).optional()
+    categoryId: z.string().max(48).optional(),
+    minBudget: z.coerce.number().min(0).optional(),
+    maxBudget: z.coerce.number().min(0).optional(),
+    postedWithinDays: z.coerce.number().int().min(1).max(30).optional()
   })
   .superRefine(discoveryPageRefine);
 

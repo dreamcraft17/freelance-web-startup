@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v35  
-> Last synchronized: 2026-04-22 (freelancers discovery page now optimized for compare + choose actions).
+> **Doc revision:** v41  
+> Last synchronized: 2026-04-22 (jobs discovery now optimized for freelancer scan-compare-apply flow).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -24,6 +24,12 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 - **Auth submit consistency rollout (2026-04-22):** flow register dan forgot-password kini sudah memakai pola overlay reusable yang sama dengan login (overlay tenang, spinner status, kontrol disabled, anti double-submit, teks loading terlokalisasi per flow).
 - **Auth i18n consistency pass (2026-04-22):** copy user-facing pada login/register/forgot-password kini sepenuhnya berbasis kamus EN/ID (termasuk label form, role copy, helper, dan error register), tanpa perubahan logic autentikasi.
 - **Freelancers directory UX pass (2026-04-22):** halaman `/freelancers` direstruktur sebagai directory comparison surface: result hierarchy dipadatkan untuk scan cepat lintas kandidat, confidence signals ditampilkan sebagai cue sekunder yang actionable, dan CTA utama per kandidat disederhanakan ke satu aksi jelas (`View profile`) agar pengguna lebih cepat memilih dan bertindak.
+- **Freelancers decision-confidence pass (2026-04-22):** surface hasil kini memberi alasan pemilihan eksplisit per kandidat (`why choose this`) dari data yang tersedia, ranking top matches dibuat lebih terbaca secara halus, dan trust metrics dinaikkan prioritas visualnya untuk mempercepat keputusan tanpa menambah elemen dekoratif.
+- **Freelancer profile conversion pass (2026-04-22):** halaman publik detail freelancer kini menyusun informasi dalam urutan keputusan (summary trust/rate/location/availability -> alasan memilih -> about/skills/review -> CTA kontak) sehingga klien dapat menilai kecocokan dan melanjutkan aksi tanpa harus menafsirkan profil bio yang tersebar.
+- **Freelancer profile non-social refinement (2026-04-22):** orientasi halaman ditegaskan sebagai evaluasi hiring: elemen persona sosial diturunkan, sumber review dipresentasikan sebagai bukti proyek, dan panel aksi dipadatkan ke jalur keputusan yang lebih langsung.
+- **Freelancer profile hiring-language pass (2026-04-22):** label/terminologi section kini konsisten menggambarkan evaluasi jasa kerja (summary kerja, scope layanan, pengalaman relevan), sehingga seluruh halaman memperkuat konteks “menilai kandidat untuk direkrut”.
+- **Freelancer profile CTA confidence pass (2026-04-22):** jalur aksi utama kini menekankan percakapan awal yang aman (diskusi dulu sebelum komitmen), dengan CTA yang tetap terlihat di panel sticky desktop untuk mengurangi drop-off setelah user selesai mengevaluasi profile.
+- **Jobs discovery decision-flow pass (2026-04-22):** halaman `/jobs` kini mengurutkan informasi untuk keputusan freelancer (relevansi peran, budget context, lokasi/mode kerja, recency, apply signal) dan menyediakan filter budget+recency agar proses memilih lowongan yang layak dilamar lebih cepat serta lebih yakin.
 - **SEO alternates refinement (2026-04-22):** `hreflang` tetap EN/ID + `x-default`, dengan `x-default` langsung ke URL canonical default locale untuk mencegah duplicate/redirect ambiguity.
 - **SEO multilingual (2026-04-20):** halaman publik inti tersedia di URL terpisah per bahasa (`/en/*`, `/id/*`) via `app/[locale]`; metadata Next.js per locale memuat canonical lokal + hreflang `en`, `id`, `x-default`.
 - **Switch bahasa (2026-04-20):** EN/ID switcher mengikuti locale di route sebagai sumber kebenaran; saat ganti bahasa, aplikasi menavigasi ke route locale ekuivalen dan konten SSR langsung ikut locale baru.

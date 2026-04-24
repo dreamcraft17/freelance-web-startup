@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v28  
-> Last synchronized: 2026-04-22 — freelancers directory UI refined for faster scan/compare/choose.
+> **Doc revision:** v34  
+> Last synchronized: 2026-04-22 — jobs discovery refined into stronger freelancer job-board flow.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -43,6 +43,12 @@ Platform ini dirancang untuk mendukung **semua jenis freelance**, bukan hanya pr
 - Flow register dan forgot-password kini memakai pola submit overlay yang sama (fullscreen dim + centered status + disabled controls + anti double-submit) dengan copy loading terlokalisasi per halaman.
 - Konsistensi i18n auth diperketat: seluruh teks user-facing pada login/register/forgot-password kini dibaca dari kamus locale (`en`/`id`), termasuk label form, helper copy, role descriptions, dan pesan error register.
 - Halaman publik `/freelancers` kini dipoles sebagai directory yang lebih decision-oriented: hasil ditata dalam row comparison layout, rate context (`starting at`) lebih tegas, sinyal pilih cepat (nearby/available/popular/top-rated) ditampilkan ringkas, dan CTA utama per hasil dipusatkan ke `View profile`.
+- Refinement lanjutan menekankan alasan pemilihan nyata per freelancer (`why choose this`) berbasis data (review strength, volume hire proxy, nearby fit, budget fit), menambah hierarchy subtle untuk top matches (`Best match` / `Recommended`), serta menaikkan visibilitas rating agar keputusan user lebih percaya diri.
+- Halaman publik detail freelancer (`/freelancers/[username]`) kini ditata ulang menjadi conversion surface: top summary menonjolkan trust + pricing + availability, section `why choose this` berbasis data nyata, skills/reviews dipindah ke struktur keputusan, dan CTA utama difokuskan ke aksi kontak.
+- Penyesuaian lanjutan mengurangi nuansa “social profile”: handle/identity visual sekunder dihapus dari hero, label sumber review dibuat netral untuk konteks proyek terverifikasi, dan aksi “save” tidak lagi mengganggu jalur keputusan utama client.
+- Final language pass memperkuat tone evaluasi hiring: label section di profile detail kini berfokus ke kerja (`Work summary`, `Service scope`, `Relevant experience`), bukan terminologi profile personal.
+- Refinement CTA final: aksi utama profile freelancer diperjelas menjadi `Start discussion`, ditopang reassurance copy (“diskusi dulu sebelum komitmen”) dan panel aksi sticky di desktop agar jalur konversi tetap terlihat tanpa scroll panjang.
+- Halaman publik `/jobs` kini dipoles sebagai job board yang lebih decision-first: filter budget + recency ditambahkan, row hasil menampilkan signal `why apply`, waktu posting, kategori kerja, confidence line proposal-context, dan CTA utama `View job` yang lebih tegas untuk alur scan -> compare -> apply.
 
 ### 🔹 Marketplace Core
 - Client dapat membuat job/project

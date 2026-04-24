@@ -244,6 +244,17 @@ export class SearchService {
       const c = input.city.trim();
       parts.push(Prisma.sql`j."city" ILIKE ${"%" + c + "%"}`);
     }
+    if (input.minBudget != null && Number.isFinite(input.minBudget)) {
+      parts.push(Prisma.sql`j."budgetMax" IS NULL OR j."budgetMax" >= ${input.minBudget}`);
+    }
+    if (input.maxBudget != null && Number.isFinite(input.maxBudget)) {
+      parts.push(Prisma.sql`j."budgetMin" IS NULL OR j."budgetMin" <= ${input.maxBudget}`);
+    }
+    if (input.postedWithinDays != null && Number.isFinite(input.postedWithinDays)) {
+      const days = Math.max(1, Math.min(30, Math.trunc(input.postedWithinDays)));
+      const since = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+      parts.push(Prisma.sql`j."createdAt" >= ${since}`);
+    }
     if (input.keyword?.trim()) {
       const q = `%${input.keyword.trim()}%`;
       parts.push(
