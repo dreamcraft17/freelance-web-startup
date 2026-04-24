@@ -1,13 +1,68 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v42  
-> Last synchronized: 2026-04-24 (proposal submit panel now guided with structured writing cues and loading feedback).
+> **Doc revision:** v52  
+> Last synchronized: 2026-04-24 (post-success redirects now use subtle pacing delay).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-04-24 — Redirect pacing polish
+
+- Redirect setelah success action penting kini tidak instan, melainkan diberi jeda singkat (~400ms) agar feedback sukses sempat terbaca.
+- Diterapkan pada publish job dan submit proposal (saat thread percakapan sudah siap), menjaga rasa transisi yang tenang tanpa menambah UI berat.
+
+### 2026-04-24 — Pre-launch UX continuity pass
+
+- Setelah client publish job, detail job kini menampilkan confirmation strip + arahan next action yang langsung mengarah ke review queue/list jobs.
+- Saat owner membuka/buat conversation dari review proposal, URL handoff membawa context marker dan Messages menampilkan banner konteks ringan agar transisi tidak terasa “putus”.
+- Empty state proposal pada owner view job detail kini punya CTA lanjut yang konkret (review queue / open jobs list), bukan hanya teks status.
+
+### 2026-04-24 — Notifications category chips
+
+- Notifications center kini menambahkan chips filter ringan (`All`, `Proposals`, `Messages`, `Contracts`) yang bekerja sepenuhnya di client-side.
+- Tiap chip sekarang menampilkan count kecil (`(n)`) yang dihitung dari data notifikasi yang sudah dimuat agar triage volume lebih cepat tanpa noise visual.
+- State unread/read tetap dipertahankan di dalam tiap kategori agar prioritas perhatian tidak hilang saat triage.
+- Saat kategori aktif tidak memiliki item, ditampilkan empty state khusus kategori tersebut.
+
+### 2026-04-24 — Notification scanability refinement
+
+- List notifikasi kini menampilkan label tipe aktivitas yang lebih eksplisit per item (proposal, message, bid accepted, contract update) untuk mempercepat triage.
+- Unread tetap menonjol secara halus; read diturunkan bobot visualnya untuk mengurangi noise.
+- Empty state notifikasi disederhanakan ke copy yang fokus pada ekspektasi aktivitas marketplace berikutnya.
+
+### 2026-04-24 — Needs-review quick filter
+
+- `/client/jobs` kini menampilkan chip filter cepat (`All jobs`, `Needs review`, `Open`, `Closed`) di atas filter status.
+- Mode `Needs review` memusatkan listing yang butuh aksi client (proposal pending/shortlisted atau proposal baru) tanpa menambah UI berat.
+- Saat kosong, muncul empty state khusus yang menegaskan tidak ada job yang perlu review saat ini.
+
+### 2026-04-24 — Client proposal intake cues
+
+- Daftar job client kini memberi penekanan visual lebih jelas untuk aktivitas proposal baru (`New proposal`) + volume proposal yang sudah masuk per job.
+- Baris/list item dengan proposal baru diberi hierarchy lebih tinggi agar owner cepat mengenali pekerjaan yang membutuhkan review.
+- Owner section pada detail job menambahkan panel “action needed” yang menyederhanakan langkah berikutnya: review proposals, buka percakapan, lalu shortlist/accept.
+
+### 2026-04-24 — Handoff query acknowledgement
+
+- Link `Open conversation` dari success state proposal kini memakai query context `from=proposal`.
+- Messages page menampilkan banner ringan saat query ini ada, sehingga transisi “baru kirim proposal -> lanjut chat” terasa eksplisit tanpa komponen alert berat.
+- Banner dapat ditutup dan query dibersihkan dari URL secara aman lewat client-side replace.
+
+### 2026-04-24 — Proposal-to-conversation UX
+
+- Setelah submit proposal sukses, panel apply memberi arahan langkah lanjut yang spesifik ke diskusi (bukan sekadar sukses state statis).
+- Bila thread job tersedia/berhasil dibuat, user langsung mendapat link `Open conversation` dari area submit.
+- Header thread di halaman messages kini menampilkan context job ringan (judul job, counterpart, status proposal bila tersedia, link balik ke job) untuk mengurangi kehilangan konteks saat pindah dari apply ke chat.
+
+### 2026-04-24 — Proposal local draft continuity
+
+- Form proposal di detail job sekarang melakukan autosave lokal secara silent (tanpa toast berulang) saat user mengetik.
+- Draft dipulihkan otomatis saat user kembali ke halaman yang sama, dengan indikator halus “Draft restored”.
+- Scope draft dipisah per job + user untuk mencegah konten tercampur antar lowongan/akun.
+- Setelah submit berhasil, draft dibersihkan otomatis; tersedia juga aksi ringan `Clear draft` untuk kontrol manual.
 
 ### 2026-04-24 — Proposal submission guidance (jobs detail)
 

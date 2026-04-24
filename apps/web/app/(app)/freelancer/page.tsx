@@ -1,7 +1,9 @@
 import { redirect } from "next/navigation";
 import { getSessionFromCookies } from "@src/lib/auth";
 import { db } from "@acme/database";
+import { BidStatus } from "@acme/types";
 import { JobService } from "@/server/services/job.service";
+import { MessageService } from "@/server/services/message.service";
 import { QuotaService } from "@/server/services/quota.service";
 import {
   FreelancerDashboard,
@@ -70,6 +72,19 @@ export default async function FreelancerDashboardPage() {
         })
       ])
     : [null, [] as FreelancerDashboardBid[]];
+
+  const [acceptedBids, proposalUpdates, awaitingReplyThreads] = profile
+    ? await Promise.all([
+        db.bid.count({ where: { freelancerId: profile.id, status: BidStatus.ACCEPTED } }),
+        db.bid.count({
+          where: {
+            freelancerId: profile.id,
+            updatedAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }
+          }
+        }),
+        new MessageService().countAwaitingReplyThreadsForUser(session.userId)
+      ])
+    : [0, 0, 0];
 
   const recentContracts: FreelancerDashboardContract[] = recentContractsRaw.map((c) => ({
     id: c.id,
@@ -153,6 +168,11 @@ export default async function FreelancerDashboardPage() {
       recentContracts={recentContracts}
       openJobs={openJobs}
       openTotal={openTotal}
+      attention={{
+        acceptedBids,
+        awaitingReplyThreads,
+        proposalUpdates
+      }}
     />
   );
 }

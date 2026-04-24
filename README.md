@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v36  
-> Last synchronized: 2026-04-24 — proposal submission flow now includes guided structure + loading feedback on job detail.
+> **Doc revision:** v46  
+> Last synchronized: 2026-04-24 — key success redirects now include a short intentional delay.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -51,6 +51,16 @@ Platform ini dirancang untuk mendukung **semua jenis freelance**, bukan hanya pr
 - Halaman publik `/jobs` kini dipoles sebagai job board yang lebih decision-first: filter budget + recency ditambahkan, row hasil menampilkan signal `why apply`, waktu posting, kategori kerja, confidence line proposal-context, dan CTA utama `View job` yang lebih tegas untuk alur scan -> compare -> apply.
 - Halaman detail job (`/jobs/[jobId]`) kini menampilkan top decision section yang lebih konversi-oriented untuk freelancer: budget/lokasi/mode/posting time + sinyal “worth applying”, panel CTA `Send proposal` yang terlihat di atas (sticky desktop), dan reassurance bahwa proposal memulai diskusi tanpa komitmen instan.
 - Panel `Send proposal` untuk freelancer login sekarang ditingkatkan dari CTA-only menjadi form terstruktur ringan (intro, pendekatan, timeline/ketersediaan, harga, estimasi hari) dengan placeholder guidance dan loading overlay saat submit agar proses apply lebih jelas dan minim ragu.
+- Form proposal tersebut kini punya autosave draft lokal berbasis `jobId + userId` (tanpa perubahan backend/API), memulihkan teks saat user kembali ke halaman, dan menghapus draft otomatis setelah submit sukses.
+- Setelah proposal terkirim, UX sekarang memberi next-step yang jelas ke percakapan kerja; bila thread job tersedia, user bisa langsung membuka `Open conversation` dan melihat konteks job/proposal di halaman `Messages`.
+- Jalur handoff tersebut kini menyertakan query `from=proposal`; halaman `Messages` menampilkan banner konteks singkat saat dibuka lewat jalur ini, lalu query dapat dibersihkan saat banner ditutup.
+- Untuk sisi client, dashboard + jobs list kini mempertegas sinyal proposal masuk per job dan owner job detail menambahkan ringkasan tindakan agar alur “ada proposal baru -> review -> chat -> shortlist/accept” lebih langsung.
+- Halaman `/client/jobs` sekarang punya quick filter `Needs review` agar client bisa langsung fokus ke job yang butuh tindakan hari ini, lengkap dengan empty state khusus saat belum ada item review.
+- UX notifikasi dipoles agar aktivitas penting (proposal masuk, pesan baru, bid accepted, update kontrak) lebih mudah dipindai dan selalu punya tujuan aksi yang jelas; dashboard role juga menampilkan cue perhatian yang lebih eksplisit.
+- Halaman notifikasi kini menyediakan filter kategori ringan (`All`, `Proposals`, `Messages`, `Contracts`) di sisi client untuk membantu triage cepat tanpa perubahan API/backend.
+- Setiap chip kategori notifikasi sekarang menampilkan jumlah item berdasarkan data yang sudah dimuat (tanpa request tambahan) untuk membantu scanning volume aktivitas lebih cepat.
+- Alur inti kini punya feedback langkah-lanjut lebih jelas: setelah posting job owner melihat konfirmasi + next action, dan saat membuka conversation dari review proposal, Messages menampilkan banner konteks agar transisi job -> chat tidak terasa putus.
+- Redirect pasca-sukses utama kini dipacing singkat (~400ms) agar transisi terasa lebih halus: publish job dan submit proposal tidak lagi terasa “langsung lompat”.
 
 ### 🔹 Marketplace Core
 - Client dapat membuat job/project

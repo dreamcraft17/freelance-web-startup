@@ -38,11 +38,17 @@ const STATUS_ORDER = [
 const FILTER_ALL = "all" as const;
 
 type StatusFilter = typeof FILTER_ALL | JobStatus;
+type ReviewFocus = "all" | "needs-review" | "open" | "closed";
 
 function parseStatusFilter(raw: string | undefined): StatusFilter {
   if (!raw || raw === FILTER_ALL) return FILTER_ALL;
   if ((Object.values(JobStatus) as string[]).includes(raw)) return raw as JobStatus;
   return FILTER_ALL;
+}
+
+function parseReviewFocus(raw: string | undefined): ReviewFocus {
+  if (raw === "needs-review" || raw === "open" || raw === "closed") return raw;
+  return "all";
 }
 
 function statusBadgeClass(status: string): string {
@@ -93,9 +99,17 @@ function isNeedsAttention(job: ClientJobListRow): boolean {
   return job.status === JobStatus.OPEN && (job.submitted > 0 || job.shortlisted > 0);
 }
 
+function hasNewProposal(job: ClientJobListRow): boolean {
+  return Boolean(job.latestBidAt && Date.now() - job.latestBidAt.getTime() <= 1000 * 60 * 60 * 48);
+}
+
 function isStale(job: ClientJobListRow): boolean {
   const days = Math.floor((Date.now() - job.updatedAt.getTime()) / (1000 * 60 * 60 * 24));
   return days >= 14 && job.status === JobStatus.OPEN;
+}
+
+function isClosedLike(status: string): boolean {
+  return status === JobStatus.CLOSED || status === JobStatus.CANCELLED || status === JobStatus.ARCHIVED;
 }
 
 function jobPrimaryActionLabel(job: ClientJobListRow): string {
@@ -103,21 +117,31 @@ function jobPrimaryActionLabel(job: ClientJobListRow): string {
   return "View job";
 }
 
-function filterHref(status: StatusFilter): Route {
-  if (status === FILTER_ALL) return "/client/jobs" as Route;
-  const q = new URLSearchParams({ status });
+function filterHref(status: StatusFilter, review: ReviewFocus): Route {
+  const q = new URLSearchParams();
+  if (status !== FILTER_ALL) q.set("status", status);
+  if (review !== "all") q.set("review", review);
+  if (q.size === 0) return "/client/jobs" as Route;
   return `/client/jobs?${q.toString()}` as Route;
 }
 
 type ClientJobsManagerProps = {
   jobs: ClientJobListRow[];
   statusParam: string | undefined;
+  reviewParam?: string | undefined;
   hasProfile: boolean;
 };
 
-export function ClientJobsManager({ jobs, statusParam, hasProfile }: ClientJobsManagerProps) {
+export function ClientJobsManager({ jobs, statusParam, reviewParam, hasProfile }: ClientJobsManagerProps) {
   const activeFilter = parseStatusFilter(statusParam);
-  const displayJobs = [...jobs].sort((a, b) => {
+  const reviewFocus = parseReviewFocus(reviewParam);
+  const scopedJobs = jobs.filter((job) => {
+    if (reviewFocus === "needs-review") return isNeedsAttention(job) || hasNewProposal(job);
+    if (reviewFocus === "open") return job.status === JobStatus.OPEN;
+    if (reviewFocus === "closed") return isClosedLike(job.status);
+    return true;
+  });
+  const displayJobs = [...scopedJobs].sort((a, b) => {
     const aAttention = isNeedsAttention(a) ? 0 : 1;
     const bAttention = isNeedsAttention(b) ? 0 : 1;
     if (aAttention !== bAttention) return aAttention - bAttention;
@@ -177,22 +201,47 @@ export function ClientJobsManager({ jobs, statusParam, hasProfile }: ClientJobsM
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm font-medium text-slate-700">Quick review</p>
+            <nav className="flex flex-wrap gap-2" aria-label="Quick review filters">
+              <FilterPill href={filterHref(activeFilter, "all")} active={reviewFocus === "all"} label="All jobs" />
+              <FilterPill
+                href={filterHref(activeFilter, "needs-review")}
+                active={reviewFocus === "needs-review"}
+                label="Needs review"
+              />
+              <FilterPill href={filterHref(activeFilter, "open")} active={reviewFocus === "open"} label="Open" />
+              <FilterPill href={filterHref(activeFilter, "closed")} active={reviewFocus === "closed"} label="Closed" />
+            </nav>
+          </div>
+
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm font-medium text-slate-700">Filter by status</p>
             <nav className="flex flex-wrap gap-2" aria-label="Job status filters">
-              <FilterPill href={filterHref(FILTER_ALL)} active={activeFilter === FILTER_ALL} label="All" />
+              <FilterPill href={filterHref(FILTER_ALL, reviewFocus)} active={activeFilter === FILTER_ALL} label="All" />
               {STATUS_ORDER.map((s) => (
-                <FilterPill key={s} href={filterHref(s)} active={activeFilter === s} label={humanizeStatus(s)} />
+                <FilterPill
+                  key={s}
+                  href={filterHref(s, reviewFocus)}
+                  active={activeFilter === s}
+                  label={humanizeStatus(s)}
+                />
               ))}
             </nav>
           </div>
 
-          {jobs.length === 0 ? (
+          {displayJobs.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 px-6 py-12 text-center">
-              <p className="text-sm font-medium text-slate-800">No jobs in this status</p>
-              <p className="mt-1 text-sm text-slate-500">Try another filter or post a new listing.</p>
+              <p className="text-sm font-medium text-slate-800">
+                {reviewFocus === "needs-review" ? "No jobs need review right now." : "No jobs in this status"}
+              </p>
+              <p className="mt-1 text-sm text-slate-500">
+                {reviewFocus === "needs-review"
+                  ? "New proposals will appear here when they arrive."
+                  : "Try another filter or post a new listing."}
+              </p>
               <div className="mt-5 flex flex-wrap justify-center gap-2">
                 <Link
-                  href={filterHref(FILTER_ALL)}
+                  href={filterHref(FILTER_ALL, "all")}
                   className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-800 shadow-sm hover:bg-slate-50"
                 >
                   Show all jobs
@@ -223,15 +272,36 @@ export function ClientJobsManager({ jobs, statusParam, hasProfile }: ClientJobsM
                     {displayJobs.map((job) => (
                       <tr
                         key={job.id}
-                        className={cn("transition hover:bg-slate-50/60", isNeedsAttention(job) ? "bg-amber-50/30" : undefined)}
+                        className={cn(
+                          "transition hover:bg-slate-50/60",
+                          hasNewProposal(job)
+                            ? "bg-[#3525cd]/[0.05]"
+                            : isNeedsAttention(job)
+                              ? "bg-amber-50/30"
+                              : undefined
+                        )}
                       >
                         <td className="px-5 py-4">
-                          <Link
-                            href={`/jobs/${job.id}` as Route}
-                            className="font-semibold text-slate-900 hover:text-[#3525cd]"
-                          >
-                            {job.title}
-                          </Link>
+                          <div className="space-y-1">
+                            <Link
+                              href={`/jobs/${job.id}` as Route}
+                              className="font-semibold text-slate-900 hover:text-[#3525cd]"
+                            >
+                              {job.title}
+                            </Link>
+                            <div className="flex flex-wrap items-center gap-1.5">
+                              {hasNewProposal(job) ? (
+                                <span className="rounded-md border border-[#3525cd]/20 bg-[#3525cd]/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#3525cd]">
+                                  New proposal
+                                </span>
+                              ) : null}
+                              {job.bidCount > 0 ? (
+                                <span className="rounded-md border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
+                                  {job.bidCount} proposal{job.bidCount === 1 ? "" : "s"} received
+                                </span>
+                              ) : null}
+                            </div>
+                          </div>
                         </td>
                         <td className="px-4 py-4">
                           <span
@@ -321,6 +391,18 @@ export function ClientJobsManager({ jobs, statusParam, hasProfile }: ClientJobsM
                       >
                         {humanizeStatus(job.status)}
                       </span>
+                    </div>
+                    <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                      {hasNewProposal(job) ? (
+                        <span className="rounded-md border border-[#3525cd]/20 bg-[#3525cd]/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#3525cd]">
+                          New proposal
+                        </span>
+                      ) : null}
+                      {job.bidCount > 0 ? (
+                        <span className="rounded-md border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
+                          {job.bidCount} proposal{job.bidCount === 1 ? "" : "s"} received
+                        </span>
+                      ) : null}
                     </div>
                     <p className="mt-2 text-xs text-slate-500">{detailLine(job)}</p>
                     <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-slate-100 pt-3 text-xs text-slate-600">

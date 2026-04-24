@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v43  
-> Last synchronized: 2026-04-24 (jobs detail proposal submit form now guided and structured for lower apply friction).
+> **Doc revision:** v53  
+> Last synchronized: 2026-04-24 (success-flow redirect timing refined for smoother transitions).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,17 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Success redirect timing polish (2026-04-24):** redirect setelah aksi sukses pada flow inti kini diberi delay ringan (~400ms), khususnya setelah publish job dan setelah proposal submit (saat thread tersedia), supaya transisi terasa lebih intentional tanpa menambah kompleksitas flow.
+- **Pre-launch UX friction pass (2026-04-24):** pengalaman lintas flow disempurnakan dengan feedback pasca-aksi + next-step cues: setelah posting job owner menerima konfirmasi kontekstual di detail job, state “no proposals yet” kini memberi tindakan lanjutan, dan handoff ke Messages dari review proposal membawa marker konteks agar user tidak kehilangan alur.
+- **Notifications quick triage chips (2026-04-24):** pengguna kini bisa memfilter daftar notifikasi secara instan di sisi client (`All`, `Proposals`, `Messages`, `Contracts`) untuk memfokuskan kategori aktivitas tanpa request API tambahan.
+- **Notifications category volume cues (2026-04-24):** chip filter notifikasi kini menampilkan count kategori yang dihitung dari daftar notifikasi yang sudah dimuat, sehingga user bisa melihat volume aktivitas per kategori secara cepat tanpa menambah kompleksitas backend.
+- **Notification visibility pass (2026-04-24):** halaman notifications sekarang mempermudah pemindaian aktivitas penting lewat badge tipe event per item + emphasis unread/read yang lebih konsisten, dengan destination action lebih tepat (thread/job/contract sesuai payload).
+- **Role dashboards cue pass (2026-04-24):** dashboard client dan freelancer menambahkan cue aktivitas yang lebih langsung ke tindakan (proposal review, message reply, accepted bid/proposal status updates) tanpa menambah sistem notifikasi baru.
+- **Quick triage filter for client jobs (2026-04-24):** `/client/jobs` menambahkan filter ringkas `Needs review` yang menyaring listing dengan proposal pending/shortlisted atau proposal baru, sehingga client bisa langsung menjawab “mana yang perlu ditinjau hari ini?” tanpa memindai seluruh daftar.
+- **Client intake visibility (2026-04-24):** dashboard/client-jobs kini memperjelas proposal activity per listing (badge proposal baru + jumlah proposal masuk) dan memberi hierarchy lebih tegas pada row yang perlu tindakan; owner view di detail job menambahkan ringkasan “action needed” agar langkah review -> conversation -> shortlist/accept lebih eksplisit.
+- **Proposal-origin context banner (2026-04-24):** saat user membuka thread dari hasil submit proposal, URL handoff kini menyertakan `from=proposal`; halaman `/messages` membaca flag ini untuk menampilkan banner konteks singkat (EN/ID) agar user tahu percakapan dibuka dari proposal terbaru.
+- **Post-proposal messaging continuity (2026-04-24):** setelah proposal berhasil dikirim dari detail job, user mendapat next-step copy yang jelas dan link ke percakapan (`Open conversation`) bila thread job siap; area thread di `/messages` menampilkan context ringkas job + status proposal agar orientasi diskusi tetap jelas.
+- **Proposal local draft autosave (2026-04-24):** proposal form freelancer di `/jobs/[jobId]` sekarang menyimpan draft secara lokal (tanpa backend/API baru) untuk mencegah kehilangan teks saat refresh/close tab; draft dipisah per kombinasi `jobId` + `userId`, dipulihkan saat form load, dan dihapus otomatis setelah proposal sukses terkirim.
 - **Proposal submit UX guidance (2026-04-24):** panel apply di `/jobs/[jobId]` kini menyediakan form terstruktur (intro, pendekatan kerja, timeline/ketersediaan, harga, estimasi hari) dengan placeholder panduan + reassurance non-komitmen, sehingga freelancer tidak lagi menghadapi permukaan apply yang terasa kosong.
 - **Proposal submit loading feedback (2026-04-24):** saat freelancer mengirim proposal, sistem menampilkan overlay proses yang konsisten dengan pola submit auth (dim + loader + status text) untuk mengurangi ketidakpastian saat request berjalan.
 - **Homepage marketplace pass (2026-04-22):** landing publik sekarang menonjolkan browsing entry points yang lebih nyata: browse lane kategori horizontal di bawah search, hero dengan trust cues dan quick link ke brief aktif, serta preview row-style yang menampilkan atribut kerja (harga, lokasi, tag) + aksi langsung.

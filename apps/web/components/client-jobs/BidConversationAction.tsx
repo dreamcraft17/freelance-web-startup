@@ -40,14 +40,14 @@ export function BidConversationAction({
         setError("Could not start conversation.");
         return;
       }
-      router.push((`/messages?thread=${encodeURIComponent(body.data.threadId)}` as Route));
+      router.push((`/messages?thread=${encodeURIComponent(body.data.threadId)}&from=job-conversation` as Route));
     });
   }
 
   if (threadId) {
     return (
       <Link
-        href={`/messages?thread=${encodeURIComponent(threadId)}` as Route}
+        href={`/messages?thread=${encodeURIComponent(threadId)}&from=job-conversation` as Route}
         className="text-xs font-semibold text-slate-600 hover:text-slate-900 hover:underline"
       >
         Open conversation

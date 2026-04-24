@@ -17,7 +17,7 @@ function statusFromSearchParam(raw: string | undefined): JobStatus | null {
 export default async function ClientJobsPage({
   searchParams
 }: {
-  searchParams: Promise<{ status?: string }>;
+  searchParams: Promise<{ status?: string; review?: string }>;
 }) {
   const session = await getSessionFromCookies();
   if (!session) {
@@ -34,7 +34,7 @@ export default async function ClientJobsPage({
   });
 
   if (!clientProfile) {
-    return <ClientJobsManager jobs={[]} statusParam={sp.status} hasProfile={false} />;
+    return <ClientJobsManager jobs={[]} statusParam={sp.status} reviewParam={sp.review} hasProfile={false} />;
   }
 
   const jobs = await db.job.findMany({
@@ -147,5 +147,5 @@ export default async function ClientJobsPage({
     updatedAt: j.updatedAt
   }));
 
-  return <ClientJobsManager jobs={rows} statusParam={sp.status} hasProfile />;
+  return <ClientJobsManager jobs={rows} statusParam={sp.status} reviewParam={sp.review} hasProfile />;
 }

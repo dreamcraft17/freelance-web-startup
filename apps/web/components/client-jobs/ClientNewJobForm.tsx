@@ -39,6 +39,8 @@ type ClientNewJobFormProps = {
   categories: ClientNewJobCategoryOption[];
 };
 
+const REDIRECT_DELAY_MS = 400;
+
 function sectionCard(
   icon: React.ReactNode,
   title: string,
@@ -155,7 +157,8 @@ export function ClientNewJobForm({ categories }: ClientNewJobFormProps) {
         return;
       }
 
-      router.push(`/jobs/${json.data.id}` as Route);
+      await new Promise((resolve) => window.setTimeout(resolve, REDIRECT_DELAY_MS));
+      router.push((`/jobs/${json.data.id}?from=job-posted` as Route));
       router.refresh();
     } catch {
       setError("Network error. Check your connection and try again.");
