@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v42  
-> Last synchronized: 2026-04-22 (jobs detail flow now optimized for confident proposal conversion).
+> **Doc revision:** v43  
+> Last synchronized: 2026-04-24 (jobs detail proposal submit form now guided and structured for lower apply friction).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,8 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Proposal submit UX guidance (2026-04-24):** panel apply di `/jobs/[jobId]` kini menyediakan form terstruktur (intro, pendekatan kerja, timeline/ketersediaan, harga, estimasi hari) dengan placeholder panduan + reassurance non-komitmen, sehingga freelancer tidak lagi menghadapi permukaan apply yang terasa kosong.
+- **Proposal submit loading feedback (2026-04-24):** saat freelancer mengirim proposal, sistem menampilkan overlay proses yang konsisten dengan pola submit auth (dim + loader + status text) untuk mengurangi ketidakpastian saat request berjalan.
 - **Homepage marketplace pass (2026-04-22):** landing publik sekarang menonjolkan browsing entry points yang lebih nyata: browse lane kategori horizontal di bawah search, hero dengan trust cues dan quick link ke brief aktif, serta preview row-style yang menampilkan atribut kerja (harga, lokasi, tag) + aksi langsung.
 - **Homepage activity refinement (2026-04-22):** section preview kini menambahkan sinyal aktivitas ringan dan alignment data untuk scan/compare lebih cepat; kategori dipertegas sebagai lane navigasi; hero menambahkan satu cue urgensi operasional tentang update listing yang rutin.
 - **Homepage decision-confidence pass (2026-04-22):** row preview kini menampilkan alasan pemilihan listing, penekanan halus untuk item unggulan, konteks value pada harga, dan hirarki aksi utama/sekunder yang lebih jelas agar pengguna bisa memilih lebih yakin.

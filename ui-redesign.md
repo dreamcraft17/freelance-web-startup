@@ -1,13 +1,20 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v41  
-> Last synchronized: 2026-04-22 (jobs detail page tuned for apply conversion confidence).
+> **Doc revision:** v42  
+> Last synchronized: 2026-04-24 (proposal submit panel now guided with structured writing cues and loading feedback).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-04-24 — Proposal submission guidance (jobs detail)
+
+- Panel apply freelancer pada `/jobs/[jobId]` beralih dari CTA-only ke form proposal ringan namun terstruktur: `short intro`, `approach to the job`, `timeline/availability`, plus quote dan estimasi hari.
+- Tiap bagian memakai placeholder guidance yang menjelaskan apa yang perlu ditulis agar user tidak menghadapi textarea kosong.
+- Reassurance copy dipertahankan dekat CTA untuk menurunkan pressure (“ini langkah awal, detail bisa disempurnakan setelah diskusi”).
+- Submit action tetap satu langkah (`Send proposal`) dan kini memberi loading overlay untuk feedback proses yang lebih menenangkan.
 
 ### 2026-04-22 — Marketplace energy (without gimmicks)
 

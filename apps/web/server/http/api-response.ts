@@ -36,6 +36,33 @@ export function mapDomainErrorToResponse(error: unknown): NextResponse | null {
   return null;
 }
 
+function mapPrismaOperationalError(error: unknown): NextResponse | null {
+  if (!(error instanceof Error)) return null;
+  const msg = error.message || "";
+  const isPoolExhausted =
+    msg.includes("EMAXCONNSESSION") ||
+    msg.includes("max clients reached") ||
+    msg.includes("pool_size");
+
+  if (isPoolExhausted) {
+    const res = jsonFail(
+      "Service is temporarily busy. Please retry shortly.",
+      503,
+      "DB_POOL_EXHAUSTED"
+    );
+    res.headers.set("Retry-After", "2");
+    return res;
+  }
+
+  if (error.name === "PrismaClientInitializationError") {
+    const res = jsonFail("Database is temporarily unavailable", 503, "DB_UNAVAILABLE");
+    res.headers.set("Retry-After", "2");
+    return res;
+  }
+
+  return null;
+}
+
 function logUnhandledApiError(error: unknown): void {
   if (process.env.NODE_ENV === "production") {
     const name = error instanceof Error ? error.name : typeof error;
@@ -51,6 +78,8 @@ export async function withApiHandler(fn: () => Promise<NextResponse>): Promise<N
   } catch (error) {
     const mapped = mapDomainErrorToResponse(error);
     if (mapped) return mapped;
+    const prismaMapped = mapPrismaOperationalError(error);
+    if (prismaMapped) return prismaMapped;
     logUnhandledApiError(error);
     return jsonFail("Internal server error", 500, "INTERNAL_ERROR");
   }
