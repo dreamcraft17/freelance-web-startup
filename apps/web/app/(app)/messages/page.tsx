@@ -1,10 +1,14 @@
 import { redirect } from "next/navigation";
+import { db } from "@acme/database";
 import { getSessionFromCookies, sessionToActor } from "@src/lib/auth";
+import { getAppLocale } from "@/lib/i18n/server-locale";
 import {
   MessagesWorkspace,
   type MessageItem,
+  type ThreadContextSummary,
   type ThreadListItem
 } from "@/components/messaging/MessagesWorkspace";
+import { ProposalHandoffBanner } from "@/components/messaging/ProposalHandoffBanner";
 import { MessageService } from "@/server/services/message.service";
 
 type SearchParams = Record<string, string | string[] | undefined>;
@@ -30,7 +34,11 @@ export default async function MessagesPage({
 
   const actor = sessionToActor(session);
   const messageService = new MessageService();
-  const [threadResult, sp] = await Promise.all([messageService.listThreadsForActor(actor), searchParams.then(pick)]);
+  const [threadResult, sp, locale] = await Promise.all([
+    messageService.listThreadsForActor(actor),
+    searchParams.then(pick),
+    getAppLocale()
+  ]);
   const { items: threadRows } = threadResult;
 
   const threads: ThreadListItem[] = threadRows.map((t) => ({
@@ -48,6 +56,7 @@ export default async function MessagesPage({
 
   let messages: MessageItem[] = [];
   let selectedThreadId: string | null = null;
+  let selectedContext: ThreadContextSummary | null = null;
 
   if (threadParam && validIds.has(threadParam)) {
     try {
@@ -60,9 +69,38 @@ export default async function MessagesPage({
         isSystem: m.isSystem
       }));
       selectedThreadId = threadParam;
+      const selectedThread = threads.find((t) => t.threadId === threadParam) ?? null;
+      if (selectedThread?.jobId) {
+        const [jobRow, bidRow] = await Promise.all([
+          db.job.findFirst({
+            where: { id: selectedThread.jobId, deletedAt: null },
+            select: { id: true, title: true }
+          }),
+          db.bid.findFirst({
+            where: {
+              jobId: selectedThread.jobId,
+              OR: [
+                { freelancer: { userId: session.userId } },
+                { freelancer: { userId: selectedThread.peers[0]?.userId ?? "" } }
+              ]
+            },
+            orderBy: { createdAt: "desc" },
+            select: { status: true }
+          })
+        ]);
+        if (jobRow) {
+          selectedContext = {
+            jobId: jobRow.id,
+            jobTitle: jobRow.title,
+            counterpartLabel: selectedThread.peers.map((p) => p.displayName).join(" · ") || "Counterpart",
+            proposalStatus: bidRow?.status ?? null
+          };
+        }
+      }
     } catch {
       selectedThreadId = null;
       messages = [];
+      selectedContext = null;
     }
   }
 
@@ -77,12 +115,26 @@ export default async function MessagesPage({
           Inbox and chat in one workspace—threads stay tied to jobs or contracts when they matter.
         </p>
       </header>
+      {sp.from === "proposal" || sp.from === "job-conversation" ? (
+        <ProposalHandoffBanner
+          message={
+            sp.from === "proposal"
+              ? locale === "id"
+                ? "Percakapan dibuka dari proposal terbaru Anda."
+                : "Conversation opened from your latest proposal."
+              : locale === "id"
+                ? "Percakapan dibuka dari review proposal job. Lanjutkan diskusi dan tentukan langkah berikutnya."
+                : "Conversation opened from job proposal review. Continue the discussion and choose your next step."
+          }
+        />
+      ) : null}
 
       <MessagesWorkspace
         threads={threads}
         messages={messages}
         selectedThreadId={selectedThreadId}
         currentUserId={session.userId}
+        selectedContext={selectedContext}
       />
     </div>
   );

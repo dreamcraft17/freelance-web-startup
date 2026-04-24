@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { BidStatus, ContractStatus, JobStatus } from "@acme/types";
 import { db } from "@acme/database";
 import { getSessionFromCookies } from "@src/lib/auth";
+import { MessageService } from "@/server/services/message.service";
 import {
   ClientDashboard,
   type ClientDashboardBid,
@@ -25,6 +26,7 @@ type ClientJobRow = {
   updatedAt: Date;
   category: { name: string } | null;
   _count: { bids: number };
+  latestBidAt?: Date | null;
 };
 
 type ClientBidRow = {
@@ -87,11 +89,12 @@ export default async function ClientDashboardPage() {
 
   let openJobsCount = 0;
   let incomingBidsCount = 0;
+  let awaitingReplyThreads = 0;
   let recentJobsRaw: ClientJobRow[] = [];
   let recentBidsRaw: ClientBidRow[] = [];
 
   if (clientProfile) {
-    const [open, incoming, jobs, bids] = await Promise.all([
+    const [open, incoming, jobs, bids, latestBidByJob] = await Promise.all([
       db.job.count({
         where: {
           clientProfileId: clientProfile.id,
@@ -133,12 +136,20 @@ export default async function ClientDashboardPage() {
           job: { select: { id: true, title: true, currency: true } },
           freelancer: { select: { fullName: true, username: true } }
         }
+      }),
+      db.bid.groupBy({
+        by: ["jobId"],
+        where: { job: { clientProfileId: clientProfile.id, deletedAt: null } },
+        _max: { createdAt: true }
       })
     ]);
     openJobsCount = open;
     incomingBidsCount = incoming;
+    awaitingReplyThreads = await new MessageService().countAwaitingReplyThreadsForUser(session.userId);
     recentJobsRaw = jobs;
     recentBidsRaw = bids;
+    const latestBidMap = new Map(latestBidByJob.map((x) => [x.jobId, x._max.createdAt ?? null]));
+    recentJobsRaw = jobs.map((j) => ({ ...j, latestBidAt: latestBidMap.get(j.id) ?? null }));
   }
 
   const recentJobs: ClientDashboardJob[] = recentJobsRaw.map((j) => ({
@@ -150,7 +161,8 @@ export default async function ClientDashboardPage() {
     createdAt: j.createdAt,
     updatedAt: j.updatedAt,
     categoryName: j.category?.name ?? null,
-    bidCount: j._count.bids
+    bidCount: j._count.bids,
+    latestBidAt: j.latestBidAt ?? null
   }));
 
   const recentBids: ClientDashboardBid[] = recentBidsRaw.map((b) => ({
@@ -184,7 +196,9 @@ export default async function ClientDashboardPage() {
     incomingBids: hasProfile ? String(incomingBidsCount) : "0",
     incomingBidsHint: hasProfile
       ? incomingBidsCount > 0
-        ? "Awaiting your review"
+        ? awaitingReplyThreads > 0
+          ? `${awaitingReplyThreads} message thread${awaitingReplyThreads === 1 ? "" : "s"} awaiting reply`
+          : "Awaiting your review"
         : "No pending proposals"
       : "Requires a posted job",
     activeContracts: String(activeContractsCount),

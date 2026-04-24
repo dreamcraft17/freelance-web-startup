@@ -50,8 +50,25 @@ function linkForNotification(item: NotificationListItem): string | null {
   if (!p || typeof p !== "object") return null;
   const o = p as Record<string, unknown>;
   if (typeof o.threadId === "string") return `/messages?thread=${encodeURIComponent(o.threadId)}`;
+  if (typeof o.contractId === "string") return `/api/contracts/${encodeURIComponent(o.contractId)}`;
   if (typeof o.jobId === "string") return `/jobs/${encodeURIComponent(o.jobId)}`;
   return null;
+}
+
+function activityLabel(type: string): string {
+  switch (type) {
+    case NotificationType.BID_SUBMITTED:
+    case NotificationType.BID_SHORTLISTED:
+      return "Proposal received";
+    case NotificationType.BID_ACCEPTED:
+      return "Bid accepted";
+    case NotificationType.NEW_MESSAGE:
+      return "New message";
+    case NotificationType.CONTRACT_STARTED:
+      return "Contract update";
+    default:
+      return "Update";
+  }
 }
 
 function TypeIcon({ type }: { type: string }) {
@@ -83,19 +100,54 @@ type NotificationsCenterProps = {
   items: NotificationListItem[];
 };
 
+type NotificationCategory = "all" | "proposals" | "messages" | "contracts";
+
+function categoryForType(type: string): NotificationCategory {
+  if (
+    type === NotificationType.BID_SUBMITTED ||
+    type === NotificationType.BID_SHORTLISTED ||
+    type === NotificationType.BID_ACCEPTED
+  ) {
+    return "proposals";
+  }
+  if (type === NotificationType.NEW_MESSAGE) return "messages";
+  if (type === NotificationType.CONTRACT_STARTED) return "contracts";
+  return "all";
+}
+
 export function NotificationsCenter({ items }: NotificationsCenterProps) {
   const router = useRouter();
   const [loadingId, setLoadingId] = useState<string | null>(null);
+  const [category, setCategory] = useState<NotificationCategory>("all");
+
+  const counts = useMemo(
+    () =>
+      items.reduce(
+        (acc, item) => {
+          acc.all += 1;
+          const itemCategory = categoryForType(item.type);
+          if (itemCategory !== "all") acc[itemCategory] += 1;
+          return acc;
+        },
+        { all: 0, proposals: 0, messages: 0, contracts: 0 } as Record<NotificationCategory, number>
+      ),
+    [items]
+  );
+
+  const filteredItems = useMemo(() => {
+    if (category === "all") return items;
+    return items.filter((n) => categoryForType(n.type) === category);
+  }, [items, category]);
 
   const { unread, read } = useMemo(() => {
     const u: NotificationListItem[] = [];
     const r: NotificationListItem[] = [];
-    for (const n of items) {
+    for (const n of filteredItems) {
       if (n.readAt == null) u.push(n);
       else r.push(n);
     }
     return { unread: u, read: r };
-  }, [items]);
+  }, [filteredItems]);
 
   async function handleActivate(n: NotificationListItem) {
     const href = linkForNotification(n);
@@ -123,8 +175,8 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
           tone="elevated"
           kicker="Notifications"
           icon={Inbox}
-          title="You are all caught up"
-          description="We will post bids, messages, verification, and billing updates here. Check messages or the job board anytime."
+          title="No updates yet."
+          description="Proposal, message, and hiring activity will appear here."
           action={{ label: "Open messages", href: "/messages" }}
           secondaryAction={{ label: "Browse jobs", href: "/jobs" }}
         />
@@ -133,7 +185,52 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
   }
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-6">
+      <section aria-label="Notification categories" className="flex flex-wrap gap-2">
+        {[
+          { id: "all", label: "All" },
+          { id: "proposals", label: "Proposals" },
+          { id: "messages", label: "Messages" },
+          { id: "contracts", label: "Contracts" }
+        ].map((chip) => {
+          const active = category === chip.id;
+          const count = counts[chip.id as NotificationCategory];
+          return (
+            <button
+              key={chip.id}
+              type="button"
+              onClick={() => setCategory(chip.id as NotificationCategory)}
+              className={cn(
+                "rounded-full px-3.5 py-1.5 text-xs font-semibold transition ring-1",
+                active
+                  ? "bg-[#3525cd] text-white ring-[#3525cd] shadow-sm"
+                  : "bg-white text-slate-600 ring-slate-200/90 hover:bg-slate-50 hover:text-slate-900"
+              )}
+            >
+              <span>{chip.label}</span>
+              <span className={cn("ml-1.5 text-[11px]", active ? "text-white/80" : "text-slate-500")}>
+                ({count})
+              </span>
+            </button>
+          );
+        })}
+      </section>
+
+      {filteredItems.length === 0 ? (
+        <div className="rounded-2xl border border-slate-200/70 bg-white/80 p-1 shadow-sm ring-1 ring-slate-900/[0.02]">
+          <DashboardEmptyState
+            tone="elevated"
+            kicker="Notifications"
+            icon={Inbox}
+            title="No notifications in this category yet."
+            description="Choose another category or check back as new activity arrives."
+            action={{ label: "Open messages", href: "/messages" }}
+            secondaryAction={{ label: "Browse jobs", href: "/jobs" }}
+          />
+        </div>
+      ) : null}
+
+      {filteredItems.length > 0 ? <div className="space-y-10">
       {unread.length > 0 ? (
         <section aria-labelledby="notif-unread-heading" className="space-y-3">
           <div>
@@ -189,6 +286,7 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
           </ul>
         </section>
       ) : null}
+      </div> : null}
     </div>
   );
 }
@@ -255,9 +353,19 @@ function NotificationRow({
           >
             {item.body}
           </p>
-          {href ? (
-            <p className="mt-2 text-xs font-semibold text-[#3525cd]">Open related page →</p>
-          ) : null}
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            <span
+              className={cn(
+                "rounded-md px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ring-1",
+                isUnread
+                  ? "bg-white text-slate-700 ring-slate-200/90"
+                  : "bg-slate-100 text-slate-600 ring-slate-200/70"
+              )}
+            >
+              {activityLabel(item.type)}
+            </span>
+            {href ? <p className="text-xs font-semibold text-[#3525cd]">Open related page →</p> : null}
+          </div>
         </div>
       </button>
     </li>

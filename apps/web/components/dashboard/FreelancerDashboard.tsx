@@ -74,6 +74,11 @@ type FreelancerDashboardProps = {
   recentContracts: FreelancerDashboardContract[];
   openJobs: FreelancerOpenJob[];
   openTotal: number;
+  attention: {
+    acceptedBids: number;
+    awaitingReplyThreads: number;
+    proposalUpdates: number;
+  };
 };
 
 function money(amount: unknown, currency: string): string {
@@ -131,7 +136,8 @@ export function FreelancerDashboard({
   recentBids,
   recentContracts,
   openJobs,
-  openTotal
+  openTotal,
+  attention
 }: FreelancerDashboardProps) {
   const activity = buildActivity(recentBids, recentContracts);
   const welcomeLine = greetingName ? `Welcome back, ${greetingName}` : "Welcome back";
@@ -192,6 +198,20 @@ export function FreelancerDashboard({
             hint={stats.profileHint}
             icon={UserRound}
           />
+        </div>
+        <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50/70 px-4 py-3">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Attention now</p>
+          <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-700">
+            <span>
+              <span className="font-semibold">{attention.acceptedBids}</span> bid accepted
+            </span>
+            <span>
+              <span className="font-semibold">{attention.awaitingReplyThreads}</span> message thread awaiting reply
+            </span>
+            <span>
+              <span className="font-semibold">{attention.proposalUpdates}</span> proposal status update
+            </span>
+          </div>
         </div>
 
         {showStrongProfileCard ? (

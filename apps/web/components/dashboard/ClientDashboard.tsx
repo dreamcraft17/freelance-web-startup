@@ -28,6 +28,7 @@ export type ClientDashboardJob = {
   updatedAt: Date;
   categoryName: string | null;
   bidCount: number;
+  latestBidAt: Date | null;
 };
 
 export type ClientDashboardBid = {
@@ -94,6 +95,10 @@ function money(amount: unknown, currency: string): string {
 
 function formatShortDate(d: Date): string {
   return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric" }).format(d);
+}
+
+function hasNewProposal(d: Date | null): boolean {
+  return Boolean(d && Date.now() - d.getTime() <= 1000 * 60 * 60 * 48);
 }
 
 function humanizeStatus(s: string): string {
@@ -336,6 +341,18 @@ export function ClientDashboard({
                       >
                         {job.title}
                       </Link>
+                      <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                        {hasNewProposal(job.latestBidAt) ? (
+                          <span className="rounded-md border border-[#3525cd]/20 bg-[#3525cd]/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#3525cd]">
+                            New proposal
+                          </span>
+                        ) : null}
+                        {job.bidCount > 0 ? (
+                          <span className="rounded-md border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
+                            {job.bidCount} proposal{job.bidCount === 1 ? "" : "s"} received
+                          </span>
+                        ) : null}
+                      </div>
                       <p className="mt-1 text-xs leading-relaxed text-slate-600">
                         <span className="capitalize">{humanizeStatus(job.status)}</span>
                         {" · "}
@@ -343,7 +360,7 @@ export function ClientDashboard({
                         {job.categoryName ? ` · ${job.categoryName}` : null}
                         {job.city ? ` · ${job.city}` : null}
                         {" · "}
-                        {job.bidCount} bid{job.bidCount === 1 ? "" : "s"}
+                        {job.bidCount} proposal{job.bidCount === 1 ? "" : "s"}
                       </p>
                     </div>
                     <time

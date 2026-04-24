@@ -18,7 +18,7 @@ import type { Translator } from "@/lib/i18n/create-translator";
 
 type PageProps = {
   params: Promise<{ jobId: string }>;
-  searchParams: Promise<{ view?: string }>;
+  searchParams: Promise<{ view?: string; from?: string }>;
 };
 
 function formatMoney(amount: unknown, currency: string): string {
@@ -106,6 +106,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
   const { jobId: rawId } = await params;
   const sp = await searchParams;
   const forceOriginal = sp.view === "original";
+  const from = sp.from;
   const jobId = rawId?.trim() ?? "";
   if (!jobId) notFound();
 
@@ -238,6 +239,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
   if (job.description.trim().length <= 220) topSignals.push(t("public.jobDetail.signalQuickBrief"));
   if (publicBidCount > 0 && publicBidCount <= 3) topSignals.push(t("public.jobDetail.signalLowCompetition"));
   if (topSignals.length === 0) topSignals.push(t("public.jobDetail.signalReviewWorth"));
+  const showPostedFeedback = isClientOwner && from === "job-posted";
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 md:px-6">
@@ -250,6 +252,22 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
       </nav>
 
       <section className="mb-6 border border-slate-200 bg-white p-5 sm:p-6">
+        {showPostedFeedback ? (
+          <div className="mb-4 rounded-md border border-emerald-200 bg-emerald-50/70 px-4 py-3">
+            <p className="text-sm font-semibold text-emerald-900">Job posted successfully.</p>
+            <p className="mt-1 text-xs text-emerald-800">
+              Next: review incoming proposals here, or monitor all active listings from your jobs dashboard.
+            </p>
+            <div className="mt-2 flex flex-wrap items-center gap-3 text-xs font-semibold">
+              <Link href={"/client/jobs?review=needs-review" as Route} className="text-[#433C93] hover:underline">
+                Review jobs needing attention
+              </Link>
+              <Link href={"/client/jobs" as Route} className="text-slate-700 hover:underline">
+                Back to all jobs
+              </Link>
+            </div>
+          </div>
+        ) : null}
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr),auto] lg:items-start">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
@@ -309,6 +327,8 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
                   <JobProposalForm
                     jobId={job.id}
                     currency={job.currency}
+                    userId={session?.userId ?? null}
+                    clientUserId={owner?.clientProfile.userId ?? null}
                     labels={{
                       title: t("public.jobDetail.formGuideTitle"),
                       subtitle: t("public.jobDetail.formGuideSubtitle"),
@@ -327,11 +347,14 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
                       loadingOverlay: t("public.jobDetail.sendingProposalOverlay"),
                       success: t("public.jobDetail.proposalSent"),
                       genericError: t("public.jobDetail.proposalError"),
-                      networkError: t("public.jobDetail.proposalNetworkError")
-                    }}
-                    onSubmitted={() => {
-                      // Keep UI status/proposal table up to date after submit.
-                      window.location.reload();
+                      networkError: t("public.jobDetail.proposalNetworkError"),
+                      draftRestored: t("public.jobDetail.draftRestored"),
+                      savedLocally: t("public.jobDetail.savedLocally"),
+                      clearDraft: t("public.jobDetail.clearDraft"),
+                      draftCleared: t("public.jobDetail.draftCleared"),
+                      openConversation: t("public.jobDetail.openConversation"),
+                      conversationHint: t("public.jobDetail.afterProposalHint"),
+                      conversationError: t("public.jobDetail.conversationUnavailableHint")
                     }}
                   />
                 ) : (
@@ -440,6 +463,22 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
           </CardHeader>
           {isClientOwner ? (
             <CardContent className="space-y-4">
+              {!acceptedBid && (pendingDecisionCount > 0 || awaitingReplyCount > 0) ? (
+                <div className="rounded-md border border-amber-200 bg-amber-50/60 px-4 py-3">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-amber-700">
+                    {t("public.jobDetail.ownerActionNeeded")}
+                  </p>
+                  <p className="mt-1 text-sm text-amber-900">{t("public.jobDetail.ownerActionSummary")}</p>
+                  <div className="mt-2 flex flex-wrap items-center gap-3 text-xs font-semibold">
+                    <Link href={"/messages" as Route} className="text-[#433C93] hover:underline">
+                      {t("public.jobDetail.openMessages")}
+                    </Link>
+                    <Link href={"/client/jobs" as Route} className="text-slate-700 hover:underline">
+                      {t("public.jobDetail.reviewAllJobs")}
+                    </Link>
+                  </div>
+                </div>
+              ) : null}
               {acceptedBid ? (
                 <div className="rounded-md border border-emerald-200 bg-emerald-50/50 px-4 py-3">
                   <p className="text-[11px] font-semibold uppercase tracking-wide text-emerald-700">{t("public.jobDetail.hiredFreelancer")}</p>
@@ -510,7 +549,18 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
 
               {bidRows.length === 0 ? (
                 <div className="rounded-md border border-dashed border-slate-300 bg-white px-4 py-6 text-sm text-slate-600">
-                  {t("public.jobDetail.noProposalsYet")}
+                  <p>{t("public.jobDetail.noProposalsYet")}</p>
+                  <p className="mt-1 text-xs text-slate-500">
+                    Keep this listing clear and active. You can return to your jobs list to monitor new activity.
+                  </p>
+                  <div className="mt-3 flex flex-wrap items-center gap-3 text-xs font-semibold">
+                    <Link href={"/client/jobs?review=needs-review" as Route} className="text-[#433C93] hover:underline">
+                      Check needs review
+                    </Link>
+                    <Link href={"/client/jobs" as Route} className="text-slate-700 hover:underline">
+                      Open my jobs
+                    </Link>
+                  </div>
                 </div>
               ) : (
                 <div className="overflow-x-auto rounded-lg border border-slate-200">
