@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v52  
-> Last synchronized: 2026-04-25 — homepage copy polish adds stronger marketplace proof beneath search.
+> **Doc revision:** v53  
+> Last synchronized: 2026-04-25 — brand voice pass aligns homepage/public wording to structured marketplace positioning.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -67,6 +67,7 @@ Platform ini dirancang untuk mendukung **semua jenis freelance**, bukan hanya pr
 - Refinement lanjutan memperkuat conversion cues: satu activity bar yang lebih bersih, kategori dengan contoh use-case nyata, sinyal urgency halus di preview rows, serta final CTA yang lebih action-oriented.
 - Pass energi marketplace terbaru menajamkan wording outcome-driven dan menjaga bukti aktivitas tetap jujur (tanpa angka palsu), sehingga halaman terasa aktif namun tetap product-first.
 - Refinement copywriting terbaru menambahkan proof lines langsung di bawah search + placeholder contoh layanan yang lebih konkret untuk mempercepat orientasi user.
+- Brand voice terbaru menyelaraskan copy homepage + surface publik kunci ke positioning NearWork sebagai **structured freelance marketplace**: alur job -> proposal -> discussion dibuat lebih eksplisit, trust line dipertegas (`All proposals and chats stay tied to the job`), CTA publik dipraktiskan (`Find freelancers`, `Post a job`, `Start discussion`), dan microcopy empty/reassurance dipangkas agar langsung actionable.
 
 ### 🔹 Marketplace Core
 - Client dapat membuat job/project
