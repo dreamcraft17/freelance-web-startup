@@ -43,23 +43,68 @@ export function LandingHero({
   const isHireMode = intent === "hire";
   const primaryCtaLabel = isHireMode ? t("hero.modeHirePrimary") : t("hero.modeWorkPrimary");
   const primaryCtaHref = isHireMode ? ("/client/jobs/new" as Route) : withIntent("/jobs", intent);
-  const secondaryOneLabel = isHireMode ? t("hero.modeHireSecondaryOne") : t("hero.modeWorkSecondaryOne");
-  const secondaryOneHref = isHireMode ? withIntent("/freelancers", intent) : withIntent("/freelancers", intent);
-  const secondaryTwoLabel = isHireMode ? t("hero.modeHireSecondaryTwo") : t("hero.modeWorkSecondaryTwo");
-  const secondaryTwoHref = isHireMode ? withIntent("/jobs", intent) : ("/register" as Route);
+  const secondaryLabel = isHireMode ? t("hero.modeHireSecondaryOne") : t("hero.modeWorkSecondaryOne");
+  const secondaryHref = withIntent("/freelancers", intent);
 
   return (
     <section className="nw-hero-stage">
-      <div className="mx-auto max-w-6xl px-4 pb-12 pt-8 sm:px-6 sm:pb-14 sm:pt-10">
+      <div className="mx-auto max-w-6xl px-4 pb-10 pt-8 sm:px-6 sm:pb-12 sm:pt-10">
         <div className="mx-auto max-w-4xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">{t("hero.liveDirectory")}</p>
-          <h1 className="mt-3 text-[2.1rem] font-bold leading-[1.05] tracking-tight text-slate-950 sm:text-5xl">
+          <h1 className="text-[2.1rem] font-bold leading-[1.05] tracking-tight text-slate-950 sm:text-5xl">
             {t("hero.title")}
           </h1>
-          <p className="mt-3 text-sm font-medium text-slate-700 sm:text-base">{t("hero.marketplaceLiveLine")}</p>
+          <p className="mt-2 text-sm font-medium text-slate-700 sm:text-base">{t("hero.marketplaceLiveLine")}</p>
         </div>
 
-        <div className="mx-auto mt-6 max-w-5xl border border-slate-200 bg-white p-3.5 sm:p-4">
+        <div className="mx-auto mt-5 max-w-5xl border border-slate-200 bg-white p-3.5 sm:p-4">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-3">
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">{t("hero.modeSwitchLabel")}</p>
+              <div className="mt-1.5 inline-flex rounded-lg border border-slate-200 bg-white p-1">
+                <Link
+                  href={modeHref(homePath, "hire")}
+                  className={`rounded-md px-3 py-1.5 text-xs font-bold transition ${isHireMode ? "bg-[#3525cd] text-white" : "text-slate-600 hover:bg-slate-100"}`}
+                >
+                  {t("hero.modeHire")}
+                </Link>
+                <Link
+                  href={modeHref(homePath, "work")}
+                  className={`rounded-md px-3 py-1.5 text-xs font-bold transition ${!isHireMode ? "bg-[#3525cd] text-white" : "text-slate-600 hover:bg-slate-100"}`}
+                >
+                  {t("hero.modeWork")}
+                </Link>
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              {isHireMode ? (
+                <AuthAwareCtaLink
+                  href={primaryCtaHref}
+                  intent="post-job"
+                  unauthenticatedTo="register"
+                  registerRoleHint="client"
+                  className="nw-cta-primary inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-bold"
+                >
+                  {primaryCtaLabel}
+                  <ArrowRight className="h-4 w-4" aria-hidden />
+                </AuthAwareCtaLink>
+              ) : (
+                <Link
+                  href={primaryCtaHref}
+                  className="nw-cta-primary inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-bold"
+                >
+                  {primaryCtaLabel}
+                  <ArrowRight className="h-4 w-4" aria-hidden />
+                </Link>
+              )}
+              <Link
+                href={secondaryHref}
+                className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400"
+              >
+                {secondaryLabel}
+              </Link>
+            </div>
+          </div>
+
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
             <p className="text-sm font-bold text-slate-900">{t("hero.searchTitle")}</p>
             <div className="flex flex-wrap items-center gap-2">
@@ -84,7 +129,7 @@ export function LandingHero({
                 <option key={term} value={term} />
               ))}
             </datalist>
-            <label className="flex min-h-[3.8rem] flex-1 cursor-text items-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-3 transition focus-within:border-[#3525cd] focus-within:ring-2 focus-within:ring-[#3525cd]/20 lg:flex-[1.25]">
+            <label className="flex min-h-[3.8rem] flex-1 cursor-text items-center gap-3 rounded-lg border-2 border-slate-300 bg-white px-4 py-3 transition focus-within:border-[#3525cd] focus-within:ring-2 focus-within:ring-[#3525cd]/20 lg:flex-[1.3]">
               <span className="sr-only">{t("hero.searchLabel")}</span>
               <Search className="h-5 w-5 shrink-0 text-[#3525cd]" aria-hidden />
               <input
@@ -123,63 +168,6 @@ export function LandingHero({
             <Link href={withIntent("/freelancers?budget=1m-5m", intent)} className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-slate-700 hover:border-[#3525cd]/45 hover:text-[#3525cd]">
               {t("hero.quickFilterBudget")}
             </Link>
-          </div>
-        </div>
-
-        <div className="mx-auto mt-6 max-w-5xl border-t border-slate-200 pt-5">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">{t("hero.modeSwitchLabel")}</p>
-              <div className="mt-2 inline-flex rounded-lg border border-slate-200 bg-white p-1">
-                <Link
-                  href={modeHref(homePath, "hire")}
-                  className={`rounded-md px-3 py-1.5 text-xs font-bold transition ${isHireMode ? "bg-[#3525cd] text-white" : "text-slate-600 hover:bg-slate-100"}`}
-                >
-                  {t("hero.modeHire")}
-                </Link>
-                <Link
-                  href={modeHref(homePath, "work")}
-                  className={`rounded-md px-3 py-1.5 text-xs font-bold transition ${!isHireMode ? "bg-[#3525cd] text-white" : "text-slate-600 hover:bg-slate-100"}`}
-                >
-                  {t("hero.modeWork")}
-                </Link>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-2.5">
-              {isHireMode ? (
-                <AuthAwareCtaLink
-                  href={primaryCtaHref}
-                  intent="post-job"
-                  unauthenticatedTo="register"
-                  registerRoleHint="client"
-                  className="nw-cta-primary inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-bold"
-                >
-                  {primaryCtaLabel}
-                  <ArrowRight className="h-4 w-4" aria-hidden />
-                </AuthAwareCtaLink>
-              ) : (
-                <Link
-                  href={primaryCtaHref}
-                  className="nw-cta-primary inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-bold"
-                >
-                  {primaryCtaLabel}
-                  <ArrowRight className="h-4 w-4" aria-hidden />
-                </Link>
-              )}
-              <Link
-                href={secondaryOneHref}
-                className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400"
-              >
-                {secondaryOneLabel}
-              </Link>
-              <Link
-                href={secondaryTwoHref}
-                className="inline-flex items-center justify-center rounded-lg px-2 py-1 text-xs font-semibold text-slate-500 hover:text-slate-800 hover:underline"
-              >
-                {secondaryTwoLabel}
-              </Link>
-            </div>
           </div>
         </div>
       </div>

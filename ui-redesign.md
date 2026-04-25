@@ -1,13 +1,19 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v54  
-> Last synchronized: 2026-04-25 (homepage now emphasizes live activity and immediate action).
+> **Doc revision:** v55  
+> Last synchronized: 2026-04-25 (hero micro-pass tightens above-the-fold conversion clarity).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-04-25 — Hero micro-tuning for first 3 seconds
+
+- Intent switch (`hire/work`) dipindah ke area atas hero dan digabungkan dengan CTA layer agar arah user langsung terbaca.
+- Search container diperkuat sebagai visual anchor (spacing + weight) dan copy non-aksi dipangkas.
+- Hierarki CTA dipertegas menjadi satu primary yang dominan, sementara secondary actions diturunkan bobot visualnya.
 
 ### 2026-04-25 — Homepage live-marketplace refresh
 
