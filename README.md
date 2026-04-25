@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v54  
-> Last synchronized: 2026-04-25 — homepage hero redesigned into split marketplace layout with scenario slider.
+> **Doc revision:** v56  
+> Last synchronized: 2026-04-26 — hero slider removed; right panel now lightweight live marketplace cues.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -69,6 +69,8 @@ Platform ini dirancang untuk mendukung **semua jenis freelance**, bukan hanya pr
 - Refinement copywriting terbaru menambahkan proof lines langsung di bawah search + placeholder contoh layanan yang lebih konkret untuk mempercepat orientasi user.
 - Brand voice terbaru menyelaraskan copy homepage + surface publik kunci ke positioning NearWork sebagai **structured freelance marketplace**: alur job -> proposal -> discussion dibuat lebih eksplisit, trust line dipertegas (`All proposals and chats stay tied to the job`), CTA publik dipraktiskan (`Find freelancers`, `Post a job`, `Start discussion`), dan microcopy empty/reassurance dipangkas agar langsung actionable.
 - Hero homepage kini didesain ulang ke split layout yang lebih “live marketplace”: copy + CTA + search premium di kiri dan visual scenario slider di kanan (scene kerja nyata berbasis aset lokal ringan), plus activity line human-readable dengan fallback aman saat metrik rendah agar tidak memberi kesan platform sepi.
+- Micro-pass terbaru menjaga struktur hero tetap sama namun memoles ritme visual: spacing lebih lapang di desktop, stack mobile lebih rapi, trust/activity line lebih sekunder, input search lebih nyaman dipakai, dan slider controls/overlay dibuat lebih halus agar tidak terasa dekoratif.
+- Iterasi final hero menghapus komponen slider sepenuhnya untuk fokus produk yang lebih cepat: area kanan sekarang menjadi panel marketplace ringan berisi sinyal aktivitas nyata/fallback aman + sample rows struktural, tanpa menambah fitur dekoratif.
 
 ### 🔹 Marketplace Core
 - Client dapat membuat job/project

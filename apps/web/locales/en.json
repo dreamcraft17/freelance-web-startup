@@ -110,13 +110,16 @@
     "proofBriefsToday": "{{count}} structured briefs added in the last 24h",
     "marketplaceActivityLine": "{{freelancers}} freelancers active now · New briefs arrive daily · Proposals stay tied to the job",
     "marketplaceActivityFallback": "Freelancers stay active and new briefs keep arriving each day.",
-    "sliderAriaLabel": "Marketplace work scenarios",
-    "slides": {
-      "event": "Event photographer near you",
-      "video": "Remote video editor ready this week",
-      "tutor": "Tutor sessions, online or nearby",
-      "design": "Design help for your next launch",
-      "proposals": "Compare proposals in one thread"
+    "panel": {
+      "kicker": "Live marketplace",
+      "lineOne": "Freelancers active now",
+      "lineTwo": "New briefs added daily",
+      "lineThree": "Proposals stay tied to each job",
+      "sampleRowsTitle": "Sample rows",
+      "sampleOneName": "Maya - Photographer",
+      "sampleOneSignal": "Active now",
+      "sampleTwoName": "Rama - Video editor",
+      "sampleTwoSignal": "Available this week"
     },
     "trust": {
       "verifiedAccounts": "Verified accounts",

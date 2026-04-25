@@ -1,13 +1,26 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v60  
-> Last synchronized: 2026-04-25 (hero split redesign adds live-scenario slider and stronger marketplace-first hierarchy).
+> **Doc revision:** v62  
+> Last synchronized: 2026-04-26 (hero slider removed for cleaner product-first focus).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-04-26 — Hero focus pass (remove visual slider)
+
+- Komponen `HeroScenarioSlider` dihapus dari landing hero untuk mengurangi distraksi visual dan memperkuat fokus ke aksi produk.
+- Area kanan hero diganti panel “live marketplace” yang ringan: tiga sinyal status + dua sample rows berbentuk struktural (bukan dekoratif).
+- Gaya panel dijaga netral (`border + spacing`, tanpa gradient/glow/shadow berlebih) agar tetap sejalan dengan identitas NearWork yang clean dan terstruktur.
+
+### 2026-04-26 — Hero visual rhythm micro-polish
+
+- Desktop rhythm disetel ulang supaya panel copy/search tidak terasa padat, sementara panel slider tetap hadir kuat tapi tidak menenggelamkan CTA utama.
+- Hierarki teks dipoles: headline tetap dominan namun lebih terkontrol, subtext lebih nyaman dibaca, trust/activity line diturunkan sebagai informasi sekunder.
+- Search panel dipoles sebagai action block utama (input height/radius/spacing/quick filters) agar terasa lebih premium dan kurang seperti form internal.
+- Slider dirapikan secara visual: crop ratio lebih konsisten lintas breakpoint, overlay caption lebih terbaca tanpa efek berlebih, serta dots/arrows dibuat lebih subtil.
 
 ### 2026-04-25 — Hero split redesign (live marketplace energy)
 
