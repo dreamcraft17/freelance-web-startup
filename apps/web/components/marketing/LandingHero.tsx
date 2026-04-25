@@ -157,6 +157,15 @@ export function LandingHero({
             </button>
           </form>
 
+          <div className="mt-2.5 flex flex-wrap items-center gap-2 text-[11px] font-semibold text-slate-600">
+            <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5">
+              {t("hero.proofFreelancersActive", { count: pulse.freelancersAvailable })}
+            </span>
+            <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5">
+              {t("hero.proofBriefsToday", { count: pulse.bidsLast24h })}
+            </span>
+          </div>
+
         </div>
       </div>
     </section>

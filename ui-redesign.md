@@ -1,13 +1,26 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v56  
-> Last synchronized: 2026-04-25 (homepage refinement aligns copy, activity bar, and CTA energy).
+> **Doc revision:** v58  
+> Last synchronized: 2026-04-25 (homepage copy micro-pass adds actionable proof near search).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-04-25 — Copywriting + micro-UX polish
+
+- Hero placeholder diganti dengan contoh layanan yang lebih konkret agar user cepat tahu apa yang bisa dicari.
+- Proof lines aktivitas dipindah lebih dekat ke titik aksi (tepat di bawah search form) untuk memperkuat rasa marketplace live.
+- Tone headline/CTA tetap action-oriented tanpa menambah ornamen atau mengubah struktur layout.
+
+### 2026-04-25 — Marketplace energy refinement (honest signals)
+
+- Outcome headline dipertajam lagi agar user langsung paham aksi utama dalam konteks hiring/work.
+- Activity bar tetap satu strip namun copy dibuat lebih conversational untuk nuansa feed yang hidup.
+- Urgency di preview rows dipoles agar terasa aktif tanpa memakai angka sintetis/fake.
+- Final CTA urgency line diperkuat ke bahasa aksi yang lebih decisive.
 
 ### 2026-04-25 — Live-marketplace conversion refinement
 
