@@ -58,9 +58,9 @@
   },
   "hero": {
     "liveDirectory": "Live freelancer directory",
-    "title": "Structured hiring starts with one clear job brief",
+    "title": "Find ready-to-work freelancers in minutes",
     "subtitle": "Search by skill and city, review real profiles, and hire without scattered chats.",
-    "outcomeLine": "Post a job, review proposals in one place, and start discussion with full job context.",
+    "outcomeLine": "Search, compare, and start discussions in one workflow - nearby or remote.",
     "marketplaceLiveLine": "Live marketplace - search, compare, and start in minutes.",
     "supportingLine": "All bids and conversations stay tied to the job.",
     "locationNote": "Use city when you need a local freelancer, or leave it empty for remote freelancer results.",
@@ -78,7 +78,7 @@
     "budgetUnder1m": "Under Rp 1M",
     "budget1to5m": "Rp 1M - Rp 5M",
     "budget5mPlus": "Above Rp 5M",
-    "keywordPlaceholder": "Find freelancers: event photographer, video editor, math tutor",
+    "keywordPlaceholder": "Try: event photographer, video editor, math tutor",
     "cityPlaceholder": "City (optional)",
     "searchButton": "Search",
     "quickFiltersLabel": "Quick filters:",
@@ -92,14 +92,14 @@
     "postAJob": "Post a job",
     "quickBrowse": "Browse active briefs",
     "liveUrgencyLine": "New freelancers and active jobs are added daily.",
-    "searchTrustLine": "All proposals and chats stay tied to the job.",
+    "searchTrustLine": "Proposals, chats, and decisions stay tied to the job.",
     "searchTrustOne": "Proposals stay linked to listing context.",
     "searchTrustTwo": "You can compare options before deciding.",
     "modeSwitchLabel": "Your goal",
     "modeHire": "I want to hire",
     "modeWork": "I want to work",
-    "modeHirePrimary": "Post a job",
-    "modeHireSecondaryOne": "Find freelancers",
+    "modeHirePrimary": "Post a job now",
+    "modeHireSecondaryOne": "Browse freelancers",
     "modeHireSecondaryTwo": "Open job board",
     "modeWorkPrimary": "Find jobs",
     "modeWorkSecondaryOne": "Find freelancers",
@@ -108,6 +108,16 @@
     "liveJobsToday": "{{count}} open jobs today",
     "proofFreelancersActive": "{{count}} active freelancers ready for job-linked proposals",
     "proofBriefsToday": "{{count}} structured briefs added in the last 24h",
+    "marketplaceActivityLine": "{{freelancers}} freelancers active now · New briefs arrive daily · Proposals stay tied to the job",
+    "marketplaceActivityFallback": "Freelancers stay active and new briefs keep arriving each day.",
+    "sliderAriaLabel": "Marketplace work scenarios",
+    "slides": {
+      "event": "Event photographer near you",
+      "video": "Remote video editor ready this week",
+      "tutor": "Tutor sessions, online or nearby",
+      "design": "Design help for your next launch",
+      "proposals": "Compare proposals in one thread"
+    },
     "trust": {
       "verifiedAccounts": "Verified accounts",
       "structuredProposals": "Structured proposal flow",
@@ -125,17 +135,17 @@
     "categories": {
       "kicker": "Browse lanes",
       "title": "Hire freelancers by category",
-      "subtitle": "Start from a lane, then narrow by city and work mode to keep hiring structured.",
+      "subtitle": "Pick a service lane, then narrow by city or mode to start faster.",
       "secondaryCta": "Need active briefs? Open job board ->",
       "entryLabel": "Browse lane",
-      "entrySubline": "Open",
+      "entrySubline": "Start here",
       "examples": {
-        "design": "Landing page redesign and product UI cleanup",
-        "photo": "Event photo coverage and quick retouch delivery",
-        "video": "Weekly social edits and short-form cuts",
-        "tutor": "Math tutoring for exam prep and assignments",
-        "marketing": "Campaign setup with weekly performance updates",
-        "localFix": "On-site setup, repair, and local support tasks"
+        "design": "Logo, landing page, branding",
+        "photo": "Event, product, social content",
+        "video": "Reels, ads, weekly editing",
+        "tutor": "Math, language, private sessions",
+        "marketing": "Ads, content, campaigns",
+        "localFix": "Repairs, technician, on-site help"
       },
       "items": {
         "design": "Design",
@@ -150,7 +160,7 @@
       "kicker": "Result preview",
       "title": "What hiring data looks like",
       "marketTitle": "Live marketplace preview",
-      "marketSubtitle": "Active freelancers and recent jobs you can open right now, with context tied to each brief.",
+      "marketSubtitle": "Active freelancers and recent jobs you can open right now.",
       "activeFreelancersTitle": "Active freelancers",
       "recentJobsTitle": "Recent jobs",
       "rowActionOpen": "Open",
@@ -206,15 +216,15 @@
     },
     "finalCta": {
       "kicker": "Next step",
-      "title": "Post a job and run hiring in one structured flow",
-      "subtitle": "Keep proposals, decisions, and chats tied to the same brief so nothing gets scattered.",
-      "urgency": "Action now: publish your brief and start getting replies.",
+      "title": "Start with one brief - find talent, discuss, and hire with clarity.",
+      "subtitle": "Keep proposals, decisions, and chats in one workflow from first brief to final hire.",
+      "urgency": "Post once, compare clearly, and move faster.",
       "primary": "Post a job",
       "secondary": "Find freelancers",
       "tertiary": "Open job board"
     },
     "activity": {
-      "prompt": "What needs action right now?",
+      "prompt": "Jump into active hiring now:",
       "liveNow": "Live now",
       "activeNow": "Active briefs",
       "newToday": "New today",
@@ -228,7 +238,76 @@
       },
       "filters": {
         "nearby": "Nearby mode",
-        "remote": "Remote mode"
+        "remote": "Remote mode",
+        "budget": "Budget fit"
+      }
+    },
+    "previewRows": {
+      "freelancerRespondsFast": "Responds fast",
+      "freelancerAvailableWeek": "Available this week",
+      "freelancerLocalFit": "Good fit for local projects",
+      "jobClientActive": "Client is actively reviewing",
+      "jobLowCompetition": "Low proposal competition",
+      "jobClearBrief": "Clear brief"
+    },
+    "previewRowsData": {
+      "freelancers": {
+        "one": {
+          "title": "Maya Sutanto",
+          "subtitle": "Event and portrait photographer",
+          "meta": "Responds fast",
+          "urgency": "Available this week",
+          "location": "Menteng, Jakarta",
+          "price": "From Rp 2.4M / half-day",
+          "signal": "Active now"
+        },
+        "two": {
+          "title": "Rama Wijaya",
+          "subtitle": "Remote editor for short-form video",
+          "meta": "Responds fast",
+          "urgency": "Available this week",
+          "location": "Remote",
+          "price": "From Rp 650k / day",
+          "signal": "Ready this week"
+        },
+        "three": {
+          "title": "Siska Putri",
+          "subtitle": "Brand photo with quick retouch",
+          "meta": "Responds fast",
+          "urgency": "Good fit for local projects",
+          "location": "South Jakarta",
+          "price": "From Rp 1.8M / session",
+          "signal": "Local-ready"
+        }
+      },
+      "jobs": {
+        "one": {
+          "title": "Half-day brand shoot",
+          "subtitle": "Client needs on-site support",
+          "meta": "Client is actively reviewing",
+          "urgency": "Low proposal competition",
+          "location": "Kelapa Gading",
+          "price": "Budget Rp 4.5M-7M",
+          "signal": "New today"
+        },
+        "two": {
+          "title": "Weekly short-video editing",
+          "subtitle": "Remote delivery for social channel",
+          "meta": "Client is actively reviewing",
+          "urgency": "Clear brief",
+          "location": "Remote",
+          "price": "Budget Rp 1.2M-2.5M",
+          "signal": "Active hiring"
+        },
+        "three": {
+          "title": "Math tutor (hybrid sessions)",
+          "subtitle": "Mix of online and in-person meetings",
+          "meta": "Client is actively reviewing",
+          "urgency": "Clear brief",
+          "location": "Bandung",
+          "price": "Budget Rp 300k-500k / session",
+          "signal": "Open this week"
+        }
       }
     }
   },

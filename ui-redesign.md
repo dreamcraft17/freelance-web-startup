@@ -1,13 +1,20 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v59  
-> Last synchronized: 2026-04-25 (brand voice pass aligns homepage/public copy to structured marketplace positioning).
+> **Doc revision:** v60  
+> Last synchronized: 2026-04-25 (hero split redesign adds live-scenario slider and stronger marketplace-first hierarchy).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-04-25 — Hero split redesign (live marketplace energy)
+
+- Hero homepage dipindah dari komposisi “form-forward” ke split layout yang lebih manusiawi: sisi kiri fokus outcome, CTA, trust, dan search; sisi kanan menampilkan visual carousel skenario kerja.
+- Ditambahkan slider visual ringan (aset SVG lokal, autoplay lambat, dots/arrows, pause-on-hover) untuk menegaskan konteks kerja nyata: event photo, video remote, tutor, design, dan review proposal.
+- Search tetap menjadi aksi utama, tapi dipoles sebagai tool premium ringkas (need + city + submit + quick filters) alih-alih tampilan form padat.
+- Activity line diganti dari nada sistem internal ke nada marketplace human-readable dengan fallback aman jika data rendah agar tidak terkesan “dead board”.
 
 ### 2026-04-25 — Brand voice + positioning pass (structured marketplace)
 

@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v60  
-> Last synchronized: 2026-04-25 (brand voice pass aligns homepage/public surfaces to structured marketplace positioning).
+> **Doc revision:** v61  
+> Last synchronized: 2026-04-25 (homepage hero upgraded to split layout + scenario slider with action-first copy).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,7 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Hero marketplace-energy redesign (2026-04-25):** first screen homepage kini memakai split layout (copy/search/CTA kiri + scenario slider kanan) untuk memperkuat kesan marketplace aktif dan human, bukan form internal. Copy hero ID/EN diperbarui ke outcome yang lebih langsung, trust line dipertegas, quick filters tetap tersedia, dan activity line memakai wording manusiawi dengan fallback aman saat data rendah.
 - **Brand voice + positioning pass (2026-04-25):** wording homepage dan surface publik kunci kini konsisten dengan positioning NearWork sebagai marketplace freelance terstruktur; alur `job -> proposal -> discussion` dibuat lebih eksplisit, trust line diseragamkan (`All proposals and chats stay tied to the job`), CTA dibuat lebih konkret (`Find freelancers`, `Post a job`, `Start discussion`), dan microcopy empty/reassurance disederhanakan agar lebih action-oriented.
 - **Homepage copywriting micro-pass (2026-04-25):** area hero kini menampilkan proof marketplace lebih dekat ke aksi utama (tepat di bawah search) dan placeholder pencarian yang lebih konkret, sehingga user lebih cepat menangkap “aktivitas sedang terjadi” tanpa perubahan layout.
 - **Marketplace energy refinement (2026-04-25):** copy dan sinyal aktivitas homepage diperhalus agar terasa lebih hidup tanpa gimmick: headline lebih action-oriented, activity strip lebih conversational, kategori tetap kontekstual via use-case, dan preview rows menekankan urgency signals non-fake.

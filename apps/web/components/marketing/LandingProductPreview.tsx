@@ -5,78 +5,78 @@ import type { LucideIcon } from "lucide-react";
 import type { Translator } from "@/lib/i18n/create-translator";
 
 type MarketplaceRow = {
-  title: string;
-  subtitle: string;
-  meta: string;
-  urgency: string;
-  location: string;
-  price: string;
-  signal: string;
+  titleKey: string;
+  subtitleKey: string;
+  metaKey: string;
+  urgencyKey: string;
+  locationKey: string;
+  priceKey: string;
+  signalKey: string;
   href: Route;
 };
 
 const activeFreelancers: MarketplaceRow[] = [
   {
-    title: "Maya Sutanto",
-    subtitle: "Portrait & small events",
-    meta: "Response speed: fast",
-    urgency: "Recently active",
-    location: "Menteng, Jakarta",
-    price: "From Rp 2.4M / half-day",
-    signal: "Active now",
+    titleKey: "landing.previewRowsData.freelancers.one.title",
+    subtitleKey: "landing.previewRowsData.freelancers.one.subtitle",
+    metaKey: "landing.previewRowsData.freelancers.one.meta",
+    urgencyKey: "landing.previewRowsData.freelancers.one.urgency",
+    locationKey: "landing.previewRowsData.freelancers.one.location",
+    priceKey: "landing.previewRowsData.freelancers.one.price",
+    signalKey: "landing.previewRowsData.freelancers.one.signal",
     href: "/freelancers" as Route
   },
   {
-    title: "Rama Wijaya",
-    subtitle: "Interview cuts & captions",
-    meta: "Top rated in category",
-    urgency: "Hiring interest this week",
-    location: "Remote",
-    price: "From Rp 650k / day",
-    signal: "Available this week",
+    titleKey: "landing.previewRowsData.freelancers.two.title",
+    subtitleKey: "landing.previewRowsData.freelancers.two.subtitle",
+    metaKey: "landing.previewRowsData.freelancers.two.meta",
+    urgencyKey: "landing.previewRowsData.freelancers.two.urgency",
+    locationKey: "landing.previewRowsData.freelancers.two.location",
+    priceKey: "landing.previewRowsData.freelancers.two.price",
+    signalKey: "landing.previewRowsData.freelancers.two.signal",
     href: "/freelancers" as Route
   },
   {
-    title: "Siska Putri",
-    subtitle: "Brand photo + quick retouch",
-    meta: "Recently hired",
-    urgency: "Open availability now",
-    location: "South Jakarta",
-    price: "From Rp 1.8M / session",
-    signal: "New profile update",
+    titleKey: "landing.previewRowsData.freelancers.three.title",
+    subtitleKey: "landing.previewRowsData.freelancers.three.subtitle",
+    metaKey: "landing.previewRowsData.freelancers.three.meta",
+    urgencyKey: "landing.previewRowsData.freelancers.three.urgency",
+    locationKey: "landing.previewRowsData.freelancers.three.location",
+    priceKey: "landing.previewRowsData.freelancers.three.price",
+    signalKey: "landing.previewRowsData.freelancers.three.signal",
     href: "/freelancers" as Route
   }
 ];
 
 const recentJobs: MarketplaceRow[] = [
   {
-    title: "Half-day brand shoot",
-    subtitle: "Client needs on-site support",
-    meta: "Hiring activity: active",
-    urgency: "Recently posted",
-    location: "Kelapa Gading",
-    price: "Budget Rp 4.5M-7M",
-    signal: "New today",
+    titleKey: "landing.previewRowsData.jobs.one.title",
+    subtitleKey: "landing.previewRowsData.jobs.one.subtitle",
+    metaKey: "landing.previewRowsData.jobs.one.meta",
+    urgencyKey: "landing.previewRowsData.jobs.one.urgency",
+    locationKey: "landing.previewRowsData.jobs.one.location",
+    priceKey: "landing.previewRowsData.jobs.one.price",
+    signalKey: "landing.previewRowsData.jobs.one.signal",
     href: "/jobs" as Route
   },
   {
-    title: "Weekly short-video editing",
-    subtitle: "Remote delivery for social channel",
-    meta: "Brief updated recently",
-    urgency: "Hiring active today",
-    location: "Remote",
-    price: "Budget Rp 1.2M-2.5M",
-    signal: "Active hiring",
+    titleKey: "landing.previewRowsData.jobs.two.title",
+    subtitleKey: "landing.previewRowsData.jobs.two.subtitle",
+    metaKey: "landing.previewRowsData.jobs.two.meta",
+    urgencyKey: "landing.previewRowsData.jobs.two.urgency",
+    locationKey: "landing.previewRowsData.jobs.two.location",
+    priceKey: "landing.previewRowsData.jobs.two.price",
+    signalKey: "landing.previewRowsData.jobs.two.signal",
     href: "/jobs" as Route
   },
   {
-    title: "Math tutor (hybrid sessions)",
-    subtitle: "Mix of online and in-person meetings",
-    meta: "Response speed: quick",
-    urgency: "Low competition signal",
-    location: "Bandung",
-    price: "Budget Rp 300k-500k / session",
-    signal: "Open this week",
+    titleKey: "landing.previewRowsData.jobs.three.title",
+    subtitleKey: "landing.previewRowsData.jobs.three.subtitle",
+    metaKey: "landing.previewRowsData.jobs.three.meta",
+    urgencyKey: "landing.previewRowsData.jobs.three.urgency",
+    locationKey: "landing.previewRowsData.jobs.three.location",
+    priceKey: "landing.previewRowsData.jobs.three.price",
+    signalKey: "landing.previewRowsData.jobs.three.signal",
     href: "/jobs" as Route
   }
 ];
@@ -87,7 +87,8 @@ function PreviewList({
   icon: Icon,
   ctaLabel,
   ctaHref,
-  rowActionLabel
+  rowActionLabel,
+  t
 }: {
   title: string;
   rows: MarketplaceRow[];
@@ -95,6 +96,7 @@ function PreviewList({
   ctaLabel: string;
   ctaHref: Route;
   rowActionLabel: string;
+  t: Translator;
 }) {
   return (
     <div className="rounded-lg border border-slate-200 bg-white">
@@ -109,23 +111,23 @@ function PreviewList({
       </div>
       <ul className="divide-y divide-slate-100">
         {rows.map((row) => (
-          <li key={row.title} className="px-4 py-3">
+          <li key={row.titleKey} className="px-4 py-3">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0">
-                <p className="text-sm font-semibold text-slate-900">{row.title}</p>
-                <p className="text-xs text-slate-600">{row.subtitle}</p>
+                <p className="text-sm font-semibold text-slate-900">{t(row.titleKey)}</p>
+                <p className="text-xs text-slate-600">{t(row.subtitleKey)}</p>
                 <div className="mt-1 flex flex-wrap items-center gap-2">
-                  <p className="text-[11px] text-slate-500">{row.meta}</p>
+                  <p className="text-[11px] text-slate-500">{t(row.metaKey)}</p>
                   <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">•</span>
-                  <p className="text-[11px] font-semibold text-slate-700">{row.urgency}</p>
+                  <p className="text-[11px] font-semibold text-slate-700">{t(row.urgencyKey)}</p>
                 </div>
               </div>
               <div className="flex shrink-0 flex-col items-start gap-1 sm:items-end">
                 <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-700">
-                  {row.signal}
+                  {t(row.signalKey)}
                 </span>
-                <span className="text-xs font-semibold text-slate-700">{row.location}</span>
-                <span className="text-xs font-bold text-slate-900">{row.price}</span>
+                <span className="text-xs font-semibold text-slate-700">{t(row.locationKey)}</span>
+                <span className="text-xs font-bold text-slate-900">{t(row.priceKey)}</span>
                 <Link href={row.href} className="text-[11px] font-semibold text-[#3525cd] hover:underline">
                   {rowActionLabel}
                 </Link>
@@ -157,6 +159,7 @@ export function LandingProductPreview({ t }: { t: Translator }) {
           ctaLabel={t("landing.preview.ctaFreelancers")}
           ctaHref={"/freelancers" as Route}
           rowActionLabel={t("landing.preview.rowActionOpen")}
+          t={t}
         />
         <PreviewList
           title={t("landing.preview.recentJobsTitle")}
@@ -165,6 +168,7 @@ export function LandingProductPreview({ t }: { t: Translator }) {
           ctaLabel={t("landing.preview.ctaJobs")}
           ctaHref={"/jobs" as Route}
           rowActionLabel={t("landing.preview.rowActionOpen")}
+          t={t}
         />
       </div>
     </section>
