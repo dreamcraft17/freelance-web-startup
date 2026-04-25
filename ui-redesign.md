@@ -1,13 +1,21 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v55  
-> Last synchronized: 2026-04-25 (hero micro-pass tightens above-the-fold conversion clarity).
+> **Doc revision:** v56  
+> Last synchronized: 2026-04-25 (homepage refinement aligns copy, activity bar, and CTA energy).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-04-25 — Live-marketplace conversion refinement
+
+- Copy hero diarahkan ke outcome (hasil yang user dapat) alih-alih deskripsi produk yang pasif.
+- Activity/trending/quick filters digabung menjadi satu strip horizontal yang lebih bersih.
+- Category cards menampilkan contoh use-case nyata agar entry point terasa lebih kontekstual.
+- Preview rows menambahkan urgency signals ringan untuk memperkuat kesan aktivitas aktual.
+- Final CTA diposisikan lebih action-driven untuk mendorong langkah berikutnya dengan jelas.
 
 ### 2026-04-25 — Hero micro-tuning for first 3 seconds
 

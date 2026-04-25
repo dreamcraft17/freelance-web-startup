@@ -6,6 +6,7 @@ import type { Translator } from "@/lib/i18n/create-translator";
 
 type CategoryChip = {
   labelKey: string;
+  useCaseKey: string;
   href: Route;
   icon: LucideIcon;
   /** Subtle identity — solid fills, no gradients */
@@ -13,12 +14,48 @@ type CategoryChip = {
 };
 
 const categories: CategoryChip[] = [
-  { labelKey: "landing.categories.items.design", href: "/freelancers?keyword=design", icon: Palette, tone: "brand" },
-  { labelKey: "landing.categories.items.photo", href: "/freelancers?keyword=photography", icon: Camera, tone: "slate" },
-  { labelKey: "landing.categories.items.video", href: "/freelancers?keyword=video", icon: Video, tone: "slate" },
-  { labelKey: "landing.categories.items.tutor", href: "/freelancers?keyword=tutor", icon: GraduationCap, tone: "amber" },
-  { labelKey: "landing.categories.items.marketing", href: "/freelancers?keyword=marketing", icon: Megaphone, tone: "brand" },
-  { labelKey: "landing.categories.items.localFix", href: "/freelancers?keyword=repair", icon: Wrench, tone: "slate" }
+  {
+    labelKey: "landing.categories.items.design",
+    useCaseKey: "landing.categories.examples.design",
+    href: "/freelancers?keyword=design",
+    icon: Palette,
+    tone: "brand"
+  },
+  {
+    labelKey: "landing.categories.items.photo",
+    useCaseKey: "landing.categories.examples.photo",
+    href: "/freelancers?keyword=photography",
+    icon: Camera,
+    tone: "slate"
+  },
+  {
+    labelKey: "landing.categories.items.video",
+    useCaseKey: "landing.categories.examples.video",
+    href: "/freelancers?keyword=video",
+    icon: Video,
+    tone: "slate"
+  },
+  {
+    labelKey: "landing.categories.items.tutor",
+    useCaseKey: "landing.categories.examples.tutor",
+    href: "/freelancers?keyword=tutor",
+    icon: GraduationCap,
+    tone: "amber"
+  },
+  {
+    labelKey: "landing.categories.items.marketing",
+    useCaseKey: "landing.categories.examples.marketing",
+    href: "/freelancers?keyword=marketing",
+    icon: Megaphone,
+    tone: "brand"
+  },
+  {
+    labelKey: "landing.categories.items.localFix",
+    useCaseKey: "landing.categories.examples.localFix",
+    href: "/freelancers?keyword=repair",
+    icon: Wrench,
+    tone: "slate"
+  }
 ];
 
 const toneIconWrap: Record<CategoryChip["tone"], string> = {
@@ -45,7 +82,7 @@ export function LandingCategoryChips({ t }: { t: Translator }) {
         </div>
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {categories.map(({ labelKey, href, icon: Icon, tone }) => (
+          {categories.map(({ labelKey, useCaseKey, href, icon: Icon, tone }) => (
             <Link
               key={labelKey}
               href={href}
@@ -59,6 +96,7 @@ export function LandingCategoryChips({ t }: { t: Translator }) {
                 </span>
                 <span className="mt-2.5 block text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t("landing.categories.entryLabel")}</span>
                 <span className="mt-1 block text-base font-bold leading-tight text-slate-900 group-hover:text-[#3525cd]">{t(labelKey)}</span>
+                <span className="mt-1.5 block text-xs font-medium leading-snug text-slate-600">{t(useCaseKey)}</span>
               </div>
               <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wide text-slate-500 group-hover:text-[#3525cd]">
                 {t("landing.categories.entrySubline")}

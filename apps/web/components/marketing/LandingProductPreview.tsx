@@ -8,6 +8,7 @@ type MarketplaceRow = {
   title: string;
   subtitle: string;
   meta: string;
+  urgency: string;
   location: string;
   price: string;
   signal: string;
@@ -19,6 +20,7 @@ const activeFreelancers: MarketplaceRow[] = [
     title: "Maya Sutanto",
     subtitle: "Portrait & small events",
     meta: "Responds same day",
+    urgency: "Updated 10m ago",
     location: "Menteng, Jakarta",
     price: "From Rp 2.4M / half-day",
     signal: "Active now",
@@ -28,6 +30,7 @@ const activeFreelancers: MarketplaceRow[] = [
     title: "Rama Wijaya",
     subtitle: "Interview cuts & captions",
     meta: "Top rated in category",
+    urgency: "2 clients viewing now",
     location: "Remote",
     price: "From Rp 650k / day",
     signal: "Available this week",
@@ -37,6 +40,7 @@ const activeFreelancers: MarketplaceRow[] = [
     title: "Siska Putri",
     subtitle: "Brand photo + quick retouch",
     meta: "Recently hired",
+    urgency: "Open slots this week",
     location: "South Jakarta",
     price: "From Rp 1.8M / session",
     signal: "New profile update",
@@ -49,6 +53,7 @@ const recentJobs: MarketplaceRow[] = [
     title: "Half-day brand shoot",
     subtitle: "Client needs on-site support",
     meta: "3 proposals in review",
+    urgency: "Posted 45m ago",
     location: "Kelapa Gading",
     price: "Budget Rp 4.5M-7M",
     signal: "New today",
@@ -58,6 +63,7 @@ const recentJobs: MarketplaceRow[] = [
     title: "Weekly short-video editing",
     subtitle: "Remote delivery for social channel",
     meta: "Brief updated 2h ago",
+    urgency: "Hiring active today",
     location: "Remote",
     price: "Budget Rp 1.2M-2.5M",
     signal: "Active hiring",
@@ -67,6 +73,7 @@ const recentJobs: MarketplaceRow[] = [
     title: "Math tutor (hybrid sessions)",
     subtitle: "Mix of online and in-person meetings",
     meta: "Client replies quickly",
+    urgency: "Deadline in 2 days",
     location: "Bandung",
     price: "Budget Rp 300k-500k / session",
     signal: "Open this week",
@@ -79,13 +86,15 @@ function PreviewList({
   rows,
   icon: Icon,
   ctaLabel,
-  ctaHref
+  ctaHref,
+  rowActionLabel
 }: {
   title: string;
   rows: MarketplaceRow[];
   icon: LucideIcon;
   ctaLabel: string;
   ctaHref: Route;
+  rowActionLabel: string;
 }) {
   return (
     <div className="rounded-lg border border-slate-200 bg-white">
@@ -105,7 +114,11 @@ function PreviewList({
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-slate-900">{row.title}</p>
                 <p className="text-xs text-slate-600">{row.subtitle}</p>
-                <p className="mt-1 text-[11px] text-slate-500">{row.meta}</p>
+                <div className="mt-1 flex flex-wrap items-center gap-2">
+                  <p className="text-[11px] text-slate-500">{row.meta}</p>
+                  <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">•</span>
+                  <p className="text-[11px] font-semibold text-slate-700">{row.urgency}</p>
+                </div>
               </div>
               <div className="flex shrink-0 flex-col items-start gap-1 sm:items-end">
                 <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-700">
@@ -114,7 +127,7 @@ function PreviewList({
                 <span className="text-xs font-semibold text-slate-700">{row.location}</span>
                 <span className="text-xs font-bold text-slate-900">{row.price}</span>
                 <Link href={row.href} className="text-[11px] font-semibold text-[#3525cd] hover:underline">
-                  Open
+                  {rowActionLabel}
                 </Link>
               </div>
             </div>
@@ -143,6 +156,7 @@ export function LandingProductPreview({ t }: { t: Translator }) {
           icon={Camera}
           ctaLabel={t("landing.preview.ctaFreelancers")}
           ctaHref={"/freelancers" as Route}
+          rowActionLabel={t("landing.preview.rowActionOpen")}
         />
         <PreviewList
           title={t("landing.preview.recentJobsTitle")}
@@ -150,6 +164,7 @@ export function LandingProductPreview({ t }: { t: Translator }) {
           icon={PenSquare}
           ctaLabel={t("landing.preview.ctaJobs")}
           ctaHref={"/jobs" as Route}
+          rowActionLabel={t("landing.preview.rowActionOpen")}
         />
       </div>
     </section>
