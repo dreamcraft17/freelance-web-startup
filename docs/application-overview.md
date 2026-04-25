@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v64  
-> Last synchronized: 2026-04-26 (hero live panel now uses real data first with safe fallback copy).
+> **Doc revision:** v67  
+> Last synchronized: 2026-04-26 (freelancers directory now uses decision-first rows, activity strip, and example-row preview when empty).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,10 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Freelancers listing decision pass (2026-04-26):** row hasil pada `/freelancers` dipoles agar lebih mudah dibandingkan dan ditindaklanjuti: name+role, value statement singkat, rating/review, lokasi+mode kerja, harga mulai, sinyal keputusan, dan CTA tunggal `View profile`.
+- **Freelancers low-data preview pass (2026-04-26):** ketika hasil kosong, halaman kini menampilkan blok `Example freelancers` (3 row struktur realistis tanpa data palsu) serta activity strip ringan di atas list untuk menjaga kesan marketplace aktif.
+- **Freelancers directory vitality pass (2026-04-26):** halaman `/freelancers` kini menampilkan copy header yang lebih outcome-driven, quick filter chips di atas hasil (`Nearby`, `Remote`, `Budget fit`, `Available now`), trust-benefit bullets ringkas, dan skeleton rows saat hasil kosong; empty state dibuat lebih kecil dan action-oriented agar user tetap terdorong mengeksplorasi.
+- **Hero live panel anti-fake pass (2026-04-26):** fallback panel tidak lagi menampilkan contoh row/persona; render kini terbatas ke row data nyata bila tersedia, atau copy aman netral bila data belum ada.
 - **Hero live panel safety pass (2026-04-26):** panel kanan homepage sekarang memprioritaskan baris aktivitas dari data nyata; saat data belum tersedia, sistem menampilkan fallback copy netral + label aktivitas contoh agar tidak memberi kesan fake live users.
 - **Hero simplification pass (2026-04-26):** panel visual slider pada sisi kanan hero dihapus untuk menjaga fokus produk; diganti panel ringan berisi cue marketplace aktif dan sample rows singkat. Fokus utama tetap pada copy + CTA + search, dengan struktur responsif dan behavior intent/i18n tidak berubah.
 - **Hero micro-polish refinement (2026-04-26):** struktur split hero tetap dipertahankan, namun ritme visual dipoles untuk kualitas premium: spacing desktop/mobile lebih seimbang, headline/subtext/trust hierarchy lebih jelas, search block lebih nyaman sebagai aksi utama, dan panel slider dibuat lebih tenang (crop konsisten + controls subtler) agar tidak terasa dekoratif.

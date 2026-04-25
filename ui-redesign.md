@@ -1,13 +1,35 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v63  
-> Last synchronized: 2026-04-26 (hero live panel safety pass adds real-data-first behavior).
+> **Doc revision:** v66  
+> Last synchronized: 2026-04-26 (freelancers listing row redesigned for stronger comparison + example-row preview mode).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-04-26 — Freelancers listing marketplace-grade refinement
+
+- Struktur row `/freelancers` disederhanakan ke data keputusan inti: name + role, value statement singkat, rating/review, lokasi + work mode, harga mulai, dan CTA primer tunggal `View profile`.
+- Signal perbandingan dipilih yang bermakna untuk keputusan (`available this week`, `responds fast`, `top rated`) tanpa menambah metrik palsu.
+- Elemen non-esensial seperti emphasis username dan badge yang terlalu dekoratif dikurangi agar scanning antar-row lebih cepat.
+- Saat data kosong, list menampilkan mode `Example freelancers` (3 row contoh struktur, bukan data user palsu) supaya halaman tetap terasa hidup dan user paham format perbandingan.
+- Ditambahkan activity strip kecil di atas list (`Freelancers available now`, `Updated daily`) untuk menjaga sense aktivitas marketplace.
+
+### 2026-04-26 — Freelancers page vitality refinement
+
+- Header copy `/freelancers` dipoles menjadi lebih action-oriented untuk keputusan hiring yang cepat.
+- Empty state dibuat lebih ringan (card lebih kecil, tone tidak “platform kosong”), lalu diarahkan ke tindakan konkret (ubah filter / eksplorasi kategori).
+- Ditambahkan quick chips (`Nearby`, `Remote`, `Budget fit`, `Available now`) tepat di atas hasil agar user punya jalur eksplorasi cepat.
+- Saat hasil kosong, list kini menampilkan 2-3 skeleton rows agar ruang tidak terasa blank.
+- Sidebar CTA freelancer disederhanakan jadi satu aksi inti: `Complete profile`.
+
+### 2026-04-26 — Live panel anti-fake refinement
+
+- Sample people/rows pada panel hero dihapus dari fallback agar tidak terlihat seperti simulasi user aktif.
+- Saat data ada, panel menampilkan row real dari freelancer/job terbaru dengan konteks kerja (specialty/location/work mode/availability).
+- Saat data kosong, panel hanya menampilkan fallback copy netral (tanpa data palsu).
 
 ### 2026-04-26 — Live panel trust/safety pass
 
