@@ -1,13 +1,21 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v58  
-> Last synchronized: 2026-04-25 (homepage copy micro-pass adds actionable proof near search).
+> **Doc revision:** v59  
+> Last synchronized: 2026-04-25 (brand voice pass aligns homepage/public copy to structured marketplace positioning).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-04-25 — Brand voice + positioning pass (structured marketplace)
+
+- Copy homepage dan surface publik utama diselaraskan ke positioning NearWork: **structured freelance marketplace**, bukan marketplace generik.
+- Hero line sekarang lebih menonjolkan alur kerja (`post job -> review proposals -> start discussion`) alih-alih wording marketplace umum.
+- Signature trust line dipertegas konsisten: **“All proposals and chats stay tied to the job.”**
+- CTA publik dibuat lebih konkret dan task-driven (`Find freelancers`, `Post a job`, `Start discussion`).
+- Microcopy empty/reassurance dipoles jadi lebih direct, practical, dan non-hype tanpa perubahan struktur layout.
 
 ### 2026-04-25 — Copywriting + micro-UX polish
 

@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v61  
-> Last synchronized: 2026-04-25 (homepage copy + micro-UX pass adds stronger proof lines and concrete search cues).
+> **Doc revision:** v62  
+> Last synchronized: 2026-04-25 (brand voice + positioning pass aligns homepage/public copy to structured marketplace tone).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,6 +9,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
+- **2026-04-25 — Brand voice & positioning pass (structured marketplace):** copy homepage dan surface publik kunci diselaraskan ke positioning “Structured freelance marketplace — everything stays tied to the job”; hero menekankan alur kerja terstruktur, trust line diseragamkan (`All proposals and chats stay tied to the job`), CTA dibuat lebih konkret (`Find freelancers`, `Post a job`, `Start discussion`), serta microcopy empty/apply state dipoles agar lebih praktis dan non-hype.
 - **2026-04-25 — Homepage copywriting & micro-UX polish:** hero placeholder diperjelas dengan contoh layanan nyata, proof lines ditambahkan tepat di bawah search (`active freelancers`, `new briefs`) memakai data real pulse, serta wording headline/CTA dipertegas agar kesan marketplace aktif lebih cepat terasa.
 - **2026-04-25 — Marketplace energy refinement pass:** headline hero dipertajam ke tone outcome/action, activity bar dibuat lebih conversational, preview rows mengganti angka sintetis menjadi urgency signal generik non-fake (response speed, hiring activity, low competition), dan final CTA copy dibuat lebih tegas untuk mendorong aksi.
 - **2026-04-25 — Homepage conversion refinement pass:** copy hero digeser ke outcome-driven tone, strip aktivitas/trending/filter digabung jadi satu bar ringkas, kartu kategori kini menampilkan contoh use case nyata per lane, preview freelancer/job menambahkan sinyal urgency halus, dan final CTA dipertegas ke aksi hiring yang lebih langsung.
