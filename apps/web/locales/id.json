@@ -60,6 +60,7 @@
     "liveDirectory": "Direktori freelancer aktif",
     "title": "Cari freelancer untuk kerja nyata - terdekat atau remote",
     "subtitle": "Cari berdasarkan skill dan kota, lihat profil yang relevan, lalu rekrut tanpa chat yang tercecer.",
+    "marketplaceLiveLine": "Marketplace aktif - cari, bandingkan, lalu mulai dalam hitungan menit.",
     "supportingLine": "Semua proposal dan percakapan tetap nempel ke lowongan.",
     "locationNote": "Pakai kota untuk jasa freelancer terdekat, atau kosongkan untuk hasil remote freelancer.",
     "howTitle": "Alur merekrut",
@@ -102,6 +103,8 @@
     "modeWorkPrimary": "Cari lowongan",
     "modeWorkSecondaryOne": "Lihat freelancer",
     "modeWorkSecondaryTwo": "Buat akun",
+    "liveFreelancersNow": "{{count}} freelancer tersedia sekarang",
+    "liveJobsToday": "{{count}} lowongan terbuka hari ini",
     "trust": {
       "verifiedAccounts": "Akun terverifikasi",
       "structuredProposals": "Alur proposal terstruktur",
@@ -135,6 +138,10 @@
     "preview": {
       "kicker": "Preview hasil",
       "title": "Data yang lo lihat saat hiring",
+      "marketTitle": "Pratinjau marketplace live",
+      "marketSubtitle": "Freelancer aktif dan lowongan terbaru yang bisa langsung dibuka.",
+      "activeFreelancersTitle": "Freelancer aktif",
+      "recentJobsTitle": "Lowongan terbaru",
       "disclaimer": "Contoh tampilan - bukan user asli",
       "railBids": "Proposal dalam konteks",
       "railProof": "Profil dengan bukti kerja",

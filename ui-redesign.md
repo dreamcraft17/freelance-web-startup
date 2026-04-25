@@ -1,13 +1,20 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v53  
-> Last synchronized: 2026-04-24 (jobs zero-state now focuses on actionable first steps).
+> **Doc revision:** v54  
+> Last synchronized: 2026-04-25 (homepage now emphasizes live activity and immediate action).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-04-25 — Homepage live-marketplace refresh
+
+- Struktur hero dibuat lebih terbuka dan terpusat ke search sebagai aksi pertama, sambil menurunkan teks pasif.
+- Ditambahkan indikator aktivitas kecil berbasis data nyata marketplace (freelancers available + open jobs) agar halaman terasa hidup tanpa gimmick visual.
+- Kategori dipresentasikan sebagai grid card yang lebih besar dan lebih jelas sebagai entry point eksplorasi.
+- Preview listing dipecah menjadi dua rail ringan (`Active freelancers`, `Recent jobs`) dengan row-style sederhana agar scan cepat dan tidak terasa seperti card wall.
 
 ### 2026-04-24 — Jobs empty-state action-first pass
 
