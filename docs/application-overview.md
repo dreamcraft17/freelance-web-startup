@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v55  
-> Last synchronized: 2026-04-25 (homepage entry flow re-centered on search and live activity cues).
+> **Doc revision:** v56  
+> Last synchronized: 2026-04-25 (hero micro-tuning improves first-screen intent and CTA clarity).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,7 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Homepage hero micro-tuning (2026-04-25):** tanpa redesign ulang halaman, area hero dipadatkan agar tujuan user terbaca lebih cepat: mode hire/work diposisikan dekat CTA utama, visual anchor search diperkuat, dan noise copy sekunder dikurangi sehingga langkah klik pertama menjadi lebih jelas.
 - **Homepage live-marketplace pass (2026-04-25):** landing publik kini lebih cepat mengarahkan aksi: fokus hero dipindah ke search, indikator activity kecil ditampilkan dari data marketplace nyata, kategori divisualkan sebagai grid card yang lebih eksploratif, dan preview konten dipisah menjadi rail freelancer aktif + lowongan terbaru untuk mengurangi rasa landing statis.
 - **Jobs empty-state action clarity (2026-04-24):** saat feed `/jobs` kosong tanpa filter, user kini mendapat empty state yang mengarahkan aksi pertama secara eksplisit (post job / browse freelancers), dilengkapi contoh use case posting dan arahan berbasis role agar halaman tetap terasa hidup meski belum ada listing.
 - **Success redirect timing polish (2026-04-24):** redirect setelah aksi sukses pada flow inti kini diberi delay ringan (~400ms), khususnya setelah publish job dan setelah proposal submit (saat thread tersedia), supaya transisi terasa lebih intentional tanpa menambah kompleksitas flow.

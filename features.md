@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v57  
-> Last synchronized: 2026-04-25 (homepage refreshed to feel like a live, action-first marketplace).
+> **Doc revision:** v58  
+> Last synchronized: 2026-04-25 (hero micro-tuning sharpens first-screen action clarity).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,6 +9,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
+- **2026-04-25 — Hero micro-tuning pass:** first screen homepage dipadatkan agar lebih conversion-oriented: switch intent `hire/work` dipindah ke posisi atas dan langsung berdampingan dengan CTA utama, search box diperkuat sebagai visual anchor, secondary CTA diperingan, serta label kecil non-kritis dikurangi agar keputusan klik pertama lebih cepat.
 - **2026-04-25 — Homepage live-marketplace refresh:** hero kini dipusatkan ke search sebagai aksi utama dengan indikator aktivitas ringan berbasis data nyata (`freelancers available`, `open jobs`), panel kanan berat dihapus agar layout lebih terbuka, hierarki CTA dipadatkan ke satu primary action yang jelas, kategori diubah menjadi grid card klik-besar, dan preview listing dipisah jadi dua rail sederhana (`Active freelancers`, `Recent jobs`) dalam row-style ringan.
 - **2026-04-24 — Jobs empty-state action pass:** saat board `/jobs` benar-benar kosong, empty state kini berfokus pada aksi awal (`Start by posting your first job`) dengan CTA utama post job, CTA sekunder browse freelancers, section contoh use case posting, dan hint berbasis role (client vs freelancer); panel filter juga diturunkan prioritasnya dengan dipindah ke bawah konten utama pada kondisi kosong baseline.
 - **2026-04-24 — Redirect pacing polish:** setelah aksi sukses utama, redirect kini diberi jeda ringan (~400ms) agar transisi terasa lebih intentional: publish job menunggu singkat sebelum pindah ke detail job, dan submit proposal menunggu singkat sebelum pindah ke thread messages (jika thread tersedia).
