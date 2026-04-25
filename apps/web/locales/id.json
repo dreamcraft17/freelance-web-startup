@@ -60,6 +60,7 @@
     "liveDirectory": "Direktori freelancer aktif",
     "title": "Cari freelancer untuk kerja nyata - terdekat atau remote",
     "subtitle": "Cari berdasarkan skill dan kota, lihat profil yang relevan, lalu rekrut tanpa chat yang tercecer.",
+    "outcomeLine": "Temukan freelancer yang tepat lebih cepat, atau langsung ambil peluang kerja dalam hitungan menit.",
     "marketplaceLiveLine": "Marketplace aktif - cari, bandingkan, lalu mulai dalam hitungan menit.",
     "supportingLine": "Semua proposal dan percakapan tetap nempel ke lowongan.",
     "locationNote": "Pakai kota untuk jasa freelancer terdekat, atau kosongkan untuk hasil remote freelancer.",
@@ -126,6 +127,14 @@
       "secondaryCta": "Butuh lowongan aktif? Buka job board ->",
       "entryLabel": "Jalur pencarian",
       "entrySubline": "Buka",
+      "examples": {
+        "design": "Redesign landing page dan rapikan UI produk",
+        "photo": "Liputan foto event dan retouch cepat",
+        "video": "Editing konten mingguan dan short-form",
+        "tutor": "Les matematika untuk ujian dan tugas",
+        "marketing": "Setup campaign dengan update performa mingguan",
+        "localFix": "Setup on-site, perbaikan, dan dukungan lokal"
+      },
       "items": {
         "design": "Desain",
         "photo": "Foto",
@@ -142,6 +151,7 @@
       "marketSubtitle": "Freelancer aktif dan lowongan terbaru yang bisa langsung dibuka.",
       "activeFreelancersTitle": "Freelancer aktif",
       "recentJobsTitle": "Lowongan terbaru",
+      "rowActionOpen": "Buka",
       "disclaimer": "Contoh tampilan - bukan user asli",
       "railBids": "Proposal dalam konteks",
       "railProof": "Profil dengan bukti kerja",
@@ -194,11 +204,12 @@
     },
     "finalCta": {
       "kicker": "Langkah berikutnya",
-      "title": "Cari dulu, lalu pasang lowongan saat siap rekrut",
-      "subtitle": "NearWork bikin alur cari freelancer lokal dan remote tetap rapi dalam satu workflow.",
-      "primary": "Cari freelancer",
-      "secondary": "Buka job board",
-      "tertiary": "Pasang lowongan"
+      "title": "Mulai rekrut sekarang saat freelancer aktif sudah tersedia",
+      "subtitle": "Pasang satu brief yang jelas, review proposal dalam konteks, lalu lanjut chat tanpa keluar dari alur.",
+      "urgency": "Aksi sekarang: publish brief untuk mulai menerima proposal.",
+      "primary": "Pasang lowongan",
+      "secondary": "Cari freelancer",
+      "tertiary": "Buka job board"
     },
     "activity": {
       "liveNow": "Aktif sekarang",

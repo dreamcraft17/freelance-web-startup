@@ -53,7 +53,7 @@ export function LandingHero({
           <h1 className="text-[2.1rem] font-bold leading-[1.05] tracking-tight text-slate-950 sm:text-5xl">
             {t("hero.title")}
           </h1>
-          <p className="mt-2 text-sm font-medium text-slate-700 sm:text-base">{t("hero.marketplaceLiveLine")}</p>
+          <p className="mt-2 text-sm font-medium text-slate-700 sm:text-base">{t("hero.outcomeLine")}</p>
         </div>
 
         <div className="mx-auto mt-5 max-w-5xl border border-slate-200 bg-white p-3.5 sm:p-4">
@@ -157,18 +157,6 @@ export function LandingHero({
             </button>
           </form>
 
-          <div className="mt-3 flex flex-wrap items-center gap-2 text-xs font-semibold">
-            <span className="text-slate-500">{t("hero.quickFiltersLabel")}</span>
-            <Link href={withIntent("/search/nearby", intent)} className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-slate-700 hover:border-[#3525cd]/45 hover:text-[#3525cd]">
-              {t("hero.quickFilterNearby")}
-            </Link>
-            <Link href={withIntent("/freelancers?workMode=REMOTE", intent)} className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-slate-700 hover:border-[#3525cd]/45 hover:text-[#3525cd]">
-              {t("hero.quickFilterRemote")}
-            </Link>
-            <Link href={withIntent("/freelancers?budget=1m-5m", intent)} className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-slate-700 hover:border-[#3525cd]/45 hover:text-[#3525cd]">
-              {t("hero.quickFilterBudget")}
-            </Link>
-          </div>
         </div>
       </div>
     </section>

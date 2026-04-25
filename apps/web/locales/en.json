@@ -60,6 +60,7 @@
     "liveDirectory": "Live freelancer directory",
     "title": "Hire freelancers faster - nearby or remote",
     "subtitle": "Search by skill and city, review real profiles, and hire without scattered chats.",
+    "outcomeLine": "Find the right freelancer faster, or jump into real jobs in minutes.",
     "marketplaceLiveLine": "Live marketplace - search, compare, and start in minutes.",
     "supportingLine": "All bids and conversations stay tied to the job.",
     "locationNote": "Use city when you need a local freelancer, or leave it empty for remote freelancer results.",
@@ -126,6 +127,14 @@
       "secondaryCta": "Need active briefs? Open job board ->",
       "entryLabel": "Browse lane",
       "entrySubline": "Open",
+      "examples": {
+        "design": "Landing page redesign and product UI cleanup",
+        "photo": "Event photo coverage and quick retouch delivery",
+        "video": "Weekly social edits and short-form cuts",
+        "tutor": "Math tutoring for exam prep and assignments",
+        "marketing": "Campaign setup with weekly performance updates",
+        "localFix": "On-site setup, repair, and local support tasks"
+      },
       "items": {
         "design": "Design",
         "photo": "Photo",
@@ -142,6 +151,7 @@
       "marketSubtitle": "Active freelancers and recent jobs you can open right now.",
       "activeFreelancersTitle": "Active freelancers",
       "recentJobsTitle": "Recent jobs",
+      "rowActionOpen": "Open",
       "disclaimer": "Illustrative rows - not real users",
       "railBids": "Bids in context",
       "railProof": "Profiles with proof",
@@ -194,11 +204,12 @@
     },
     "finalCta": {
       "kicker": "Next step",
-      "title": "Browse first, then post when you are ready to hire freelancers",
-      "subtitle": "NearWork keeps local and remote hiring in one practical workflow.",
-      "primary": "Find freelancers",
-      "secondary": "Open job board",
-      "tertiary": "Post a job"
+      "title": "Start hiring now while active freelancers are already available",
+      "subtitle": "Post one clear brief, review proposals in context, and move to chat without leaving the workflow.",
+      "urgency": "Action now: publish a brief to start receiving proposals.",
+      "primary": "Post a job",
+      "secondary": "Browse freelancers",
+      "tertiary": "Open job board"
     },
     "activity": {
       "liveNow": "Live now",
