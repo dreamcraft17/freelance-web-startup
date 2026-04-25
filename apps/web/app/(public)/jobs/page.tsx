@@ -1,6 +1,8 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { searchJobsSchema } from "@acme/validators";
+import { UserRole } from "@acme/types";
+import { getSessionFromCookies } from "@src/lib/auth";
 import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
 import { JobsPublicEmpty } from "@/features/public/components/JobsPublicEmpty";
 import { JobsPublicFilters } from "@/features/public/components/JobsPublicFilters";
@@ -107,10 +109,11 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
 
   const jobService = new JobService();
   const { t, locale } = await getServerTranslator();
-  const [{ items, total }, categories, pulse] = await Promise.all([
+  const [{ items, total }, categories, pulse, session] = await Promise.all([
     jobService.listOpenJobs(query, locale),
     loadCategories(),
-    new PublicStatsService().getMarketplacePulse()
+    new PublicStatsService().getMarketplacePulse(),
+    getSessionFromCookies()
   ]);
   const categoryMap = new Map(categories.map((c) => [c.id, c.name]));
   const jobs = items.map((job) => toPublicJobCard(job, categoryMap.get(job.categoryId) ?? null));
@@ -132,6 +135,13 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
     Boolean(minBudget) ||
     Boolean(postedWithinDays);
   const categorySelected = Boolean(categoryId.trim());
+  const noJobsBaseline = jobs.length === 0 && !hasFilters && !categorySelected;
+  const viewerRole =
+    session?.role === UserRole.CLIENT
+      ? "CLIENT"
+      : session?.role === UserRole.FREELANCER
+        ? "FREELANCER"
+        : null;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-12">
@@ -158,7 +168,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
           ) : null}
 
           {jobs.length === 0 ? (
-            <JobsPublicEmpty categorySelected={categorySelected} hasFilters={hasFilters} />
+            <JobsPublicEmpty categorySelected={categorySelected} hasFilters={hasFilters} viewerRole={viewerRole} />
           ) : (
             <JobsPublicList jobs={jobs} />
           )}
@@ -199,7 +209,12 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
           ) : null}
         </div>
 
-        <aside className="order-1 mb-8 min-w-0 space-y-5 lg:order-2 lg:mb-0 lg:sticky lg:top-28">
+        <aside
+          className={[
+            "min-w-0 space-y-5",
+            noJobsBaseline ? "order-3 mt-8 border-t border-slate-200 pt-6 lg:order-3 lg:mt-2 lg:border-t" : "order-1 mb-8 lg:order-2 lg:mb-0 lg:sticky lg:top-28"
+          ].join(" ")}
+        >
           <JobsPublicFilters
             keyword={keyword}
             city={city}

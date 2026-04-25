@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v53  
-> Last synchronized: 2026-04-24 (success-flow redirect timing refined for smoother transitions).
+> **Doc revision:** v54  
+> Last synchronized: 2026-04-24 (jobs empty-state now emphasizes immediate next actions).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,7 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Jobs empty-state action clarity (2026-04-24):** saat feed `/jobs` kosong tanpa filter, user kini mendapat empty state yang mengarahkan aksi pertama secara eksplisit (post job / browse freelancers), dilengkapi contoh use case posting dan arahan berbasis role agar halaman tetap terasa hidup meski belum ada listing.
 - **Success redirect timing polish (2026-04-24):** redirect setelah aksi sukses pada flow inti kini diberi delay ringan (~400ms), khususnya setelah publish job dan setelah proposal submit (saat thread tersedia), supaya transisi terasa lebih intentional tanpa menambah kompleksitas flow.
 - **Pre-launch UX friction pass (2026-04-24):** pengalaman lintas flow disempurnakan dengan feedback pasca-aksi + next-step cues: setelah posting job owner menerima konfirmasi kontekstual di detail job, state “no proposals yet” kini memberi tindakan lanjutan, dan handoff ke Messages dari review proposal membawa marker konteks agar user tidak kehilangan alur.
 - **Notifications quick triage chips (2026-04-24):** pengguna kini bisa memfilter daftar notifikasi secara instan di sisi client (`All`, `Proposals`, `Messages`, `Contracts`) untuk memfokuskan kategori aktivitas tanpa request API tambahan.

@@ -1,13 +1,19 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v52  
-> Last synchronized: 2026-04-24 (post-success redirects now use subtle pacing delay).
+> **Doc revision:** v53  
+> Last synchronized: 2026-04-24 (jobs zero-state now focuses on actionable first steps).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-04-24 — Jobs empty-state action-first pass
+
+- Zero-state pada `/jobs` diganti dari gaya “informasi kosong” ke “mulai aksi”, dengan headline langsung, CTA utama post job, CTA sekunder browse freelancers.
+- Ditambahkan section contoh use-case posting lowongan agar user cepat paham brief seperti apa yang bisa dipasang.
+- Pada kondisi kosong baseline, panel filter diturunkan prioritasnya dengan diposisikan di bawah konten utama agar fokus user tetap ke langkah awal.
 
 ### 2026-04-24 — Redirect pacing polish
 

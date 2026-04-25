@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v55  
-> Last synchronized: 2026-04-24 (key success redirects now include a brief intentional delay).
+> **Doc revision:** v56  
+> Last synchronized: 2026-04-24 (jobs page empty state is now action-first with role-aware guidance).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,6 +9,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
+- **2026-04-24 — Jobs empty-state action pass:** saat board `/jobs` benar-benar kosong, empty state kini berfokus pada aksi awal (`Start by posting your first job`) dengan CTA utama post job, CTA sekunder browse freelancers, section contoh use case posting, dan hint berbasis role (client vs freelancer); panel filter juga diturunkan prioritasnya dengan dipindah ke bawah konten utama pada kondisi kosong baseline.
 - **2026-04-24 — Redirect pacing polish:** setelah aksi sukses utama, redirect kini diberi jeda ringan (~400ms) agar transisi terasa lebih intentional: publish job menunggu singkat sebelum pindah ke detail job, dan submit proposal menunggu singkat sebelum pindah ke thread messages (jika thread tersedia).
 - **2026-04-24 — Pre-launch UX continuity pass:** flow client `post job -> review proposal -> open conversation` kini memiliki feedback konteks yang lebih jelas lewat handoff query (`from=job-posted`, `from=job-conversation`) dan banner ringan di Messages; owner view job detail juga menambahkan arahan langkah berikutnya saat proposal belum masuk agar tidak dead-end.
 - **2026-04-24 — Notifications quick category chips:** halaman `/notifications` kini punya filter ringan berbasis client-side (`All`, `Proposals`, `Messages`, `Contracts`) untuk triage cepat tanpa perubahan backend/API; unread/read emphasis tetap dipertahankan, dan kategori kosong menampilkan empty state khusus.
