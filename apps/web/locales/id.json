@@ -58,9 +58,9 @@
   },
   "hero": {
     "liveDirectory": "Direktori freelancer aktif",
-    "title": "Hiring yang rapi dimulai dari satu brief lowongan yang jelas",
+    "title": "Temukan freelancer siap kerja dalam hitungan menit",
     "subtitle": "Cari berdasarkan skill dan kota, lihat profil yang relevan, lalu rekrut tanpa chat yang tercecer.",
-    "outcomeLine": "Pasang lowongan, review proposal di satu tempat, lalu mulai diskusi dengan konteks lowongan tetap utuh.",
+    "outcomeLine": "Cari, bandingkan, dan mulai diskusi dalam satu alur kerja - lokal atau remote.",
     "marketplaceLiveLine": "Marketplace aktif - cari, bandingkan, lalu mulai dalam hitungan menit.",
     "supportingLine": "Semua proposal dan percakapan tetap nempel ke lowongan.",
     "locationNote": "Pakai kota untuk jasa freelancer terdekat, atau kosongkan untuk hasil remote freelancer.",
@@ -78,7 +78,7 @@
     "budgetUnder1m": "Di bawah Rp 1 jt",
     "budget1to5m": "Rp 1 jt - Rp 5 jt",
     "budget5mPlus": "Di atas Rp 5 jt",
-    "keywordPlaceholder": "Cari freelancer: fotografer event, editor video, tutor matematika",
+    "keywordPlaceholder": "Contoh: fotografer event, editor video, tutor matematika",
     "cityPlaceholder": "Kota (opsional)",
     "searchButton": "Cari",
     "quickFiltersLabel": "Filter cepat:",
@@ -92,13 +92,13 @@
     "postAJob": "Pasang lowongan",
     "quickBrowse": "Lihat brief aktif",
     "liveUrgencyLine": "Freelancer baru dan lowongan aktif bertambah setiap hari.",
-    "searchTrustLine": "Semua proposal dan chat tetap terikat ke lowongan.",
+    "searchTrustLine": "Proposal, chat, dan keputusan tetap terhubung ke pekerjaan.",
     "searchTrustOne": "Proposal tetap terkait konteks lowongan.",
     "searchTrustTwo": "Bandingkan opsi sebelum mengambil keputusan.",
     "modeSwitchLabel": "Tujuan lo",
     "modeHire": "Saya ingin rekrut",
     "modeWork": "Saya ingin kerja",
-    "modeHirePrimary": "Pasang lowongan",
+    "modeHirePrimary": "Pasang lowongan sekarang",
     "modeHireSecondaryOne": "Cari freelancer",
     "modeHireSecondaryTwo": "Buka job board",
     "modeWorkPrimary": "Cari lowongan",
@@ -108,6 +108,16 @@
     "liveJobsToday": "{{count}} lowongan terbuka hari ini",
     "proofFreelancersActive": "{{count}} freelancer aktif siap kirim proposal terikat lowongan",
     "proofBriefsToday": "{{count}} brief terstruktur baru dalam 24 jam terakhir",
+    "marketplaceActivityLine": "{{freelancers}} freelancer aktif sekarang · Brief baru masuk setiap hari · Proposal tetap terhubung ke pekerjaan",
+    "marketplaceActivityFallback": "Freelancer aktif dan brief baru bertambah setiap hari.",
+    "sliderAriaLabel": "Skenario kerja marketplace",
+    "slides": {
+      "event": "Fotografer event di dekat Anda",
+      "video": "Editor video remote siap minggu ini",
+      "tutor": "Sesi tutor, online atau nearby",
+      "design": "Bantuan desain untuk peluncuran Anda",
+      "proposals": "Bandingkan proposal dalam satu thread"
+    },
     "trust": {
       "verifiedAccounts": "Akun terverifikasi",
       "structuredProposals": "Alur proposal terstruktur",
@@ -125,17 +135,17 @@
     "categories": {
       "kicker": "Mulai dari kategori",
       "title": "Cari freelancer sesuai kebutuhan",
-      "subtitle": "Pilih kategori, lalu sempitkan dengan kota dan mode kerja agar alur hiring tetap rapi.",
+      "subtitle": "Pilih layanan, lalu sempitkan dengan kota atau mode kerja untuk mulai lebih cepat.",
       "secondaryCta": "Butuh lowongan aktif? Buka job board ->",
       "entryLabel": "Jalur pencarian",
-      "entrySubline": "Buka",
+      "entrySubline": "Mulai dari sini",
       "examples": {
-        "design": "Redesign landing page dan rapikan UI produk",
-        "photo": "Liputan foto event dan retouch cepat",
-        "video": "Editing konten mingguan dan short-form",
-        "tutor": "Les matematika untuk ujian dan tugas",
-        "marketing": "Setup campaign dengan update performa mingguan",
-        "localFix": "Setup on-site, perbaikan, dan dukungan lokal"
+        "design": "Logo, landing page, branding",
+        "photo": "Event, produk, konten sosial",
+        "video": "Reels, ads, editing mingguan",
+        "tutor": "Matematika, bahasa, privat",
+        "marketing": "Ads, konten, campaign",
+        "localFix": "Perbaikan, teknisi, on-site"
       },
       "items": {
         "design": "Desain",
@@ -150,7 +160,7 @@
       "kicker": "Preview hasil",
       "title": "Data yang lo lihat saat hiring",
       "marketTitle": "Pratinjau marketplace live",
-      "marketSubtitle": "Freelancer aktif dan lowongan terbaru yang bisa langsung dibuka, dengan konteks tetap terikat ke tiap brief.",
+      "marketSubtitle": "Freelancer aktif dan lowongan terbaru yang bisa langsung dibuka.",
       "activeFreelancersTitle": "Freelancer aktif",
       "recentJobsTitle": "Lowongan terbaru",
       "rowActionOpen": "Buka",
@@ -206,15 +216,15 @@
     },
     "finalCta": {
       "kicker": "Langkah berikutnya",
-      "title": "Pasang lowongan dan jalankan hiring dalam satu alur terstruktur",
-      "subtitle": "Simpan proposal, keputusan, dan chat di brief yang sama supaya tidak tercecer.",
-      "urgency": "Aksi sekarang: pasang brief Anda dan mulai terima balasan yang tetap dalam konteks lowongan.",
+      "title": "Mulai dari satu brief - cari freelancer, diskusi, lalu rekrut dengan jelas.",
+      "subtitle": "Simpan proposal, keputusan, dan chat dalam satu alur dari brief awal sampai hire.",
+      "urgency": "Pasang sekali, bandingkan jelas, dan lanjut lebih cepat.",
       "primary": "Pasang lowongan",
       "secondary": "Cari freelancer",
       "tertiary": "Buka job board"
     },
     "activity": {
-      "prompt": "Apa yang perlu ditindak sekarang?",
+      "prompt": "Langsung masuk ke hiring aktif:",
       "liveNow": "Aktif sekarang",
       "activeNow": "Brief aktif",
       "newToday": "Baru hari ini",
@@ -228,7 +238,76 @@
       },
       "filters": {
         "nearby": "Mode nearby",
-        "remote": "Mode remote"
+        "remote": "Mode remote",
+        "budget": "Sesuai budget"
+      }
+    },
+    "previewRows": {
+      "freelancerRespondsFast": "Balas cepat",
+      "freelancerAvailableWeek": "Tersedia minggu ini",
+      "freelancerLocalFit": "Cocok untuk proyek lokal",
+      "jobClientActive": "Klien aktif",
+      "jobLowCompetition": "Proposal masih sedikit",
+      "jobClearBrief": "Brief jelas"
+    },
+    "previewRowsData": {
+      "freelancers": {
+        "one": {
+          "title": "Maya Sutanto",
+          "subtitle": "Fotografer event dan portrait",
+          "meta": "Balas cepat",
+          "urgency": "Tersedia minggu ini",
+          "location": "Menteng, Jakarta",
+          "price": "Mulai Rp 2,4 jt / setengah hari",
+          "signal": "Aktif sekarang"
+        },
+        "two": {
+          "title": "Rama Wijaya",
+          "subtitle": "Editor remote untuk video short-form",
+          "meta": "Balas cepat",
+          "urgency": "Tersedia minggu ini",
+          "location": "Remote",
+          "price": "Mulai Rp 650 rb / hari",
+          "signal": "Siap minggu ini"
+        },
+        "three": {
+          "title": "Siska Putri",
+          "subtitle": "Foto brand dengan retouch cepat",
+          "meta": "Balas cepat",
+          "urgency": "Cocok untuk proyek lokal",
+          "location": "Jakarta Selatan",
+          "price": "Mulai Rp 1,8 jt / sesi",
+          "signal": "Siap lokal"
+        }
+      },
+      "jobs": {
+        "one": {
+          "title": "Brand shoot setengah hari",
+          "subtitle": "Klien butuh dukungan on-site",
+          "meta": "Klien aktif",
+          "urgency": "Proposal masih sedikit",
+          "location": "Kelapa Gading",
+          "price": "Budget Rp 4,5 jt-7 jt",
+          "signal": "Baru hari ini"
+        },
+        "two": {
+          "title": "Editing video mingguan",
+          "subtitle": "Pengiriman remote untuk channel sosial",
+          "meta": "Klien aktif",
+          "urgency": "Brief jelas",
+          "location": "Remote",
+          "price": "Budget Rp 1,2 jt-2,5 jt",
+          "signal": "Hiring aktif"
+        },
+        "three": {
+          "title": "Tutor matematika (hybrid)",
+          "subtitle": "Kombinasi sesi online dan tatap muka",
+          "meta": "Klien aktif",
+          "urgency": "Brief jelas",
+          "location": "Bandung",
+          "price": "Budget Rp 300 rb-500 rb / sesi",
+          "signal": "Buka minggu ini"
+        }
       }
     }
   },
