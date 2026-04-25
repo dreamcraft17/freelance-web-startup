@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v65  
-> Last synchronized: 2026-04-26 (hero slider removed and replaced with lightweight live marketplace panel).
+> **Doc revision:** v66  
+> Last synchronized: 2026-04-26 (live marketplace panel now real-data aware with safe example/fallback handling).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,6 +9,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
+- **2026-04-26 — Live panel safety refinement:** panel hero kanan sekarang memprioritaskan baris aktivitas dari data nyata (freelancer aktif + brief terbaru) jika tersedia; saat data kosong, UI menampilkan label **“Example activity / Contoh aktivitas”** + fallback copy aman tanpa nama pengguna palsu.
 - **2026-04-26 — Hero focus cleanup (slider removal):** `HeroScenarioSlider` dihapus penuh dari landing hero (termasuk aset `hero-scenes`) dan diganti panel kanan ringan “live marketplace” berisi 3 sinyal inti (`freelancers active`, `new briefs daily`, `proposals tied to job`) + sample rows sederhana. Struktur hero, CTA, search, intent mode, dan i18n behavior tetap dipertahankan; styling dijaga utilitarian (border + spacing, tanpa elemen dekoratif berat).
 - **2026-04-26 — Hero micro-polish pass:** tanpa mengubah struktur hero baru, ritme visual diperhalus melalui spacing desktop/mobile yang lebih seimbang, hierarki tipografi yang lebih tenang (headline tetap kuat, subtext/trust lebih ringan), search block dibuat lebih nyaman dan kurang “form-like”, serta slider dipoles agar crop konsisten dan kontrol navigasi lebih subtil.
 - **2026-04-25 — Hero marketplace-energy redesign:** hero homepage kini memakai split layout (copy + CTA + search di kiri, visual scenario slider di kanan) untuk memberi first impression yang lebih “live marketplace” namun tetap clean. Copy ID/EN diperbarui ke tone action-oriented (headline, trust line, CTA), search dipoles agar lebih premium, activity line dibuat human-readable dengan fallback aman saat data rendah, kategori diarahkan ke use-case nyata, preview rows memakai sinyal aktivitas kualitatif yang lebih manusiawi, dan final CTA diperkuat ke alur “brief -> discuss -> hire” tanpa mengubah routing/intent/i18n behavior.

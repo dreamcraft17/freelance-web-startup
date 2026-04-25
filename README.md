@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v56  
-> Last synchronized: 2026-04-26 — hero slider removed; right panel now lightweight live marketplace cues.
+> **Doc revision:** v57  
+> Last synchronized: 2026-04-26 — live marketplace panel now prefers real data and uses safe fallback/examples.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -71,6 +71,7 @@ Platform ini dirancang untuk mendukung **semua jenis freelance**, bukan hanya pr
 - Hero homepage kini didesain ulang ke split layout yang lebih “live marketplace”: copy + CTA + search premium di kiri dan visual scenario slider di kanan (scene kerja nyata berbasis aset lokal ringan), plus activity line human-readable dengan fallback aman saat metrik rendah agar tidak memberi kesan platform sepi.
 - Micro-pass terbaru menjaga struktur hero tetap sama namun memoles ritme visual: spacing lebih lapang di desktop, stack mobile lebih rapi, trust/activity line lebih sekunder, input search lebih nyaman dipakai, dan slider controls/overlay dibuat lebih halus agar tidak terasa dekoratif.
 - Iterasi final hero menghapus komponen slider sepenuhnya untuk fokus produk yang lebih cepat: area kanan sekarang menjadi panel marketplace ringan berisi sinyal aktivitas nyata/fallback aman + sample rows struktural, tanpa menambah fitur dekoratif.
+- Safety pass lanjutan: panel marketplace kini menampilkan baris aktivitas dari data nyata saat tersedia; jika tidak ada data, panel menandai **Example activity** dan menampilkan copy fallback netral (tanpa identitas pengguna fiktif).
 
 ### 🔹 Marketplace Core
 - Client dapat membuat job/project

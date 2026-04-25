@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v63  
-> Last synchronized: 2026-04-26 (homepage hero replaces slider with lightweight live marketplace panel).
+> **Doc revision:** v64  
+> Last synchronized: 2026-04-26 (hero live panel now uses real data first with safe fallback copy).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,7 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Hero live panel safety pass (2026-04-26):** panel kanan homepage sekarang memprioritaskan baris aktivitas dari data nyata; saat data belum tersedia, sistem menampilkan fallback copy netral + label aktivitas contoh agar tidak memberi kesan fake live users.
 - **Hero simplification pass (2026-04-26):** panel visual slider pada sisi kanan hero dihapus untuk menjaga fokus produk; diganti panel ringan berisi cue marketplace aktif dan sample rows singkat. Fokus utama tetap pada copy + CTA + search, dengan struktur responsif dan behavior intent/i18n tidak berubah.
 - **Hero micro-polish refinement (2026-04-26):** struktur split hero tetap dipertahankan, namun ritme visual dipoles untuk kualitas premium: spacing desktop/mobile lebih seimbang, headline/subtext/trust hierarchy lebih jelas, search block lebih nyaman sebagai aksi utama, dan panel slider dibuat lebih tenang (crop konsisten + controls subtler) agar tidak terasa dekoratif.
 - **Hero marketplace-energy redesign (2026-04-25):** first screen homepage kini memakai split layout (copy/search/CTA kiri + scenario slider kanan) untuk memperkuat kesan marketplace aktif dan human, bukan form internal. Copy hero ID/EN diperbarui ke outcome yang lebih langsung, trust line dipertegas, quick filters tetap tersedia, dan activity line memakai wording manusiawi dengan fallback aman saat data rendah.

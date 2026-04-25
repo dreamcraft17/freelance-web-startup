@@ -21,10 +21,14 @@ export async function LandingPage({
   homePath?: string;
 }) {
   const { t } = await getServerTranslator();
-  const pulse = await new PublicStatsService().getMarketplacePulse();
+  const statsService = new PublicStatsService();
+  const [pulse, panelActivity] = await Promise.all([
+    statsService.getMarketplacePulse(),
+    statsService.getHeroPanelActivity()
+  ]);
   return (
     <main className="nw-page pb-16 text-[#191c1e] selection:bg-[#3525cd]/15 selection:text-slate-950">
-      <LandingHero t={t} intent={intent} homePath={homePath} pulse={pulse} />
+      <LandingHero t={t} intent={intent} homePath={homePath} pulse={pulse} panelActivity={panelActivity} />
       <LandingActivityStrip t={t} intent={intent} />
       <LandingCategoryChips t={t} />
       <LandingProductPreview t={t} />

@@ -1,13 +1,19 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v62  
-> Last synchronized: 2026-04-26 (hero slider removed for cleaner product-first focus).
+> **Doc revision:** v63  
+> Last synchronized: 2026-04-26 (hero live panel safety pass adds real-data-first behavior).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-04-26 — Live panel trust/safety pass
+
+- Panel kanan hero kini **real-data-first**: baris aktivitas memakai data listing freelancer aktif dan brief terbaru jika tersedia.
+- Saat data belum ada, panel menampilkan label **Example activity / Contoh aktivitas** dan fallback copy netral tanpa nama pengguna.
+- Tujuan pass ini: menjaga panel terasa jujur dan operasional, bukan simulasi aktivitas palsu.
 
 ### 2026-04-26 — Hero focus pass (remove visual slider)
 

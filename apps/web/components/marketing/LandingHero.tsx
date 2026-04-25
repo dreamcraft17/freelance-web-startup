@@ -18,6 +18,11 @@ type LandingPulse = {
   openPublicJobs: number;
 };
 
+type HeroPanelActivity = {
+  freelancerRows: Array<{ label: string; signal: "ACTIVE" | string }>;
+  jobRows: Array<{ label: string; signal: "NEW" | string }>;
+};
+
 function withIntent(href: string, intent: LandingIntent): Route {
   const [pathname, query = ""] = href.split("?");
   const params = new URLSearchParams(query);
@@ -33,12 +38,14 @@ export function LandingHero({
   t,
   intent,
   homePath,
-  pulse
+  pulse,
+  panelActivity
 }: {
   t: Translator;
   intent: LandingIntent;
   homePath: string;
   pulse: LandingPulse;
+  panelActivity: HeroPanelActivity;
 }) {
   const isHireMode = intent === "hire";
   const primaryCtaLabel = isHireMode ? t("hero.modeHirePrimary") : t("hero.modeWorkPrimary");
@@ -51,6 +58,17 @@ export function LandingHero({
           freelancers: pulse.freelancersAvailable
         })
       : t("hero.marketplaceActivityFallback");
+  const liveRows = [
+    ...panelActivity.freelancerRows.map((row) => ({
+      label: row.label,
+      signal: t("hero.panel.liveSignalFreelancer")
+    })),
+    ...panelActivity.jobRows.map((row) => ({
+      label: row.label,
+      signal: t("hero.panel.liveSignalJob")
+    }))
+  ].slice(0, 2);
+  const hasLiveRows = liveRows.length > 0;
 
   return (
     <section className="nw-hero-stage">
@@ -190,17 +208,33 @@ export function LandingHero({
                 <li className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">{t("hero.panel.lineThree")}</li>
               </ul>
               <div className="mt-4 border-t border-slate-200 pt-3">
-                <p className="text-xs font-bold uppercase tracking-wide text-slate-500">{t("hero.panel.sampleRowsTitle")}</p>
-                <div className="mt-2 space-y-2">
-                  <div className="flex items-center justify-between rounded-md border border-slate-200 px-3 py-2 text-sm">
-                    <p className="font-semibold text-slate-900">{t("hero.panel.sampleOneName")}</p>
-                    <span className="text-xs font-semibold text-slate-600">{t("hero.panel.sampleOneSignal")}</span>
+                <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                  {hasLiveRows ? t("hero.panel.liveRowsTitle") : t("hero.panel.exampleRowsTitle")}
+                </p>
+                {hasLiveRows ? (
+                  <div className="mt-2 space-y-2">
+                    {liveRows.map((row) => (
+                      <div key={`${row.label}-${row.signal}`} className="flex items-center justify-between rounded-md border border-slate-200 px-3 py-2 text-sm">
+                        <p className="line-clamp-1 font-semibold text-slate-900">{row.label}</p>
+                        <span className="ml-3 shrink-0 text-xs font-semibold text-slate-600">{row.signal}</span>
+                      </div>
+                    ))}
                   </div>
-                  <div className="flex items-center justify-between rounded-md border border-slate-200 px-3 py-2 text-sm">
-                    <p className="font-semibold text-slate-900">{t("hero.panel.sampleTwoName")}</p>
-                    <span className="text-xs font-semibold text-slate-600">{t("hero.panel.sampleTwoSignal")}</span>
-                  </div>
-                </div>
+                ) : (
+                  <>
+                    <p className="mt-2 text-sm font-medium text-slate-700">{t("hero.panel.noLiveData")}</p>
+                    <div className="mt-2 space-y-2">
+                      <div className="flex items-center justify-between rounded-md border border-slate-200 px-3 py-2 text-sm">
+                        <p className="font-semibold text-slate-900">{t("hero.panel.exampleOneName")}</p>
+                        <span className="text-xs font-semibold text-slate-600">{t("hero.panel.exampleOneSignal")}</span>
+                      </div>
+                      <div className="flex items-center justify-between rounded-md border border-slate-200 px-3 py-2 text-sm">
+                        <p className="font-semibold text-slate-900">{t("hero.panel.exampleTwoName")}</p>
+                        <span className="text-xs font-semibold text-slate-600">{t("hero.panel.exampleTwoSignal")}</span>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
