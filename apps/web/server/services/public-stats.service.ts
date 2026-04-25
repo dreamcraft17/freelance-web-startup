@@ -4,8 +4,18 @@ import { AvailabilityStatus, JobStatus, JobVisibility } from "@acme/types";
 /** Lightweight, read-only aggregates for public “marketplace pulse” copy (no PII). */
 export class PublicStatsService {
   async getHeroPanelActivity(): Promise<{
-    freelancerRows: Array<{ label: string; signal: string }>;
-    jobRows: Array<{ label: string; signal: string }>;
+    freelancerRows: Array<{
+      title: string;
+      specialty: string | null;
+      location: string | null;
+      workMode: string;
+      availability: string;
+    }>;
+    jobRows: Array<{
+      title: string;
+      location: string | null;
+      workMode: string;
+    }>;
   }> {
     return db.$transaction(async (tx) => {
       const freelancers = await tx.freelancerProfile.findMany({
@@ -17,8 +27,11 @@ export class PublicStatsService {
         orderBy: { updatedAt: "desc" },
         take: 2,
         select: {
+          fullName: true,
           headline: true,
-          city: true
+          city: true,
+          workMode: true,
+          availabilityStatus: true
         }
       });
 
@@ -31,18 +44,24 @@ export class PublicStatsService {
         orderBy: { createdAt: "desc" },
         take: 2,
         select: {
-          title: true
+          title: true,
+          city: true,
+          workMode: true
         }
       });
 
       return {
         freelancerRows: freelancers.map((item) => ({
-          label: item.headline || item.city || "Freelancer",
-          signal: "ACTIVE"
+          title: item.fullName,
+          specialty: item.headline,
+          location: item.city,
+          workMode: item.workMode,
+          availability: item.availabilityStatus
         })),
         jobRows: jobs.map((item) => ({
-          label: item.title,
-          signal: "NEW"
+          title: item.title,
+          location: item.city,
+          workMode: item.workMode
         }))
       };
     });

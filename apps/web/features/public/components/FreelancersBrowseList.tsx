@@ -29,18 +29,6 @@ function locationLabel(f: PublicFreelancerCard): string | null {
   return null;
 }
 
-function availabilityLabel(s: string): string {
-  return s.replace(/_/g, " ").toLowerCase();
-}
-
-function daysSince(iso: string): number | null {
-  const ts = Date.parse(iso);
-  if (!Number.isFinite(ts)) return null;
-  const diff = Date.now() - ts;
-  if (diff < 0) return 0;
-  return Math.floor(diff / (1000 * 60 * 60 * 24));
-}
-
 function specialtyLine(f: PublicFreelancerCard): string | null {
   if (f.primaryCategoryName?.trim()) return f.primaryCategoryName.trim();
   if (f.headline?.trim()) return f.headline.trim();
@@ -95,6 +83,42 @@ export function FreelancersBrowseList({ freelancers, activeCityFilter }: Freelan
     return parts.join(" · ");
   };
 
+  const roleLabel = (f: PublicFreelancerCard): string => {
+    if (f.primaryCategoryName?.trim()) return f.primaryCategoryName.trim();
+    return t("public.freelancers.roleGeneralist");
+  };
+
+  const valueStatement = (f: PublicFreelancerCard): string => {
+    if (f.primaryCategoryName?.trim() && f.headline?.trim()) {
+      return t("public.freelancers.valueStatementCategory", {
+        category: f.primaryCategoryName.trim(),
+        headline: f.headline.trim()
+      });
+    }
+    if (f.headline?.trim()) return f.headline.trim();
+    if (f.primaryCategoryName?.trim()) {
+      return t("public.freelancers.valueStatementSimple", { category: f.primaryCategoryName.trim() });
+    }
+    return t("public.freelancers.valueStatementFallback");
+  };
+
+  const comparisonSignals = (f: PublicFreelancerCard): string[] => {
+    const signals: string[] = [];
+    if (f.availabilityStatus === "AVAILABLE") {
+      signals.push(t("public.freelancers.signalAvailableThisWeek"));
+    }
+    if (f.reviewCount >= 5) {
+      signals.push(t("public.freelancers.signalRespondsFast"));
+    }
+    if (f.averageReviewRating != null && Number.isFinite(f.averageReviewRating) && f.averageReviewRating >= 4.6 && f.reviewCount >= 3) {
+      signals.push(t("public.freelancers.signalTopRated"));
+    }
+    if (signals.length === 0) {
+      signals.push(t("public.freelancers.signalProfileReady"));
+    }
+    return signals.slice(0, 3);
+  };
+
   const chooseReason = (f: PublicFreelancerCard): string => {
     const rating = f.averageReviewRating ?? 0;
     const hasStrongReviews = f.reviewCount >= 5 && rating >= 4.6;
@@ -126,54 +150,26 @@ export function FreelancersBrowseList({ freelancers, activeCityFilter }: Freelan
 
   return (
     <ul className="space-y-3">
-      {freelancers.map((f, rank) => {
+      {freelancers.map((f) => {
         const loc = locationLabel(f);
         const spec = specialtyLine(f);
-        const showHeadlineBelow = Boolean(f.primaryCategoryName?.trim() && f.headline?.trim());
         const rating = ratingLine(f);
         const confidence = confidenceLine(f);
-        const showDistance = f.distanceKm != null && Number.isFinite(f.distanceKm);
         const reason = chooseReason(f);
-        const recommendedLabel = rank === 0 ? t("public.freelancers.bestMatch") : rank === 1 ? t("public.freelancers.recommended") : null;
-        const emphasizeTop = rank <= 1;
+        const signals = comparisonSignals(f);
 
         return (
           <li key={f.id}>
-            <article
-              className={`border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:border-slate-300 ${
-                emphasizeTop ? "border-slate-300" : "border-slate-200"
-              }`}
-            >
+            <article className="border border-slate-200 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:border-slate-300">
               <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr),auto] lg:items-start">
                 <div className="min-w-0">
-                  <div className="mb-2 flex flex-wrap items-center gap-1.5">
-                    {recommendedLabel ? (
-                      <span className="rounded border border-[#3525cd]/35 bg-[#3525cd]/[0.06] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#3525cd]">
-                        {recommendedLabel}
-                      </span>
-                    ) : null}
-                    <span className="rounded border border-slate-300 bg-white px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-800">
-                      {workModeLabel(f.workMode)}
-                    </span>
-                    {showDistance ? (
-                      <span className="rounded border border-emerald-300/80 bg-emerald-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-950">
-                        ~{f.distanceKm} km
-                      </span>
-                    ) : null}
-                    {activeCityFilter?.trim() && loc?.toLowerCase().includes(activeCityFilter.trim().toLowerCase()) ? (
-                      <span className="rounded border border-[#3525cd]/35 bg-[#3525cd]/[0.07] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#3525cd]">
-                        {activeCityFilter.trim()}
-                      </span>
-                    ) : null}
-                  </div>
-
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <div className="min-w-0">
                       <p className="text-base font-bold leading-snug text-slate-950">{f.fullName}</p>
-                      <p className="text-xs font-medium text-slate-500">@{f.username}</p>
+                      <p className="text-sm font-semibold text-slate-700">{roleLabel(f)}</p>
                     </div>
                     <div className="text-right">
-                      <div className="mb-1 inline-flex items-center gap-1 rounded border border-amber-200 bg-amber-50 px-2 py-0.5 text-[11px] font-bold text-amber-900">
+                      <div className="mb-1 inline-flex items-center gap-1 rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px] font-semibold text-slate-800">
                         <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" aria-hidden />
                         {rating ?? t("public.freelancers.noReviewsYet")}
                       </div>
@@ -182,32 +178,39 @@ export function FreelancersBrowseList({ freelancers, activeCityFilter }: Freelan
                     </div>
                   </div>
 
-                  {spec ? (
-                    <p className="mt-1.5 line-clamp-2 text-sm font-semibold text-slate-800">{spec}</p>
-                  ) : (
-                    <p className="mt-1.5 text-sm font-medium italic text-slate-400">{t("public.freelancers.openProfileDetails")}</p>
-                  )}
-
-                  {showHeadlineBelow ? (
-                    <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-600">{f.headline}</p>
-                  ) : null}
+                  <p className="mt-1.5 line-clamp-1 text-sm text-slate-700">{valueStatement(f)}</p>
 
                   <p className="mt-2 rounded border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-slate-700">
                     {reason}
                   </p>
 
+                  <div className="mt-3 flex flex-wrap items-center gap-1.5">
+                    {signals.map((signal) => (
+                      <span key={`${f.id}-${signal}`} className="rounded border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-medium text-slate-700">
+                        {signal}
+                      </span>
+                    ))}
+                  </div>
+
                   <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-slate-200 pt-2.5">
                     {loc ? (
                       <p className="flex items-start gap-1.5 text-xs font-semibold text-slate-700">
                         <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#3525cd]" aria-hidden />
-                        <span>{loc}</span>
+                        <span>
+                          {loc}
+                          {" · "}
+                          {workModeLabel(f.workMode)}
+                          {f.distanceKm != null && Number.isFinite(f.distanceKm) ? ` · ~${f.distanceKm} km` : ""}
+                          {activeCityFilter?.trim() && loc.toLowerCase().includes(activeCityFilter.trim().toLowerCase())
+                            ? ` · ${activeCityFilter.trim()}`
+                            : ""}
+                        </span>
                       </p>
                     ) : (
-                      <p className="text-xs font-medium text-slate-400">{t("public.freelancers.locationNotListed")}</p>
+                      <p className="text-xs font-medium text-slate-500">
+                        {t("public.freelancers.locationNotListed")} {" · "} {workModeLabel(f.workMode)}
+                      </p>
                     )}
-                    <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-600">
-                      {availabilityLabel(f.availabilityStatus)}
-                    </span>
                   </div>
 
                   {confidence ? (

@@ -1,7 +1,6 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { searchFreelancersSchema } from "@acme/validators";
-import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
 import { FreelancersBrowseList, type PublicFreelancerCard } from "@/features/public/components/FreelancersBrowseList";
 import { FreelancersPublicEmpty } from "@/features/public/components/FreelancersPublicEmpty";
 import { FreelancersPublicFilters } from "@/features/public/components/FreelancersPublicFilters";
@@ -57,6 +56,8 @@ function freelancersQueryString(args: {
   city: string;
   workMode: string;
   categoryId: string;
+  availability: string;
+  budget: string;
   page: number;
 }): string {
   const u = new URLSearchParams();
@@ -64,6 +65,8 @@ function freelancersQueryString(args: {
   if (args.city.trim()) u.set("city", args.city.trim());
   if (args.workMode) u.set("workMode", args.workMode);
   if (args.categoryId.trim()) u.set("categoryId", args.categoryId.trim());
+  if (args.availability.trim()) u.set("availability", args.availability.trim());
+  if (args.budget.trim()) u.set("budget", args.budget.trim());
   if (args.page > 1) u.set("page", String(args.page));
   const s = u.toString();
   return s ? `?${s}` : "";
@@ -124,16 +127,29 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
   const city = query.city ?? "";
   const workMode = (query.workMode ?? "") as "" | "REMOTE" | "ONSITE" | "HYBRID";
   const categoryId = query.categoryId ?? "";
+  const availability = (raw.availability ?? "").toUpperCase() === "AVAILABLE" ? "AVAILABLE" : "";
+  const budget = (raw.budget ?? "").toLowerCase() === "fit" ? "fit" : "";
   const page = query.page;
-  const nearbyTotal = hasGeoCenter ? rowsWithDistance.length : total;
   const totalPages = hasGeoCenter ? 1 : Math.max(1, Math.ceil(total / query.limit));
+
+  const filteredFreelancers = availability
+    ? freelancers.filter((f) => f.availabilityStatus === "AVAILABLE")
+    : freelancers;
+  const budgetFilteredFreelancers =
+    budget === "fit"
+      ? filteredFreelancers.filter((f) => f.hourlyRate != null && Number.isFinite(f.hourlyRate) && f.hourlyRate <= 100000)
+      : filteredFreelancers;
+  const displayTotal = budgetFilteredFreelancers.length;
+  const availableNowCount = budgetFilteredFreelancers.filter((f) => f.availabilityStatus === "AVAILABLE").length;
 
   const hasFilters =
     Boolean(keyword.trim()) ||
     Boolean(city.trim()) ||
     Boolean(workMode) ||
     Boolean(categoryId.trim()) ||
-    Boolean(raw.skillId?.trim());
+    Boolean(raw.skillId?.trim()) ||
+    Boolean(availability) ||
+    Boolean(budget);
   const categorySelected = Boolean(categoryId.trim());
 
   return (
@@ -165,10 +181,10 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
             </div>
           ) : null}
 
-          {nearbyTotal > 0 ? (
+          {displayTotal > 0 ? (
             <div className="nw-results-toolbar">
               <span className="text-[15px] font-bold text-slate-950">
-                {nearbyTotal === 1 ? t("public.freelancers.resultOne") : t("public.freelancers.resultMany", { count: nearbyTotal })}
+                {displayTotal === 1 ? t("public.freelancers.resultOne") : t("public.freelancers.resultMany", { count: displayTotal })}
               </span>
               <span className="max-w-[12rem] text-right text-xs font-medium leading-snug text-slate-600 sm:max-w-none sm:text-left">
                 {t("public.freelancers.resultHint")}
@@ -176,10 +192,84 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
             </div>
           ) : null}
 
-          {freelancers.length === 0 ? (
-            <FreelancersPublicEmpty categorySelected={categorySelected} hasFilters={hasFilters} />
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700">
+            <span>
+              {t("public.freelancers.activityAvailableNow", {
+                count: availableNowCount
+              })}
+            </span>
+            <span className="text-slate-400">•</span>
+            <span>{t("public.freelancers.activityUpdatedDaily")}</span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 pb-3">
+            <span className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+              {t("public.freelancers.quickChipsLabel")}
+            </span>
+            <Link
+              href={`/freelancers${freelancersQueryString({ keyword, city, workMode: "ONSITE", categoryId, availability: "", budget: "", page: 1 })}` as Route}
+              className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 hover:border-[#3525cd]/45 hover:text-[#3525cd]"
+            >
+              {t("public.freelancers.quickChipNearby")}
+            </Link>
+            <Link
+              href={`/freelancers${freelancersQueryString({ keyword, city: "", workMode: "REMOTE", categoryId, availability: "", budget: "", page: 1 })}` as Route}
+              className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 hover:border-[#3525cd]/45 hover:text-[#3525cd]"
+            >
+              {t("public.freelancers.quickChipRemote")}
+            </Link>
+            <Link
+              href={`/freelancers${freelancersQueryString({ keyword, city, workMode, categoryId, availability: "", budget: "fit", page: 1 })}` as Route}
+              className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 hover:border-[#3525cd]/45 hover:text-[#3525cd]"
+            >
+              {t("public.freelancers.quickChipBudget")}
+            </Link>
+            <Link
+              href={`/freelancers${freelancersQueryString({ keyword, city, workMode, categoryId, availability: "AVAILABLE", budget: "", page: 1 })}` as Route}
+              className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 hover:border-[#3525cd]/45 hover:text-[#3525cd]"
+            >
+              {t("public.freelancers.quickChipAvailable")}
+            </Link>
+          </div>
+
+          <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">{t("public.freelancers.trustTitle")}</p>
+            <ul className="mt-2 space-y-1 text-sm text-slate-700">
+              <li>{t("public.freelancers.trustOne")}</li>
+              <li>{t("public.freelancers.trustTwo")}</li>
+              <li>{t("public.freelancers.trustThree")}</li>
+            </ul>
+          </div>
+
+          {budgetFilteredFreelancers.length === 0 ? (
+            <div className="space-y-3">
+              <div className="rounded-lg border border-slate-200 bg-white px-4 py-3">
+                <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                  {t("public.freelancers.exampleRowsLabel")}
+                </p>
+                <div className="mt-2 space-y-2.5">
+                  {[1, 2, 3].map((idx) => (
+                    <div key={idx} className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2.5">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-slate-900">{t("public.freelancers.exampleName")}</p>
+                          <p className="text-xs font-medium text-slate-700">{t("public.freelancers.exampleRole")}</p>
+                          <p className="mt-1 line-clamp-1 text-xs text-slate-600">{t("public.freelancers.exampleHook")}</p>
+                          <p className="mt-1 text-[11px] text-slate-500">{t("public.freelancers.exampleMeta")}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t("public.freelancers.rateStartingLabel")}</p>
+                          <p className="text-xs font-bold text-slate-800">{t("public.freelancers.examplePrice")}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <FreelancersPublicEmpty categorySelected={categorySelected} hasFilters={hasFilters} />
+            </div>
           ) : (
-            <FreelancersBrowseList freelancers={freelancers} activeCityFilter={city.trim() || undefined} />
+            <FreelancersBrowseList freelancers={budgetFilteredFreelancers} activeCityFilter={city.trim() || undefined} />
           )}
 
           {!hasGeoCenter && totalPages > 1 ? (
@@ -190,7 +280,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
               {page > 1 ? (
                 <Link
                   href={
-                    `/freelancers${freelancersQueryString({ keyword, city, workMode, categoryId, page: page - 1 })}` as Route
+                    `/freelancers${freelancersQueryString({ keyword, city, workMode, categoryId, availability, budget, page: page - 1 })}` as Route
                   }
                   className="font-bold text-[#3525cd] hover:underline"
                 >
@@ -205,7 +295,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
               {page < totalPages ? (
                 <Link
                   href={
-                    `/freelancers${freelancersQueryString({ keyword, city, workMode, categoryId, page: page + 1 })}` as Route
+                    `/freelancers${freelancersQueryString({ keyword, city, workMode, categoryId, availability, budget, page: page + 1 })}` as Route
                   }
                   className="font-bold text-[#3525cd] hover:underline"
                 >
@@ -232,32 +322,14 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
           <div className="nw-surface-soft hidden border-t-[3px] border-t-[#3525cd] p-4 text-sm lg:block">
             <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-600">{t("public.freelancers.sidebarKicker")}</p>
             <p className="mt-1 text-base font-bold text-slate-950">{t("public.freelancers.sidebarTitle")}</p>
-            <ul className="mt-3 space-y-2 font-medium text-slate-700">
-              <li className="border-l-2 border-slate-200 pl-3">
-                <span className="font-bold text-slate-900">{t("public.freelancers.sidebarBullet1Title")}</span> — {t("public.freelancers.sidebarBullet1Body")}
-              </li>
-              <li className="border-l-2 border-slate-200 pl-3">
-                <span className="font-bold text-slate-900">{t("public.freelancers.sidebarBullet2Title")}</span> — {t("public.freelancers.sidebarBullet2Body")}
-              </li>
-              <li className="border-l-2 border-[#3525cd]/40 pl-3">
-                <span className="font-bold text-[#3525cd]">{t("public.freelancers.sidebarBullet3Title")}</span> — {t("public.freelancers.sidebarBullet3Body")}
-              </li>
-            </ul>
-            <div className="mt-4 space-y-2">
+            <p className="mt-2 text-sm text-slate-600">{t("public.freelancers.sidebarSimpleBody")}</p>
+            <div className="mt-4">
               <Link
                 href={"/freelancer/profile" as Route}
                 className="inline-flex w-full items-center justify-center rounded-md border-2 border-slate-300 bg-white px-3 py-2.5 text-sm font-bold text-slate-800 transition hover:border-slate-400 hover:bg-slate-50"
               >
                 {t("public.freelancers.sidebarPrimary")}
               </Link>
-              <AuthAwareCtaLink
-                href={"/freelancer/proposals" as Route}
-                intent="continue"
-                unauthenticatedTo="login"
-                className="nw-cta-primary inline-flex w-full items-center justify-center px-3 py-2.5 text-sm font-semibold"
-              >
-                {t("public.freelancers.sidebarSecondary")}
-              </AuthAwareCtaLink>
             </div>
           </div>
         </aside>

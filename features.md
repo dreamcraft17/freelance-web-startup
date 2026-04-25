@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v66  
-> Last synchronized: 2026-04-26 (live marketplace panel now real-data aware with safe example/fallback handling).
+> **Doc revision:** v69  
+> Last synchronized: 2026-04-26 (freelancers rows redesigned for comparison confidence, with activity strip and example-row preview mode).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,6 +9,10 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
+- **2026-04-26 — Freelancers listing confidence pass:** row freelancer kini lebih decision-first (name + role, value statement 1 baris, rating/review, lokasi + mode kerja, starting price, serta signal relevan seperti available this week/responds fast/top rated) dengan CTA tunggal `View profile`; username emphasis dan badge dekoratif dikurangi agar scan lebih cepat.
+- **2026-04-26 — Freelancers preview mode + activity strip:** saat hasil kosong, list menampilkan blok `Example freelancers` berisi 3 row struktur realistis (tanpa metrik palsu) agar tidak terasa dead space; ditambah top activity strip kecil (`Freelancers available now`, `Updated daily`) di atas list.
+- **2026-04-26 — Freelancers empty-state vitality pass:** halaman `/freelancers` kini memakai copy header yang lebih outcome-driven (find + hire), quick chips di atas hasil (`Nearby`, `Remote`, `Budget fit`, `Available now`), trust-benefit bullets ringkas, skeleton rows saat hasil kosong, serta empty-state card yang lebih kecil dan action-oriented agar tidak terasa “dead marketplace”.
+- **2026-04-26 — Live panel trust hardening:** panel hero tidak lagi merender contoh nama/row fiktif saat data kosong; panel kini menampilkan 1–2 row dari data nyata (freelancer + job) dengan field real (title/specialty, location/work mode, availability/status) atau fallback copy aman jika belum ada data.
 - **2026-04-26 — Live panel safety refinement:** panel hero kanan sekarang memprioritaskan baris aktivitas dari data nyata (freelancer aktif + brief terbaru) jika tersedia; saat data kosong, UI menampilkan label **“Example activity / Contoh aktivitas”** + fallback copy aman tanpa nama pengguna palsu.
 - **2026-04-26 — Hero focus cleanup (slider removal):** `HeroScenarioSlider` dihapus penuh dari landing hero (termasuk aset `hero-scenes`) dan diganti panel kanan ringan “live marketplace” berisi 3 sinyal inti (`freelancers active`, `new briefs daily`, `proposals tied to job`) + sample rows sederhana. Struktur hero, CTA, search, intent mode, dan i18n behavior tetap dipertahankan; styling dijaga utilitarian (border + spacing, tanpa elemen dekoratif berat).
 - **2026-04-26 — Hero micro-polish pass:** tanpa mengubah struktur hero baru, ritme visual diperhalus melalui spacing desktop/mobile yang lebih seimbang, hierarki tipografi yang lebih tenang (headline tetap kuat, subtext/trust lebih ringan), search block dibuat lebih nyaman dan kurang “form-like”, serta slider dipoles agar crop konsisten dan kontrol navigasi lebih subtil.

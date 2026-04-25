@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v57  
-> Last synchronized: 2026-04-26 — live marketplace panel now prefers real data and uses safe fallback/examples.
+> **Doc revision:** v60  
+> Last synchronized: 2026-04-26 — freelancers listing now uses decision-first rows, activity strip, and example-row preview mode for low-data states.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -72,6 +72,9 @@ Platform ini dirancang untuk mendukung **semua jenis freelance**, bukan hanya pr
 - Micro-pass terbaru menjaga struktur hero tetap sama namun memoles ritme visual: spacing lebih lapang di desktop, stack mobile lebih rapi, trust/activity line lebih sekunder, input search lebih nyaman dipakai, dan slider controls/overlay dibuat lebih halus agar tidak terasa dekoratif.
 - Iterasi final hero menghapus komponen slider sepenuhnya untuk fokus produk yang lebih cepat: area kanan sekarang menjadi panel marketplace ringan berisi sinyal aktivitas nyata/fallback aman + sample rows struktural, tanpa menambah fitur dekoratif.
 - Safety pass lanjutan: panel marketplace kini menampilkan baris aktivitas dari data nyata saat tersedia; jika tidak ada data, panel menandai **Example activity** dan menampilkan copy fallback netral (tanpa identitas pengguna fiktif).
+- Trust pass final: panel tidak lagi menampilkan sample people/rows saat data kosong; hanya row real berbasis data listing yang dirender, atau fallback copy aman jika data belum tersedia.
+- Refinement `/freelancers` terbaru mengurangi kesan “dead empty marketplace”: headline dibuat lebih outcome-driven, quick chips ditambahkan di atas list, empty state diperkecil dan diarahkan ke aksi, skeleton rows ditampilkan saat hasil kosong, serta panel CTA sidebar disederhanakan fokus ke `Complete profile`.
+- Pass lanjutan `/freelancers` memoles kualitas marketplace list: setiap row menonjolkan role + 1-line value statement + trust/rating + location/work mode + starting price + signals keputusan, CTA tetap satu (`View profile`), dan mode kosong kini menampilkan `Example freelancers` agar user tetap memahami struktur perbandingan sebelum data masuk.
 
 ### 🔹 Marketplace Core
 - Client dapat membuat job/project

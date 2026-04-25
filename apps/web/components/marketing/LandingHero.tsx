@@ -19,8 +19,18 @@ type LandingPulse = {
 };
 
 type HeroPanelActivity = {
-  freelancerRows: Array<{ label: string; signal: "ACTIVE" | string }>;
-  jobRows: Array<{ label: string; signal: "NEW" | string }>;
+  freelancerRows: Array<{
+    title: string;
+    specialty: string | null;
+    location: string | null;
+    workMode: string;
+    availability: string;
+  }>;
+  jobRows: Array<{
+    title: string;
+    location: string | null;
+    workMode: string;
+  }>;
 };
 
 function withIntent(href: string, intent: LandingIntent): Route {
@@ -32,6 +42,19 @@ function withIntent(href: string, intent: LandingIntent): Route {
 
 function modeHref(homePath: string, intent: LandingIntent): Route {
   return `${homePath}?intent=${intent}` as Route;
+}
+
+function workModeLabel(t: Translator, workMode: string): string {
+  if (workMode === "ONSITE") return t("public.filters.workModeOnSite");
+  if (workMode === "HYBRID") return t("public.filters.workModeHybrid");
+  return t("public.filters.workModeRemote");
+}
+
+function availabilityLabel(t: Translator, availability: string): string {
+  if (availability === "LIMITED") return t("public.freelancerProfile.availability.limited");
+  if (availability === "UNAVAILABLE") return t("public.freelancerProfile.availability.unavailable");
+  if (availability === "ON_LEAVE") return t("public.freelancerProfile.availability.on_leave");
+  return t("public.freelancerProfile.availability.available");
 }
 
 export function LandingHero({
@@ -60,12 +83,16 @@ export function LandingHero({
       : t("hero.marketplaceActivityFallback");
   const liveRows = [
     ...panelActivity.freelancerRows.map((row) => ({
-      label: row.label,
-      signal: t("hero.panel.liveSignalFreelancer")
+      title: row.title,
+      detail: row.specialty || workModeLabel(t, row.workMode),
+      context: row.location || workModeLabel(t, row.workMode),
+      signal: availabilityLabel(t, row.availability)
     })),
     ...panelActivity.jobRows.map((row) => ({
-      label: row.label,
-      signal: t("hero.panel.liveSignalJob")
+      title: row.title,
+      detail: t("hero.panel.liveSignalJob"),
+      context: row.location || workModeLabel(t, row.workMode),
+      signal: workModeLabel(t, row.workMode)
     }))
   ].slice(0, 2);
   const hasLiveRows = liveRows.length > 0;
@@ -209,31 +236,26 @@ export function LandingHero({
               </ul>
               <div className="mt-4 border-t border-slate-200 pt-3">
                 <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                  {hasLiveRows ? t("hero.panel.liveRowsTitle") : t("hero.panel.exampleRowsTitle")}
+                  {t("hero.panel.liveRowsTitle")}
                 </p>
                 {hasLiveRows ? (
                   <div className="mt-2 space-y-2">
                     {liveRows.map((row) => (
-                      <div key={`${row.label}-${row.signal}`} className="flex items-center justify-between rounded-md border border-slate-200 px-3 py-2 text-sm">
-                        <p className="line-clamp-1 font-semibold text-slate-900">{row.label}</p>
-                        <span className="ml-3 shrink-0 text-xs font-semibold text-slate-600">{row.signal}</span>
+                      <div key={`${row.title}-${row.context}-${row.signal}`} className="rounded-md border border-slate-200 px-3 py-2 text-sm">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="line-clamp-1 font-semibold text-slate-900">{row.title}</p>
+                            <p className="line-clamp-1 text-xs font-medium text-slate-600">
+                              {row.detail} · {row.context}
+                            </p>
+                          </div>
+                          <span className="shrink-0 text-xs font-semibold text-slate-600">{row.signal}</span>
+                        </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <>
-                    <p className="mt-2 text-sm font-medium text-slate-700">{t("hero.panel.noLiveData")}</p>
-                    <div className="mt-2 space-y-2">
-                      <div className="flex items-center justify-between rounded-md border border-slate-200 px-3 py-2 text-sm">
-                        <p className="font-semibold text-slate-900">{t("hero.panel.exampleOneName")}</p>
-                        <span className="text-xs font-semibold text-slate-600">{t("hero.panel.exampleOneSignal")}</span>
-                      </div>
-                      <div className="flex items-center justify-between rounded-md border border-slate-200 px-3 py-2 text-sm">
-                        <p className="font-semibold text-slate-900">{t("hero.panel.exampleTwoName")}</p>
-                        <span className="text-xs font-semibold text-slate-600">{t("hero.panel.exampleTwoSignal")}</span>
-                      </div>
-                    </div>
-                  </>
+                  <p className="mt-2 text-sm font-medium text-slate-700">{t("hero.panel.noLiveData")}</p>
                 )}
               </div>
             </div>
