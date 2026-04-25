@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v57  
-> Last synchronized: 2026-04-25 (homepage refinement pass improves live cues and action flow).
+> **Doc revision:** v59  
+> Last synchronized: 2026-04-25 (homepage copy & micro-UX pass improves proof visibility near search).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,8 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Homepage copywriting micro-pass (2026-04-25):** area hero kini menampilkan proof marketplace lebih dekat ke aksi utama (tepat di bawah search) dan placeholder pencarian yang lebih konkret, sehingga user lebih cepat menangkap “aktivitas sedang terjadi” tanpa perubahan layout.
+- **Marketplace energy refinement (2026-04-25):** copy dan sinyal aktivitas homepage diperhalus agar terasa lebih hidup tanpa gimmick: headline lebih action-oriented, activity strip lebih conversational, kategori tetap kontekstual via use-case, dan preview rows menekankan urgency signals non-fake.
 - **Homepage conversion refinement (2026-04-25):** halaman depan kini lebih tegas sebagai marketplace aktif: hero copy berorientasi outcome, bar activity/trending/filter disederhanakan menjadi satu strip, kartu kategori memuat contoh use-case, preview rows menampilkan urgency signal ringan, dan final CTA diarahkan ke aksi yang lebih langsung.
 - **Homepage hero micro-tuning (2026-04-25):** tanpa redesign ulang halaman, area hero dipadatkan agar tujuan user terbaca lebih cepat: mode hire/work diposisikan dekat CTA utama, visual anchor search diperkuat, dan noise copy sekunder dikurangi sehingga langkah klik pertama menjadi lebih jelas.
 - **Homepage live-marketplace pass (2026-04-25):** landing publik kini lebih cepat mengarahkan aksi: fokus hero dipindah ke search, indikator activity kecil ditampilkan dari data marketplace nyata, kategori divisualkan sebagai grid card yang lebih eksploratif, dan preview konten dipisah menjadi rail freelancer aktif + lowongan terbaru untuk mengurangi rasa landing statis.
