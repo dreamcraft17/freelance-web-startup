@@ -110,13 +110,16 @@
     "proofBriefsToday": "{{count}} brief terstruktur baru dalam 24 jam terakhir",
     "marketplaceActivityLine": "{{freelancers}} freelancer aktif sekarang · Brief baru masuk setiap hari · Proposal tetap terhubung ke pekerjaan",
     "marketplaceActivityFallback": "Freelancer aktif dan brief baru bertambah setiap hari.",
-    "sliderAriaLabel": "Skenario kerja marketplace",
-    "slides": {
-      "event": "Fotografer event di dekat Anda",
-      "video": "Editor video remote siap minggu ini",
-      "tutor": "Sesi tutor, online atau nearby",
-      "design": "Bantuan desain untuk peluncuran Anda",
-      "proposals": "Bandingkan proposal dalam satu thread"
+    "panel": {
+      "kicker": "Marketplace aktif",
+      "lineOne": "Freelancer aktif sekarang",
+      "lineTwo": "Brief baru masuk setiap hari",
+      "lineThree": "Proposal tetap terhubung ke setiap pekerjaan",
+      "sampleRowsTitle": "Contoh baris",
+      "sampleOneName": "Maya - Fotografer",
+      "sampleOneSignal": "Aktif sekarang",
+      "sampleTwoName": "Rama - Editor video",
+      "sampleTwoSignal": "Tersedia minggu ini"
     },
     "trust": {
       "verifiedAccounts": "Akun terverifikasi",

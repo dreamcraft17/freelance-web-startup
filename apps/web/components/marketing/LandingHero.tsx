@@ -11,7 +11,6 @@ import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
 import { popularFreelancerSearchSuggestions } from "@/features/public/lib/popular-search-suggestions";
 import type { Translator } from "@/lib/i18n/create-translator";
 import type { LandingIntent } from "@/components/marketing/LandingPage";
-import { HeroScenarioSlider } from "@/components/marketing/HeroScenarioSlider";
 
 type LandingPulse = {
   bidsLast24h: number;
@@ -52,35 +51,13 @@ export function LandingHero({
           freelancers: pulse.freelancersAvailable
         })
       : t("hero.marketplaceActivityFallback");
-  const heroSlides = [
-    {
-      imageSrc: "/hero-scenes/event-photographer.svg",
-      overlay: t("hero.slides.event")
-    },
-    {
-      imageSrc: "/hero-scenes/remote-video-editor.svg",
-      overlay: t("hero.slides.video")
-    },
-    {
-      imageSrc: "/hero-scenes/tutor-session.svg",
-      overlay: t("hero.slides.tutor")
-    },
-    {
-      imageSrc: "/hero-scenes/design-branding.svg",
-      overlay: t("hero.slides.design")
-    },
-    {
-      imageSrc: "/hero-scenes/client-reviewing-proposals.svg",
-      overlay: t("hero.slides.proposals")
-    }
-  ];
 
   return (
     <section className="nw-hero-stage">
-      <div className="mx-auto max-w-6xl px-4 pb-10 pt-8 sm:px-6 sm:pb-12 sm:pt-10">
-        <div className="grid gap-5 lg:grid-cols-12 lg:items-stretch">
+      <div className="mx-auto max-w-6xl px-4 pb-8 pt-6 sm:px-6 sm:pb-10 sm:pt-8 lg:pb-12 lg:pt-10">
+        <div className="grid gap-4 lg:grid-cols-12 lg:items-stretch lg:gap-6">
           <div className="flex flex-col lg:col-span-7">
-            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5 lg:p-6">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
@@ -131,18 +108,18 @@ export function LandingHero({
                 </div>
               </div>
 
-              <h1 className="mt-5 text-[2rem] font-bold leading-[1.05] tracking-tight text-slate-950 sm:text-5xl">
+              <h1 className="mt-4 text-[1.9rem] font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-[2.8rem] lg:text-[3.1rem]">
                 {t("hero.title")}
               </h1>
-              <p className="mt-2 text-sm font-medium text-slate-700 sm:text-base">{t("hero.outcomeLine")}</p>
-              <p className="mt-2 text-sm font-semibold text-slate-600">{t("hero.searchTrustLine")}</p>
-              <p className="mt-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700">
+              <p className="mt-2 text-sm leading-relaxed text-slate-700 sm:text-[15px]">{t("hero.outcomeLine")}</p>
+              <p className="mt-2 text-xs font-semibold text-slate-500 sm:text-[13px]">{t("hero.searchTrustLine")}</p>
+              <p className="mt-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] font-semibold text-slate-600 sm:text-xs">
                 {activityLine}
               </p>
             </div>
 
-            <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-3.5 shadow-sm sm:p-4">
-              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <div className="mt-3 rounded-2xl border border-slate-200 bg-white p-3.5 shadow-sm sm:mt-4 sm:p-4 lg:p-5">
+              <div className="mb-2.5 flex flex-wrap items-center justify-between gap-2 sm:mb-3">
                 <p className="text-sm font-bold text-slate-900">{t("hero.searchTitle")}</p>
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-[11px] font-semibold text-slate-700">
@@ -162,7 +139,7 @@ export function LandingHero({
                     <option key={term} value={term} />
                   ))}
                 </datalist>
-                <label className="flex min-h-[3.8rem] flex-1 cursor-text items-center gap-3 rounded-lg border-2 border-slate-300 bg-white px-4 py-3 transition focus-within:border-[#3525cd] focus-within:ring-2 focus-within:ring-[#3525cd]/20 lg:flex-[1.3]">
+                <label className="flex min-h-[3.6rem] flex-1 cursor-text items-center gap-3 rounded-xl border-2 border-slate-300 bg-white px-4 py-3 transition focus-within:border-[#3525cd] focus-within:ring-2 focus-within:ring-[#3525cd]/20 lg:flex-[1.3]">
                   <span className="sr-only">{t("hero.searchLabel")}</span>
                   <Search className="h-5 w-5 shrink-0 text-[#3525cd]" aria-hidden />
                   <input
@@ -170,40 +147,62 @@ export function LandingHero({
                     type="search"
                     list="landing-kw-suggestions"
                     placeholder={t("hero.keywordPlaceholder")}
-                    className="min-w-0 flex-1 border-0 bg-transparent text-left text-base font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-0"
+                    className="min-w-0 flex-1 border-0 bg-transparent text-left text-[15px] font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-0"
                     autoComplete="off"
                   />
                 </label>
-                <label className="flex min-h-[3.8rem] flex-1 cursor-text items-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-3 transition focus-within:border-[#3525cd] focus-within:ring-2 focus-within:ring-[#3525cd]/20">
+                <label className="flex min-h-[3.6rem] flex-1 cursor-text items-center gap-3 rounded-xl border border-slate-300 bg-white px-4 py-3 transition focus-within:border-[#3525cd] focus-within:ring-2 focus-within:ring-[#3525cd]/20">
                   <span className="sr-only">{t("hero.cityLabel")}</span>
                   <MapPin className="h-5 w-5 shrink-0 text-[#3525cd]" aria-hidden />
                   <input
                     name="city"
                     type="text"
                     placeholder={t("hero.cityPlaceholder")}
-                    className="min-w-0 flex-1 border-0 bg-transparent text-left text-base font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-0"
+                    className="min-w-0 flex-1 border-0 bg-transparent text-left text-[15px] font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-0"
                     autoComplete="address-level2"
                   />
                 </label>
-                <button type="submit" className="nw-cta-primary shrink-0 rounded-lg px-7 py-3.5 text-sm font-bold sm:text-base">
+                <button type="submit" className="nw-cta-primary shrink-0 rounded-xl px-6 py-3.5 text-sm font-bold sm:text-base">
                   {t("hero.searchButton")}
                 </button>
               </form>
-              <div className="mt-2.5 flex flex-wrap items-center gap-2 text-[11px] font-semibold text-slate-600">
-                <Link href={withIntent("/search/nearby", intent)} className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 hover:border-[#3525cd]/45 hover:text-[#3525cd]">
+              <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] font-semibold text-slate-600">
+                <Link href={withIntent("/search/nearby", intent)} className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 hover:border-[#3525cd]/45 hover:text-[#3525cd]">
                   {t("hero.quickFilterNearby")}
                 </Link>
-                <Link href={withIntent("/freelancers?workMode=REMOTE", intent)} className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 hover:border-[#3525cd]/45 hover:text-[#3525cd]">
+                <Link href={withIntent("/freelancers?workMode=REMOTE", intent)} className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 hover:border-[#3525cd]/45 hover:text-[#3525cd]">
                   {t("hero.quickFilterRemote")}
                 </Link>
-                <Link href={withIntent("/jobs?minBudget=1000000", intent)} className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 hover:border-[#3525cd]/45 hover:text-[#3525cd]">
+                <Link href={withIntent("/jobs?minBudget=1000000", intent)} className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 hover:border-[#3525cd]/45 hover:text-[#3525cd]">
                   {t("hero.quickFilterBudget")}
                 </Link>
               </div>
             </div>
           </div>
-          <div className="lg:col-span-5">
-            <HeroScenarioSlider slides={heroSlides} ariaLabel={t("hero.sliderAriaLabel")} />
+          <div className="order-last mt-1 lg:order-none lg:col-span-5 lg:mt-0">
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 lg:p-6">
+              <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
+                {t("hero.panel.kicker")}
+              </p>
+              <ul className="mt-3 space-y-2 text-sm font-semibold text-slate-800">
+                <li className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">{t("hero.panel.lineOne")}</li>
+                <li className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">{t("hero.panel.lineTwo")}</li>
+                <li className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">{t("hero.panel.lineThree")}</li>
+              </ul>
+              <div className="mt-4 border-t border-slate-200 pt-3">
+                <p className="text-xs font-bold uppercase tracking-wide text-slate-500">{t("hero.panel.sampleRowsTitle")}</p>
+                <div className="mt-2 space-y-2">
+                  <div className="flex items-center justify-between rounded-md border border-slate-200 px-3 py-2 text-sm">
+                    <p className="font-semibold text-slate-900">{t("hero.panel.sampleOneName")}</p>
+                    <span className="text-xs font-semibold text-slate-600">{t("hero.panel.sampleOneSignal")}</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-md border border-slate-200 px-3 py-2 text-sm">
+                    <p className="font-semibold text-slate-900">{t("hero.panel.sampleTwoName")}</p>
+                    <span className="text-xs font-semibold text-slate-600">{t("hero.panel.sampleTwoSignal")}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
