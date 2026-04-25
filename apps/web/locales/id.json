@@ -376,7 +376,19 @@
       "emptyDefaultStep2": "Freelancer: jelajahi direktori dan rapikan profil sambil menunggu lowongan bertambah.",
       "emptyDefaultStep3": "Semua pengguna: early access artinya feed akan bergerak—simpan dan cek berkala.",
       "emptyDefaultPrimary": "Pasang lowongan pertama",
-      "emptyDefaultSecondary": "Lihat freelancer →"
+      "emptyDefaultSecondary": "Lihat freelancer →",
+      "emptyActionTitle": "Mulai dengan memposting lowongan pertama Anda",
+      "emptyActionBody": "Belum ada lowongan di papan saat ini. Setelah brief diposting, freelancer bisa meninjau dan mengirim proposal.",
+      "emptyActionPrimary": "Pasang lowongan",
+      "emptyActionSecondary": "Lihat freelancer",
+      "emptyRoleClient": "Sebagai klien, memposting brief pertama adalah cara tercepat untuk mulai menerima proposal.",
+      "emptyRoleFreelancer": "Sebagai freelancer, jelajahi profil untuk memahami layanan aktif sambil menunggu brief baru.",
+      "emptyRoleGeneric": "Jika Anda merekrut, mulai dari satu brief yang jelas. Jika Anda freelancer, pakai direktori untuk menyiapkan positioning Anda.",
+      "emptyUseCaseTitle": "Contoh lowongan yang bisa diposting",
+      "emptyUseCaseOne": "Desain landing page untuk website bisnis lokal",
+      "emptyUseCaseTwo": "Editing video untuk konten media sosial mingguan",
+      "emptyUseCaseThree": "Fotografer event on-site untuk acara akhir pekan",
+      "emptyUseCaseFour": "Tutor matematika untuk sesi hybrid online dan tatap muka"
     },
     "freelancers": {
       "sectionTitle": "Eksplorasi freelancer",

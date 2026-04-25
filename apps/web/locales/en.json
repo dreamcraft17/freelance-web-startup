@@ -376,7 +376,19 @@
       "emptyDefaultStep2": "Freelancers: browse the directory and polish your profile while jobs ramp up.",
       "emptyDefaultStep3": "Everyone: early access means the feed will move—bookmark and check back.",
       "emptyDefaultPrimary": "Post the first job",
-      "emptyDefaultSecondary": "Browse freelancers →"
+      "emptyDefaultSecondary": "Browse freelancers →",
+      "emptyActionTitle": "Start by posting your first job",
+      "emptyActionBody": "There are no jobs on the board yet. Once a brief is posted, freelancers can review it and send proposals.",
+      "emptyActionPrimary": "Post a job",
+      "emptyActionSecondary": "Browse freelancers",
+      "emptyRoleClient": "As a client, posting your first brief is the fastest way to start receiving proposals.",
+      "emptyRoleFreelancer": "As a freelancer, browse profiles to understand active services while waiting for new briefs.",
+      "emptyRoleGeneric": "If you are hiring, start with one clear brief. If you are freelancing, use the directory to prep your positioning.",
+      "emptyUseCaseTitle": "Examples you can post",
+      "emptyUseCaseOne": "Landing page design for a local business website",
+      "emptyUseCaseTwo": "Video editing for weekly social media content",
+      "emptyUseCaseThree": "On-site event photographer for a weekend event",
+      "emptyUseCaseFour": "Math tutor for hybrid online and in-person sessions"
     },
     "freelancers": {
       "sectionTitle": "Freelancer discovery",
