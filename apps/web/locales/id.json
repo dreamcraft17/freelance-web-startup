@@ -115,11 +115,15 @@
       "lineOne": "Freelancer aktif sekarang",
       "lineTwo": "Brief baru masuk setiap hari",
       "lineThree": "Proposal tetap terhubung ke setiap pekerjaan",
-      "sampleRowsTitle": "Contoh baris",
-      "sampleOneName": "Maya - Fotografer",
-      "sampleOneSignal": "Aktif sekarang",
-      "sampleTwoName": "Rama - Editor video",
-      "sampleTwoSignal": "Tersedia minggu ini"
+      "liveRowsTitle": "Aktivitas live",
+      "exampleRowsTitle": "Contoh aktivitas",
+      "liveSignalFreelancer": "Aktif sekarang",
+      "liveSignalJob": "Brief baru",
+      "noLiveData": "Ketersediaan freelancer dan brief baru akan muncul di sini.",
+      "exampleOneName": "Listing freelancer - Fotografi",
+      "exampleOneSignal": "Aktif sekarang",
+      "exampleTwoName": "Listing lowongan - Edit video",
+      "exampleTwoSignal": "Tersedia minggu ini"
     },
     "trust": {
       "verifiedAccounts": "Akun terverifikasi",
