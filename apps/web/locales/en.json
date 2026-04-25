@@ -60,6 +60,7 @@
     "liveDirectory": "Live freelancer directory",
     "title": "Hire freelancers faster - nearby or remote",
     "subtitle": "Search by skill and city, review real profiles, and hire without scattered chats.",
+    "marketplaceLiveLine": "Live marketplace - search, compare, and start in minutes.",
     "supportingLine": "All bids and conversations stay tied to the job.",
     "locationNote": "Use city when you need a local freelancer, or leave it empty for remote freelancer results.",
     "howTitle": "How hiring runs",
@@ -102,6 +103,8 @@
     "modeWorkPrimary": "Find jobs",
     "modeWorkSecondaryOne": "Explore freelancers",
     "modeWorkSecondaryTwo": "Create account",
+    "liveFreelancersNow": "{{count}} freelancers available now",
+    "liveJobsToday": "{{count}} open jobs today",
     "trust": {
       "verifiedAccounts": "Verified accounts",
       "structuredProposals": "Structured proposal flow",
@@ -135,6 +138,10 @@
     "preview": {
       "kicker": "Result preview",
       "title": "What hiring data looks like",
+      "marketTitle": "Live marketplace preview",
+      "marketSubtitle": "Active freelancers and recent jobs you can open right now.",
+      "activeFreelancersTitle": "Active freelancers",
+      "recentJobsTitle": "Recent jobs",
       "disclaimer": "Illustrative rows - not real users",
       "railBids": "Bids in context",
       "railProof": "Profiles with proof",

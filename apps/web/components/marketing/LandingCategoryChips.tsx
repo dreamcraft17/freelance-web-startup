@@ -44,12 +44,12 @@ export function LandingCategoryChips({ t }: { t: Translator }) {
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {categories.map(({ labelKey, href, icon: Icon, tone }) => (
             <Link
               key={labelKey}
               href={href}
-              className="group flex min-h-[9.5rem] flex-col items-start justify-between rounded-lg border border-slate-200 bg-white px-4 py-3.5 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-[#3525cd]/45 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/25"
+              className="group flex min-h-[10.5rem] flex-col items-start justify-between rounded-lg border border-slate-200 bg-white px-4 py-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-[#3525cd]/45 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/25"
             >
               <div>
                 <span
@@ -58,7 +58,7 @@ export function LandingCategoryChips({ t }: { t: Translator }) {
                   <Icon className="h-6 w-6" strokeWidth={2} aria-hidden />
                 </span>
                 <span className="mt-2.5 block text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t("landing.categories.entryLabel")}</span>
-                <span className="mt-1 block text-sm font-bold leading-tight text-slate-900 group-hover:text-[#3525cd]">{t(labelKey)}</span>
+                <span className="mt-1 block text-base font-bold leading-tight text-slate-900 group-hover:text-[#3525cd]">{t(labelKey)}</span>
               </div>
               <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wide text-slate-500 group-hover:text-[#3525cd]">
                 {t("landing.categories.entrySubline")}
