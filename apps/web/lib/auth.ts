@@ -8,9 +8,9 @@ import {
   sanitizeReturnUrl,
   homePathForSessionRole,
   resolvePostLoginRedirect
-} from "@src/lib/session";
-import type { SessionPayload } from "@src/lib/session";
-import { requireActiveAccount, requireAuth, requireRole } from "@src/server/policies/access.policy";
+} from "@/lib/session";
+import type { SessionPayload } from "@/lib/session";
+import { requireActiveAccount, requireAuth, requireRole } from "@/server/policies/access.policy";
 import type { UserRole } from "@acme/types";
 
 export type { SessionPayload };

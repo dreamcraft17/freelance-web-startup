@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v67  
-> Last synchronized: 2026-04-26 (freelancers directory now uses decision-first rows, activity strip, and example-row preview when empty).
+> **Doc revision:** v69  
+> Last synchronized: 2026-04-30 (homepage `/id` visual layer redesigned to mockup-aligned modern marketplace layout).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,9 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Homepage mockup redesign pass (2026-04-30):** surface publik `/id` kini menampilkan layout marketplace modern yang lebih jelas untuk aksi cepat (navbar bersih sticky, hero split dua kolom, search card menonjol, sidebar signal cards, grid kategori + preview compact, dan CTA/final footer lebih premium) sambil mempertahankan logic data/route existing.
+- **Web source-structure normalization (2026-04-27):** `apps/web` kini menggunakan konvensi root-level App Router secara penuh (`app`, `components`, `features`, `lib`, `server`, `locales`, `public`) dan runtime tree `apps/web/src` dihapus untuk menghindari pola ganda yang membingungkan.
+- **Compatibility import bridge (2026-04-27):** alias `@src/*` sementara tetap tersedia namun dipetakan ke root path agar import lama tetap bekerja selama masa transisi tanpa memecah route/build/runtime.
 - **Freelancers listing decision pass (2026-04-26):** row hasil pada `/freelancers` dipoles agar lebih mudah dibandingkan dan ditindaklanjuti: name+role, value statement singkat, rating/review, lokasi+mode kerja, harga mulai, sinyal keputusan, dan CTA tunggal `View profile`.
 - **Freelancers low-data preview pass (2026-04-26):** ketika hasil kosong, halaman kini menampilkan blok `Example freelancers` (3 row struktur realistis tanpa data palsu) serta activity strip ringan di atas list untuk menjaga kesan marketplace aktif.
 - **Freelancers directory vitality pass (2026-04-26):** halaman `/freelancers` kini menampilkan copy header yang lebih outcome-driven, quick filter chips di atas hasil (`Nearby`, `Remote`, `Budget fit`, `Available now`), trust-benefit bullets ringkas, dan skeleton rows saat hasil kosong; empty state dibuat lebih kecil dan action-oriented agar user tetap terdorong mengeksplorasi.

@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { Bell, Menu, MessageSquare, X } from "lucide-react";
 import { useState } from "react";
 import { UserRole } from "@acme/types";
-import type { SessionPayload } from "@src/lib/session";
+import type { SessionPayload } from "@/lib/session";
 import { AuthUserMenu } from "@/features/dashboard/components/AuthUserMenu";
 import { LocaleSwitcher } from "@/features/i18n/LocaleSwitcher";
 import { useI18n } from "@/features/i18n/I18nProvider";
@@ -19,8 +19,8 @@ import { BrandLogo } from "@/features/shared/components/BrandLogo";
 import { cn } from "@/lib/utils";
 
 const navDiscovery = [
-  { href: "/jobs", labelKey: "nav.jobs", hintKey: "nav.jobsHint" },
-  { href: "/freelancers", labelKey: "nav.freelancers", hintKey: "nav.freelancersHint" }
+  { href: "/jobs", labelKey: "nav.jobs" },
+  { href: "/freelancers", labelKey: "nav.freelancers" }
 ] as const;
 
 const navProduct = [
@@ -43,40 +43,31 @@ function contextualSignedInCta(role: UserRole, fallback: { labelKey: string; hre
   return fallback;
 }
 
-function CenterNavLink({
-  href,
-  label,
-  hint,
-  pathname,
-  emphasis
-}: {
-  href: string;
-  label: string;
-  hint?: string;
-  pathname: string;
-  emphasis: "discovery" | "product";
-}) {
+function CenterNavLink({ href, label, pathname }: { href: string; label: string; pathname: string }) {
   const active = isActive(pathname, href);
   return (
     <Link
       href={href as Route}
-      title={hint}
-      aria-label={hint ? `${label} — ${hint}` : label}
+      aria-label={label}
       className={cn(
-        "relative whitespace-nowrap border-b-2 px-2 py-3 transition-colors",
-        emphasis === "discovery" ? "text-[14px] font-semibold tracking-tight" : "text-[13px] font-medium tracking-tight",
+        "relative whitespace-nowrap border-b-2 px-2 py-3 text-[13px] font-medium tracking-tight transition-colors",
         active
-          ? "border-[#3525cd] text-[#3525cd]"
-          : cn(
-              "border-transparent",
-              emphasis === "discovery"
-                ? "text-slate-900 hover:text-slate-950"
-                : "text-slate-600 hover:text-slate-800"
-            )
+          ? "border-[#4f35e8] text-[#4f35e8]"
+          : "border-transparent text-slate-700 hover:text-slate-900"
       )}
     >
       {label}
     </Link>
+  );
+}
+
+function MockLanguagePills() {
+  return (
+    <div className="hidden items-center gap-1 xl:flex" aria-label="language switch">
+      <span className="rounded-md border border-slate-200 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">EN</span>
+      <span className="rounded-md bg-[#111827] px-1.5 py-0.5 text-[10px] font-semibold text-white">ID</span>
+      <span className="rounded-md border border-slate-200 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">FR</span>
+    </div>
   );
 }
 
@@ -117,8 +108,8 @@ export function MarketingNavBar({
   };
 
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-slate-200/90 bg-white">
-      <nav className="mx-auto flex min-h-[4.5rem] max-w-7xl items-center px-4 sm:px-6 lg:px-8 xl:px-10">
+    <header className="fixed top-0 z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur">
+      <nav className="mx-auto flex min-h-[4.5rem] max-w-[1280px] items-center px-4 sm:px-6">
         <div className="flex shrink-0 items-center py-1 pr-3 sm:pr-4 lg:pr-5">
           <BrandLogo
             href={"/" as Route}
@@ -129,41 +120,21 @@ export function MarketingNavBar({
         </div>
 
         <div className="hidden min-w-0 flex-1 items-center justify-center lg:flex">
-          <div className="flex min-w-0 max-w-full items-center gap-x-1 xl:gap-x-1.5">
-            <div className="flex min-w-0 items-center">
-              {navDiscovery.map(({ href, labelKey, hintKey }) => (
-                <CenterNavLink
-                  key={href}
-                  href={href}
-                  label={t(labelKey)}
-                  hint={t(hintKey)}
-                  pathname={pathname}
-                  emphasis="discovery"
-                />
-              ))}
-            </div>
-            <span className="mx-1.5 h-5 w-px shrink-0 bg-slate-200 xl:mx-2.5" aria-hidden />
-            <div className="flex min-w-0 items-center gap-x-0.5 xl:gap-x-1">
-              {navProduct.map(({ href, labelKey }) => (
-                <CenterNavLink key={href} href={href} label={t(labelKey)} pathname={pathname} emphasis="product" />
+          <div className="flex min-w-0 max-w-full items-center gap-x-1">
+            <div className="flex min-w-0 items-center gap-x-0.5">
+              {[...navDiscovery, ...navProduct].map(({ href, labelKey }) => (
+                <CenterNavLink key={href} href={href} label={t(labelKey)} pathname={pathname} />
               ))}
             </div>
           </div>
         </div>
 
         {authSession && primary ? (
-          <div className="ml-auto hidden shrink-0 items-center gap-1.5 border-l border-slate-100 pl-3 lg:flex xl:gap-2 xl:pl-4">
-            <span className="hidden text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-400 2xl:inline">
-              {t("nav.signedIn")}
-            </span>
-            {secondary ? (
-              <Link
-                href={secondary.href as Route}
-                className="hidden whitespace-nowrap text-[13px] font-medium text-slate-600 transition hover:text-slate-900 xl:inline-flex"
-              >
-                {t(secondary.labelKey)}
-              </Link>
-            ) : null}
+          <div className="ml-auto hidden shrink-0 items-center gap-2 border-l border-slate-100 pl-4 lg:flex">
+            <span className="text-[13px] font-medium text-slate-700">{t("nav.signedIn")}</span>
+            <Link href={"/messages" as Route} className="text-[13px] font-medium text-slate-700 hover:text-slate-900">
+              {t("nav.messages")}
+            </Link>
             <Link
               href={"/notifications" as Route}
               aria-label={unreadBadgeLabel(unreadNotifications)}
@@ -189,35 +160,35 @@ export function MarketingNavBar({
               ) : null}
             </Link>
             <Link
-              href={signedInCta.href as Route}
-              className="nw-cta-primary whitespace-nowrap px-3 py-2 text-[13px] font-semibold shadow-none xl:px-3.5"
+              href={"/jobs" as Route}
+              className="nw-cta-primary whitespace-nowrap rounded-lg bg-[#4f35e8] px-3.5 py-2 text-[13px] font-semibold text-white shadow-none hover:bg-[#4326d9]"
             >
-              {t(signedInCta.labelKey)}
+              Cari lowongan
             </Link>
+            <MockLanguagePills />
             <LocaleSwitcher />
             <AuthUserMenu compact />
           </div>
         ) : (
-          <div className="ml-auto hidden shrink-0 items-center gap-1.5 border-l border-slate-100 pl-3 lg:flex xl:pl-4">
+          <div className="ml-auto hidden shrink-0 items-center gap-2 border-l border-slate-100 pl-4 lg:flex">
+            <span className="text-[13px] font-medium text-slate-700">Sudah masuk</span>
+            <Link href={"/messages" as Route} className="text-[13px] font-medium text-slate-700 hover:text-slate-900">
+              Pesan
+            </Link>
+            <Link
+              href={"/notifications" as Route}
+              className="relative inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-slate-200 text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
+            >
+              <Bell className="h-4 w-4" aria-hidden />
+            </Link>
             <LocaleSwitcher />
             <Link
-              href="/login"
-              className="whitespace-nowrap rounded-md px-2 py-2 text-[13px] font-medium text-slate-600 transition hover:text-slate-900"
+              href={"/jobs" as Route}
+              className="nw-cta-primary whitespace-nowrap rounded-lg bg-[#4f35e8] px-3.5 py-2 text-[13px] font-semibold text-white shadow-none hover:bg-[#4326d9]"
             >
-              {t("nav.logIn")}
+              Cari lowongan
             </Link>
-            <Link
-              href="/register"
-              className="whitespace-nowrap rounded-md px-2 py-2 text-[13px] font-medium text-slate-600 transition hover:text-slate-900"
-            >
-              {t("nav.register")}
-            </Link>
-            <Link
-              href="/register?role=CLIENT&intent=post-job"
-              className="nw-cta-primary ml-0.5 whitespace-nowrap px-3.5 py-2.5 text-[13px] font-semibold shadow-none xl:px-4"
-            >
-              {t("nav.startHiring")}
-            </Link>
+            <MockLanguagePills />
           </div>
         )}
 
@@ -246,7 +217,6 @@ export function MarketingNavBar({
               <Link
                 key={item.href}
                 href={item.href}
-                title={"hintKey" in item ? t(item.hintKey) : undefined}
                 className={cn(
                   "rounded-lg px-3 py-2.5 text-sm transition hover:bg-slate-50",
                   item.href === "/jobs" || item.href === "/freelancers"

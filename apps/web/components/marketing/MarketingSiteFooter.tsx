@@ -48,8 +48,8 @@ export async function MarketingSiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-auto border-t border-slate-200 bg-slate-50/90">
-      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-7">
+    <footer className="mt-auto border-t border-slate-200 bg-white">
+      <div className="mx-auto max-w-[1280px] px-4 py-6 sm:px-6 sm:py-7">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-4">
             <Link href="/" className="text-sm font-bold tracking-tight text-slate-900 hover:text-[#3525cd]">

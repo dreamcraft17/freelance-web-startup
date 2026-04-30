@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v60  
-> Last synchronized: 2026-04-26 — freelancers listing now uses decision-first rows, activity strip, and example-row preview mode for low-data states.
+> **Doc revision:** v62  
+> Last synchronized: 2026-04-30 — homepage `/id` UI updated to modern marketplace mockup style (premium split hero, search card, right sidebar signal cards).
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -75,6 +75,8 @@ Platform ini dirancang untuk mendukung **semua jenis freelance**, bukan hanya pr
 - Trust pass final: panel tidak lagi menampilkan sample people/rows saat data kosong; hanya row real berbasis data listing yang dirender, atau fallback copy aman jika data belum tersedia.
 - Refinement `/freelancers` terbaru mengurangi kesan “dead empty marketplace”: headline dibuat lebih outcome-driven, quick chips ditambahkan di atas list, empty state diperkecil dan diarahkan ke aksi, skeleton rows ditampilkan saat hasil kosong, serta panel CTA sidebar disederhanakan fokus ke `Complete profile`.
 - Pass lanjutan `/freelancers` memoles kualitas marketplace list: setiap row menonjolkan role + 1-line value statement + trust/rating + location/work mode + starting price + signals keputusan, CTA tetap satu (`View profile`), dan mode kosong kini menampilkan `Example freelancers` agar user tetap memahami struktur perbandingan sebelum data masuk.
+- Audit struktur repository terbaru menstandarkan `apps/web` ke pola root-level (`app`, `components`, `features`, `lib`, `server`, `locales`, `public`) tanpa source runtime di `apps/web/src`; alias `@src/*` dipertahankan sementara sebagai compatibility alias ke root path agar import lama tidak memecah build.
+- Landing homepage publik terbaru kini mengikuti pendekatan visual mockup SaaS modern: hero dua kolom dengan lavender accent halus, search card penuh, sidebar right-signal cards, kategori + live preview lebih compact, CTA bawah premium, serta navbar/footer yang lebih bersih.
 
 ### 🔹 Marketplace Core
 - Client dapat membuat job/project
@@ -153,6 +155,17 @@ validators/ # Zod schemas
 config/ # Constants & plan configs
 
 docs/ # Product & architecture docs (see docs/DOCUMENTATION-MAINTENANCE.md when editing)
+
+### `apps/web` convention
+
+- Root-level Next.js App Router structure is the standard for this repo.
+- Keep runtime code in:
+  - `apps/web/app`
+  - `apps/web/components`
+  - `apps/web/features`
+  - `apps/web/lib`
+  - `apps/web/server`
+- Do not add a parallel `apps/web/src` runtime tree.
 
 
 ---

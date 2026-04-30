@@ -3,8 +3,12 @@ import Link from "next/link";
 import {
   ArrowRight,
   Briefcase,
+  CircleDot,
+  MessageCircle,
   MapPin,
+  SearchCheck,
   Search,
+  Sparkles,
   Users
 } from "lucide-react";
 import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
@@ -71,9 +75,7 @@ export function LandingHero({
   panelActivity: HeroPanelActivity;
 }) {
   const isHireMode = intent === "hire";
-  const primaryCtaLabel = isHireMode ? t("hero.modeHirePrimary") : t("hero.modeWorkPrimary");
   const primaryCtaHref = isHireMode ? ("/client/jobs/new" as Route) : withIntent("/jobs", intent);
-  const secondaryLabel = isHireMode ? t("hero.modeHireSecondaryOne") : t("hero.modeWorkSecondaryOne");
   const secondaryHref = withIntent("/freelancers", intent);
   const activityLine =
     pulse.freelancersAvailable > 0
@@ -98,28 +100,27 @@ export function LandingHero({
   const hasLiveRows = liveRows.length > 0;
 
   return (
-    <section className="nw-hero-stage">
-      <div className="mx-auto max-w-6xl px-4 pb-8 pt-6 sm:px-6 sm:pb-10 sm:pt-8 lg:pb-12 lg:pt-10">
-        <div className="grid gap-4 lg:grid-cols-12 lg:items-stretch lg:gap-6">
-          <div className="flex flex-col lg:col-span-7">
-            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5 lg:p-6">
+    <section className="bg-[#f8fafc]">
+      <div className="mx-auto max-w-[1280px] px-4 pb-8 pt-6 sm:px-6 sm:pb-10 sm:pt-8 lg:pb-12 lg:pt-10">
+        <div className="grid gap-5 lg:grid-cols-12 lg:items-start">
+          <div className="flex flex-col lg:col-span-8">
+            <div className="relative overflow-hidden rounded-2xl border border-[#e5e7eb] bg-gradient-to-br from-[#f1ecff] via-[#f8f6ff] to-white p-5 shadow-sm sm:p-6">
+              <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#4f35e8]/10" />
+              <div className="pointer-events-none absolute right-10 top-10 hidden h-32 w-32 rounded-full border border-white/80 bg-[#4f35e8]/10 lg:block" />
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
-                    {t("hero.modeSwitchLabel")}
-                  </p>
                   <div className="mt-1.5 inline-flex rounded-lg border border-slate-200 bg-white p-1">
                     <Link
                       href={modeHref(homePath, "hire")}
-                      className={`rounded-md px-3 py-1.5 text-xs font-bold transition ${isHireMode ? "bg-[#3525cd] text-white" : "text-slate-600 hover:bg-slate-100"}`}
+                      className={`rounded-md px-3 py-1.5 text-xs font-bold transition ${isHireMode ? "bg-[#4f35e8] text-white" : "text-slate-600 hover:bg-slate-100"}`}
                     >
-                      {t("hero.modeHire")}
+                      Saya ingin rekrut
                     </Link>
                     <Link
                       href={modeHref(homePath, "work")}
-                      className={`rounded-md px-3 py-1.5 text-xs font-bold transition ${!isHireMode ? "bg-[#3525cd] text-white" : "text-slate-600 hover:bg-slate-100"}`}
+                      className={`rounded-md px-3 py-1.5 text-xs font-bold transition ${!isHireMode ? "bg-[#4f35e8] text-white" : "text-slate-600 hover:bg-slate-100"}`}
                     >
-                      {t("hero.modeWork")}
+                      Saya ingin kerja
                     </Link>
                   </div>
                 </div>
@@ -132,7 +133,7 @@ export function LandingHero({
                       registerRoleHint="client"
                       className="nw-cta-primary inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-bold"
                     >
-                      {primaryCtaLabel}
+                      Pasang lowongan sekarang
                       <ArrowRight className="h-4 w-4" aria-hidden />
                     </AuthAwareCtaLink>
                   ) : (
@@ -140,7 +141,7 @@ export function LandingHero({
                       href={primaryCtaHref}
                       className="nw-cta-primary inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-bold"
                     >
-                      {primaryCtaLabel}
+                      Cari lowongan
                       <ArrowRight className="h-4 w-4" aria-hidden />
                     </Link>
                   )}
@@ -148,32 +149,47 @@ export function LandingHero({
                     href={secondaryHref}
                     className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400"
                   >
-                    {secondaryLabel}
+                    Cari freelancer
                   </Link>
                 </div>
               </div>
 
-              <h1 className="mt-4 text-[1.9rem] font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-[2.8rem] lg:text-[3.1rem]">
-                {t("hero.title")}
+              <h1 className="relative z-10 mt-5 max-w-2xl text-[2rem] font-bold leading-[1.08] tracking-tight text-[#071027] sm:text-[2.7rem] lg:text-[3rem]">
+                Temukan freelancer siap kerja dalam hitungan menit
               </h1>
-              <p className="mt-2 text-sm leading-relaxed text-slate-700 sm:text-[15px]">{t("hero.outcomeLine")}</p>
-              <p className="mt-2 text-xs font-semibold text-slate-500 sm:text-[13px]">{t("hero.searchTrustLine")}</p>
-              <p className="mt-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] font-semibold text-slate-600 sm:text-xs">
+              <p className="relative z-10 mt-2 max-w-2xl text-sm leading-relaxed text-slate-700 sm:text-[15px]">Cari, bandingkan, dan mulai diskusi dalam satu alur kerja - lokal atau remote.</p>
+              <p className="relative z-10 mt-2 text-xs font-semibold text-slate-600 sm:text-[13px]">Proposal tetap terhubung ke setiap pekerjaan.</p>
+              <p className="relative z-10 mt-3 inline-flex rounded-md border border-slate-200 bg-white/80 px-3 py-2 text-[11px] font-semibold text-slate-700 sm:text-xs">
                 {activityLine}
               </p>
+
+              <div className="pointer-events-none absolute bottom-4 right-4 hidden min-w-[16rem] rounded-xl border border-white/90 bg-white/95 p-3 shadow-sm lg:block">
+                <div className="flex items-center gap-2">
+                  <div className="h-10 w-10 rounded-full bg-[#4f35e8]/15" />
+                  <div className="h-10 w-10 -ml-3 rounded-full bg-[#4f35e8]/25" />
+                  <div className="h-10 w-10 -ml-3 rounded-full bg-[#4f35e8]/35" />
+                  <span className="ml-1 rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-bold text-white">
+                    Aktif sekarang
+                  </span>
+                </div>
+                <p className="mt-2 text-xs font-semibold text-slate-700">
+                  <Sparkles className="mr-1 inline h-3.5 w-3.5 text-[#4f35e8]" />
+                  Proyek cocok!
+                </p>
+              </div>
             </div>
 
-            <div className="mt-3 rounded-2xl border border-slate-200 bg-white p-3.5 shadow-sm sm:mt-4 sm:p-4 lg:p-5">
+            <div className="mt-4 rounded-2xl border border-[#e5e7eb] bg-white p-4 shadow-sm sm:p-5">
               <div className="mb-2.5 flex flex-wrap items-center justify-between gap-2 sm:mb-3">
-                <p className="text-sm font-bold text-slate-900">{t("hero.searchTitle")}</p>
+                <p className="text-sm font-bold text-[#071027]">Cari freelancer</p>
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-[11px] font-semibold text-slate-700">
-                    <Users className="h-3.5 w-3.5 text-[#3525cd]" aria-hidden />
-                    {t("hero.liveFreelancersNow", { count: pulse.freelancersAvailable })}
+                    <Users className="h-3.5 w-3.5 text-[#4f35e8]" aria-hidden />
+                    {pulse.freelancersAvailable} freelancer tersedia sekarang
                   </span>
                   <span className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-[11px] font-semibold text-slate-700">
-                    <Briefcase className="h-3.5 w-3.5 text-[#3525cd]" aria-hidden />
-                    {t("hero.liveJobsToday", { count: pulse.openPublicJobs })}
+                    <Briefcase className="h-3.5 w-3.5 text-[#4f35e8]" aria-hidden />
+                    {pulse.openPublicJobs} lowongan terbuka hari ini
                   </span>
                 </div>
               </div>
@@ -184,82 +200,116 @@ export function LandingHero({
                     <option key={term} value={term} />
                   ))}
                 </datalist>
-                <label className="flex min-h-[3.6rem] flex-1 cursor-text items-center gap-3 rounded-xl border-2 border-slate-300 bg-white px-4 py-3 transition focus-within:border-[#3525cd] focus-within:ring-2 focus-within:ring-[#3525cd]/20 lg:flex-[1.3]">
+                <label className="flex min-h-[3.6rem] flex-1 cursor-text items-center gap-3 rounded-xl border border-slate-300 bg-white px-4 py-3 transition focus-within:border-[#4f35e8] focus-within:ring-2 focus-within:ring-[#4f35e8]/20 lg:flex-[1.3]">
                   <span className="sr-only">{t("hero.searchLabel")}</span>
-                  <Search className="h-5 w-5 shrink-0 text-[#3525cd]" aria-hidden />
+                  <Search className="h-5 w-5 shrink-0 text-[#4f35e8]" aria-hidden />
                   <input
                     name="keyword"
                     type="search"
                     list="landing-kw-suggestions"
-                    placeholder={t("hero.keywordPlaceholder")}
+                    placeholder="Contoh: fotografer event"
                     className="min-w-0 flex-1 border-0 bg-transparent text-left text-[15px] font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-0"
                     autoComplete="off"
                   />
                 </label>
-                <label className="flex min-h-[3.6rem] flex-1 cursor-text items-center gap-3 rounded-xl border border-slate-300 bg-white px-4 py-3 transition focus-within:border-[#3525cd] focus-within:ring-2 focus-within:ring-[#3525cd]/20">
+                <label className="flex min-h-[3.6rem] flex-1 cursor-text items-center gap-3 rounded-xl border border-slate-300 bg-white px-4 py-3 transition focus-within:border-[#4f35e8] focus-within:ring-2 focus-within:ring-[#4f35e8]/20">
                   <span className="sr-only">{t("hero.cityLabel")}</span>
-                  <MapPin className="h-5 w-5 shrink-0 text-[#3525cd]" aria-hidden />
+                  <MapPin className="h-5 w-5 shrink-0 text-[#4f35e8]" aria-hidden />
                   <input
                     name="city"
                     type="text"
-                    placeholder={t("hero.cityPlaceholder")}
+                    placeholder="Kota (opsional)"
                     className="min-w-0 flex-1 border-0 bg-transparent text-left text-[15px] font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-0"
                     autoComplete="address-level2"
                   />
                 </label>
-                <button type="submit" className="nw-cta-primary shrink-0 rounded-xl px-6 py-3.5 text-sm font-bold sm:text-base">
-                  {t("hero.searchButton")}
+                <button type="submit" className="nw-cta-primary shrink-0 rounded-xl bg-[#4f35e8] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-[#4326d9] sm:text-base">
+                  Cari
                 </button>
               </form>
-              <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] font-semibold text-slate-600">
-                <Link href={withIntent("/search/nearby", intent)} className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 hover:border-[#3525cd]/45 hover:text-[#3525cd]">
-                  {t("hero.quickFilterNearby")}
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] font-semibold text-slate-600">
+                <div className="flex flex-wrap items-center gap-2">
+                <Link href={withIntent("/search/nearby", intent)} className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 hover:border-[#4f35e8]/45 hover:text-[#4f35e8]">
+                  Nearby
                 </Link>
-                <Link href={withIntent("/freelancers?workMode=REMOTE", intent)} className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 hover:border-[#3525cd]/45 hover:text-[#3525cd]">
-                  {t("hero.quickFilterRemote")}
+                <Link href={withIntent("/freelancers?workMode=REMOTE", intent)} className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 hover:border-[#4f35e8]/45 hover:text-[#4f35e8]">
+                  Remote
                 </Link>
-                <Link href={withIntent("/jobs?minBudget=1000000", intent)} className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 hover:border-[#3525cd]/45 hover:text-[#3525cd]">
-                  {t("hero.quickFilterBudget")}
+                <Link href={withIntent("/jobs?minBudget=1000000", intent)} className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 hover:border-[#4f35e8]/45 hover:text-[#4f35e8]">
+                  Sesuai budget
+                </Link>
+                </div>
+                <Link href={withIntent("/freelancers", intent)} className="inline-flex items-center gap-1 text-slate-600 hover:text-[#4f35e8]">
+                  <SearchCheck className="h-3.5 w-3.5" />
+                  Filter lanjutan
                 </Link>
               </div>
             </div>
           </div>
-          <div className="order-last mt-1 lg:order-none lg:col-span-5 lg:mt-0">
-            <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 lg:p-6">
-              <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
-                {t("hero.panel.kicker")}
-              </p>
-              <ul className="mt-3 space-y-2 text-sm font-semibold text-slate-800">
-                <li className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">{t("hero.panel.lineOne")}</li>
-                <li className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">{t("hero.panel.lineTwo")}</li>
-                <li className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">{t("hero.panel.lineThree")}</li>
+          <aside className="space-y-4 lg:col-span-4">
+            <div className="rounded-2xl border border-[#e5e7eb] bg-white p-4 shadow-sm">
+              <p className="text-sm font-bold text-[#071027]">Marketplace aktif</p>
+              <ul className="mt-3 space-y-2 text-sm font-medium text-slate-700">
+                <li className="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2">
+                  <span className="inline-flex items-center gap-2"><Users className="h-4 w-4 text-[#4f35e8]" />Freelancer aktif sekarang</span>
+                  <ArrowRight className="h-3.5 w-3.5 text-slate-400" />
+                </li>
+                <li className="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2">
+                  <span className="inline-flex items-center gap-2"><Briefcase className="h-4 w-4 text-[#4f35e8]" />Brief baru masuk setiap hari</span>
+                  <ArrowRight className="h-3.5 w-3.5 text-slate-400" />
+                </li>
+                <li className="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2">
+                  <span className="inline-flex items-center gap-2"><MessageCircle className="h-4 w-4 text-[#4f35e8]" />Proposal tetap terhubung ke pekerjaan</span>
+                  <ArrowRight className="h-3.5 w-3.5 text-slate-400" />
+                </li>
               </ul>
-              <div className="mt-4 border-t border-slate-200 pt-3">
-                <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                  {t("hero.panel.liveRowsTitle")}
-                </p>
-                {hasLiveRows ? (
-                  <div className="mt-2 space-y-2">
-                    {liveRows.map((row) => (
-                      <div key={`${row.title}-${row.context}-${row.signal}`} className="rounded-md border border-slate-200 px-3 py-2 text-sm">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0">
-                            <p className="line-clamp-1 font-semibold text-slate-900">{row.title}</p>
-                            <p className="line-clamp-1 text-xs font-medium text-slate-600">
-                              {row.detail} · {row.context}
-                            </p>
-                          </div>
-                          <span className="shrink-0 text-xs font-semibold text-slate-600">{row.signal}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="mt-2 text-sm font-medium text-slate-700">{t("hero.panel.noLiveData")}</p>
-                )}
-              </div>
             </div>
-          </div>
+
+            <div className="rounded-2xl border border-[#e5e7eb] bg-white p-4 shadow-sm">
+              <p className="text-sm font-bold text-[#071027]">Aktivitas live</p>
+              {hasLiveRows ? (
+                <div className="mt-2 space-y-2">
+                  {liveRows.map((row) => (
+                    <div key={`${row.title}-${row.context}-${row.signal}`} className="rounded-lg border border-slate-200 px-3 py-2 text-sm">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="line-clamp-1 font-semibold text-slate-900">{row.title}</p>
+                          <p className="line-clamp-1 text-xs font-medium text-slate-600">
+                            {row.detail} · {row.context}
+                          </p>
+                        </div>
+                        <span className="mt-1 inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600">
+                          <CircleDot className="h-3 w-3 fill-current" />
+                          Tersedia
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="mt-2 text-sm font-medium text-slate-700">{t("hero.panel.noLiveData")}</p>
+              )}
+            </div>
+
+            <div className="rounded-2xl border border-[#e5e7eb] bg-white p-4 shadow-sm">
+              <p className="text-sm font-bold text-[#071027]">Pola kerja yang paling sering dipakai</p>
+              <p className="mt-1 text-xs text-slate-500">Pilih mode kerja yang paling sesuai kebutuhan Anda.</p>
+              <ul className="mt-3 space-y-2">
+                <li className="rounded-lg border border-slate-200 px-3 py-2">
+                  <p className="text-sm font-semibold text-slate-900">On-site</p>
+                  <p className="text-xs text-slate-500">Pilih nearby untuk kerja lokal di kota Anda.</p>
+                </li>
+                <li className="rounded-lg border border-slate-200 px-3 py-2">
+                  <p className="text-sm font-semibold text-slate-900">Remote</p>
+                  <p className="text-xs text-slate-500">Kerja dari mana saja dengan fleksibilitas penuh.</p>
+                </li>
+                <li className="rounded-lg border border-slate-200 px-3 py-2">
+                  <p className="text-sm font-semibold text-slate-900">Hybrid</p>
+                  <p className="text-xs text-slate-500">Kombinasi sesi online dan pertemuan offline.</p>
+                </li>
+              </ul>
+            </div>
+          </aside>
         </div>
       </div>
     </section>

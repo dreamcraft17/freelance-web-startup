@@ -1,19 +1,19 @@
 # Internal Dev Credentials
 
-> **Doc revision:** v1  
-> Last synchronized: 2026-04-18 (post-accept handoff update applied across product and docs).
+> **Doc revision:** v2  
+> Last synchronized: 2026-04-27 (sanitized: no concrete credential values stored in-repo).
 
 > Repo policy: `credential.md` is listed in root `.gitignore` for local copies — **do not commit production secrets** here. Rotate any credential that was ever exposed in git history.
 
-## Seeded Admin Account (Development)
+## Seeded Admin Account (Development Template)
 
-- Email: `admin@nearwork.local`
-- Password: `NearWorkAdminDev123!`
-- Role: `ADMIN`
+- Email: `<set via SEED_ADMIN_EMAIL>`
+- Password: `<set via SEED_ADMIN_PASSWORD>`
+- Role: `ADMIN` (template only)
 
 ## Notes
 
-- Source: `packages/database/prisma/seed.ts` defaults (`SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`).
+- Source: `packages/database/prisma/seed.ts` env overrides (`SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`).
 - Use for local/internal development only.
-- Change these values via env variables before seeding shared environments.
-- Keep this file out of public/shared deployments and rotate credentials for any non-local environment.
+- Never store real tokens/passwords in this file.
+- Set real values through local `.env` and rotate any credential exposed outside local machines.

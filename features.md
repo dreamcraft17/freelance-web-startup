@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v69  
-> Last synchronized: 2026-04-26 (freelancers rows redesigned for comparison confidence, with activity strip and example-row preview mode).
+> **Doc revision:** v71  
+> Last synchronized: 2026-04-30 (homepage /id redesigned to match modern SaaS marketplace mockup with premium split hero and right sidebar cards).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,6 +9,9 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
+- **2026-04-30 — Homepage visual redesign (mockup-aligned):** landing `/id` dipoles ke layout marketplace modern (white + soft purple accent) dengan hero split dua kolom, card search premium, sidebar kanan berisi `Marketplace aktif` + `Aktivitas live` + `Pola kerja`, grid kategori yang lebih clean, preview list compact, CTA lavender di bawah, dan navbar/footer yang lebih rapi—tanpa perubahan logic backend atau alur data inti.
+- **2026-04-27 — Repository structure cleanup (`apps/web`):** runtime source dari `apps/web/src` dipindahkan/disatukan ke root-level tree (`app`, `components`, `features`, `lib`, `server`, `locales`, `public`) dan shim re-export lama di `middleware`, `server/http`, serta `server/services` diganti implementasi langsung. Alias `@src/*` sementara diarahkan ke root untuk kompatibilitas import existing tanpa break.
+- **2026-04-27 — Credential doc hardening:** `credential.md` disanitasi menjadi template placeholder (tanpa nilai email/password nyata), ditambah `credential.example.md` sebagai contoh aman; `.gitignore` tetap memblokir `credential.md` lokal.
 - **2026-04-26 — Freelancers listing confidence pass:** row freelancer kini lebih decision-first (name + role, value statement 1 baris, rating/review, lokasi + mode kerja, starting price, serta signal relevan seperti available this week/responds fast/top rated) dengan CTA tunggal `View profile`; username emphasis dan badge dekoratif dikurangi agar scan lebih cepat.
 - **2026-04-26 — Freelancers preview mode + activity strip:** saat hasil kosong, list menampilkan blok `Example freelancers` berisi 3 row struktur realistis (tanpa metrik palsu) agar tidak terasa dead space; ditambah top activity strip kecil (`Freelancers available now`, `Updated daily`) di atas list.
 - **2026-04-26 — Freelancers empty-state vitality pass:** halaman `/freelancers` kini memakai copy header yang lebih outcome-driven (find + hire), quick chips di atas hasil (`Nearby`, `Remote`, `Budget fit`, `Available now`), trust-benefit bullets ringkas, skeleton rows saat hasil kosong, serta empty-state card yang lebih kecil dan action-oriented agar tidak terasa “dead marketplace”.

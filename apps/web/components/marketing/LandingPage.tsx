@@ -1,7 +1,5 @@
 import { LandingHero } from "@/components/marketing/LandingHero";
-import { LandingActivityStrip } from "@/components/marketing/LandingActivityStrip";
 import { LandingProductPreview } from "@/components/marketing/LandingProductPreview";
-import { LandingUseCases } from "@/components/marketing/LandingUseCases";
 import { LandingCategoryChips } from "@/components/marketing/LandingCategoryChips";
 import { LandingFinalCta } from "@/components/marketing/LandingFinalCta";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
@@ -27,12 +25,10 @@ export async function LandingPage({
     statsService.getHeroPanelActivity()
   ]);
   return (
-    <main className="nw-page pb-16 text-[#191c1e] selection:bg-[#3525cd]/15 selection:text-slate-950">
+    <main className="nw-page pb-16 text-[#071027] selection:bg-[#4f35e8]/15 selection:text-[#071027]">
       <LandingHero t={t} intent={intent} homePath={homePath} pulse={pulse} panelActivity={panelActivity} />
-      <LandingActivityStrip t={t} intent={intent} />
       <LandingCategoryChips t={t} />
       <LandingProductPreview t={t} />
-      <LandingUseCases t={t} />
       <LandingFinalCta t={t} />
     </main>
   );

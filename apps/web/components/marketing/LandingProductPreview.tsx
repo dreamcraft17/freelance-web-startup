@@ -142,13 +142,15 @@ function PreviewList({
 
 export function LandingProductPreview({ t }: { t: Translator }) {
   return (
-    <section className="mx-auto max-w-6xl px-4 pb-8 pt-10 sm:px-6 sm:pb-10 sm:pt-12">
+    <section className="mx-auto max-w-[1280px] px-4 pb-8 pt-2 sm:px-6 sm:pb-10 sm:pt-4">
       <div className="flex flex-col gap-2 border-b border-slate-200 pb-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="nw-section-title">{t("landing.preview.kicker")}</p>
-          <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-950 sm:text-2xl">{t("landing.preview.marketTitle")}</h2>
+          <h2 className="mt-1 text-xl font-bold tracking-tight text-[#071027] sm:text-2xl">Pratinjau marketplace live</h2>
         </div>
-        <p className="text-xs font-semibold text-slate-500">{t("landing.preview.marketSubtitle")}</p>
+        <Link href={"/jobs" as Route} className="text-xs font-semibold text-[#4f35e8] hover:underline">
+          Lihat semua →
+        </Link>
       </div>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
