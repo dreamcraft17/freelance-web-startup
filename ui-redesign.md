@@ -1,13 +1,22 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v66  
-> Last synchronized: 2026-04-26 (freelancers listing row redesigned for stronger comparison + example-row preview mode).
+> **Doc revision:** v67  
+> Last synchronized: 2026-04-30 (homepage `/id` redesigned to match premium SaaS marketplace mockup).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-04-30 — Homepage mockup alignment pass (SaaS marketplace look)
+
+- Landing homepage dipoles ke visual ritme yang lebih premium: white base, soft purple accent, border halus, rounded cards, dan spacing lebih lapang.
+- Hero ditata sebagai split layout: kiri untuk intent + CTA + headline + search card, kanan untuk panel sinyal marketplace (aktif/live/work mode).
+- Search block diperkuat sebagai action center dengan chips cepat, live badges, dan tombol `Filter lanjutan`.
+- Sidebar kanan kini meniru struktur mockup dengan card `Marketplace aktif`, `Aktivitas live`, dan `Pola kerja`.
+- Navbar + footer dirapikan untuk kesan produk modern (sticky clean top bar, CTA primer jelas, footer kolom minimal).
+- Scope tetap UI-only: route, backend/service logic, dan event handler utama tidak diubah.
 
 ### 2026-04-26 — Freelancers listing marketplace-grade refinement
 

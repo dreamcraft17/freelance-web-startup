@@ -66,18 +66,18 @@ const toneIconWrap: Record<CategoryChip["tone"], string> = {
 
 export function LandingCategoryChips({ t }: { t: Translator }) {
   return (
-    <section className="nw-section-slab">
-      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12">
+    <section className="bg-white">
+      <div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6 sm:py-10">
         <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="nw-section-title">{t("landing.categories.kicker")}</p>
-            <h2 className="text-xl font-bold tracking-tight text-slate-950 sm:text-2xl">{t("landing.categories.title")}</h2>
+            <h2 className="text-xl font-bold tracking-tight text-[#071027] sm:text-2xl">Cari freelancer sesuai kebutuhan</h2>
             <p className="mt-1 max-w-xl text-sm font-semibold text-slate-600">
               {t("landing.categories.subtitle")}
             </p>
           </div>
           <Link href="/jobs" className="text-sm font-bold text-[#3525cd] hover:underline sm:shrink-0">
-            {t("landing.categories.secondaryCta")}
+            Lihat semua kategori →
           </Link>
         </div>
 
@@ -86,7 +86,7 @@ export function LandingCategoryChips({ t }: { t: Translator }) {
             <Link
               key={labelKey}
               href={href}
-              className="group flex min-h-[10.5rem] flex-col items-start justify-between rounded-lg border border-slate-200 bg-white px-4 py-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-[#3525cd]/45 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/25"
+              className="group flex min-h-[9.8rem] flex-col items-start justify-between rounded-2xl border border-[#e5e7eb] bg-white px-4 py-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-[#4f35e8]/45 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4f35e8]/25"
             >
               <div>
                 <span

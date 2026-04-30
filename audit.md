@@ -1,13 +1,15 @@
 # Audit teknis — Freelance-web (monorepo)
 
-> **Doc revision:** v6  
-> Last synchronized: 2026-04-24 (pool exhaustion now mapped to graceful 503 API responses).
+> **Doc revision:** v7  
+> Last synchronized: 2026-04-27 (credential docs sanitized and apps/web source tree normalized to reduce path ambiguity).
 
 **Lingkup:** `apps/web`, `packages/*`, dan jalur operasional yang mempengaruhi produksi.  
 **Tanggal referensi:** April 2026 (sinkron dengan update terakhir implementasi).
 
 ## Addendum update (April 2026)
 
+- **2026-04-27 — Source tree consistency hardening:** struktur runtime `apps/web` dinormalisasi ke root-level folders (`app`, `components`, `features`, `lib`, `server`) dan ketergantungan pada `apps/web/src` dihapus untuk mengurangi ambiguitas path/alias yang rawan salah import.
+- **2026-04-27 — Credential hygiene pass:** `credential.md` tidak lagi memuat nilai credential konkret; kini hanya berisi template env placeholders. `credential.example.md` ditambahkan sebagai referensi aman, sementara `.gitignore` tetap memblokir file credential lokal.
 - **2026-04-24 — Graceful API degradation for pool exhaustion:** `withApiHandler` sekarang memetakan error Prisma `EMAXCONNSESSION` / `max clients reached` menjadi `503 Service Unavailable` dengan kode `DB_POOL_EXHAUSTED` dan header `Retry-After`, menggantikan pola unhandled 500 saat DB pool session sedang jenuh.
 - **2026-04-24 — Search query compatibility hardening:** jalur `$queryRaw` untuk public jobs search kini mendeteksi ketersediaan kolom translasi (`titleEn/titleId/descriptionEn/descriptionId` + `language`) via `information_schema` dan otomatis fallback ke alias `NULL`/default saat kolom belum ada. Ini mencegah runtime crash `42703 column ... does not exist` pada environment yang migrasinya tertinggal.
 - **2026-04-24 — Pool pressure reduction (session mode):** pada jalur search jobs, eksekusi query list + count diubah dari paralel ke berurutan untuk menurunkan lonjakan koneksi simultan, membantu meredam error `EMAXCONNSESSION max clients reached` pada pool kecil.

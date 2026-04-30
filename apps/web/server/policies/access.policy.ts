@@ -1,6 +1,6 @@
 import { AccountStatus, UserRole } from "@acme/types";
 import { DomainError, PolicyDeniedError } from "@/server/errors/domain-errors";
-import type { SessionPayload } from "@src/lib/session";
+import type { SessionPayload } from "@/lib/session";
 
 export function requireAuth(session: SessionPayload | null): SessionPayload {
   if (!session) {
