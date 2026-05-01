@@ -1,0 +1,30 @@
+---
+description: Commit and push workflow after each completed change
+alwaysApply: true
+---
+
+# Commit And Push Workflow
+
+Gunakan workflow ini setiap selesai melakukan perubahan kode:
+
+1. **Jangan menumpuk perubahan terlalu banyak** dalam satu commit.
+2. **Buat commit per unit kerja selesai** (misalnya: refactor satu halaman/fitur, fix bug, atau docs sync terkait).
+3. Setelah unit kerja selesai dan lolos validasi (build/lint/test yang relevan), langsung:
+   - `git add` file terkait unit kerja tersebut
+   - `git commit` dengan pesan ringkas dan jelas
+   - `git push` ke branch aktif
+4. **Jangan campur perubahan yang tidak terkait** dalam commit yang sama.
+5. **Dokumentasi wajib ikut commit yang sama** jika perubahan menyentuh behavior/UI/API/security:
+   - update file `.md` yang relevan
+   - naikkan `Doc revision`
+   - update `Last synchronized`
+6. Jika ada beberapa task berbeda dalam satu sesi, lakukan **commit + push terpisah per task**.
+7. Jika ada hal berisiko (conflict, hook gagal, status branch tidak jelas), hentikan dan laporkan status sebelum lanjut.
+
+# Commit Message Style
+
+- Gunakan gaya singkat, aksi, dan spesifik.
+- Contoh:
+  - `refactor(public-jobs): restructure board into 3-column job marketplace layout`
+  - `refactor(public-freelancers): make listing chat-first with decision-focused rows`
+  - `docs: sync marketplace redesign notes and bump doc revisions`

@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v72  
-> Last synchronized: 2026-05-01 (/freelancers redesigned as 3-column hiring tool with sticky search, live insight sidebar, and chat-first listing actions).
+> **Doc revision:** v73  
+> Last synchronized: 2026-05-01 (/jobs redesigned into data-driven 3-column job marketplace board with sticky search and apply-first rows).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,6 +9,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
+- **2026-05-01 — Jobs board tool redesign:** halaman `/jobs` direfactor ke pola marketplace board 3 kolom (filter kiri, listing tengah, live insight kanan) dengan search bar dominan + quick tags di atas fold. Listing kini menonjolkan hierarchy scan cepat (judul, client/lokasi, budget, waktu posting, badge `Baru/Urgent/Sedikit pelamar`) dan CTA dual-action (`Apply` utama, `Lihat detail` sekunder). Ditambahkan juga section trend kategori + panel tips/CTA agar alur “temukan job -> apply” lebih cepat dan jelas.
 - **2026-05-01 — Freelancers page hiring-tool redesign:** `/freelancers` kini ditata ulang menjadi surface utilitarian 3 kolom (filter kiri, list kandidat tengah, panel live/insight kanan) dengan search bar dominan dan quick tags di atas fold. Row kandidat dipoles untuk decision speed (avatar + verified, name/role/lokasi, rating, starting rate, response hint, status online/available) serta CTA diprioritaskan ke `Chat` dengan `Lihat profil` sebagai aksi sekunder. Di bawah list ditambahkan blok `Job terbaru dari klien` agar user bisa berpindah cepat antara discovery talent dan peluang job tanpa kehilangan konteks.
 - **2026-04-30 — Homepage visual redesign (mockup-aligned):** landing `/id` dipoles ke layout marketplace modern (white + soft purple accent) dengan hero split dua kolom, card search premium, sidebar kanan berisi `Marketplace aktif` + `Aktivitas live` + `Pola kerja`, grid kategori yang lebih clean, preview list compact, CTA lavender di bawah, dan navbar/footer yang lebih rapi—tanpa perubahan logic backend atau alur data inti.
 - **2026-04-27 — Repository structure cleanup (`apps/web`):** runtime source dari `apps/web/src` dipindahkan/disatukan ke root-level tree (`app`, `components`, `features`, `lib`, `server`, `locales`, `public`) dan shim re-export lama di `middleware`, `server/http`, serta `server/services` diganti implementasi langsung. Alias `@src/*` sementara diarahkan ke root untuk kompatibilitas import existing tanpa break.

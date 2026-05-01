@@ -1,13 +1,21 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v68  
-> Last synchronized: 2026-05-01 (`/freelancers` redesigned to marketplace hiring-tool layout with sticky primary search and 3-column utility structure).
+> **Doc revision:** v69  
+> Last synchronized: 2026-05-01 (`/jobs` redesigned into 3-column job marketplace tool with scan-first list and apply-first CTA hierarchy).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-01 — Jobs board redesign (Upwork/Fastwork-style utility)
+
+- `/jobs` diubah menjadi data-driven board, bukan landing section: search block dominan (keyword + lokasi + kategori + quick tags) dibuat sticky agar flow cari job selalu mudah dijangkau.
+- Desktop menggunakan layout 3 kolom: filter kiri yang ringkas (kategori, budget, tipe kerja, experience), list lowongan tengah, dan panel kanan untuk live activity + insight + quick tips.
+- Row job dipoles agar cepat dibandingkan: judul besar, client/lokasi, budget jelas, waktu posting, tag context, badge urgensi (`Baru`, `Urgent`, `Sedikit pelamar`), serta CTA primer `Apply` dengan `Lihat detail` sebagai sekunder.
+- Ditambahkan blok “kategori paling banyak dicari” dan CTA ringan (`Set alert job`, `Upload CV`) untuk menjaga momentum action saat user belum menemukan fit.
+- Visual tetap grounded (solid surface, border tipis, shadow minim) tanpa glassmorphism, gradient berat, atau feel marketing template.
 
 ### 2026-05-01 — Freelancers hiring-tool redesign (real-time utility layout)
 
