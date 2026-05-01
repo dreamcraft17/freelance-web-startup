@@ -2,7 +2,8 @@
 
 import type { Route } from "next";
 import Link from "next/link";
-import { MapPin } from "lucide-react";
+import { Clock3, MapPin } from "lucide-react";
+import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
 import { useI18n } from "@/features/i18n/I18nProvider";
 
 /** Public job card shape (matches `SerializableJobCard` from saved jobs UI). */
@@ -70,11 +71,18 @@ export function JobsPublicList({ jobs }: { jobs: JobsPublicCard[] }) {
     return t("public.jobs.signalReviewBrief");
   };
 
+  const badgeType = (job: JobsPublicCard): "new" | "urgent" | "few" => {
+    const ageHours = Math.floor((Date.now() - Date.parse(job.createdAt)) / (1000 * 60 * 60));
+    if (Number.isFinite(ageHours) && ageHours <= 6) return "new";
+    if (job.isFeaturedActive) return "urgent";
+    return "few";
+  };
+
   return (
     <ul className="space-y-2.5">
       {jobs.map((job) => (
         <li key={job.id}>
-          <article className="border border-slate-200 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
+          <article className="rounded-xl border border-slate-200 bg-white p-4">
             <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr),auto] lg:items-start">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-1.5">
@@ -94,12 +102,13 @@ export function JobsPublicList({ jobs }: { jobs: JobsPublicCard[] }) {
                       })}
                     </span>
                   ) : null}
-                  <span className="rounded border border-[#3525cd]/35 bg-[#3525cd]/[0.07] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#3525cd]">
-                    {whyApplySignal(job)}
-                  </span>
+                  {badgeType(job) === "new" ? <span className="rounded border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-700">{t("public.jobs.badgeNew")}</span> : null}
+                  {badgeType(job) === "urgent" ? <span className="rounded border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-700">{t("public.jobs.badgeUrgent")}</span> : null}
+                  {badgeType(job) === "few" ? <span className="rounded border border-violet-200 bg-violet-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-violet-700">{t("public.jobs.badgeFewApplicants")}</span> : null}
                 </div>
 
                 <h2 className="mt-1.5 text-base font-bold leading-snug text-slate-950 sm:text-[17px]">{job.title}</h2>
+                <p className="mt-1 text-sm font-medium text-slate-700">{t("public.jobs.clientNameFallback")} • {job.city ?? t("public.jobs.noCity")}</p>
                 <p className="mt-1.5 line-clamp-2 text-sm font-medium leading-relaxed text-slate-600">{job.description}</p>
 
                 <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-slate-200 pt-2.5">
@@ -112,16 +121,33 @@ export function JobsPublicList({ jobs }: { jobs: JobsPublicCard[] }) {
                   ) : (
                     <span className="text-xs font-medium text-slate-400">{t("public.jobs.noCity")}</span>
                   )}
-                  <span className="text-xs font-medium text-slate-500">{timeAgoLabel(job.createdAt)}</span>
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-slate-500">
+                    <Clock3 className="h-3.5 w-3.5" aria-hidden />
+                    {timeAgoLabel(job.createdAt)}
+                  </span>
                 </div>
 
-                <p className="mt-2 text-[11px] text-slate-600">{t("public.jobs.applyConfidenceLine")}</p>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {((job.categoryName && [job.categoryName]) || []).map((tag) => (
+                    <span key={tag} className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px] font-medium text-slate-700">
+                      {tag}
+                    </span>
+                  ))}
+                  <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px] font-medium text-slate-700">
+                    {whyApplySignal(job)}
+                  </span>
+                </div>
               </div>
 
               <div className="flex shrink-0 items-start">
-                <Link href={`/jobs/${job.id}` as Route} className="nw-cta-primary inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold">
-                  {t("public.jobs.primaryActionViewJob")}
-                </Link>
+                <div className="flex flex-col items-end gap-2">
+                  <AuthAwareCtaLink href={`/jobs/${job.id}` as Route} intent="submit-bid" unauthenticatedTo="register" registerRoleHint="freelancer" className="inline-flex min-w-[8.5rem] items-center justify-center rounded-md bg-[#4f35e8] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#4326d9]">
+                    {t("public.jobs.primaryActionApply")}
+                  </AuthAwareCtaLink>
+                  <Link href={`/jobs/${job.id}` as Route} className="inline-flex min-w-[8.5rem] items-center justify-center rounded-md border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">
+                    {t("public.jobs.primaryActionViewJob")}
+                  </Link>
+                </div>
               </div>
             </div>
           </article>
