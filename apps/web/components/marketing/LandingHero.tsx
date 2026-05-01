@@ -39,7 +39,7 @@ export function LandingHero({
         secondaryCtaLabel: "Pasang lowongan",
         secondaryCtaHref: "/client/jobs/new" as Route,
         searchAction: "/freelancers" as Route,
-        searchPlaceholder: "Cari freelancer atau skill",
+        searchPlaceholder: "Cari skill, freelancer, atau layanan",
         ctaBandLabel: "Pasang lowongan sekarang"
       };
     }
@@ -79,7 +79,7 @@ export function LandingHero({
 
   return (
     <section className="bg-[#f3f4fa]">
-      <div className="mx-auto max-w-[1200px] px-4 pb-8 pt-8 sm:px-6 sm:pb-12 sm:pt-10">
+      <div className="mx-auto max-w-[1180px] px-4 pb-10 pt-8 sm:px-6 sm:pb-14 sm:pt-10">
         <div className="px-2 sm:px-4">
           <div className="grid items-start gap-6 lg:grid-cols-12">
             <div className="lg:col-span-9">
@@ -103,7 +103,7 @@ export function LandingHero({
               </div>
 
               <div className={`mt-6 text-center transition-opacity duration-200 ease-in-out ${isPending ? "opacity-70" : "opacity-100"}`}>
-                <h1 className="mx-auto max-w-4xl whitespace-pre-line text-[2.75rem] font-bold leading-[1.1] tracking-tight text-[#071027] sm:text-[3.35rem]">
+                <h1 className="mx-auto max-w-4xl whitespace-pre-line text-[2.7rem] font-bold leading-[1.08] tracking-tight text-[#071027] sm:text-[3.45rem]">
                   {toggleIntent === "hire" ? (
                     <>
                       Temukan freelancer terbaik{"\n"}
@@ -117,10 +117,10 @@ export function LandingHero({
                   {modeContent.subHeadline}
                 </p>
                 <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
-                  <Link href={modeContent.primaryCtaHref} className="inline-flex items-center justify-center rounded-lg bg-[#4f35e8] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#4326d9]">
+                  <Link href={modeContent.primaryCtaHref} className="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#4f35e8] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#4326d9]">
                     {modeContent.primaryCtaLabel}
                   </Link>
-                  <Link href={modeContent.secondaryCtaHref} className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                  <Link href={modeContent.secondaryCtaHref} className="inline-flex min-h-11 items-center justify-center rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">
                     {modeContent.secondaryCtaLabel}
                   </Link>
                 </div>
@@ -157,7 +157,7 @@ export function LandingHero({
             </aside>
           </div>
 
-          <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-3 sm:p-4">
+          <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_1px_0_rgba(15,23,42,0.03)] sm:p-4">
             <form action={modeContent.searchAction} method="get" className="grid gap-2.5 lg:grid-cols-[minmax(0,1.8fr),minmax(0,1fr),minmax(0,1fr),auto]">
               <label className="flex min-h-[3.2rem] items-center gap-2 rounded-lg border border-slate-300 bg-white px-3">
                 <Search className="h-4 w-4 text-[#4f35e8]" aria-hidden />
@@ -186,7 +186,7 @@ export function LandingHero({
                   <option value="web">Website</option>
                 </select>
               </label>
-              <button type="submit" className="inline-flex min-h-[3.2rem] items-center justify-center rounded-lg bg-[#4f35e8] px-5 text-sm font-semibold text-white hover:bg-[#4326d9]">
+              <button type="submit" className="inline-flex min-h-[3.2rem] items-center justify-center rounded-lg bg-[#4f35e8] px-6 text-sm font-semibold text-white hover:bg-[#4326d9]">
                 Cari
               </button>
             </form>
@@ -205,20 +205,32 @@ export function LandingHero({
           </div>
 
           <div className="mt-4 grid gap-2.5 sm:grid-cols-3">
-            <div className="rounded-lg border border-slate-200 bg-white px-3 py-3">
-              <p className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-900">
-                <Zap className="h-4 w-4 text-[#4f35e8]" /> Cepat
+            <div className="rounded-lg border border-slate-200 bg-white px-4 py-3.5">
+              <p className="inline-flex items-center gap-2 text-sm font-semibold text-slate-900">
+                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#f1edff] text-[#4f35e8]">
+                  <Zap className="h-4 w-4" />
+                </span>
+                Cepat
               </p>
+              <p className="mt-1.5 text-sm leading-relaxed text-slate-600">Temukan freelancer atau pekerjaan dalam hitungan menit.</p>
             </div>
-            <div className="rounded-lg border border-slate-200 bg-white px-3 py-3">
-              <p className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-900">
-                <ShieldCheck className="h-4 w-4 text-[#4f35e8]" /> Aman
+            <div className="rounded-lg border border-slate-200 bg-white px-4 py-3.5">
+              <p className="inline-flex items-center gap-2 text-sm font-semibold text-slate-900">
+                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#f1edff] text-[#4f35e8]">
+                  <ShieldCheck className="h-4 w-4" />
+                </span>
+                Aman
               </p>
+              <p className="mt-1.5 text-sm leading-relaxed text-slate-600">Pembayaran aman dengan sistem escrow dan transparan.</p>
             </div>
-            <div className="rounded-lg border border-slate-200 bg-white px-3 py-3">
-              <p className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-900">
-                <Briefcase className="h-4 w-4 text-[#4f35e8]" /> Fleksibel
+            <div className="rounded-lg border border-slate-200 bg-white px-4 py-3.5">
+              <p className="inline-flex items-center gap-2 text-sm font-semibold text-slate-900">
+                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#f1edff] text-[#4f35e8]">
+                  <Briefcase className="h-4 w-4" />
+                </span>
+                Fleksibel
               </p>
+              <p className="mt-1.5 text-sm leading-relaxed text-slate-600">Kerja remote, on-site, atau hybrid sesuai kebutuhan Anda.</p>
             </div>
           </div>
 

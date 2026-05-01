@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v79  
-> Last synchronized: 2026-05-01 (homepage now defaults to hire intent and marketing topbar simplified to match target composition).
+> **Doc revision:** v80  
+> Last synchronized: 2026-05-01 (homepage alignment refined further with tighter hero spacing and full marketing footer composition).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,6 +9,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
+- **2026-05-01 — Homepage composition parity pass:** section hero dipoles lagi (headline scale/spacing, search card density, CTA sizing) dan footer landing diganti ke struktur yang lebih lengkap (brand+social, navigasi kolom, form newsletter, locale marker) untuk mendekati referensi visual final secara menyeluruh.
 - **2026-05-01 — Homepage intent + topbar alignment fix:** landing `/[locale]` kini default ke mode `hire` saat first load, dengan hero headline recruiter-first (termasuk emphasis visual) dan top navbar versi logged-out yang lebih clean (`Masuk`, `Daftar`, locale) agar hasil render lebih dekat ke komposisi referensi final.
 - **2026-05-01 — Register redirect copy refinement:** helper text setelah akun dibuat kini menampilkan tujuan yang ramah pengguna (mis. `halaman profil Anda`) berdasarkan route intent, menggantikan tampilan path mentah seperti `/freelancer/profile`.
 - **2026-05-01 — Homepage final dual-user landing pass:** homepage dipertahankan sebagai landing clean yang tetap “alive”: hero dengan toggle mode recruiter/freelancer, headline+CTA+search dinamis, visual cards kanan sebagai konteks non-data, search row lengkap (input/lokasi/kategori/chips), value 3 poin, dan CTA bawah; seluruh section list/preview/activity marketplace tidak ditampilkan agar tidak jadi dashboard/data-heavy.
