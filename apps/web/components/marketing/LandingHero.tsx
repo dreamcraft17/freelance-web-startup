@@ -32,7 +32,7 @@ export function LandingHero({
   const modeContent: ModeContent = useMemo(() => {
     if (currentIntent === "hire") {
       return {
-        headline: "Temukan freelancer terbaik dan selesaikan proyek dengan mudah",
+        headline: "Temukan freelancer terbaik\ndan selesaikan proyek dengan mudah",
         subHeadline: "Cari, diskusi, dan rekrut freelancer terpercaya. Kelola proyek dan pembayaran aman dalam satu platform.",
         primaryCtaLabel: "Cari freelancer",
         primaryCtaHref: "/freelancers" as Route,
@@ -103,8 +103,15 @@ export function LandingHero({
               </div>
 
               <div className={`mt-6 text-center transition-opacity duration-200 ease-in-out ${isPending ? "opacity-70" : "opacity-100"}`}>
-                <h1 className="mx-auto max-w-4xl text-4xl font-bold leading-[1.12] tracking-tight text-[#071027] sm:text-[3.35rem]">
-                  {modeContent.headline}
+                <h1 className="mx-auto max-w-4xl whitespace-pre-line text-[2.75rem] font-bold leading-[1.1] tracking-tight text-[#071027] sm:text-[3.35rem]">
+                  {toggleIntent === "hire" ? (
+                    <>
+                      Temukan freelancer terbaik{"\n"}
+                      dan <span className="text-[#4f35e8]">selesaikan proyek</span> dengan mudah
+                    </>
+                  ) : (
+                    modeContent.headline
+                  )}
                 </h1>
                 <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base">
                   {modeContent.subHeadline}
@@ -121,14 +128,14 @@ export function LandingHero({
             </div>
 
             <aside className="hidden lg:col-span-3 lg:block">
-              <div className="relative mt-4 min-h-[260px] rounded-[2rem] bg-[#e8e4fb] p-4">
+              <div className="relative mt-4 min-h-[260px] rounded-[2rem] bg-[#e8e4fb] p-4 before:absolute before:inset-4 before:-z-0 before:rounded-[1.5rem] before:bg-[#ddd7fb] before:content-['']">
                 <div className="space-y-2.5">
                   {[
                     { name: "Siska Putri", role: "UI/UX Designer", rating: "4.9", hue: "bg-[#fed7d7]" },
                     { name: "Rama Wijaya", role: "Video Editor", rating: "4.8", hue: "bg-[#bfdbfe]" },
                     { name: "Daffa Pratama", role: "Web Developer", rating: "4.9", hue: "bg-[#fde68a]" }
                   ].map((row) => (
-                    <div key={row.name} className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                    <div key={row.name} className="relative z-10 rounded-xl border border-slate-200 bg-white px-3 py-2.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
                       <div className="flex items-center gap-2.5">
                         <div className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold text-slate-700 ${row.hue}`}>
                           {row.name

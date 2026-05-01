@@ -67,6 +67,17 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
     return `/login?${q.toString()}`;
   }, [intent, nextDest]);
 
+  const returnDestinationLabel = useMemo(() => {
+    if (!nextDest) return null;
+    const safe = sanitizeReturnUrl(nextDest, "/");
+    if (safe.startsWith("/freelancer/profile")) return t("auth.registerForm.returnDestinationProfile");
+    if (safe.startsWith("/messages")) return t("auth.registerForm.returnDestinationMessages");
+    if (safe.startsWith("/notifications")) return t("auth.registerForm.returnDestinationNotifications");
+    if (safe.startsWith("/settings")) return t("auth.registerForm.returnDestinationSettings");
+    if (safe.startsWith("/client") || safe.startsWith("/freelancer")) return t("auth.registerForm.returnDestinationDashboard");
+    return t("auth.registerForm.returnDestinationGeneric");
+  }, [nextDest, t]);
+
   const submit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -142,7 +153,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
     nextDest && sanitizeReturnUrl(nextDest, "/") !== "/" ? (
       <p className="text-xs leading-relaxed text-slate-500">
         {t("auth.registerForm.afterCreate")}{" "}
-        <span className="font-medium text-slate-700">{sanitizeReturnUrl(nextDest, "/")}</span>.
+        <span className="font-medium text-slate-700">{returnDestinationLabel}</span>.
       </p>
     ) : null;
   const intentKey = registerIntentMessageKey(intent);
