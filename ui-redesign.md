@@ -1,13 +1,21 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v70  
-> Last synchronized: 2026-05-01 (global page transition UX added across app with top loading bar, subtle fade, and shared skeleton fallback).
+> **Doc revision:** v71  
+> Last synchronized: 2026-05-01 (homepage redesigned into minimal dual-user hero with dynamic intent toggle).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-01 — Homepage dual-user minimalization
+
+- Struktur homepage disederhanakan menjadi alur tunggal yang fokus ke aksi cepat, bukan eksplorasi marketplace data/list.
+- Ditambahkan toggle intent jelas di hero: `Saya ingin rekrut` dan `Saya ingin kerja`, dengan active-state tegas.
+- Headline, CTA utama/sekunder, dan placeholder search kini berubah dinamis mengikuti mode user.
+- Dihapus section kategori/list preview/live panel pada homepage agar surface terasa ringan, netral, dan tidak bias ke salah satu sisi.
+- Pergantian mode memakai update state client + `router.replace` query intent untuk transisi yang lebih halus tanpa reload kasar.
 
 ### 2026-05-01 — Global navigation transition polish
 
