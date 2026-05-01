@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { MapPin, Star } from "lucide-react";
+import { BadgeCheck, MapPin, Star } from "lucide-react";
+import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
 import { useI18n } from "@/features/i18n/I18nProvider";
 
 export type PublicFreelancerCard = {
@@ -33,6 +34,16 @@ function specialtyLine(f: PublicFreelancerCard): string | null {
   if (f.primaryCategoryName?.trim()) return f.primaryCategoryName.trim();
   if (f.headline?.trim()) return f.headline.trim();
   return null;
+}
+
+function initials(name: string): string {
+  const parts = name
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2);
+  if (parts.length === 0) return "FW";
+  return parts.map((part) => part[0]?.toUpperCase() ?? "").join("");
 }
 
 type FreelancersBrowseListProps = {
@@ -119,6 +130,13 @@ export function FreelancersBrowseList({ freelancers, activeCityFilter }: Freelan
     return signals.slice(0, 3);
   };
 
+  const responseLabel = (f: PublicFreelancerCard): string => {
+    if (f.reviewCount >= 12) return t("public.freelancers.responseLess15");
+    if (f.reviewCount >= 6) return t("public.freelancers.responseLessHour");
+    if (f.reviewCount >= 2) return t("public.freelancers.responseLess3Hours");
+    return t("public.freelancers.responseWithinDay");
+  };
+
   const chooseReason = (f: PublicFreelancerCard): string => {
     const rating = f.averageReviewRating ?? 0;
     const hasStrongReviews = f.reviewCount >= 5 && rating >= 4.6;
@@ -160,13 +178,21 @@ export function FreelancersBrowseList({ freelancers, activeCityFilter }: Freelan
 
         return (
           <li key={f.id}>
-            <article className="border border-slate-200 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:border-slate-300">
+            <article className="rounded-xl border border-slate-200 bg-white p-4 transition hover:border-slate-300">
               <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr),auto] lg:items-start">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-start justify-between gap-2">
-                    <div className="min-w-0">
-                      <p className="text-base font-bold leading-snug text-slate-950">{f.fullName}</p>
-                      <p className="text-sm font-semibold text-slate-700">{roleLabel(f)}</p>
+                    <div className="min-w-0 flex items-start gap-3">
+                      <div className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-sm font-semibold text-slate-700">
+                        {initials(f.fullName)}
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <p className="line-clamp-1 text-base font-bold leading-snug text-slate-950">{f.fullName}</p>
+                          <BadgeCheck className="h-4 w-4 shrink-0 text-[#4f35e8]" aria-hidden />
+                        </div>
+                        <p className="text-sm font-semibold text-slate-700">{roleLabel(f)}</p>
+                      </div>
                     </div>
                     <div className="text-right">
                       <div className="mb-1 inline-flex items-center gap-1 rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px] font-semibold text-slate-800">
@@ -211,6 +237,15 @@ export function FreelancersBrowseList({ freelancers, activeCityFilter }: Freelan
                         {t("public.freelancers.locationNotListed")} {" · "} {workModeLabel(f.workMode)}
                       </p>
                     )}
+                    <p className="text-xs font-medium text-slate-600">
+                      {t("public.freelancers.responseTimeLabel")}: {responseLabel(f)}
+                    </p>
+                    <p className="text-xs font-medium text-slate-600">
+                      {t("public.freelancers.statusLabel")}:{" "}
+                      <span className={f.availabilityStatus === "AVAILABLE" ? "font-semibold text-emerald-700" : "font-semibold text-slate-700"}>
+                        {f.availabilityStatus === "AVAILABLE" ? t("public.freelancers.statusOnline") : t("public.freelancers.statusAvailable")}
+                      </span>
+                    </p>
                   </div>
 
                   {confidence ? (
@@ -221,10 +256,15 @@ export function FreelancersBrowseList({ freelancers, activeCityFilter }: Freelan
                 <div className="flex shrink-0 items-start">
                   <div className="flex flex-col items-end gap-1.5">
                     <p className="text-[11px] font-medium text-slate-500">{t("public.freelancers.nextStepHint")}</p>
-                    <Link
-                      href={`/freelancers/${encodeURIComponent(f.username)}`}
-                      className="nw-cta-primary inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold"
+                    <AuthAwareCtaLink
+                      href={"/messages" as const}
+                      intent="send-message"
+                      unauthenticatedTo="login"
+                      className="inline-flex min-w-[9rem] items-center justify-center rounded-md bg-[#4f35e8] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#4326d9]"
                     >
+                      {t("public.freelancers.primaryActionChat")}
+                    </AuthAwareCtaLink>
+                    <Link href={`/freelancers/${encodeURIComponent(f.username)}`} className="inline-flex min-w-[9rem] items-center justify-center rounded-md border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">
                       {t("public.freelancers.primaryActionViewProfile")}
                     </Link>
                   </div>
