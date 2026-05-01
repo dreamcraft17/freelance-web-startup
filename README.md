@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v67  
-> Last synchronized: 2026-05-01 — homepage finalized as dual-user landing with right-side visual cards, full search row, value strip, and CTA (no data-heavy marketplace sections).
+> **Doc revision:** v68  
+> Last synchronized: 2026-05-01 — homepage visual rhythm aligned closer to final reference (hero proportions, right visual cards, full search chips row, value strip, and CTA band spacing).
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -79,6 +79,7 @@ Platform ini dirancang untuk mendukung **semua jenis freelance**, bukan hanya pr
 - Redesign terbaru `/jobs` mengubah halaman lowongan menjadi board operasional: search bar dominan + quick tags, struktur 3 kolom (filter kiri, list tengah, insight kanan), row lowongan berorientasi scan cepat (judul/client/lokasi/budget/waktu + badge urgensi), dan CTA utama `Apply` dengan `Lihat detail` sebagai aksi sekunder.
 - Navigasi global kini memiliki feedback transisi halaman: progress bar tipis di atas layar saat route berubah, dim/fade halus pada konten selama perpindahan, dan skeleton fallback global agar perpindahan tidak terasa “kedip”/blank.
 - Homepage final kini tetap clean namun tidak kosong: toggle dua mode, headline/CTA/search dinamis, visual context cards di sisi kanan hero, search penuh (keyword+lokkasi+kategori+chips), value strip 3 poin, dan CTA bawah—tanpa list job/freelancer atau panel data-heavy.
+- Micro-pass terbaru menyelaraskan proporsi dan ritme landing agar lebih “plek ketiplek” dengan referensi final: skala headline, shape visual kanan, quick chips bar, serta band CTA.
 - Audit struktur repository terbaru menstandarkan `apps/web` ke pola root-level (`app`, `components`, `features`, `lib`, `server`, `locales`, `public`) tanpa source runtime di `apps/web/src`; alias `@src/*` dipertahankan sementara sebagai compatibility alias ke root path agar import lama tidak memecah build.
 - Landing homepage publik terbaru kini mengikuti pendekatan visual mockup SaaS modern: hero dua kolom dengan lavender accent halus, search card penuh, sidebar right-signal cards, kategori + live preview lebih compact, CTA bawah premium, serta navbar/footer yang lebih bersih.
 
