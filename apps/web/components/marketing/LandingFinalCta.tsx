@@ -5,7 +5,7 @@ import type { Translator } from "@/lib/i18n/create-translator";
 export function LandingFinalCta({ t }: { t: Translator }) {
   return (
     <section className="mx-auto mt-6 max-w-[1280px] px-4 sm:px-6">
-      <div className="flex flex-col gap-5 rounded-2xl border border-[#e5e7eb] bg-gradient-to-r from-[#f3efff] via-[#f8f6ff] to-[#efeaff] p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:gap-8">
+      <div className="flex flex-col gap-5 rounded-2xl border border-[#e5e7eb] bg-[#f5f3ff] p-6 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
         <div className="min-w-0 max-w-xl">
           <p className="nw-section-title">{t("landing.finalCta.kicker")}</p>
           <h2 className="mt-1 text-2xl font-bold tracking-tight text-slate-950 sm:text-[1.65rem]">
