@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v70  
-> Last synchronized: 2026-05-01 — homepage default intent now opens in hire mode and top marketing nav aligns with the latest visual reference.
+> **Doc revision:** v71  
+> Last synchronized: 2026-05-01 — homepage visual alignment pass refined hero proportions and expanded marketing footer structure to match final target layout.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -44,6 +44,7 @@ Platform ini dirancang untuk mendukung **semua jenis freelance**, bukan hanya pr
 - Konsistensi i18n auth diperketat: seluruh teks user-facing pada login/register/forgot-password kini dibaca dari kamus locale (`en`/`id`), termasuk label form, helper copy, role descriptions, dan pesan error register.
 - Copy konteks redirect setelah register kini lebih human-friendly: user melihat tujuan seperti `halaman profil Anda` / `your profile page`, bukan path teknis seperti `/freelancer/profile`.
 - Homepage locale kini default ke intent `hire` (bukan neutral) agar first paint konsisten dengan hero target, termasuk emphasis headline dan CTA recruiter-first.
+- Footer marketing publik diperluas ke pola multi-kolom (brand + social, product/company/support links, newsletter field, locale marker) agar komposisi halaman utama lebih dekat dengan referensi final.
 - Halaman publik `/freelancers` kini dipoles sebagai directory yang lebih decision-oriented: hasil ditata dalam row comparison layout, rate context (`starting at`) lebih tegas, sinyal pilih cepat (nearby/available/popular/top-rated) ditampilkan ringkas, dan CTA utama per hasil dipusatkan ke `View profile`.
 - Refinement lanjutan menekankan alasan pemilihan nyata per freelancer (`why choose this`) berbasis data (review strength, volume hire proxy, nearby fit, budget fit), menambah hierarchy subtle untuk top matches (`Best match` / `Recommended`), serta menaikkan visibilitas rating agar keputusan user lebih percaya diri.
 - Halaman publik detail freelancer (`/freelancers/[username]`) kini ditata ulang menjadi conversion surface: top summary menonjolkan trust + pricing + availability, section `why choose this` berbasis data nyata, skills/reviews dipindah ke struktur keputusan, dan CTA utama difokuskan ke aksi kontak.

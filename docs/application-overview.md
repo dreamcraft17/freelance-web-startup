@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v77  
-> Last synchronized: 2026-05-01 (homepage first-load intent and marketing topbar behavior synchronized with latest landing reference).
+> **Doc revision:** v78  
+> Last synchronized: 2026-05-01 (homepage visual parity pass expanded hero tuning and public marketing footer structure).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,7 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Homepage composition parity refinement (2026-05-01):** selain default intent dan topbar, landing page kini menambah tuning proporsi hero (title/CTA/search) serta footer marketing yang lebih lengkap agar output visual lebih konsisten terhadap referensi target.
 - **Homepage first-screen alignment fix (2026-05-01):** default intent landing publik digeser ke `hire` agar first impression konsisten dengan recruiter flow; top marketing navbar untuk guest disederhanakan ke pola `Masuk/Daftar/Locale` agar visual hierarchy lebih bersih dan sesuai arah desain final.
 - **Register redirect microcopy refinement (2026-05-01):** context message setelah pembuatan akun kini menyebut tujuan dalam bahasa pengguna (contoh: `halaman profil Anda`) berdasarkan route target, bukan menampilkan path internal seperti `/freelancer/profile`.
 - **Homepage final dual-user landing (2026-05-01):** surface homepage kini menyeimbangkan clarity + visual context: toggle intent recruiter/freelancer, headline/CTA/search dinamis, right-side visual cards (non-data), full search row, value strip, dan CTA band; bagian data-heavy (preview list/job/freelancer activity) tidak dimunculkan agar halaman tetap landing-focused.

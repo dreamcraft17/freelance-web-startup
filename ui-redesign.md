@@ -1,13 +1,18 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v75  
-> Last synchronized: 2026-05-01 (homepage first-screen alignment refined: default hire intent and cleaner logged-out marketing navbar).
+> **Doc revision:** v76  
+> Last synchronized: 2026-05-01 (homepage reference matching refined with denser hero controls and full-width footer information architecture).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-01 — Homepage full composition refinement
+
+- Hero rhythm dipadatkan agar lebih mirip referensi: heading size/leading, CTA height, search row, dan kartu benefit dibuat lebih seimbang.
+- Footer marketing dinaikkan ke pola informasi lengkap (brand + social icons, 3 kolom link, newsletter slot, dan locale marker) untuk menutup halaman seperti target desain.
 
 ### 2026-05-01 — Landing first-screen alignment fix
 
