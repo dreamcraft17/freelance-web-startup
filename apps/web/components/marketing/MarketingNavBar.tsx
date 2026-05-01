@@ -108,7 +108,7 @@ export function MarketingNavBar({
   };
 
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur">
+    <header className="fixed top-0 z-50 w-full border-b border-slate-200 bg-white">
       <nav className="mx-auto flex min-h-[4.5rem] max-w-[1280px] items-center px-4 sm:px-6">
         <div className="flex shrink-0 items-center py-1 pr-3 sm:pr-4 lg:pr-5">
           <BrandLogo

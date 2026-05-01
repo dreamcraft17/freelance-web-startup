@@ -86,7 +86,7 @@ export function LandingCategoryChips({ t }: { t: Translator }) {
             <Link
               key={labelKey}
               href={href}
-              className="group flex min-h-[9.8rem] flex-col items-start justify-between rounded-2xl border border-[#e5e7eb] bg-white px-4 py-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-[#4f35e8]/45 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4f35e8]/25"
+              className="group flex min-h-[9.8rem] flex-col items-start justify-between rounded-2xl border border-[#e5e7eb] bg-white px-4 py-4 text-left transition hover:border-[#4f35e8]/45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4f35e8]/25"
             >
               <div>
                 <span

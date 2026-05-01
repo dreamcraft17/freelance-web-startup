@@ -100,13 +100,11 @@ export function LandingHero({
   const hasLiveRows = liveRows.length > 0;
 
   return (
-    <section className="bg-[#f8fafc]">
+    <section className="bg-white">
       <div className="mx-auto max-w-[1280px] px-4 pb-8 pt-6 sm:px-6 sm:pb-10 sm:pt-8 lg:pb-12 lg:pt-10">
         <div className="grid gap-5 lg:grid-cols-12 lg:items-start">
           <div className="flex flex-col lg:col-span-8">
-            <div className="relative overflow-hidden rounded-2xl border border-[#e5e7eb] bg-gradient-to-br from-[#f1ecff] via-[#f8f6ff] to-white p-5 shadow-sm sm:p-6">
-              <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#4f35e8]/10" />
-              <div className="pointer-events-none absolute right-10 top-10 hidden h-32 w-32 rounded-full border border-white/80 bg-[#4f35e8]/10 lg:block" />
+            <div className="relative overflow-hidden rounded-2xl border border-[#e5e7eb] bg-[#f7f5ff] p-5 sm:p-6">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <div className="mt-1.5 inline-flex rounded-lg border border-slate-200 bg-white p-1">
@@ -159,11 +157,11 @@ export function LandingHero({
               </h1>
               <p className="relative z-10 mt-2 max-w-2xl text-sm leading-relaxed text-slate-700 sm:text-[15px]">Cari, bandingkan, dan mulai diskusi dalam satu alur kerja - lokal atau remote.</p>
               <p className="relative z-10 mt-2 text-xs font-semibold text-slate-600 sm:text-[13px]">Proposal tetap terhubung ke setiap pekerjaan.</p>
-              <p className="relative z-10 mt-3 inline-flex rounded-md border border-slate-200 bg-white/80 px-3 py-2 text-[11px] font-semibold text-slate-700 sm:text-xs">
+              <p className="relative z-10 mt-3 inline-flex rounded-md border border-slate-200 bg-white px-3 py-2 text-[11px] font-semibold text-slate-700 sm:text-xs">
                 {activityLine}
               </p>
 
-              <div className="pointer-events-none absolute bottom-4 right-4 hidden min-w-[16rem] rounded-xl border border-white/90 bg-white/95 p-3 shadow-sm lg:block">
+              <div className="pointer-events-none absolute bottom-4 right-4 hidden min-w-[16rem] rounded-xl border border-slate-200 bg-white p-3 lg:block">
                 <div className="flex items-center gap-2">
                   <div className="h-10 w-10 rounded-full bg-[#4f35e8]/15" />
                   <div className="h-10 w-10 -ml-3 rounded-full bg-[#4f35e8]/25" />
@@ -179,7 +177,7 @@ export function LandingHero({
               </div>
             </div>
 
-            <div className="mt-4 rounded-2xl border border-[#e5e7eb] bg-white p-4 shadow-sm sm:p-5">
+            <div className="mt-4 rounded-2xl border border-[#e5e7eb] bg-white p-4 sm:p-5">
               <div className="mb-2.5 flex flex-wrap items-center justify-between gap-2 sm:mb-3">
                 <p className="text-sm font-bold text-[#071027]">Cari freelancer</p>
                 <div className="flex flex-wrap items-center gap-2">
@@ -247,7 +245,7 @@ export function LandingHero({
             </div>
           </div>
           <aside className="space-y-4 lg:col-span-4">
-            <div className="rounded-2xl border border-[#e5e7eb] bg-white p-4 shadow-sm">
+            <div className="rounded-2xl border border-[#e5e7eb] bg-white p-4">
               <p className="text-sm font-bold text-[#071027]">Marketplace aktif</p>
               <ul className="mt-3 space-y-2 text-sm font-medium text-slate-700">
                 <li className="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2">
@@ -265,7 +263,7 @@ export function LandingHero({
               </ul>
             </div>
 
-            <div className="rounded-2xl border border-[#e5e7eb] bg-white p-4 shadow-sm">
+            <div className="rounded-2xl border border-[#e5e7eb] bg-white p-4">
               <p className="text-sm font-bold text-[#071027]">Aktivitas live</p>
               {hasLiveRows ? (
                 <div className="mt-2 space-y-2">
@@ -291,7 +289,7 @@ export function LandingHero({
               )}
             </div>
 
-            <div className="rounded-2xl border border-[#e5e7eb] bg-white p-4 shadow-sm">
+            <div className="rounded-2xl border border-[#e5e7eb] bg-white p-4">
               <p className="text-sm font-bold text-[#071027]">Pola kerja yang paling sering dipakai</p>
               <p className="mt-1 text-xs text-slate-500">Pilih mode kerja yang paling sesuai kebutuhan Anda.</p>
               <ul className="mt-3 space-y-2">
