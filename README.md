@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v62  
-> Last synchronized: 2026-04-30 — homepage `/id` UI updated to modern marketplace mockup style (premium split hero, search card, right sidebar signal cards).
+> **Doc revision:** v63  
+> Last synchronized: 2026-05-01 — `/freelancers` redesigned into decision-first hiring tool layout (sticky search, 3-column utility structure, chat-first actions).
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -75,6 +75,7 @@ Platform ini dirancang untuk mendukung **semua jenis freelance**, bukan hanya pr
 - Trust pass final: panel tidak lagi menampilkan sample people/rows saat data kosong; hanya row real berbasis data listing yang dirender, atau fallback copy aman jika data belum tersedia.
 - Refinement `/freelancers` terbaru mengurangi kesan “dead empty marketplace”: headline dibuat lebih outcome-driven, quick chips ditambahkan di atas list, empty state diperkecil dan diarahkan ke aksi, skeleton rows ditampilkan saat hasil kosong, serta panel CTA sidebar disederhanakan fokus ke `Complete profile`.
 - Pass lanjutan `/freelancers` memoles kualitas marketplace list: setiap row menonjolkan role + 1-line value statement + trust/rating + location/work mode + starting price + signals keputusan, CTA tetap satu (`View profile`), dan mode kosong kini menampilkan `Example freelancers` agar user tetap memahami struktur perbandingan sebelum data masuk.
+- Redesign terbaru `/freelancers` menggeser halaman menjadi tool hiring cepat: search bar dominan + quick tags, filter kiri yang ringkas/collapsible, list kandidat tengah dengan hierarchy keputusan (`Nama > Harga > Status > Rating`), panel kanan live insights, CTA utama `Chat`, serta section `Job terbaru dari klien` di bawah listing untuk menjaga continuity aksi.
 - Audit struktur repository terbaru menstandarkan `apps/web` ke pola root-level (`app`, `components`, `features`, `lib`, `server`, `locales`, `public`) tanpa source runtime di `apps/web/src`; alias `@src/*` dipertahankan sementara sebagai compatibility alias ke root path agar import lama tidak memecah build.
 - Landing homepage publik terbaru kini mengikuti pendekatan visual mockup SaaS modern: hero dua kolom dengan lavender accent halus, search card penuh, sidebar right-signal cards, kategori + live preview lebih compact, CTA bawah premium, serta navbar/footer yang lebih bersih.
 

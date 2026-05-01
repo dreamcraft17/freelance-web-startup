@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v69  
-> Last synchronized: 2026-04-30 (homepage `/id` visual layer redesigned to mockup-aligned modern marketplace layout).
+> **Doc revision:** v70  
+> Last synchronized: 2026-05-01 (`/freelancers` now operates as a decision-first hiring tool with 3-column marketplace utility layout).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,7 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Freelancers hiring-tool redesign (2026-05-01):** halaman publik `/freelancers` sekarang berfungsi sebagai workspace pencarian kandidat cepat, bukan landing-style list: sticky primary search di atas, struktur 3 kolom (filters/list/live insights), row kandidat chat-first dengan hierarchy keputusan tegas, dan section `job terbaru` di bawah list untuk continuity eksplorasi.
 - **Homepage mockup redesign pass (2026-04-30):** surface publik `/id` kini menampilkan layout marketplace modern yang lebih jelas untuk aksi cepat (navbar bersih sticky, hero split dua kolom, search card menonjol, sidebar signal cards, grid kategori + preview compact, dan CTA/final footer lebih premium) sambil mempertahankan logic data/route existing.
 - **Web source-structure normalization (2026-04-27):** `apps/web` kini menggunakan konvensi root-level App Router secara penuh (`app`, `components`, `features`, `lib`, `server`, `locales`, `public`) dan runtime tree `apps/web/src` dihapus untuk menghindari pola ganda yang membingungkan.
 - **Compatibility import bridge (2026-04-27):** alias `@src/*` sementara tetap tersedia namun dipetakan ke root path agar import lama tetap bekerja selama masa transisi tanpa memecah route/build/runtime.

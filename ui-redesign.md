@@ -1,13 +1,21 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v67  
-> Last synchronized: 2026-04-30 (homepage `/id` redesigned to match premium SaaS marketplace mockup).
+> **Doc revision:** v68  
+> Last synchronized: 2026-05-01 (`/freelancers` redesigned to marketplace hiring-tool layout with sticky primary search and 3-column utility structure).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-01 — Freelancers hiring-tool redesign (real-time utility layout)
+
+- Halaman `/freelancers` diubah dari feel “landing/listing biasa” menjadi interface tool: search bar dominan (keyword + lokasi + kategori + quick tags) ditempatkan sebagai blok utama sticky di atas fold.
+- Layout desktop sekarang eksplisit 3 kolom: filter kiri yang ringan/collapsible, list vertikal kandidat di tengah untuk compare cepat, dan panel kanan untuk `Aktivitas live`, `Insight hari ini`, serta `Mode kerja`.
+- Listing row dipoles agar hierarchy keputusan lebih jelas: **Nama > Harga > Status > Rating**, plus avatar, badge verified, response-time hint, tags skill/signal, dan CTA utama `Chat` (sekunder `Lihat profil`).
+- Ditambahkan section `Job terbaru dari klien` di bawah daftar freelancer untuk menjaga alur eksplorasi lintas supply (talent) dan demand (job) tanpa pindah konteks jauh.
+- Gaya visual tetap grounded: solid white/light surfaces, border tipis `#E5E7EB`, shadow sangat ringan, tanpa glassmorphism/gradient berat/dekorasi hero.
 
 ### 2026-04-30 — Homepage mockup alignment pass (SaaS marketplace look)
 
