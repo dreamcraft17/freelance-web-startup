@@ -1,13 +1,23 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v73  
-> Last synchronized: 2026-05-01 (homepage final-reference visual alignment refined for closer pixel-level match).
+> **Doc revision:** v75  
+> Last synchronized: 2026-05-01 (homepage first-screen alignment refined: default hire intent and cleaner logged-out marketing navbar).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-01 — Landing first-screen alignment fix
+
+- Default state homepage sekarang recruiter-first (`hire`) agar headline/CTA awal langsung match visual target.
+- Navbar logged-out dipangkas ke aksi utama (`Masuk`, `Daftar`, locale switcher) untuk menjaga hierarchy seperti referensi dan menghindari elemen chrome yang terasa "mock".
+
+### 2026-05-01 — Register helper microcopy polish
+
+- Context line setelah signup sukses kini memakai label tujuan yang natural (`halaman profil Anda`, `your profile page`) alih-alih menampilkan URL teknis.
+- Mapping tujuan dibuat berbasis route intent agar copy tetap relevan untuk profile/messages/notifications/settings/dashboard.
 
 ### 2026-05-01 — Homepage final dual-user landing alignment
 

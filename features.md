@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v77  
-> Last synchronized: 2026-05-01 (homepage visual alignment pass completed to closely match final reference composition and spacing).
+> **Doc revision:** v79  
+> Last synchronized: 2026-05-01 (homepage now defaults to hire intent and marketing topbar simplified to match target composition).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,6 +9,8 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
+- **2026-05-01 — Homepage intent + topbar alignment fix:** landing `/[locale]` kini default ke mode `hire` saat first load, dengan hero headline recruiter-first (termasuk emphasis visual) dan top navbar versi logged-out yang lebih clean (`Masuk`, `Daftar`, locale) agar hasil render lebih dekat ke komposisi referensi final.
+- **2026-05-01 — Register redirect copy refinement:** helper text setelah akun dibuat kini menampilkan tujuan yang ramah pengguna (mis. `halaman profil Anda`) berdasarkan route intent, menggantikan tampilan path mentah seperti `/freelancer/profile`.
 - **2026-05-01 — Homepage final dual-user landing pass:** homepage dipertahankan sebagai landing clean yang tetap “alive”: hero dengan toggle mode recruiter/freelancer, headline+CTA+search dinamis, visual cards kanan sebagai konteks non-data, search row lengkap (input/lokasi/kategori/chips), value 3 poin, dan CTA bawah; seluruh section list/preview/activity marketplace tidak ditampilkan agar tidak jadi dashboard/data-heavy.
 - **2026-05-01 — Homepage exact-match polish pass:** komposisi hero disetel ulang agar lebih dekat ke referensi final (proporsi left/right, kartu freelancer visual, chips/search rhythm, dan CTA band). Scope tetap UI-only tanpa menambah section data marketplace.
 - **2026-05-01 — Global page transition system:** seluruh aplikasi sekarang memakai transisi navigasi global berbasis App Router: top loading bar tipis saat route berubah, state fade/dim konten selama perpindahan, dan fallback skeleton level-app melalui `app/loading.tsx` agar transisi antar menu terasa smooth tanpa flash/blank mendadak.

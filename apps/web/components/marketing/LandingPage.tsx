@@ -5,11 +5,11 @@ export type LandingIntent = "hire" | "work" | "neutral";
 export function resolveLandingIntent(intent: string | undefined): LandingIntent {
   if (intent === "hire") return "hire";
   if (intent === "work") return "work";
-  return "neutral";
+  return "hire";
 }
 
 export async function LandingPage({
-  intent = "neutral",
+  intent = "hire",
   homePath = "/"
 }: {
   intent?: LandingIntent;

@@ -171,24 +171,16 @@ export function MarketingNavBar({
           </div>
         ) : (
           <div className="ml-auto hidden shrink-0 items-center gap-2 border-l border-slate-100 pl-4 lg:flex">
-            <span className="text-[13px] font-medium text-slate-700">Sudah masuk</span>
-            <Link href={"/messages" as Route} className="text-[13px] font-medium text-slate-700 hover:text-slate-900">
-              Pesan
+            <Link href={"/login" as Route} className="px-3 py-2 text-[13px] font-semibold text-slate-700 hover:text-slate-900">
+              Masuk
             </Link>
             <Link
-              href={"/notifications" as Route}
-              className="relative inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-slate-200 text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
+              href={"/register" as Route}
+              className="rounded-lg bg-[#4f35e8] px-5 py-2 text-[13px] font-semibold text-white hover:bg-[#4326d9]"
             >
-              <Bell className="h-4 w-4" aria-hidden />
+              Daftar
             </Link>
             <LocaleSwitcher />
-            <Link
-              href={"/jobs" as Route}
-              className="nw-cta-primary whitespace-nowrap rounded-lg bg-[#4f35e8] px-3.5 py-2 text-[13px] font-semibold text-white shadow-none hover:bg-[#4326d9]"
-            >
-              Cari lowongan
-            </Link>
-            <MockLanguagePills />
           </div>
         )}
 

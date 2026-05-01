@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v75  
-> Last synchronized: 2026-05-01 (homepage refined to closely follow final visual reference while keeping dual-user dynamic behavior).
+> **Doc revision:** v77  
+> Last synchronized: 2026-05-01 (homepage first-load intent and marketing topbar behavior synchronized with latest landing reference).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,8 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Homepage first-screen alignment fix (2026-05-01):** default intent landing publik digeser ke `hire` agar first impression konsisten dengan recruiter flow; top marketing navbar untuk guest disederhanakan ke pola `Masuk/Daftar/Locale` agar visual hierarchy lebih bersih dan sesuai arah desain final.
+- **Register redirect microcopy refinement (2026-05-01):** context message setelah pembuatan akun kini menyebut tujuan dalam bahasa pengguna (contoh: `halaman profil Anda`) berdasarkan route target, bukan menampilkan path internal seperti `/freelancer/profile`.
 - **Homepage final dual-user landing (2026-05-01):** surface homepage kini menyeimbangkan clarity + visual context: toggle intent recruiter/freelancer, headline/CTA/search dinamis, right-side visual cards (non-data), full search row, value strip, dan CTA band; bagian data-heavy (preview list/job/freelancer activity) tidak dimunculkan agar halaman tetap landing-focused.
 - **Homepage final-reference alignment (2026-05-01):** dilakukan pass visual lanjutan untuk mendekatkan proporsi/layout ke referensi final tanpa mengubah scope fitur: menjaga komponen inti (hero visual, search lengkap, value strip, CTA) sambil merapikan hierarchy dan spacing.
 - **Global page transition system (2026-05-01):** root app layout kini membungkus seluruh konten dengan transition wrapper client-side untuk memberi feedback perpindahan route: progress bar top-level, fade/dim state saat navigasi, dan skeleton fallback global via `app/loading.tsx`; tujuan utamanya menghilangkan kesan flash/kedip saat berpindah menu.
