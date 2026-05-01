@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v74  
-> Last synchronized: 2026-05-01 (homepage final UX locked as dual-user landing with dynamic intent and visual context, without data-heavy marketplace panels).
+> **Doc revision:** v75  
+> Last synchronized: 2026-05-01 (homepage refined to closely follow final visual reference while keeping dual-user dynamic behavior).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -10,6 +10,7 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 ## Update status (April 2026)
 
 - **Homepage final dual-user landing (2026-05-01):** surface homepage kini menyeimbangkan clarity + visual context: toggle intent recruiter/freelancer, headline/CTA/search dinamis, right-side visual cards (non-data), full search row, value strip, dan CTA band; bagian data-heavy (preview list/job/freelancer activity) tidak dimunculkan agar halaman tetap landing-focused.
+- **Homepage final-reference alignment (2026-05-01):** dilakukan pass visual lanjutan untuk mendekatkan proporsi/layout ke referensi final tanpa mengubah scope fitur: menjaga komponen inti (hero visual, search lengkap, value strip, CTA) sambil merapikan hierarchy dan spacing.
 - **Global page transition system (2026-05-01):** root app layout kini membungkus seluruh konten dengan transition wrapper client-side untuk memberi feedback perpindahan route: progress bar top-level, fade/dim state saat navigasi, dan skeleton fallback global via `app/loading.tsx`; tujuan utamanya menghilangkan kesan flash/kedip saat berpindah menu.
 - **Jobs board tool redesign (2026-05-01):** halaman publik `/jobs` kini menggunakan layout 3 kolom utilitarian (filter/list/insight), sticky primary search, job rows dengan urgency badges, budget-first readability, dan CTA utama `Apply`; halaman diposisikan sebagai tool operasional untuk cepat menemukan dan melamar lowongan.
 - **Freelancers hiring-tool redesign (2026-05-01):** halaman publik `/freelancers` sekarang berfungsi sebagai workspace pencarian kandidat cepat, bukan landing-style list: sticky primary search di atas, struktur 3 kolom (filters/list/live insights), row kandidat chat-first dengan hierarchy keputusan tegas, dan section `job terbaru` di bawah list untuk continuity eksplorasi.

@@ -1,7 +1,7 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v72  
-> Last synchronized: 2026-05-01 (homepage final direction aligned: dual-user hero plus right visual cards, full search row, value strip, and CTA).
+> **Doc revision:** v73  
+> Last synchronized: 2026-05-01 (homepage final-reference visual alignment refined for closer pixel-level match).
 
 ## Goal
 
@@ -16,6 +16,12 @@ Build a grounded, practical, product-first UI across public and authenticated su
 - Headline, CTA, dan search intent tetap dinamis per mode untuk memastikan kedua tipe user langsung merasa relevan.
 - Visual cards kanan dipertahankan sebagai konteks produk (non-data real), agar halaman tidak terasa kosong.
 - Section data-heavy (freelancer list, job list, live activity, marketplace preview) tidak ditampilkan di homepage final.
+
+### 2026-05-01 — Homepage final-reference micro alignment
+
+- Komposisi hero disetel lebih dekat ke referensi visual final: balance area headline dengan visual kanan, skala heading, dan jarak vertikal antar blok utama.
+- Search row dipertahankan lengkap (keyword + lokasi + kategori + cari) dengan quick chips populer agar tidak terasa kosong.
+- Value strip (`Cepat`, `Aman`, `Fleksibel`) dan CTA band bawah diperhalus spacing/shape-nya agar ritme landing lebih presisi.
 
 ### 2026-05-01 — Global navigation transition polish
 
