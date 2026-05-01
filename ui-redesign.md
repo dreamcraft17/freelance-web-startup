@@ -1,7 +1,7 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v71  
-> Last synchronized: 2026-05-01 (homepage redesigned into minimal dual-user hero with dynamic intent toggle).
+> **Doc revision:** v72  
+> Last synchronized: 2026-05-01 (homepage final direction aligned: dual-user hero plus right visual cards, full search row, value strip, and CTA).
 
 ## Goal
 
@@ -9,13 +9,13 @@ Build a grounded, practical, product-first UI across public and authenticated su
 
 ## Progress update (April 2026)
 
-### 2026-05-01 — Homepage dual-user minimalization
+### 2026-05-01 — Homepage final dual-user landing alignment
 
-- Struktur homepage disederhanakan menjadi alur tunggal yang fokus ke aksi cepat, bukan eksplorasi marketplace data/list.
-- Ditambahkan toggle intent jelas di hero: `Saya ingin rekrut` dan `Saya ingin kerja`, dengan active-state tegas.
-- Headline, CTA utama/sekunder, dan placeholder search kini berubah dinamis mengikuti mode user.
-- Dihapus section kategori/list preview/live panel pada homepage agar surface terasa ringan, netral, dan tidak bias ke salah satu sisi.
-- Pergantian mode memakai update state client + `router.replace` query intent untuk transisi yang lebih halus tanpa reload kasar.
+- Layout tetap landing (bukan dashboard): hero utama + visual cards kanan + search block + value strip + CTA band.
+- Toggle intent (`Saya ingin rekrut` / `Saya ingin kerja`) dipertahankan sebagai pusat kontrol mode dengan active state tegas.
+- Headline, CTA, dan search intent tetap dinamis per mode untuk memastikan kedua tipe user langsung merasa relevan.
+- Visual cards kanan dipertahankan sebagai konteks produk (non-data real), agar halaman tidak terasa kosong.
+- Section data-heavy (freelancer list, job list, live activity, marketplace preview) tidak ditampilkan di homepage final.
 
 ### 2026-05-01 — Global navigation transition polish
 

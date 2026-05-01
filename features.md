@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v75  
-> Last synchronized: 2026-05-01 (homepage dual-mode minimal UX implemented for recruiter and freelancer entry flows).
+> **Doc revision:** v76  
+> Last synchronized: 2026-05-01 (homepage final direction locked: dual-user landing with hero visual cards + full search + value + CTA, without data-heavy sections).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,7 +9,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
-- **2026-05-01 — Homepage dual-user minimal mode:** landing page dipangkas menjadi flow aksi singkat untuk dua tipe user (`Saya ingin rekrut` / `Saya ingin kerja`) dengan headline, CTA, dan search intent yang dinamis per mode; section data marketplace/listing di homepage dihapus agar halaman tidak bias dan tetap fokus ke kejelasan langkah pertama.
+- **2026-05-01 — Homepage final dual-user landing pass:** homepage dipertahankan sebagai landing clean yang tetap “alive”: hero dengan toggle mode recruiter/freelancer, headline+CTA+search dinamis, visual cards kanan sebagai konteks non-data, search row lengkap (input/lokasi/kategori/chips), value 3 poin, dan CTA bawah; seluruh section list/preview/activity marketplace tidak ditampilkan agar tidak jadi dashboard/data-heavy.
 - **2026-05-01 — Global page transition system:** seluruh aplikasi sekarang memakai transisi navigasi global berbasis App Router: top loading bar tipis saat route berubah, state fade/dim konten selama perpindahan, dan fallback skeleton level-app melalui `app/loading.tsx` agar transisi antar menu terasa smooth tanpa flash/blank mendadak.
 - **2026-05-01 — Jobs board tool redesign:** halaman `/jobs` direfactor ke pola marketplace board 3 kolom (filter kiri, listing tengah, live insight kanan) dengan search bar dominan + quick tags di atas fold. Listing kini menonjolkan hierarchy scan cepat (judul, client/lokasi, budget, waktu posting, badge `Baru/Urgent/Sedikit pelamar`) dan CTA dual-action (`Apply` utama, `Lihat detail` sekunder). Ditambahkan juga section trend kategori + panel tips/CTA agar alur “temukan job -> apply” lebih cepat dan jelas.
 - **2026-05-01 — Freelancers page hiring-tool redesign:** `/freelancers` kini ditata ulang menjadi surface utilitarian 3 kolom (filter kiri, list kandidat tengah, panel live/insight kanan) dengan search bar dominan dan quick tags di atas fold. Row kandidat dipoles untuk decision speed (avatar + verified, name/role/lokasi, rating, starting rate, response hint, status online/available) serta CTA diprioritaskan ke `Chat` dengan `Lihat profil` sebagai aksi sekunder. Di bawah list ditambahkan blok `Job terbaru dari klien` agar user bisa berpindah cepat antara discovery talent dan peluang job tanpa kehilangan konteks.
