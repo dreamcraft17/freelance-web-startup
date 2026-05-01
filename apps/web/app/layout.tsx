@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Inter } from "next/font/google";
+import { GlobalPageTransition } from "@/components/system/GlobalPageTransition";
 import { I18nProvider } from "@/features/i18n/I18nProvider";
 import { getMessagesForLocale } from "@/lib/i18n/dictionaries";
 import { getAppLocale } from "@/lib/i18n/server-locale";
@@ -27,7 +28,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     <html lang={locale} className={`scroll-smooth ${inter.variable}`} suppressHydrationWarning>
       <body className="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased">
         <I18nProvider initialLocale={locale} initialMessages={messages}>
-          {children}
+          <GlobalPageTransition>{children}</GlobalPageTransition>
         </I18nProvider>
       </body>
     </html>

@@ -1,13 +1,21 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v69  
-> Last synchronized: 2026-05-01 (`/jobs` redesigned into 3-column job marketplace tool with scan-first list and apply-first CTA hierarchy).
+> **Doc revision:** v70  
+> Last synchronized: 2026-05-01 (global page transition UX added across app with top loading bar, subtle fade, and shared skeleton fallback).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-01 — Global navigation transition polish
+
+- Ditambahkan wrapper transisi global di root layout (`GlobalPageTransition`) agar perpindahan route internal memiliki feedback visual konsisten di seluruh produk.
+- Saat user pindah menu internal, kini muncul top loading bar tipis (warna brand ungu) dengan animasi progres halus.
+- Konten utama diberi dim/fade state singkat selama route transition untuk mengurangi rasa abrupt/kedip.
+- Ditambahkan `app/loading.tsx` sebagai skeleton fallback global (struktur board/list + sidebar placeholders) agar loading route tidak terasa kosong.
+- Prinsip visual tetap subtle dan utilitarian: tanpa spinner besar, tanpa animasi berlebihan, fokus pada perceived performance.
 
 ### 2026-05-01 — Jobs board redesign (Upwork/Fastwork-style utility)
 
