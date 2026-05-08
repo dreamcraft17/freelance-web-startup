@@ -1,7 +1,7 @@
 # Audit teknis — Freelance-web (monorepo)
 
-> **Doc revision:** v8  
-> Last synchronized: 2026-05-09 (e2e HTTP smoke aligns with CSRF cookie + header; empty category list fails job-creation steps until DB is seeded).
+> **Doc revision:** v10  
+> Last synchronized: 2026-05-09 (job listing WHERE: filters[] + Prisma.join with Sql separator).
 
 **Lingkup:** `apps/web`, `packages/*`, dan jalur operasional yang mempengaruhi produksi.  
 **Tanggal referensi:** April 2026 (sinkron dengan update terakhir implementasi).
@@ -11,6 +11,7 @@
 - **2026-04-27 — Source tree consistency hardening:** struktur runtime `apps/web` dinormalisasi ke root-level folders (`app`, `components`, `features`, `lib`, `server`) dan ketergantungan pada `apps/web/src` dihapus untuk mengurangi ambiguitas path/alias yang rawan salah import.
 - **2026-04-27 — Credential hygiene pass:** `credential.md` tidak lagi memuat nilai credential konkret; kini hanya berisi template env placeholders. `credential.example.md` ditambahkan sebagai referensi aman, sementara `.gitignore` tetap memblokir file credential lokal.
 - **2026-04-24 — Graceful API degradation for pool exhaustion:** `withApiHandler` sekarang memetakan error Prisma `EMAXCONNSESSION` / `max clients reached` menjadi `503 Service Unavailable` dengan kode `DB_POOL_EXHAUSTED` dan header `Retry-After`, menggantikan pola unhandled 500 saat DB pool session sedang jenuh.
+- **2026-05-09 — Job listings raw SQL WHERE:** `SearchService.searchJobsInternal` membangun **array predikat boolean** lalu **`WHERE ${Prisma.join(filters, " AND ")}`** (Prisma **5.22** hanya mendukung separator `join` bertipe string). Pola lama dengan **`Prisma.sql`` kosong** berjajar di template atau komposisi `WHERE` yang salah ikat pernah memicu P2010 (`42804` / `42601`). Grup OR keyword memakai `Prisma.join(..., " OR ")` di dalam tanda kurung; query list dan `COUNT(*)` berbagi **`whereClause`** yang sama.
 - **2026-04-24 — Search query compatibility hardening:** jalur `$queryRaw` untuk public jobs search kini mendeteksi ketersediaan kolom translasi (`titleEn/titleId/descriptionEn/descriptionId` + `language`) via `information_schema` dan otomatis fallback ke alias `NULL`/default saat kolom belum ada. Ini mencegah runtime crash `42703 column ... does not exist` pada environment yang migrasinya tertinggal.
 - **2026-04-24 — Pool pressure reduction (session mode):** pada jalur search jobs, eksekusi query list + count diubah dari paralel ke berurutan untuk menurunkan lonjakan koneksi simultan, membantu meredam error `EMAXCONNSESSION max clients reached` pada pool kecil.
 - **Cookie preferensi bahasa:** `lang` disetel oleh `POST /api/locale` (nilai `en` \| `id`, path `/`, `SameSite=Lax`, `Secure` di produksi). Bukan secret; tetap jaga agar respons API tidak mem-cache konten sensitif lintas locale tanpa `Vary: Cookie` bila menambahkan cache edge di masa depan.
