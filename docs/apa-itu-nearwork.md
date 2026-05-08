@@ -1,7 +1,7 @@
 # Apa itu NearWork?
 
-> **Doc revision:** v5  
-> Last synchronized: 2026-05-08 (onboarding & empty-state guidance di app; deploy checklist).
+> **Doc revision:** v6  
+> Last synchronized: 2026-05-08 (UX proposal/review/diskusi lebih terarah; tanpa billing).
 
 Dokumen ini menjawab secara singkat: **produk ini apa**, **untuk siapa**, dan **apa yang dilakukan user di dalamnya**—tanpa detail teknis implementasi.
 
@@ -15,7 +15,7 @@ Repo monorepo ini (nama kerja: **Freelance-web**) adalah **aplikasi web** yang m
 
 Pengguna dapat memilih **Bahasa Indonesia** atau **English** pada antarmuka (preferensi tersimpan untuk kunjungan berikutnya).
 
-Awal rilis: dasbor klien/freelancer dan beberapa halaman publik memberi **checklist langkah nyata** (bukan angka palsu) serta empty state yang menjelaskan *apa yang terjadi*, *mengapa kosong*, dan *apa yang dilakukan berikutnya*—termasuk pengingat bahwa proposal dan chat tetap terikat pada job yang sama.
+Awal rilis: dasbor klien/freelancer dan beberapa halaman publik memberi **checklist langkah nyata** (bukan angka palsu) serta empty state yang menjelaskan *apa yang terjadi*, *mengapa kosong*, dan *apa yang dilakukan berikutnya*—termasuk pengingat bahwa proposal dan chat tetap terikat pada job yang sama. Form proposal dan tinjauan di sisi klien dirancang supaya **percakapan hiring** (bukan obrolan santai) tetap fokus pada scope, jadwal, dan keputusan di lowongan tersebut.
 
 ---
 
