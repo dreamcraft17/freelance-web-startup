@@ -11,6 +11,7 @@
  * After each `mutateWithCsrf`, reuse `cookieHeader` from the result for the same actor so rotated session cookies stay in sync with the server.
  *
  * Run: `pnpm test:e2e` or `node --test scripts/e2e-marketplace-flow.mjs`
+ * Regression: POST `/api/jobs` then GET `/api/jobs?page=1&limit=10` must be 200 and include the created id (full-marketplace test). After editing `apps/web/server/services/search.service.ts`, restart `pnpm dev` or remove `apps/web/.next` if the dev bundle serves stale `$queryRaw` SQL.
  *
  * Optional manual smoke after trust changes: authenticated user POST `/api/reports`
  * with CSRF cookie/header (job/thread/etc.) → staff triage `/admin/reports`.
