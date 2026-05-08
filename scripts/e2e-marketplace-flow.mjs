@@ -7,6 +7,8 @@
  *   - Seeded admin (`pnpm db:seed`): defaults `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` for `/api/admin/reports` assertion
  *   - Web dev or prod server: `pnpm --filter @acme/web dev` (default base http://127.0.0.1:3000)
  *
+ * Covers a second path — pre-hire discussion: client creates job, freelancer bids, client opens JOB thread (`POST /api/messages` with CSRF) and sends a message before hiring.
+ *
  * Run: `pnpm test:e2e` or `node --test scripts/e2e-marketplace-flow.mjs`
  *
  * Optional manual smoke after trust changes: authenticated user POST `/api/reports`
@@ -390,4 +392,111 @@ test("full marketplace flow (register → reviews & aggregates)", async () => {
   assert.equal(listCl.res.status, 200);
   assert.equal(listCl.body.data.aggregate.reviewCount, 1);
   assert.equal(listCl.body.data.aggregate.averageReviewRating, 4);
+});
+
+test("pre-hire proposal loop: JOB thread after bid + first message", async () => {
+  const suffix = `${Date.now()}_${Math.random().toString(16).slice(2, 8)}`;
+  const clientEmail = `e2e_discuss_client_${suffix}@example.com`;
+  const freelancerEmail = `e2e_discuss_fl_${suffix}@example.com`;
+  const password = "e2e-pass-ok-12";
+
+  const regClient = await api("/api/auth/register", {
+    method: "POST",
+    json: { fullName: "E2E Discuss Client", email: clientEmail, password, role: "CLIENT" }
+  });
+  assert.equal(regClient.res.status, 201, JSON.stringify(regClient.body));
+  let cookieClient = sessionCookiePairFromResponse(regClient.res);
+  assert.ok(cookieClient);
+
+  const regFl = await api("/api/auth/register", {
+    method: "POST",
+    json: { fullName: "E2E Discuss FL", email: freelancerEmail, password, role: "FREELANCER" }
+  });
+  assert.equal(regFl.res.status, 201, JSON.stringify(regFl.body));
+  let cookieFreelancer = sessionCookiePairFromResponse(regFl.res);
+  assert.ok(cookieFreelancer);
+
+  const patchBio = await api("/api/freelancer-profiles", {
+    method: "PATCH",
+    cookie: cookieFreelancer,
+    json: { bio: "E2E discuss path — freelancer profile complete enough to bid." }
+  });
+  assert.equal(patchBio.res.status, 200, JSON.stringify(patchBio.body));
+
+  const loginClient = await api("/api/auth/login", {
+    method: "POST",
+    json: { email: clientEmail, password }
+  });
+  assert.equal(loginClient.res.status, 200);
+  cookieClient = sessionCookiePairFromResponse(loginClient.res);
+  assert.ok(cookieClient);
+
+  const loginFreelancer = await api("/api/auth/login", {
+    method: "POST",
+    json: { email: freelancerEmail, password }
+  });
+  assert.equal(loginFreelancer.res.status, 200);
+  cookieFreelancer = sessionCookiePairFromResponse(loginFreelancer.res);
+  assert.ok(cookieFreelancer);
+
+  const flSession = await api("/api/auth/session", { cookie: cookieFreelancer });
+  assert.equal(flSession.res.status, 200, JSON.stringify(flSession.body));
+  const freelancerUserId = flSession.body.data.userId;
+  assert.ok(freelancerUserId);
+
+  const cats = await api("/api/categories?page=1&limit=5");
+  assert.equal(cats.res.status, 200);
+  const categoryId = cats.body.data.items[0].id;
+
+  const jobRes = await api("/api/jobs", {
+    method: "POST",
+    cookie: cookieClient,
+    json: {
+      title: "E2E pre-hire messaging job",
+      description:
+        "Smoke path: client hires via discussion before accept—description long enough for validation.",
+      categoryId,
+      workMode: "REMOTE",
+      budgetType: "FIXED",
+      budgetMin: 50,
+      budgetMax: 300,
+      currency: "USD"
+    }
+  });
+  assert.equal(jobRes.res.status, 201, JSON.stringify(jobRes.body));
+  const jobId = jobRes.body.data.id;
+  assert.ok(jobId);
+
+  const bidRes = await api("/api/bids", {
+    method: "POST",
+    cookie: cookieFreelancer,
+    json: {
+      jobId,
+      coverLetter:
+        "Intro: E2E.\nRelevant experience: prior similar scope.\nApproach: milestone plan.\nTimeline & availability: 5 business days from kickoff.",
+      bidAmount: 120,
+      estimatedDays: 5
+    }
+  });
+  assert.equal(bidRes.res.status, 201, JSON.stringify(bidRes.body));
+
+  const threadCreate = await postWithCsrf(
+    "/api/messages",
+    cookieClient,
+    {
+      type: "JOB",
+      jobId,
+      withUserId: freelancerUserId
+    }
+  );
+  assert.equal(threadCreate.res.status, 201, JSON.stringify(threadCreate.body));
+  const threadId = threadCreate.body.data?.threadId;
+  assert.ok(threadId);
+
+  const firstMsg = await postWithCsrf(
+    `/api/messages/${threadId}`,
+    cookieClient,
+    { body: "Client opening note on the job-linked thread before hire." }
+  );
+  assert.equal(firstMsg.res.status, 201, JSON.stringify(firstMsg.body));
 });

@@ -1,7 +1,9 @@
 import { redirect } from "next/navigation";
+import { BidStatus, UserRole } from "@acme/types";
 import { db } from "@acme/database";
 import { getSessionFromCookies, sessionToActor } from "@src/lib/auth";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
+import { localizedBidStatusLabel, localizedJobStatusLabel } from "@/lib/i18n/marketplace-status-labels";
 import {
   MessagesWorkspace,
   type MessageItem,
@@ -41,14 +43,14 @@ export default async function MessagesPage({
   ]);
   const { items: threadRows } = threadResult;
 
-  const threads: ThreadListItem[] = threadRows.map((t) => ({
-    threadId: t.threadId,
-    type: t.type,
-    jobId: t.jobId,
-    contractId: t.contractId,
-    updatedAt: t.updatedAt,
-    peers: t.peers,
-    lastMessage: t.lastMessage
+  const threads: ThreadListItem[] = threadRows.map((row) => ({
+    threadId: row.threadId,
+    type: row.type,
+    jobId: row.jobId,
+    contractId: row.contractId,
+    updatedAt: row.updatedAt,
+    peers: row.peers,
+    lastMessage: row.lastMessage
   }));
 
   const validIds = new Set(threads.map((t) => t.threadId));
@@ -71,29 +73,79 @@ export default async function MessagesPage({
       selectedThreadId = threadParam;
       const selectedThread = threads.find((t) => t.threadId === threadParam) ?? null;
       if (selectedThread?.jobId) {
-        const [jobRow, bidRow] = await Promise.all([
-          db.job.findFirst({
-            where: { id: selectedThread.jobId, deletedAt: null },
-            select: { id: true, title: true }
-          }),
-          db.bid.findFirst({
-            where: {
-              jobId: selectedThread.jobId,
-              OR: [
-                { freelancer: { userId: session.userId } },
-                { freelancer: { userId: selectedThread.peers[0]?.userId ?? "" } }
-              ]
-            },
-            orderBy: { createdAt: "desc" },
-            select: { status: true }
-          })
-        ]);
+        const peerUserId =
+          selectedThread.peers.find((p) => p.userId !== session.userId)?.userId ?? "";
+        const freelancerForBid =
+          session.role === UserRole.FREELANCER ? session.userId : peerUserId || null;
+
+        const jobRowPromise = db.job.findFirst({
+          where: { id: selectedThread.jobId, deletedAt: null },
+          select: { id: true, title: true, status: true }
+        });
+        const bidRowPromise =
+          freelancerForBid && selectedThread.jobId
+            ? db.bid.findFirst({
+                where: {
+                  jobId: selectedThread.jobId,
+                  freelancer: { userId: freelancerForBid }
+                },
+                orderBy: { createdAt: "desc" },
+                select: { status: true }
+              })
+            : Promise.resolve(null);
+
+        const [jobRow, bidRow] = await Promise.all([jobRowPromise, bidRowPromise]);
+
         if (jobRow) {
+          const proposalRaw = bidRow?.status ?? null;
+          let nextSuggested = t("messages.nextSuggestedDefault");
+
+          const nonSystem = messages.filter((m) => !m.isSystem);
+          const viewerSent = nonSystem.some((m) => m.senderId === session.userId);
+          const otherSent = nonSystem.some((m) => m.senderId !== session.userId);
+
+          if (session.role === UserRole.CLIENT) {
+            if (!proposalRaw) {
+              nextSuggested = t("messages.nextSuggestedClientInvite");
+            } else if (proposalRaw === BidStatus.SUBMITTED) {
+              if (!viewerSent) {
+                nextSuggested = t("messages.nextSuggestedClientFirstReply");
+              } else if (!otherSent) {
+                nextSuggested = t("messages.nextSuggestedClientAwaitingFreelancer");
+              } else {
+                nextSuggested = t("messages.nextSuggestedClientCompare");
+              }
+            } else if (proposalRaw === BidStatus.SHORTLISTED) {
+              nextSuggested = t("messages.nextSuggestedClientShortlisted");
+            } else if (proposalRaw === BidStatus.ACCEPTED) {
+              nextSuggested = t("messages.nextSuggestedClientAccepted");
+            } else if (proposalRaw === BidStatus.REJECTED || proposalRaw === BidStatus.WITHDRAWN) {
+              nextSuggested = t("messages.nextSuggestedClientStale");
+            }
+          } else if (session.role === UserRole.FREELANCER) {
+            if (!proposalRaw) {
+              nextSuggested = t("messages.nextSuggestedFreelancerDiscover");
+            } else if (proposalRaw === BidStatus.SUBMITTED) {
+              if (!otherSent) {
+                nextSuggested = t("messages.nextSuggestedFreelancerAwaitReview");
+              } else if (!viewerSent) {
+                nextSuggested = t("messages.nextSuggestedFreelancerReply");
+              } else {
+                nextSuggested = t("messages.nextSuggestedFreelancerClarify");
+              }
+            } else if (proposalRaw === BidStatus.ACCEPTED) {
+              nextSuggested = t("messages.nextSuggestedFreelancerAccepted");
+            }
+          }
+
           selectedContext = {
             jobId: jobRow.id,
             jobTitle: jobRow.title,
+            jobStatusLabel: localizedJobStatusLabel(jobRow.status, t),
             counterpartLabel: selectedThread.peers.map((p) => p.displayName).join(" · ") || "Counterpart",
-            proposalStatus: bidRow?.status ?? null
+            proposalStatusRaw: proposalRaw,
+            proposalStatusLabel: proposalRaw ? localizedBidStatusLabel(proposalRaw, t) : null,
+            nextSuggested
           };
         }
       }
