@@ -3,7 +3,9 @@ import type { Route } from "next";
 import Link from "next/link";
 import { CheckCircle2, Clock3, MapPin, ShieldCheck, Star, Wallet } from "lucide-react";
 import { db } from "@acme/database";
+import { getSessionFromCookies } from "@src/lib/auth";
 import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
+import { ModerationReportButton } from "@/features/moderation/components/ModerationReportButton";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
 
 type PageProps = {
@@ -20,6 +22,7 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
     where: { username, deletedAt: null },
     select: {
       id: true,
+      userId: true,
       fullName: true,
       headline: true,
       bio: true,
@@ -66,6 +69,9 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
   });
 
   if (!profile) notFound();
+
+  const session = await getSessionFromCookies();
+  const canReportUser = Boolean(session?.userId && session.userId !== profile.userId);
 
   const locationLine = [profile.city, profile.country].filter(Boolean).join(", ");
   const rateValue = profile.hourlyRate ?? profile.fixedStartingPrice;
@@ -122,6 +128,12 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
                 <span className="rounded border border-emerald-300 bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-emerald-800">
                   {t("public.freelancerProfile.verified")}
                 </span>
+              ) : null}
+              {canReportUser ? (
+                <ModerationReportButton
+                  intent="user"
+                  target={{ subjectType: "USER", subjectUserId: profile.userId }}
+                />
               ) : null}
             </div>
 
@@ -248,10 +260,20 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
               <li key={review.id} className="rounded border border-slate-200 bg-slate-50 p-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="text-sm font-semibold text-slate-900">{t("public.freelancerProfile.reviewSource")}</p>
-                  <p className="inline-flex items-center gap-1 text-xs font-bold text-slate-700">
-                    <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" aria-hidden />
-                    {review.rating.toFixed(1)}
-                  </p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="inline-flex items-center gap-1 text-xs font-bold text-slate-700">
+                      <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" aria-hidden />
+                      {review.rating.toFixed(1)}
+                    </p>
+                    {session?.userId && session.userId !== review.author.id ? (
+                      <ModerationReportButton
+                        intent="review"
+                        variant="text"
+                        className="shrink-0"
+                        target={{ subjectType: "REVIEW", subjectReviewId: review.id }}
+                      />
+                    ) : null}
+                  </div>
                 </div>
                 {review.comment?.trim() ? (
                   <p className="mt-1.5 text-sm leading-relaxed text-slate-700">{review.comment.trim()}</p>

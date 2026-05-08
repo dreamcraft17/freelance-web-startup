@@ -124,6 +124,9 @@ importers:
         specifier: ^3.24.1
         version: 3.25.76
     devDependencies:
+      '@eslint/eslintrc':
+        specifier: ^3.3.5
+        version: 3.3.5
       '@prisma/nextjs-monorepo-workaround-plugin':
         specifier: 5.22.0
         version: 5.22.0

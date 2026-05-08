@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Route } from "next";
 import { useMemo, useState } from "react";
 import { BidStatus } from "@acme/types";
+import { ModerationReportButton } from "@/features/moderation/components/ModerationReportButton";
 import { DashboardEmptyState } from "@/components/dashboard/DashboardEmptyState";
 import { cn } from "@/lib/utils";
 import { FileText, Inbox } from "lucide-react";
@@ -217,22 +218,19 @@ export function FreelancerProposalsWorkspace({
         <ul className="space-y-2.5">
           {filtered.map((p) => (
             <li key={p.id}>
-              <Link
-                href={`/jobs/${p.job.id}` as Route}
-                className={cn(
-                  "block rounded-lg border p-4 transition hover:border-slate-300 md:p-5",
-                  rowVisual(p.status)
-                )}
-              >
+              <div className={cn("rounded-lg border p-4 md:p-5", rowVisual(p.status))}>
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                  <div className="min-w-0 flex-1">
+                  <Link
+                    href={`/jobs/${p.job.id}` as Route}
+                    className="min-w-0 flex-1 transition hover:opacity-90"
+                  >
                     <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Job</p>
                     <p className="mt-1 text-base font-semibold leading-snug text-slate-900">{p.job.title}</p>
                     <p className="mt-2 text-sm text-slate-600">
                       Submitted <time dateTime={p.createdAt}>{formatDate(p.createdAt)}</time>
                       {p.estimatedDays != null ? ` · ~${p.estimatedDays} day timeline` : null}
                     </p>
-                  </div>
+                  </Link>
                   <div className="flex shrink-0 flex-col items-start gap-2 sm:items-end">
                     <span
                       className={cn(
@@ -245,9 +243,13 @@ export function FreelancerProposalsWorkspace({
                     <p className="text-lg font-semibold tabular-nums text-slate-900">
                       {money(p.amount, p.currency)}
                     </p>
+                    <ModerationReportButton
+                      intent="bid"
+                      target={{ subjectType: "BID", subjectBidId: p.id }}
+                    />
                   </div>
                 </div>
-              </Link>
+              </div>
             </li>
           ))}
         </ul>

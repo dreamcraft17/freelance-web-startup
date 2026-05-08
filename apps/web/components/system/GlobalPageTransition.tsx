@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
 function isModifiedClick(event: MouseEvent): boolean {
@@ -55,7 +55,7 @@ export function GlobalPageTransition({ children }: { children: ReactNode }) {
     }
   };
 
-  const startNavigation = () => {
+  const startNavigation = useCallback(() => {
     if (isNavigating) return;
     clearTimers();
     navStartedAtRef.current = Date.now();
@@ -69,9 +69,9 @@ export function GlobalPageTransition({ children }: { children: ReactNode }) {
         return Math.min(86, prev + (prev < 45 ? 10 : 4));
       });
     }, 120);
-  };
+  }, [isNavigating]);
 
-  const completeNavigation = () => {
+  function completeNavigation() {
     const elapsed = Date.now() - navStartedAtRef.current;
     const minVisible = 180;
     const wait = Math.max(0, minVisible - elapsed);
@@ -88,7 +88,7 @@ export function GlobalPageTransition({ children }: { children: ReactNode }) {
         setBarWidth(0);
       }, 170);
     }, wait);
-  };
+  }
 
   useEffect(() => {
     const onClick = (event: MouseEvent) => {
@@ -107,7 +107,7 @@ export function GlobalPageTransition({ children }: { children: ReactNode }) {
       document.removeEventListener("click", onClick, true);
       window.removeEventListener("popstate", onPopState);
     };
-  }, [isNavigating]);
+  }, [isNavigating, startNavigation]);
 
   useEffect(() => {
     if (!mountedRef.current) {
@@ -119,14 +119,13 @@ export function GlobalPageTransition({ children }: { children: ReactNode }) {
     routeRef.current = routeKey;
     if (!isNavigating) startNavigation();
     completeNavigation();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- route transition effect is keyed solely on `routeKey`
   }, [routeKey]);
 
   useEffect(() => {
     return () => {
       clearTimers();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v81  
-> Last synchronized: 2026-05-08 (trust & safety: moderation reports persistence, admin queue, hide jobs, suspend clients/freelancers).
+> **Doc revision:** v82  
+> Last synchronized: 2026-05-08 (moderation: report entry points expanded; Prisma types via @acme/database; ESLint flat config for CI; e2e bid report + admin queue).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -10,6 +10,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 ## Update terbaru (April 2026)
 
 - **2026-05-08 — Trust & safety (moderation MVP):** ditambahkan model `ModerationReport` + `ModerationReportNote`, status `OPEN` / `IN_REVIEW` / `RESOLVED` / `DISMISSED`, dukungan subjek `USER` / `JOB` / `BID` / `REVIEW` / `MESSAGE_THREAD` / `MESSAGE`, intake `POST /api/reports`, antrean `/admin/reports` dengan triage (assign, catatan internal, resolve/dismiss). Job dapat disembunyikan dari discovery publik lewat `moderationHiddenAt`; staff `ADMIN`/`SUPPORT_ADMIN` dapat suspend/reactivate akun `CLIENT`/`FREELANCER` dari `/admin/users`.
+- **2026-05-08 — Moderation intake UX + CI hygiene:** UI laporan memakai satu komponen konsisten (`ModerationReportButton`): profil publik freelancer (user + ulasan), kolom trust pada tabel proposal owner job, daftar proposal freelancer, serta thread/pesan di Messages. Tipe Prisma moderasi diekspor dari `@acme/database` supaya `pnpm typecheck` aplikasi tidak bergantung langsung ke `@prisma/client`. `eslint.config.mjs` + `outputFileTracingRoot` menstabilkan `next lint`/tracing di monorepo; skrip `scripts/e2e-marketplace-flow.mjs` memverifikasi laporan BID + kemunculan di `/api/admin/reports` (butuh user admin hasil seed).
 - **2026-05-01 — Homepage composition parity pass:** section hero dipoles lagi (headline scale/spacing, search card density, CTA sizing) dan footer landing diganti ke struktur yang lebih lengkap (brand+social, navigasi kolom, form newsletter, locale marker) untuk mendekati referensi visual final secara menyeluruh.
 - **2026-05-01 — Homepage intent + topbar alignment fix:** landing `/[locale]` kini default ke mode `hire` saat first load, dengan hero headline recruiter-first (termasuk emphasis visual) dan top navbar versi logged-out yang lebih clean (`Masuk`, `Daftar`, locale) agar hasil render lebih dekat ke komposisi referensi final.
 - **2026-05-01 — Register redirect copy refinement:** helper text setelah akun dibuat kini menampilkan tujuan yang ramah pengguna (mis. `halaman profil Anda`) berdasarkan route intent, menggantikan tampilan path mentah seperti `/freelancer/profile`.

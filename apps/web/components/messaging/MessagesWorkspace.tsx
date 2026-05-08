@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { ModerationReportButton } from "@/features/moderation/components/ModerationReportButton";
 import { fetchWithCsrf } from "@/features/auth/lib/fetch-with-csrf";
 import { DashboardEmptyState } from "@/components/dashboard/DashboardEmptyState";
 import { Button } from "@/components/ui/button";
@@ -347,6 +348,13 @@ export function MessagesWorkspace({
                     </div>
                   </div>
                 </div>
+                {selectedThreadId ? (
+                  <ModerationReportButton
+                    intent="thread"
+                    className="shrink-0"
+                    target={{ subjectType: "MESSAGE_THREAD", subjectThreadId: selectedThreadId }}
+                  />
+                ) : null}
               </div>
             </header>
             {selectedContext ? (
@@ -425,6 +433,16 @@ export function MessagesWorkspace({
                           >
                             {formatMessageTime(m.createdAt)}
                           </time>
+                          {!m.isSystem && !mine ? (
+                            <div className="mt-1.5 flex justify-end">
+                              <ModerationReportButton
+                                variant="text"
+                                intent="message"
+                                target={{ subjectType: "MESSAGE", subjectMessageId: m.id }}
+                                className="text-right"
+                              />
+                            </div>
+                          ) : null}
                         </div>
                       </li>
                     );
