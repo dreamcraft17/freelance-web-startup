@@ -1,7 +1,7 @@
 # Production deploy checklist (web + database)
 
-> **Doc revision:** v5  
-> Last synchronized: 2026-05-09 (build dipindah ke script `pnpm vercel:build` agar lolos batas panjang schema).
+> **Doc revision:** v4  
+> Last synchronized: 2026-05-09 (fallback `web/.next` + copy paket `next` ke `web/node_modules` untuk launcher).
 
 Checklist singkat sebelum merilis NearWork ke lingkungan produksi. Sesuaikan penyedia hosting (mis. Vercel) dengan variabel yang sama di dashboard mereka.
 
@@ -32,7 +32,6 @@ Dari root monorepo:
 - Tujuan fallback: deployment tetap lolos walau project setting Vercel masih menunjuk output lama `web/.next`.
 - Dependency runtime `next` dipasang di `package.json` root (bukan hanya devDependency) agar launcher fungsi di `/var/task/web/___next_launcher.cjs` bisa resolve `next/dist/compiled/next-server/server.runtime.prod.js`.
 - Build command juga menyalin direktori paket `next` ter-resolve ke `web/node_modules/next` agar resolver Node dari launcher `web` tetap menemukan modul runtime.
-- Untuk menghindari batas schema Vercel (`buildCommand` <= 256 char), command panjang dipindah ke script root `pnpm vercel:build` dan `vercel.json` hanya memanggil script tersebut.
 - Tetap direkomendasikan merapikan setting dashboard nanti (Root Directory / Output Directory) saat memungkinkan.
 
 ## Optional: seed untuk E2E atau admin dev di staging saja

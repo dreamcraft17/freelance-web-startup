@@ -2,6 +2,6 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "installCommand": "pnpm install",
-  "buildCommand": "pnpm vercel:build",
+  "buildCommand": "pnpm exec turbo run build --filter=@acme/web && rm -rf web/.next web/node_modules/next && mkdir -p web/node_modules && cp -R apps/web/.next web/.next && NEXT_DIR=$(node -p \"require('path').dirname(require.resolve('next/package.json'))\") && cp -RL \"$NEXT_DIR\" web/node_modules/next",
   "outputDirectory": "apps/web/.next"
 }
