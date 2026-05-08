@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v76  
-> Last synchronized: 2026-05-09 — e2e smoke uses CSRF mint + merged cookies; DB seed for categories.
+> **Doc revision:** v77  
+> Last synchronized: 2026-05-09 — seed loads root `.env` + taxonomy for E2E categories.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -308,7 +308,7 @@ pnpm exec tsc --noEmit -p apps/web
 - Unit: `pnpm test:unit`
 - E2E:
   1) run app (`pnpm --filter @acme/web dev`)
-  2) ensure test DB has categories (e.g. `pnpm db:migrate` + `pnpm db:seed` against the same `DATABASE_URL` the app uses)
+  2) ensure test DB has categories (`pnpm db:seed` from repo root reads root `.env` and upserts taxonomy + admin; use the same `DATABASE_URL` as the app)
   3) run smoke (`pnpm test:e2e`)
 - Keep test traffic off production DB:
   - set `TEST_DATABASE_URL=<isolated_db>`

@@ -1,7 +1,7 @@
 # @acme/database
 
-> **Doc revision:** v4  
-> Last synchronized: 2026-04-24 (runtime pool exhaustion handling guidance + search compatibility fallback).
+> **Doc revision:** v5  
+> Last synchronized: 2026-05-09 (seed loads root `.env` + taxonomy for E2E categories/skills).
 
 PostgreSQL access via **Prisma**: schema, migrations, and generated client.
 
@@ -55,17 +55,27 @@ The folder `prisma/migrations/20260412120000_init/` contains the **baseline** SQ
 | `db:migrate:deploy` | `prisma migrate deploy` |
 | `db:studio` | `prisma studio` |
 | `db:push` | `prisma db push` (prototyping only; prefer migrations for shared environments) |
-| `db:seed` | `prisma db seed` — creates/updates a dev **ADMIN** user (see below) |
+| `db:seed` | `prisma db seed` — taxonomy (category / subcategory / skill) + dev **ADMIN** user (see below) |
 
-## Seed admin user (local / internal)
+## Seed (local / internal / E2E)
 
-After migrations apply, from the **monorepo root** with `DATABASE_URL` set:
+After migrations apply, from the **monorepo root**:
 
 ```bash
 pnpm db:seed
 ```
 
-Defaults (override with env):
+`prisma/seed.ts` reads the **monorepo root** `.env` and `.env.local` (later file wins for unset keys only; variables already exported in your shell stay put), then **`DATABASE_URL` must resolve** against the DB your app uses.
+
+Idempotent taxonomy (stable slugs) so `GET /api/categories` always has at least one active category locally:
+
+| Entity | Purpose |
+|--------|---------|
+| Category | Active parent row for job `categoryId` |
+| Subcategory | Linked row for UI flows that drill into a category |
+| Skill | Active skill linked to that category/subcategory |
+
+Admin defaults (override with env — never commit real secrets):
 
 | Variable | Default |
 |----------|---------|
