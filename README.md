@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v75  
-> Last synchronized: 2026-05-09 — test coverage pass runbook (unit + e2e + test DB guidance).
+> **Doc revision:** v76  
+> Last synchronized: 2026-05-09 — e2e smoke uses CSRF mint + merged cookies; DB seed for categories.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -300,7 +300,7 @@ pnpm exec tsc --noEmit -p apps/web
 | `pnpm db:studio` | Prisma Studio |
 | `pnpm test` | Alias to unit tests |
 | `pnpm test:unit` | Vitest unit tests for policies/services/helpers/validators |
-| `pnpm test:e2e` | HTTP smoke tests for auth→job→bid→messages→report |
+| `pnpm test:e2e` | HTTP smoke (CSRF-aware: `GET /api/auth/csrf` + jar) auth→job→bid→messages→report |
 | `pnpm test:all` | Run unit then e2e |
 
 ### Testing quickstart
@@ -308,7 +308,8 @@ pnpm exec tsc --noEmit -p apps/web
 - Unit: `pnpm test:unit`
 - E2E:
   1) run app (`pnpm --filter @acme/web dev`)
-  2) run smoke (`pnpm test:e2e`)
+  2) ensure test DB has categories (e.g. `pnpm db:migrate` + `pnpm db:seed` against the same `DATABASE_URL` the app uses)
+  3) run smoke (`pnpm test:e2e`)
 - Keep test traffic off production DB:
   - set `TEST_DATABASE_URL=<isolated_db>`
   - run tests with `DATABASE_URL=$TEST_DATABASE_URL`
