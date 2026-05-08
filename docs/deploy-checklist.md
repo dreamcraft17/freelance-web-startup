@@ -1,7 +1,7 @@
 # Production deploy checklist (web + database)
 
-> **Doc revision:** v1  
-> Last synchronized: 2026-05-08
+> **Doc revision:** v2  
+> Last synchronized: 2026-05-09 (Vercel artifact fallback untuk path `web/.next`).
 
 Checklist singkat sebelum merilis NearWork ke lingkungan produksi. Sesuaikan penyedia hosting (mis. Vercel) dengan variabel yang sama di dashboard mereka.
 
@@ -25,6 +25,12 @@ Dari root monorepo:
 - [ ] `pnpm --filter @acme/web build`
 
 > Skrip `build` web sudah menjalankan `prisma generate` lewat filter database; tetap jalankan `db:generate`/`migrate:deploy` di pipeline deploy Anda agar urutan konsisten dengan DB yang dipakai runtime.
+
+### Catatan Vercel monorepo (hindari ENOENT `web/.next/routes-manifest.json`)
+
+- Repo ini menyimpan fallback di `vercel.json` root: setelah build `@acme/web`, artefak `.next` disalin ke `web/.next`.
+- Tujuan fallback: deployment tetap lolos walau project setting Vercel masih menunjuk output lama `web/.next`.
+- Tetap direkomendasikan merapikan setting dashboard nanti (Root Directory / Output Directory) saat memungkinkan.
 
 ## Optional: seed untuk E2E atau admin dev di staging saja
 
