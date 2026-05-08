@@ -1,13 +1,18 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v76  
-> Last synchronized: 2026-05-01 (homepage reference matching refined with denser hero controls and full-width footer information architecture).
+> **Doc revision:** v77  
+> Last synchronized: 2026-05-08 (onboarding checklist + localized messages/notifications; public jobs/freelancers empty What/Why/Next).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-08 — Early-launch onboarding & empty surfaces
+
+- Dasbor client/freelancer: kartu checklist aktivasi + blok petunjuk likuiditas (brief/proposal) dengan EN/ID; empty states utama memakai hierarki produk konsisten dengan `DashboardEmptyState`.
+- `/messages` workspace + `/notifications` center menggunakan string kamus untuk empty, filter kosong, label kategori utas/thread, serta handoff banner dari proposal/job review—tanpa menyentuh billing.
 
 ### 2026-05-01 — Homepage full composition refinement
 
