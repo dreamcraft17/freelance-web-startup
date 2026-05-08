@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v74  
-> Last synchronized: 2026-05-09 — deploy docs clarified for Vercel monorepo Root/Output settings.
+> **Doc revision:** v75  
+> Last synchronized: 2026-05-09 — test coverage pass runbook (unit + e2e + test DB guidance).
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -298,6 +298,23 @@ pnpm exec tsc --noEmit -p apps/web
 | `pnpm db:migrate` | Dev migrations |
 | `pnpm db:migrate:deploy` | Prod/CI migrations |
 | `pnpm db:studio` | Prisma Studio |
+| `pnpm test` | Alias to unit tests |
+| `pnpm test:unit` | Vitest unit tests for policies/services/helpers/validators |
+| `pnpm test:e2e` | HTTP smoke tests for auth→job→bid→messages→report |
+| `pnpm test:all` | Run unit then e2e |
+
+### Testing quickstart
+
+- Unit: `pnpm test:unit`
+- E2E:
+  1) run app (`pnpm --filter @acme/web dev`)
+  2) run smoke (`pnpm test:e2e`)
+- Keep test traffic off production DB:
+  - set `TEST_DATABASE_URL=<isolated_db>`
+  - run tests with `DATABASE_URL=$TEST_DATABASE_URL`
+- Moderation/admin queue assertions in e2e:
+  - set `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` (or use seed defaults)
+  - run `pnpm db:seed` on test/staging DB only.
 
 ---
 
