@@ -1,7 +1,7 @@
 # Audit teknis — Freelance-web (monorepo)
 
-> **Doc revision:** v7  
-> Last synchronized: 2026-04-27 (credential docs sanitized and apps/web source tree normalized to reduce path ambiguity).
+> **Doc revision:** v8  
+> Last synchronized: 2026-05-09 (e2e HTTP smoke aligns with CSRF cookie + header; empty category list fails job-creation steps until DB is seeded).
 
 **Lingkup:** `apps/web`, `packages/*`, dan jalur operasional yang mempengaruhi produksi.  
 **Tanggal referensi:** April 2026 (sinkron dengan update terakhir implementasi).
@@ -199,7 +199,7 @@ Belum ada:
 
 - `apps/web` typecheck: lulus di update terbaru.
 - Lints file yang disentuh: bersih.
-- E2E script tersedia (`pnpm test:e2e`) tapi tetap butuh environment + server hidup.
+- E2E script (`pnpm test:e2e`) membutuhkan server hidup, DB bermigrasi + seed (kategori), dan mem-behavior-kan browser pada mutasi terlindungi CSRF (mint token lewat `GET /api/auth/csrf`, kirim `Cookie` + `X-CSRF-Token`, simpan header cookie terbaru setelah respons karena sesi dapat berputar).
 
 Ops checklist yang tetap wajib:
 

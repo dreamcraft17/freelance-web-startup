@@ -1,7 +1,7 @@
 # Production deploy checklist (web + database)
 
-> **Doc revision:** v3  
-> Last synchronized: 2026-05-09 (added CI/test DB guidance for unit+e2e runs).
+> **Doc revision:** v4  
+> Last synchronized: 2026-05-09 (e2e harness: CSRF mint + cookie jar; DB must have categories via seed).
 
 Checklist singkat sebelum merilis NearWork ke lingkungan produksi. Sesuaikan penyedia hosting (mis. Vercel) dengan variabel yang sama di dashboard mereka.
 
@@ -57,7 +57,7 @@ Dari root monorepo:
   - jalankan test dengan `DATABASE_URL=$TEST_DATABASE_URL`
 - [ ] Jalankan unit + e2e smoke sebelum release:
   - `pnpm test:unit`
-  - `pnpm test:e2e` (app harus berjalan)
+  - `pnpm test:e2e` (app harus berjalan; skrip memanggil `GET /api/auth/csrf` + header `X-CSRF-Token` per mutasi; **`pnpm db:seed`** di DB test agar ada kategori untuk pembuatan job)
 
 ## Tambahan yang sering dilupakan
 
