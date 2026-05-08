@@ -19,8 +19,7 @@
     "db:migrate:deploy": "pnpm --filter @acme/database db:migrate:deploy",
     "db:studio": "pnpm --filter @acme/database db:studio",
     "db:seed": "pnpm --filter @acme/database db:seed",
-    "test:e2e": "node --test scripts/e2e-marketplace-flow.mjs",
-    "vercel:build": "pnpm exec turbo run build --filter=@acme/web && rm -rf web/.next web/node_modules/next && mkdir -p web/node_modules && cp -R apps/web/.next web/.next && NEXT_DIR=$(node -p \"require('path').dirname(require.resolve('next/package.json'))\") && cp -RL \"$NEXT_DIR\" web/node_modules/next"
+    "test:e2e": "node --test scripts/e2e-marketplace-flow.mjs"
   },
   "dependencies": {
     "next": "^15.1.0"
