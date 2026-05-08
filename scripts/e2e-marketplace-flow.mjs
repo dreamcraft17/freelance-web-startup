@@ -215,6 +215,18 @@ test("full marketplace flow (register → reviews & aggregates)", async () => {
   const sessionCheck = await api("/api/auth/session", { cookie: cookieClient });
   assert.equal(sessionCheck.res.status, 200, JSON.stringify(sessionCheck.body));
   assert.equal(sessionCheck.body.data.role, "CLIENT");
+  const logout = await postWithCsrf("/api/auth/logout", cookieClient, {});
+  assert.equal(logout.res.status, 204);
+  const sessionAfterLogout = await api("/api/auth/session", { cookie: cookieClient });
+  assert.equal(sessionAfterLogout.res.status, 401, JSON.stringify(sessionAfterLogout.body));
+
+  const relogin = await api("/api/auth/login", {
+    method: "POST",
+    json: { email: clientEmail, password }
+  });
+  assert.equal(relogin.res.status, 200);
+  cookieClient = sessionCookiePairFromResponse(relogin.res);
+  assert.ok(cookieClient, "login after logout should issue a session cookie");
 
   // Category for job
   const cats = await api("/api/categories?page=1&limit=5");
@@ -239,6 +251,9 @@ test("full marketplace flow (register → reviews & aggregates)", async () => {
   assert.equal(jobRes.res.status, 201, JSON.stringify(jobRes.body));
   const jobId = jobRes.body.data.id;
   assert.ok(jobId);
+  const jobsList = await api("/api/jobs?page=1&limit=10");
+  assert.equal(jobsList.res.status, 200, JSON.stringify(jobsList.body));
+  assert.ok(jobsList.body.data.items.some((j) => j.id === jobId), "created job should appear in GET /api/jobs");
 
   // 4) Freelancer submits bid
   const bidRes = await api("/api/bids", {
@@ -328,6 +343,14 @@ test("full marketplace flow (register → reviews & aggregates)", async () => {
     json: { body: "Hello from freelancer — received and working." }
   });
   assert.equal(msgFl.res.status, 201, JSON.stringify(msgFl.body));
+  const listThreads = await api("/api/messages", { cookie: cookieClient });
+  assert.equal(listThreads.res.status, 200, JSON.stringify(listThreads.body));
+  assert.ok(listThreads.body.data.items.some((t) => t.threadId === threadId), "thread should be listed for client");
+
+  const listMessages = await api(`/api/messages/${threadId}`, { cookie: cookieClient });
+  assert.equal(listMessages.res.status, 200, JSON.stringify(listMessages.body));
+  assert.ok(listMessages.body.data.items.some((m) => m.body.includes("Hello from client")));
+  assert.ok(listMessages.body.data.items.some((m) => m.body.includes("Hello from freelancer")));
 
   // 7) Notification: new message (recipient sees NEW_MESSAGE)
   const notifFlAfterMsg = await api("/api/notifications", { cookie: cookieFreelancer });
@@ -499,4 +522,74 @@ test("pre-hire proposal loop: JOB thread after bid + first message", async () =>
     { body: "Client opening note on the job-linked thread before hire." }
   );
   assert.equal(firstMsg.res.status, 201, JSON.stringify(firstMsg.body));
+  const freelancerReply = await postWithCsrf(
+    `/api/messages/${threadId}`,
+    cookieFreelancer,
+    { body: "Freelancer follow-up with proposal clarifications tied to this job." }
+  );
+  assert.equal(freelancerReply.res.status, 201, JSON.stringify(freelancerReply.body));
+
+  const jobThreadMessages = await api(`/api/messages/${threadId}`, { cookie: cookieClient });
+  assert.equal(jobThreadMessages.res.status, 200, JSON.stringify(jobThreadMessages.body));
+  assert.ok(
+    jobThreadMessages.body.data.items.some((m) => m.body.includes("Freelancer follow-up with proposal clarifications")),
+    "client should see freelancer follow-up in thread"
+  );
+});
+
+test("auth register/login/session/logout contract checks", async () => {
+  const suffix = `${Date.now()}_${Math.random().toString(16).slice(2, 8)}`;
+  const clientEmail = `e2e_auth_client_${suffix}@example.com`;
+  const freelancerEmail = `e2e_auth_fl_${suffix}@example.com`;
+  const password = "e2e-pass-ok-12";
+
+  const regClient = await api("/api/auth/register", {
+    method: "POST",
+    json: { fullName: "E2E Auth Client", email: clientEmail, password, role: "CLIENT" }
+  });
+  assert.equal(regClient.res.status, 201, JSON.stringify(regClient.body));
+  let cookieClient = sessionCookiePairFromResponse(regClient.res);
+  assert.ok(cookieClient);
+
+  const regFreelancer = await api("/api/auth/register", {
+    method: "POST",
+    json: { fullName: "E2E Auth Freelancer", email: freelancerEmail, password, role: "FREELANCER" }
+  });
+  assert.equal(regFreelancer.res.status, 201, JSON.stringify(regFreelancer.body));
+
+  const duplicateEmail = await api("/api/auth/register", {
+    method: "POST",
+    json: { fullName: "Duplicate", email: clientEmail, password, role: "CLIENT" }
+  });
+  assert.equal(duplicateEmail.res.status, 409, JSON.stringify(duplicateEmail.body));
+
+  const invalidPassword = await api("/api/auth/register", {
+    method: "POST",
+    json: { fullName: "Weak", email: `weak_${suffix}@example.com`, password: "123", role: "CLIENT" }
+  });
+  assert.equal(invalidPassword.res.status, 400, JSON.stringify(invalidPassword.body));
+
+  const loginSuccess = await api("/api/auth/login", {
+    method: "POST",
+    json: { email: clientEmail, password }
+  });
+  assert.equal(loginSuccess.res.status, 200, JSON.stringify(loginSuccess.body));
+  cookieClient = sessionCookiePairFromResponse(loginSuccess.res);
+  assert.ok(cookieClient);
+
+  const loginWrongPassword = await api("/api/auth/login", {
+    method: "POST",
+    json: { email: clientEmail, password: "wrong-password" }
+  });
+  assert.equal(loginWrongPassword.res.status, 401, JSON.stringify(loginWrongPassword.body));
+
+  const session = await api("/api/auth/session", { cookie: cookieClient });
+  assert.equal(session.res.status, 200, JSON.stringify(session.body));
+  assert.equal(session.body.data.role, "CLIENT");
+
+  const logout = await postWithCsrf("/api/auth/logout", cookieClient, {});
+  assert.equal(logout.res.status, 204);
+
+  const afterLogout = await api("/api/auth/session", { cookie: cookieClient });
+  assert.equal(afterLogout.res.status, 401, JSON.stringify(afterLogout.body));
 });

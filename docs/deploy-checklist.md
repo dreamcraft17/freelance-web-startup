@@ -1,7 +1,7 @@
 # Production deploy checklist (web + database)
 
-> **Doc revision:** v2  
-> Last synchronized: 2026-05-09 (Vercel monorepo Root/Output directory options clarified).
+> **Doc revision:** v3  
+> Last synchronized: 2026-05-09 (added CI/test DB guidance for unit+e2e runs).
 
 Checklist singkat sebelum merilis NearWork ke lingkungan produksi. Sesuaikan penyedia hosting (mis. Vercel) dengan variabel yang sama di dashboard mereka.
 
@@ -49,6 +49,15 @@ Dari root monorepo:
 ## Optional: seed untuk E2E atau admin dev di staging saja
 
 - [ ] **`pnpm db:seed`** — hanya di lingkungan **non-produksi** yang memang membutuhkan akun admin hasil seed (lihat `packages/database/README.md`). **Jangan** menjalankan seed default ke produksi tanpa review keamanan.
+
+## CI / test DB guidance
+
+- [ ] Gunakan DB terpisah untuk pengujian otomatis:
+  - `TEST_DATABASE_URL=<isolated_test_db>`
+  - jalankan test dengan `DATABASE_URL=$TEST_DATABASE_URL`
+- [ ] Jalankan unit + e2e smoke sebelum release:
+  - `pnpm test:unit`
+  - `pnpm test:e2e` (app harus berjalan)
 
 ## Tambahan yang sering dilupakan
 
