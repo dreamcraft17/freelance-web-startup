@@ -10,7 +10,8 @@ type SearchParams = { role?: string; status?: string; q?: string };
 const PAGE_LIMIT = 120;
 
 export default async function AdminUsersPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
-  await requireAdminAccess("users");
+  const session = await requireAdminAccess("users");
+  const showUserModeration = session.role === UserRole.ADMIN || session.role === UserRole.SUPPORT_ADMIN;
   const sp = await searchParams;
   const q = sp.q?.trim() || undefined;
   const role = Object.values(UserRole).includes(sp.role as UserRole) ? (sp.role as UserRole) : undefined;
@@ -36,8 +37,8 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
     <div className="space-y-5">
       <AdminPageIntro
         title="Users"
-        description="Directory of accounts (email, role, status). Filters apply on this page only; no edits from this view."
-        badge="Read-only"
+        description="Directory of accounts (email, role, status). Support and admins can suspend or reactivate freelancer and client marketplace accounts from here."
+        badge="Operational"
       />
 
       <AdminUsersFilters role={role} status={status} q={q} />
@@ -65,7 +66,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
             />
           </div>
         ) : (
-          <AdminUsersTable users={users} />
+          <AdminUsersTable users={users} showUserModeration={showUserModeration} />
         )}
       </section>
     </div>

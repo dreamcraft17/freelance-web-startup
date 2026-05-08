@@ -1,7 +1,7 @@
 # Roles and Permissions
 
-> **Doc revision:** v1  
-> Last synchronized: 2026-04-18 (post-accept handoff update applied across product and docs).
+> **Doc revision:** v2  
+> Last synchronized: 2026-05-08 (moderation reports queue + staff job hide + support user suspend matrix).
 
 System roles:
 - `ADMIN`
@@ -27,3 +27,4 @@ Policy examples:
 
 - Staff role matrix (`ADMIN`, `SUPPORT_ADMIN`, `MODERATOR`, `FINANCE_ADMIN`) sudah aktif pada workspace `/admin` dengan pembatasan per halaman.
 - Auth-aware UI juga sudah membedakan perilaku public/client/freelancer/staff agar aksi utama sesuai role context.
+- **Moderation & trust (May 2026):** `SUPPORT_ADMIN` dapat mengakses `/admin/reports` (sama seperti `MODERATOR`). `ADMIN`/`SUPPORT_ADMIN` dapat **suspend/reactivate** akun marketplace `CLIENT`/`FREELANCER` dari `/admin/users`. `ADMIN`/`MODERATOR`/`SUPPORT_ADMIN` dapat **menyembunyikan/menampilkan** job publik dari discovery (flag `moderationHiddenAt` pada `Job`).

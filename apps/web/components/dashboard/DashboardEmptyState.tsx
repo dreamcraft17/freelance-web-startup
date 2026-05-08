@@ -1,5 +1,6 @@
 import type { Route } from "next";
 import Link from "next/link";
+import type { ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -7,7 +8,7 @@ type DashboardEmptyStateProps = {
   icon: LucideIcon;
   kicker?: string;
   title: string;
-  description: string;
+  description: ReactNode;
   action?: { label: string; href: Route };
   secondaryAction?: { label: string; href: Route };
   /** Richer treatment: icon well, white surface, clearer CTAs */
@@ -54,7 +55,7 @@ export function DashboardEmptyState({
           >
             {title}
           </h3>
-          <p className="mt-2 text-sm leading-relaxed text-slate-600">{description}</p>
+          <div className="mt-2 text-sm leading-relaxed text-slate-600">{description}</div>
           {(action ?? secondaryAction) ? (
             <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
               {action ? (

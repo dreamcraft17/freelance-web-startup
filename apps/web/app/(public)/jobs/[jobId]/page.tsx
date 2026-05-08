@@ -5,6 +5,8 @@ import { CheckCircle2 } from "lucide-react";
 import { BidStatus, UserRole } from "@acme/types";
 import { db } from "@acme/database";
 import { getSessionFromCookies } from "@src/lib/auth";
+import { isStaffRole } from "@/features/admin/lib/access";
+import { ReportJobButton } from "@/features/moderation/components/ReportJobButton";
 import { loginReturnTo, registerFreelancerReturnToJob } from "@/features/auth/lib/register-intents";
 import { SaveJobButton } from "@/features/saved/components/SaveJobButton";
 import { JobProposalForm } from "@/features/public/components/JobProposalForm";
@@ -110,10 +112,13 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
   const jobId = rawId?.trim() ?? "";
   if (!jobId) notFound();
 
-  const jobService = new JobService();
-  const job = await jobService.getJobByIdForPublic(jobId, forceOriginal ? "source" : locale);
-  if (!job) notFound();
   const session = await getSessionFromCookies();
+  const jobService = new JobService();
+  const job = await jobService.getJobByIdForPublic(jobId, forceOriginal ? "source" : locale, {
+    viewerUserId: session?.userId,
+    viewerIsStaff: Boolean(session && isStaffRole(session.role))
+  });
+  if (!job) notFound();
 
   const owner = await db.job.findFirst({
     where: { id: job.id, deletedAt: null },
@@ -273,6 +278,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
             <div className="flex flex-wrap items-center gap-2">
               <h1 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">{job.title}</h1>
               <SaveJobButton jobId={job.id} />
+              {session && !isClientOwner ? <ReportJobButton jobId={job.id} /> : null}
             </div>
             <p className="mt-2 text-sm font-medium text-slate-600">
               {[categoryLabel, job.workMode, jobLocation].filter(Boolean).join(" · ") || t("public.jobDetail.openRole")}

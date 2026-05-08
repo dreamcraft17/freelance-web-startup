@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v80  
-> Last synchronized: 2026-05-01 (homepage alignment refined further with tighter hero spacing and full marketing footer composition).
+> **Doc revision:** v81  
+> Last synchronized: 2026-05-08 (trust & safety: moderation reports persistence, admin queue, hide jobs, suspend clients/freelancers).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,6 +9,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
+- **2026-05-08 — Trust & safety (moderation MVP):** ditambahkan model `ModerationReport` + `ModerationReportNote`, status `OPEN` / `IN_REVIEW` / `RESOLVED` / `DISMISSED`, dukungan subjek `USER` / `JOB` / `BID` / `REVIEW` / `MESSAGE_THREAD` / `MESSAGE`, intake `POST /api/reports`, antrean `/admin/reports` dengan triage (assign, catatan internal, resolve/dismiss). Job dapat disembunyikan dari discovery publik lewat `moderationHiddenAt`; staff `ADMIN`/`SUPPORT_ADMIN` dapat suspend/reactivate akun `CLIENT`/`FREELANCER` dari `/admin/users`.
 - **2026-05-01 — Homepage composition parity pass:** section hero dipoles lagi (headline scale/spacing, search card density, CTA sizing) dan footer landing diganti ke struktur yang lebih lengkap (brand+social, navigasi kolom, form newsletter, locale marker) untuk mendekati referensi visual final secara menyeluruh.
 - **2026-05-01 — Homepage intent + topbar alignment fix:** landing `/[locale]` kini default ke mode `hire` saat first load, dengan hero headline recruiter-first (termasuk emphasis visual) dan top navbar versi logged-out yang lebih clean (`Masuk`, `Daftar`, locale) agar hasil render lebih dekat ke komposisi referensi final.
 - **2026-05-01 — Register redirect copy refinement:** helper text setelah akun dibuat kini menampilkan tujuan yang ramah pengguna (mis. `halaman profil Anda`) berdasarkan route intent, menggantikan tampilan path mentah seperti `/freelancer/profile`.
@@ -209,7 +210,7 @@ Helper utama:
 Matriks akses:
 
 - `ADMIN`: full `/admin/*`
-- `SUPPORT_ADMIN`: overview, users, jobs, bids, contracts, verification, reviews, settings
+- `SUPPORT_ADMIN`: overview, users, jobs, bids, contracts, verification, reviews, reports, settings
 - `MODERATOR`: overview, jobs, verification, reviews, reports
 - `FINANCE_ADMIN`: overview, donations, subscriptions, feature-flags, settings
 
@@ -222,7 +223,7 @@ Matriks akses:
 - `/admin/contracts`
 - `/admin/verification` (termasuk aksi approve/reject untuk pending requests)
 - `/admin/reviews`
-- `/admin/reports` (placeholder trust/safety siap integrasi)
+- `/admin/reports` (antrean moderasi: laporan user/job/proposal/review/message; triage + catatan internal)
 - `/admin/donations`
 - `/admin/subscriptions`
 - `/admin/feature-flags` (read-only resolved flags)

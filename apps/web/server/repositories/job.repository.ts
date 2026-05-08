@@ -1,4 +1,4 @@
-import { db } from "@acme/database";
+import { db, type Prisma } from "@acme/database";
 import type { CreateJobDto, UpdateJobDto } from "@acme/validators";
 import { JobStatus, JobVisibility, WorkMode } from "@acme/types";
 import { NotFoundError } from "../errors/domain-errors";
@@ -140,13 +140,26 @@ export class JobRepository {
   }
 
   /** Open, public-visibility listing suitable for the job board and public detail page. */
-  async findByIdPublic(jobId: string, locale: AppLocale | "source" = "en") {
+  async findByIdPublic(
+    jobId: string,
+    locale: AppLocale | "source" = "en",
+    opts?: { viewerUserId?: string; viewerIsStaff?: boolean }
+  ) {
+    const moderationFilter: Prisma.JobWhereInput | undefined = opts?.viewerIsStaff
+      ? undefined
+      : opts?.viewerUserId
+        ? {
+            OR: [{ moderationHiddenAt: null }, { clientProfile: { userId: opts.viewerUserId } }]
+          }
+        : { moderationHiddenAt: null };
+
     const row = await db.job.findFirst({
       where: {
         id: jobId,
         deletedAt: null,
         status: JobStatus.OPEN,
-        visibility: JobVisibility.PUBLIC
+        visibility: JobVisibility.PUBLIC,
+        ...(moderationFilter ?? {})
       },
       select: {
         id: true,
@@ -193,7 +206,8 @@ export class JobRepository {
     const where = {
       deletedAt: null,
       status: JobStatus.OPEN,
-      visibility: JobVisibility.PUBLIC
+      visibility: JobVisibility.PUBLIC,
+      moderationHiddenAt: null
     } as const;
     const [items, total] = await Promise.all([
       db.job.findMany({

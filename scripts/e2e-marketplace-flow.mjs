@@ -7,6 +7,9 @@
  *   - Web dev or prod server: `pnpm --filter @acme/web dev` (default base http://127.0.0.1:3000)
  *
  * Run: `pnpm test:e2e` or `node --test scripts/e2e-marketplace-flow.mjs`
+ *
+ * Optional manual smoke after trust changes: authenticated user POST `/api/reports`
+ * with CSRF cookie/header (job/thread/etc.) → staff triage `/admin/reports`.
  * Override base URL: `BASE_URL=http://localhost:3000 pnpm test:e2e`
  *
  * If you see "redirect count exceeded" or "Redirect cycle", use 127.0.0.1 (default) or the exact

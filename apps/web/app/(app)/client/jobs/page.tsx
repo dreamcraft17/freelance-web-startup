@@ -7,6 +7,7 @@ import {
   ClientJobsManager,
   type ClientJobListRow
 } from "@/components/client-jobs/ClientJobsManager";
+import { getServerTranslator } from "@/lib/i18n/server-translator";
 
 function statusFromSearchParam(raw: string | undefined): JobStatus | null {
   if (!raw || raw === "all") return null;
@@ -26,6 +27,7 @@ export default async function ClientJobsPage({
 
   const sp = await searchParams;
   const locale = await getAppLocale();
+  const { t } = await getServerTranslator();
   const statusFilter = statusFromSearchParam(sp.status);
 
   const clientProfile = await db.clientProfile.findFirst({
@@ -36,6 +38,12 @@ export default async function ClientJobsPage({
   if (!clientProfile) {
     return <ClientJobsManager jobs={[]} statusParam={sp.status} reviewParam={sp.review} hasProfile={false} />;
   }
+
+  const emptyOnboarding = {
+    step1: t("public.moderation.onboardingJobsStep1"),
+    step2: t("public.moderation.onboardingJobsStep2"),
+    step3: t("public.moderation.onboardingJobsStep3")
+  };
 
   const jobs = await db.job.findMany({
     where: {
@@ -147,5 +155,13 @@ export default async function ClientJobsPage({
     updatedAt: j.updatedAt
   }));
 
-  return <ClientJobsManager jobs={rows} statusParam={sp.status} reviewParam={sp.review} hasProfile />;
+  return (
+    <ClientJobsManager
+      jobs={rows}
+      statusParam={sp.status}
+      reviewParam={sp.review}
+      hasProfile
+      emptyOnboarding={emptyOnboarding}
+    />
+  );
 }

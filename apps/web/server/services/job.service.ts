@@ -88,8 +88,12 @@ export class JobService {
   }
 
   /** Open, public-visibility job with category, subcategory, and client summary for listing/detail UIs. */
-  async getJobByIdForPublic(jobId: string, locale: AppLocale | "source" = "en") {
-    return this.jobRepo.findByIdPublic(jobId, locale);
+  async getJobByIdForPublic(
+    jobId: string,
+    locale: AppLocale | "source" = "en",
+    opts?: { viewerUserId?: string; viewerIsStaff?: boolean }
+  ) {
+    return this.jobRepo.findByIdPublic(jobId, locale, opts);
   }
 
   async listOpenJobs(

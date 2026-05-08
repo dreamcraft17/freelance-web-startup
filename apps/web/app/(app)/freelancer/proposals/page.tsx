@@ -6,12 +6,20 @@ import {
   FreelancerProposalsWorkspace,
   type FreelancerProposalRow
 } from "@/components/freelancer/FreelancerProposalsWorkspace";
+import { getServerTranslator } from "@/lib/i18n/server-translator";
 
 export default async function FreelancerProposalsPage() {
   const session = await getSessionFromCookies();
   if (!session) {
     redirect("/login?returnUrl=/freelancer/proposals");
   }
+
+  const { t } = await getServerTranslator();
+  const emptyOnboarding = {
+    step1: t("public.moderation.onboardingProposalStep1"),
+    step2: t("public.moderation.onboardingProposalStep2"),
+    step3: t("public.moderation.onboardingProposalStep3")
+  };
 
   const profile = await db.freelancerProfile.findFirst({
     where: { userId: session.userId, deletedAt: null },
@@ -65,7 +73,11 @@ export default async function FreelancerProposalsPage() {
         </div>
       </header>
 
-      <FreelancerProposalsWorkspace hasProfile={Boolean(profile)} proposals={proposals} />
+      <FreelancerProposalsWorkspace
+        hasProfile={Boolean(profile)}
+        proposals={proposals}
+        emptyOnboarding={emptyOnboarding}
+      />
     </div>
   );
 }

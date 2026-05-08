@@ -319,29 +319,32 @@ export function JobProposalForm({
         {success && !conversationThreadId && clientUserId ? (
           <p className="text-[11px] text-slate-500">{labels.conversationError}</p>
         ) : null}
-        <button
-          type="button"
-          onClick={() => {
-            setIntro("");
-            setApproach("");
-            setTimeline("");
-            setAmount("");
-            setEstimatedDays("");
-            clearDraftStorage();
-            setDraftNotice(labels.draftCleared);
-          }}
-          className="inline-flex text-xs font-semibold text-slate-600 underline-offset-2 hover:text-slate-900 hover:underline"
-        >
-          {labels.clearDraft}
-        </button>
-
-        <button
-          type="submit"
-          disabled={submitting}
-          className="nw-cta-primary inline-flex w-full items-center justify-center px-4 py-2.5 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-70"
-        >
-          {submitting ? labels.sending : labels.send}
-        </button>
+        <div className="sticky bottom-0 z-10 border-t border-slate-200/90 bg-white/95 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur-sm md:static md:z-0 md:border-0 md:bg-transparent md:p-0 md:backdrop-blur-none">
+          <div className="flex flex-col gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                setIntro("");
+                setApproach("");
+                setTimeline("");
+                setAmount("");
+                setEstimatedDays("");
+                clearDraftStorage();
+                setDraftNotice(labels.draftCleared);
+              }}
+              className="inline-flex self-start text-xs font-semibold text-slate-600 underline-offset-2 hover:text-slate-900 hover:underline"
+            >
+              {labels.clearDraft}
+            </button>
+            <button
+              type="submit"
+              disabled={submitting}
+              className="nw-cta-primary inline-flex w-full items-center justify-center px-4 py-2.5 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {submitting ? labels.sending : labels.send}
+            </button>
+          </div>
+        </div>
       </form>
     </>
   );
