@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Route } from "next";
 import type { AdminReportsQueryDto } from "@acme/validators";
 
 type Props = {
@@ -10,7 +11,7 @@ type Props = {
 export function AdminReportsFilterBar({ query, total }: Props) {
   const totalPages = Math.max(1, Math.ceil(total / query.limit));
 
-  function hrefFor(next: Partial<AdminReportsQueryDto>): string {
+  function hrefFor(next: Partial<AdminReportsQueryDto>): Route {
     const q = new URLSearchParams();
     const merged = { ...query, ...next };
     q.set("page", String(merged.page));
@@ -20,7 +21,7 @@ export function AdminReportsFilterBar({ query, total }: Props) {
     if (merged.assignedToStaffUserId) q.set("assigned", merged.assignedToStaffUserId);
     if (merged.q) q.set("q", merged.q);
     const s = q.toString();
-    return s ? `/admin/reports?${s}` : "/admin/reports";
+    return (s ? `/admin/reports?${s}` : "/admin/reports") as Route;
   }
 
   return (
