@@ -114,6 +114,22 @@ export enum ReviewTargetType {
   FREELANCER = "FREELANCER"
 }
 
+export enum ModerationReportStatus {
+  OPEN = "OPEN",
+  IN_REVIEW = "IN_REVIEW",
+  RESOLVED = "RESOLVED",
+  DISMISSED = "DISMISSED"
+}
+
+export enum ModerationReportSubjectType {
+  USER = "USER",
+  JOB = "JOB",
+  BID = "BID",
+  REVIEW = "REVIEW",
+  MESSAGE_THREAD = "MESSAGE_THREAD",
+  MESSAGE = "MESSAGE"
+}
+
 export enum VerificationType {
   IDENTITY = "IDENTITY",
   BUSINESS = "BUSINESS",

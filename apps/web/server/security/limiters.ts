@@ -62,3 +62,7 @@ export const verificationFreelancerUserLimiter = new SlidingWindowRateLimiter();
 
 /** Client PATCH job */
 export const jobUpdateUserLimiter = new SlidingWindowRateLimiter();
+
+export const moderationReportPostUserLimiter = new SlidingWindowRateLimiter();
+
+export const staffModerationPatchUserLimiter = new SlidingWindowRateLimiter();

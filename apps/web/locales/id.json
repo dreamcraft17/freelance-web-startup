@@ -868,6 +868,31 @@
       "mapDescription": "UI peta membaca state query dari URL atau form - logika tetap di hooks/services.",
       "resultsTitle": "Hasil",
       "resultsDescription": "Render freelancer atau lowongan dari layer pencarian."
+    },
+    "moderation": {
+      "dialogTitle": "Laporkan konten",
+      "dialogLead": "Jelaskan pelanggaran terhadap panduan komunitas. Tim kami meninjau setiap laporan.",
+      "categoryLabel": "Kategori",
+      "descriptionLabel": "Apa yang terjadi?",
+      "descriptionHint": "Sertakan detail yang cukup agar tim bisa memverifikasi (minimal 10 karakter).",
+      "submit": "Kirim laporan",
+      "cancel": "Batal",
+      "success": "Laporan diterima. Tim akan meninjau.",
+      "error": "Tidak dapat mengirim laporan. Coba lagi.",
+      "reportJobAria": "Laporkan lowongan ini",
+      "reportJobCta": "Laporkan",
+      "spam": "Spam atau menyesatkan",
+      "harassment": "Pelecehan",
+      "scam": "Penipuan",
+      "policy": "Pelanggaran kebijakan",
+      "ip": "Hak cipta atau merek",
+      "other": "Lainnya",
+      "onboardingJobsStep1": "Pasang brief yang jelas: ruang lingkup, tenggat, dan budget.",
+      "onboardingJobsStep2": "Bandingkan proposal secara berdampingan.",
+      "onboardingJobsStep3": "Balas di Pesan untuk klarifikasi sebelum Anda memutuskan merekrut.",
+      "onboardingProposalStep1": "Lengkapi profil agar klien mengenali kredibilitas Anda.",
+      "onboardingProposalStep2": "Kirim proposal yang fokus ke lowongan terbuka.",
+      "onboardingProposalStep3": "Pantau balasan—respons cepat menutup lebih banyak kesepakatan."
     }
   },
   "marketing": {

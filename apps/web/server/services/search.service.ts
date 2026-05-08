@@ -262,7 +262,8 @@ export class SearchService {
 
     const parts: Prisma.Sql[] = [
       Prisma.sql`j."deletedAt" IS NULL`,
-      Prisma.sql`j."status" = 'OPEN'::"JobStatus"`
+      Prisma.sql`j."status" = 'OPEN'::"JobStatus"`,
+      Prisma.sql`j."moderationHiddenAt" IS NULL`
     ];
     if (opts.publicVisibilityOnly) {
       parts.push(Prisma.sql`j."visibility" = 'PUBLIC'::"JobVisibility"`);

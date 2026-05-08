@@ -151,6 +151,22 @@ enum ReviewTargetType {
   FREELANCER
 }
 
+enum ModerationReportStatus {
+  OPEN
+  IN_REVIEW
+  RESOLVED
+  DISMISSED
+}
+
+enum ModerationReportSubjectType {
+  USER
+  JOB
+  BID
+  REVIEW
+  MESSAGE_THREAD
+  MESSAGE
+}
+
 enum VerificationType {
   IDENTITY
   BUSINESS
@@ -202,6 +218,13 @@ model User {
 
   donations        Donation[]
   paymentIntents   PaymentIntent[]
+
+  moderationReportsFiled ModerationReport[] @relation("ModerationReportReporter")
+  moderationReportsAssigned ModerationReport[] @relation("ModerationReportAssignee")
+  moderationReportsStatusActor ModerationReport[] @relation("ModerationReportStatusActor")
+  moderationReportNotesAuthored ModerationReportNote[] @relation("ModerationReportNoteAuthor")
+
+  jobsModerationHidden Job[] @relation("JobModerationHiddenBy")
 
   @@index([role, accountStatus])
   @@index([email, deletedAt])
@@ -426,9 +449,16 @@ model Job {
 
   metadata Json?
 
+  /// Hidden from public discovery by staff (owner may still see listing in app).
+  moderationHiddenAt      DateTime?
+  moderationHiddenReason  String? @db.Text
+  moderationHiddenByUserId String?
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+
+  moderationHiddenBy User? @relation("JobModerationHiddenBy", fields: [moderationHiddenByUserId], references: [id], onDelete: SetNull)
 
   clientProfile ClientProfile @relation(fields: [clientProfileId], references: [id], onDelete: Restrict)
   category      Category      @relation(fields: [categoryId], references: [id], onDelete: Restrict)
@@ -449,6 +479,7 @@ model Job {
   @@index([createdAt])
   @@index([deletedAt, status, visibility, createdAt])
   @@index([clientProfileId, deletedAt, updatedAt])
+  @@index([moderationHiddenAt])
 }
 
 model JobSkill {
@@ -878,4 +909,66 @@ model AuditLog {
   @@index([targetType, targetId, createdAt])
   @@index([actorId, createdAt])
   @@index([action, createdAt])
+}
+
+// -----------------------------------------------------------------------------
+// Moderation & trust / safety
+// -----------------------------------------------------------------------------
+
+model ModerationReport {
+  id String @id @default(cuid())
+
+  reporterUserId String
+  subjectType    ModerationReportSubjectType
+
+  subjectUserId    String?
+  subjectJobId     String?
+  subjectBidId     String?
+  subjectReviewId  String?
+  subjectThreadId  String?
+  subjectMessageId String?
+
+  category    String @db.VarChar(96)
+  description String @db.Text
+
+  status ModerationReportStatus @default(OPEN)
+
+  assignedToStaffUserId String?
+
+  resolvedAt  DateTime?
+  dismissedAt DateTime?
+
+  resolutionSummary     String? @db.Text
+  statusUpdatedByUserId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  reporter User @relation("ModerationReportReporter", fields: [reporterUserId], references: [id], onDelete: Restrict)
+
+  assignedToStaff User? @relation("ModerationReportAssignee", fields: [assignedToStaffUserId], references: [id], onDelete: SetNull)
+
+  statusUpdatedBy User? @relation("ModerationReportStatusActor", fields: [statusUpdatedByUserId], references: [id], onDelete: SetNull)
+
+  notes ModerationReportNote[]
+
+  @@index([status, createdAt])
+  @@index([subjectType])
+  @@index([assignedToStaffUserId])
+  @@index([reporterUserId, createdAt])
+}
+
+model ModerationReportNote {
+  id String @id @default(cuid())
+
+  reportId         String
+  authorStaffUserId String
+  body             String @db.Text
+
+  createdAt DateTime @default(now())
+
+  report       ModerationReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  authorStaff User            @relation("ModerationReportNoteAuthor", fields: [authorStaffUserId], references: [id], onDelete: Restrict)
+
+  @@index([reportId, createdAt])
 }

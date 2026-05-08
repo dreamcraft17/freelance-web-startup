@@ -868,6 +868,31 @@
       "mapDescription": "Map UI reads query state from URL or form - logic stays in hooks/services.",
       "resultsTitle": "Results",
       "resultsDescription": "Render freelancers or jobs returned from the search layer."
+    },
+    "moderation": {
+      "dialogTitle": "Report content",
+      "dialogLead": "Describe what violates our community guidelines. Staff reviews every report.",
+      "categoryLabel": "Category",
+      "descriptionLabel": "What happened?",
+      "descriptionHint": "Include enough detail for staff to verify (minimum 10 characters).",
+      "submit": "Submit report",
+      "cancel": "Cancel",
+      "success": "Report received. Our team will review it.",
+      "error": "Could not submit the report. Try again.",
+      "reportJobAria": "Report this job listing",
+      "reportJobCta": "Report",
+      "spam": "Spam or misleading",
+      "harassment": "Harassment",
+      "scam": "Scam or fraud",
+      "policy": "Policy violation",
+      "ip": "Copyright or trademark",
+      "other": "Other",
+      "onboardingJobsStep1": "Post a brief that states scope, deadline, and budget.",
+      "onboardingJobsStep2": "Compare proposals side by side.",
+      "onboardingJobsStep3": "Reply in Messages to clarify scope before you hire.",
+      "onboardingProposalStep1": "Complete your profile so clients recognize your credibility.",
+      "onboardingProposalStep2": "Send focused proposals tailored to open jobs.",
+      "onboardingProposalStep3": "Watch for replies—timely messages close more wins."
     }
   },
   "marketing": {

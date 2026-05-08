@@ -91,10 +91,12 @@ function statusOrder(status: string): number {
 
 export function FreelancerProposalsWorkspace({
   hasProfile,
-  proposals
+  proposals,
+  emptyOnboarding
 }: {
   hasProfile: boolean;
   proposals: FreelancerProposalRow[];
+  emptyOnboarding?: { step1: string; step2: string; step3: string };
 }) {
   const [filter, setFilter] = useState<FilterKey>("all");
 
@@ -146,7 +148,20 @@ export function FreelancerProposalsWorkspace({
         kicker="Inbox"
         icon={Inbox}
         title="No proposals yet"
-        description="When you respond to a job with a bid, it appears here so you can track client decisions in one workspace."
+        description={
+          <>
+            <p>
+              When you respond to a job with a bid, it appears here so you can track client decisions in one workspace.
+            </p>
+            {emptyOnboarding ? (
+              <ol className="mt-3 list-decimal space-y-1.5 pl-5 marker:font-semibold">
+                <li>{emptyOnboarding.step1}</li>
+                <li>{emptyOnboarding.step2}</li>
+                <li>{emptyOnboarding.step3}</li>
+              </ol>
+            ) : null}
+          </>
+        }
         action={{ label: "Browse open jobs", href: "/jobs" }}
       />
     );

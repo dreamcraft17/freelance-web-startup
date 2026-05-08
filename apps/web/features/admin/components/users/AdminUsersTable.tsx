@@ -1,3 +1,4 @@
+import { AdminUserSuspendToggle } from "@/features/admin/components/users/AdminUserSuspendToggle";
 import { formatAdminDateTime } from "@/features/admin/components/AdminUi";
 import {
   AdminIdCell,
@@ -30,7 +31,13 @@ function Pill({ children, tone }: { children: string; tone: "slate" | "indigo" }
   );
 }
 
-export function AdminUsersTable({ users }: { users: AdminUserRow[] }) {
+export function AdminUsersTable({
+  users,
+  showUserModeration = false
+}: {
+  users: AdminUserRow[];
+  showUserModeration?: boolean;
+}) {
   return (
     <AdminTableScroll>
       <AdminTable>
@@ -41,6 +48,7 @@ export function AdminUsersTable({ users }: { users: AdminUserRow[] }) {
             <AdminTh>Role</AdminTh>
             <AdminTh>Account status</AdminTh>
             <AdminTh>Created</AdminTh>
+            {showUserModeration ? <AdminTh>Moderation</AdminTh> : null}
           </AdminTr>
         </AdminThead>
         <AdminTbody>
@@ -59,6 +67,11 @@ export function AdminUsersTable({ users }: { users: AdminUserRow[] }) {
                 <Pill tone="slate">{u.accountStatus}</Pill>
               </AdminTd>
               <AdminTd className="whitespace-nowrap text-xs text-slate-600">{formatAdminDateTime(u.createdAt)}</AdminTd>
+              {showUserModeration ? (
+                <AdminTd className="align-top">
+                  <AdminUserSuspendToggle userId={u.id} role={u.role} accountStatus={u.accountStatus} />
+                </AdminTd>
+              ) : null}
             </AdminTr>
           ))}
         </AdminTbody>

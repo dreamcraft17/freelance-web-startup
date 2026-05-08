@@ -35,6 +35,7 @@ export default async function AdminJobsPage({ searchParams }: { searchParams: Pr
       slug: true,
       status: true,
       createdAt: true,
+      moderationHiddenAt: true,
       clientProfile: { select: { displayName: true, companyName: true } },
       _count: { select: { bids: true } }
     }
@@ -50,7 +51,8 @@ export default async function AdminJobsPage({ searchParams }: { searchParams: Pr
       clientLabel,
       status: j.status,
       createdAt: j.createdAt,
-      bidCount: j._count.bids
+      bidCount: j._count.bids,
+      moderationHiddenAt: j.moderationHiddenAt ?? null
     };
   });
 
@@ -60,8 +62,8 @@ export default async function AdminJobsPage({ searchParams }: { searchParams: Pr
     <div className="space-y-5">
       <AdminPageIntro
         title="Jobs"
-        description="Operational listing for moderation and support: client, lifecycle status, bid volume, and timestamps. Read-only."
-        badge="Read-only"
+        description="Operational listing for moderation: client context, lifecycle, bid counts, timestamps, and quick hide/show from discovery (owner can still manage in-app)."
+        badge="Operational"
       />
 
       <AdminJobsFilters status={status} visibility={visibility} q={q} />

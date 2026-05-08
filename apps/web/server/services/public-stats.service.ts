@@ -39,7 +39,8 @@ export class PublicStatsService {
         where: {
           deletedAt: null,
           status: JobStatus.OPEN,
-          visibility: JobVisibility.PUBLIC
+          visibility: JobVisibility.PUBLIC,
+          moderationHiddenAt: null
         },
         orderBy: { createdAt: "desc" },
         take: 2,
@@ -88,7 +89,8 @@ export class PublicStatsService {
         where: {
           deletedAt: null,
           status: JobStatus.OPEN,
-          visibility: JobVisibility.PUBLIC
+          visibility: JobVisibility.PUBLIC,
+          moderationHiddenAt: null
         }
       });
       return { bidsLast24h, freelancersAvailable, openPublicJobs };

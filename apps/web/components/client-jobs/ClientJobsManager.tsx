@@ -130,9 +130,17 @@ type ClientJobsManagerProps = {
   statusParam: string | undefined;
   reviewParam?: string | undefined;
   hasProfile: boolean;
+  /** Guided first-time client path (localized from server). */
+  emptyOnboarding?: { step1: string; step2: string; step3: string };
 };
 
-export function ClientJobsManager({ jobs, statusParam, reviewParam, hasProfile }: ClientJobsManagerProps) {
+export function ClientJobsManager({
+  jobs,
+  statusParam,
+  reviewParam,
+  hasProfile,
+  emptyOnboarding
+}: ClientJobsManagerProps) {
   const activeFilter = parseStatusFilter(statusParam);
   const reviewFocus = parseReviewFocus(reviewParam);
   const scopedJobs = jobs.filter((job) => {
@@ -187,7 +195,21 @@ export function ClientJobsManager({ jobs, statusParam, reviewParam, hasProfile }
           kicker="Jobs"
           icon={Briefcase}
           title="No jobs posted yet"
-          description="Publish your first role to start receiving proposals. You can refine budget, work mode, and deadlines before you go live."
+          description={
+            <>
+              <p>
+                Publish your first role to start receiving proposals. You can refine budget, work mode, and deadlines before
+                you go live.
+              </p>
+              {emptyOnboarding ? (
+                <ol className="mt-3 list-decimal space-y-1.5 pl-5 marker:font-semibold">
+                  <li>{emptyOnboarding.step1}</li>
+                  <li>{emptyOnboarding.step2}</li>
+                  <li>{emptyOnboarding.step3}</li>
+                </ol>
+              ) : null}
+            </>
+          }
           action={{ label: "Post your first job", href: "/client/jobs/new" }}
           secondaryAction={{ label: "Browse freelancers", href: "/freelancers" }}
         />

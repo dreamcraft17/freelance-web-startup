@@ -46,7 +46,7 @@ const FULL: AdminPageKey[] = [
   "settings"
 ];
 
-/** SUPPORT_ADMIN: users, jobs, bids, contracts, verification, reviews, settings (+ overview) */
+/** SUPPORT_ADMIN: users, jobs, bids, contracts, verification, reviews, reports, settings (+ overview) */
 const SUPPORT: AdminPageKey[] = [
   "overview",
   "users",
@@ -55,6 +55,7 @@ const SUPPORT: AdminPageKey[] = [
   "contracts",
   "verification",
   "reviews",
+  "reports",
   "settings"
 ];
 

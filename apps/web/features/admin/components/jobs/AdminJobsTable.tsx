@@ -1,3 +1,4 @@
+import { AdminJobModerationToggle } from "@/features/admin/components/jobs/AdminJobModerationToggle";
 import { formatAdminDateTime } from "@/features/admin/components/AdminUi";
 import {
   AdminIdCell,
@@ -18,6 +19,7 @@ export type AdminJobRow = {
   status: string;
   createdAt: Date;
   bidCount: number;
+  moderationHiddenAt: Date | null;
 };
 
 function StatusPill({ children }: { children: string }) {
@@ -39,7 +41,9 @@ export function AdminJobsTable({ jobs }: { jobs: AdminJobRow[] }) {
             <AdminTh>Client</AdminTh>
             <AdminTh>Status</AdminTh>
             <AdminTh className="text-right">Bids</AdminTh>
+            <AdminTh>Public</AdminTh>
             <AdminTh>Created</AdminTh>
+            <AdminTh>Actions</AdminTh>
           </AdminTr>
         </AdminThead>
         <AdminTbody>
@@ -61,7 +65,21 @@ export function AdminJobsTable({ jobs }: { jobs: AdminJobRow[] }) {
                 <StatusPill>{j.status}</StatusPill>
               </AdminTd>
               <AdminTd className="text-right tabular-nums text-slate-800">{j.bidCount}</AdminTd>
+              <AdminTd>
+                {j.moderationHiddenAt ? (
+                  <span className="rounded bg-rose-50 px-1.5 py-0.5 text-[11px] font-semibold uppercase text-rose-900 ring-1 ring-rose-100">
+                    Hidden
+                  </span>
+                ) : (
+                  <span className="rounded bg-emerald-50 px-1.5 py-0.5 text-[11px] font-semibold uppercase text-emerald-900 ring-1 ring-emerald-100">
+                    Listed
+                  </span>
+                )}
+              </AdminTd>
               <AdminTd className="whitespace-nowrap text-xs text-slate-600">{formatAdminDateTime(j.createdAt)}</AdminTd>
+              <AdminTd className="align-top">
+                <AdminJobModerationToggle jobId={j.id} moderationHiddenAt={j.moderationHiddenAt} />
+              </AdminTd>
             </AdminTr>
           ))}
         </AdminTbody>
