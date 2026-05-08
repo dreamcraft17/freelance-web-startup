@@ -1,8 +1,12 @@
+import type { Route } from "next";
 import { redirect } from "next/navigation";
 import { BidStatus, ContractStatus, JobStatus } from "@acme/types";
 import { db } from "@acme/database";
 import { getSessionFromCookies } from "@src/lib/auth";
+import type { ActivationChecklistStepVm } from "@/components/onboarding/ActivationChecklistCard";
+import { getServerTranslator } from "@/lib/i18n/server-translator";
 import { MessageService } from "@/server/services/message.service";
+import { OnboardingActivationService } from "@/server/services/onboarding-activation.service";
 import {
   ClientDashboard,
   type ClientDashboardBid,
@@ -43,6 +47,18 @@ export default async function ClientDashboardPage() {
   if (!session) {
     redirect("/login?returnUrl=/client");
   }
+
+  const { t } = await getServerTranslator();
+  const activationSvc = new OnboardingActivationService();
+  const activationRaw = await activationSvc.getClientActivation(session.userId);
+  const stepsVm: ActivationChecklistStepVm[] = activationRaw.map((s) => ({
+    id: s.id,
+    done: s.done,
+    href: s.href as Route,
+    label: t(`activation.client.steps.${s.id}.label`),
+    hint: t(`activation.client.steps.${s.id}.hint`)
+  }));
+  const allActivationDone = stepsVm.every((x) => x.done);
 
   const [clientProfile, activeContractsCount, completedHiresCount, recentContractsRaw] = await Promise.all([
     db.clientProfile.findFirst({
@@ -217,6 +233,43 @@ export default async function ClientDashboardPage() {
       recentJobs={recentJobs}
       recentBids={recentBids}
       recentContracts={recentContracts}
+      copy={{
+        finishProfileCardTitle: t("dashboard.client.finishProfileCardTitle"),
+        finishProfileCardBody: t("dashboard.client.finishProfileCardBody"),
+        finishProfileCta: t("dashboard.client.finishProfileCta"),
+        jobsEmptyNoProfileTitle: t("dashboard.client.jobsEmptyNoProfileTitle"),
+        jobsEmptyNoProfileBody: t("dashboard.client.jobsEmptyNoProfileBody"),
+        jobsEmptyFirstTitle: t("dashboard.client.jobsEmptyFirstTitle"),
+        jobsEmptyFirstBody: t("dashboard.client.jobsEmptyFirstBody"),
+        jobsEmptyFirstPrimary: t("dashboard.client.jobsEmptyFirstPrimary"),
+        jobsEmptyFirstSecondary: t("dashboard.client.jobsEmptyFirstSecondary"),
+        bidsEmptyNoProfileTitle: t("dashboard.client.bidsEmptyNoProfileTitle"),
+        bidsEmptyNoProfileBody: t("dashboard.client.bidsEmptyNoProfileBody"),
+        bidsEmptyNoBidsTitle: t("dashboard.client.bidsEmptyNoBidsTitle"),
+        bidsEmptyNoBidsBody: t("dashboard.client.bidsEmptyNoBidsBody"),
+        bidsEmptyNoBidsPrimary: t("dashboard.client.bidsEmptyNoBidsPrimary"),
+        bidsEmptyNoBidsSecondary: t("dashboard.client.bidsEmptyNoBidsSecondary"),
+        contractsEmptyTitle: t("dashboard.client.contractsEmptyTitle"),
+        contractsEmptyBody: t("dashboard.client.contractsEmptyBody"),
+        contractsEmptyPrimary: t("dashboard.client.contractsEmptyPrimary"),
+        contractsEmptySecondary: t("dashboard.client.contractsEmptySecondary")
+      }}
+      activationChecklist={{
+        title: t("activation.client.checklistTitle"),
+        intro: t("activation.client.checklistIntro"),
+        steps: stepsVm,
+        allCompleteBanner: allActivationDone ? t("activation.client.allComplete") : null
+      }}
+      liquidityTips={{
+        title: t("activation.client.liquidityTitle"),
+        intro: t("activation.shared.clientLiquidityIntro"),
+        bullets: [
+          t("activation.client.liquidity.b1"),
+          t("activation.client.liquidity.b2"),
+          t("activation.client.liquidity.b3")
+        ],
+        footer: t("activation.shared.jobContextReminder")
+      }}
     />
   );
 }

@@ -4,6 +4,7 @@ import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { NotificationType } from "@acme/types";
+import { useI18n } from "@/features/i18n/I18nProvider";
 import { fetchWithCsrf } from "@/features/auth/lib/fetch-with-csrf";
 import { DashboardEmptyState } from "@/components/dashboard/DashboardEmptyState";
 import { cn } from "@/lib/utils";
@@ -116,6 +117,7 @@ function categoryForType(type: string): NotificationCategory {
 }
 
 export function NotificationsCenter({ items }: NotificationsCenterProps) {
+  const { t } = useI18n();
   const router = useRouter();
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [category, setCategory] = useState<NotificationCategory>("all");
@@ -173,12 +175,12 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
       <div className="rounded-2xl border border-slate-200/70 bg-white/80 p-1 shadow-sm ring-1 ring-slate-900/[0.02]">
         <DashboardEmptyState
           tone="elevated"
-          kicker="Notifications"
+          kicker={t("nav.notifications")}
           icon={Inbox}
-          title="No updates yet."
-          description="Proposal, message, and hiring activity will appear here."
-          action={{ label: "Open messages", href: "/messages" }}
-          secondaryAction={{ label: "Browse jobs", href: "/jobs" }}
+          title={t("notifications.emptyTitle")}
+          description={t("notifications.emptyDescription")}
+          action={{ label: t("notifications.emptyPrimary"), href: "/messages" }}
+          secondaryAction={{ label: t("notifications.emptySecondary"), href: "/jobs" }}
         />
       </div>
     );
@@ -188,10 +190,10 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
     <div className="space-y-6">
       <section aria-label="Notification categories" className="flex flex-wrap gap-2">
         {[
-          { id: "all", label: "All" },
-          { id: "proposals", label: "Proposals" },
-          { id: "messages", label: "Messages" },
-          { id: "contracts", label: "Contracts" }
+          { id: "all", label: t("notifications.categoryAll") },
+          { id: "proposals", label: t("notifications.categoryProposals") },
+          { id: "messages", label: t("notifications.categoryMessages") },
+          { id: "contracts", label: t("notifications.categoryContracts") }
         ].map((chip) => {
           const active = category === chip.id;
           const count = counts[chip.id as NotificationCategory];
@@ -220,12 +222,12 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
         <div className="rounded-2xl border border-slate-200/70 bg-white/80 p-1 shadow-sm ring-1 ring-slate-900/[0.02]">
           <DashboardEmptyState
             tone="elevated"
-            kicker="Notifications"
+            kicker={t("nav.notifications")}
             icon={Inbox}
-            title="No notifications in this category yet."
-            description="Choose another category or check back as new activity arrives."
-            action={{ label: "Open messages", href: "/messages" }}
-            secondaryAction={{ label: "Browse jobs", href: "/jobs" }}
+            title={t("notifications.filterEmptyTitle")}
+            description={t("notifications.filterEmptyDescription")}
+            action={{ label: t("notifications.emptyPrimary"), href: "/messages" }}
+            secondaryAction={{ label: t("notifications.emptySecondary"), href: "/jobs" }}
           />
         </div>
       ) : null}
@@ -237,13 +239,13 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
             <div className="flex flex-wrap items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-[#3525cd] shadow-sm shadow-[#3525cd]/30" aria-hidden />
               <h2 id="notif-unread-heading" className="text-sm font-semibold text-slate-900">
-                Unread
+                {t("notifications.unreadLabel")}
               </h2>
               <span className="rounded-full bg-[#3525cd]/10 px-2 py-0.5 text-xs font-semibold tabular-nums text-[#3525cd] ring-1 ring-[#3525cd]/10">
                 {unread.length}
               </span>
             </div>
-            <p className="mt-1 text-xs text-slate-500">Tap to mark read and jump to the related page when available.</p>
+            <p className="mt-1 text-xs text-slate-500">{t("notifications.unreadCaption")}</p>
           </div>
           <ul className="divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200/75 bg-white shadow-sm ring-1 ring-slate-900/[0.02]">
             {unread.map((n) => (
@@ -265,13 +267,13 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
             <div className="flex flex-wrap items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-slate-300" aria-hidden />
               <h2 id="notif-read-heading" className="text-sm font-semibold text-slate-600">
-                Read
+                {t("notifications.readLabel")}
               </h2>
               <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium tabular-nums text-slate-500 ring-1 ring-slate-200/80">
                 {read.length}
               </span>
             </div>
-            <p className="mt-1 text-xs text-slate-500">Opened or cleared—still available for reference.</p>
+            <p className="mt-1 text-xs text-slate-500">{t("notifications.readCaption")}</p>
           </div>
           <ul className="divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200/50 bg-slate-50/70 shadow-sm ring-1 ring-slate-900/[0.02]">
             {read.map((n) => (

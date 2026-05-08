@@ -23,6 +23,22 @@ function SuggestedSteps({ children }: { children: ReactNode }) {
   );
 }
 
+function EmptyContext({ what, why, next }: { what: string; why: string; next: string }) {
+  return (
+    <div className="mt-4 space-y-2 border-t border-slate-200 pt-4 text-left text-xs leading-relaxed text-slate-600">
+      <p>
+        <span className="font-semibold text-slate-800">{what}</span>
+      </p>
+      <p>
+        <span className="font-semibold text-slate-800">{why}</span>
+      </p>
+      <p>
+        <span className="font-semibold text-slate-800">{next}</span>
+      </p>
+    </div>
+  );
+}
+
 export function JobsPublicEmpty({ categorySelected, hasFilters, viewerRole = null }: JobsPublicEmptyProps) {
   const { t } = useI18n();
 
@@ -33,6 +49,11 @@ export function JobsPublicEmpty({ categorySelected, hasFilters, viewerRole = nul
         <p className="mt-2 max-w-lg text-sm leading-relaxed text-slate-600">
           {t("public.jobs.emptyCategoryBody")}
         </p>
+        <EmptyContext
+          what={t("public.jobs.emptyCategoryWhat")}
+          why={t("public.jobs.emptyCategoryWhy")}
+          next={t("public.jobs.emptyCategoryNext")}
+        />
         <SuggestedSteps>
           <li>{t("public.jobs.emptyCategoryStep1")}</li>
           <li>{t("public.jobs.emptyCategoryStep2")}</li>
@@ -63,6 +84,11 @@ export function JobsPublicEmpty({ categorySelected, hasFilters, viewerRole = nul
         <p className="mt-2 max-w-lg text-sm leading-relaxed text-slate-600">
           {t("public.jobs.emptyFiltersBody")}
         </p>
+        <EmptyContext
+          what={t("public.jobs.emptyFiltersWhat")}
+          why={t("public.jobs.emptyFiltersWhy")}
+          next={t("public.jobs.emptyFiltersNext")}
+        />
         <SuggestedSteps>
           <li>{t("public.jobs.emptyFiltersStep1")}</li>
           <li>{t("public.jobs.emptyFiltersStep2")}</li>
@@ -95,6 +121,11 @@ export function JobsPublicEmpty({ categorySelected, hasFilters, viewerRole = nul
       <p className="mt-2 max-w-lg text-sm leading-relaxed text-slate-600">
         {t("public.jobs.emptyActionBody")}
       </p>
+      <EmptyContext
+        what={t("public.jobs.emptyActionWhat")}
+        why={t("public.jobs.emptyActionWhy")}
+        next={t("public.jobs.emptyActionNext")}
+      />
       <p className="mt-2 text-xs font-medium text-slate-500">
         {viewerRole === "CLIENT"
           ? t("public.jobs.emptyRoleClient")
