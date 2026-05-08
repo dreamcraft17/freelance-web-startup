@@ -1,13 +1,19 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v77  
-> Last synchronized: 2026-05-08 (onboarding checklist + localized messages/notifications; public jobs/freelancers empty What/Why/Next).
+> **Doc revision:** v78  
+> Last synchronized: 2026-05-08 (proposal guidance + owner review cards/table + messages hiring context + activation tap targets).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-08 — Proposal & review trust surfaces
+
+- Detail job (freelancer): panel proposal terstruktur + petunjuk ringan per field; assemble cover letter konsisten dengan heading yang diparse untuk skor kelengkapan.
+- Owner review: kolom/kartu “proposal depth”, bandingkan cepat (harga/hari/profil), CTA diskusi primer, laporan sekunder; empty state proposal memakai blok What/Why/Next.
+- `/messages`: strip konteks hiring (judul + status job + status proposal + langkah disarankan); tone workplace, bukan obrolan sosial; target sentuh checklist aktivasi diperbesar.
 
 ### 2026-05-08 — Early-launch onboarding & empty surfaces
 
