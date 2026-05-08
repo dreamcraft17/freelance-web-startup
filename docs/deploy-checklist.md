@@ -1,7 +1,7 @@
 # Production deploy checklist (web + database)
 
-> **Doc revision:** v1  
-> Last synchronized: 2026-05-08
+> **Doc revision:** v2  
+> Last synchronized: 2026-05-09 (Vercel monorepo Root/Output directory options clarified).
 
 Checklist singkat sebelum merilis NearWork ke lingkungan produksi. Sesuaikan penyedia hosting (mis. Vercel) dengan variabel yang sama di dashboard mereka.
 
@@ -25,6 +25,26 @@ Dari root monorepo:
 - [ ] `pnpm --filter @acme/web build`
 
 > Skrip `build` web sudah menjalankan `prisma generate` lewat filter database; tetap jalankan `db:generate`/`migrate:deploy` di pipeline deploy Anda agar urutan konsisten dengan DB yang dipakai runtime.
+
+## Vercel monorepo settings (pilih salah satu)
+
+### Option A (recommended)
+
+- **Root Directory:** `apps/web`
+- **Install Command:** `cd ../.. && pnpm install`
+- **Build Command:** `cd ../.. && pnpm exec turbo run build --filter=@acme/web`
+- **Output Directory:** kosong (default Next.js) atau `.next`
+
+### Option B
+
+- **Root Directory:** repository root
+- **Install Command:** `pnpm install`
+- **Build Command:** `pnpm exec turbo run build --filter=@acme/web`
+- **Output Directory:** `apps/web/.next`
+
+### Important
+
+- Jangan campur **Root Directory = `apps/web`** dengan **Output Directory = `apps/web/.next`** karena bisa membuat artifact lookup salah path.
 
 ## Optional: seed untuk E2E atau admin dev di staging saja
 

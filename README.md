@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v73  
-> Last synchronized: 2026-05-08 — locale parity status job/bid; smoke pre-hire messaging path.
+> **Doc revision:** v74  
+> Last synchronized: 2026-05-09 — deploy docs clarified for Vercel monorepo Root/Output settings.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -341,17 +341,28 @@ Topic docs live in **`docs/`**. See **`docs/DOCUMENTATION-MAINTENANCE.md`** for 
 
 **Recommended project settings (fixes unstyled `/login` + `/_next/static` 307 on deploy)**
 
-Use **Root Directory = `apps/web`** so Vercel treats the folder as a normal Next app (correct `/_next` routing). Do **not** set a custom **Output Directory** for Next.js — use the framework default (see [Vercel + Turborepo](https://vercel.com/docs/monorepos/turborepo)).
+Use one of these two valid setups (see [Vercel + Turborepo](https://vercel.com/docs/monorepos/turborepo)):
 
 | Setting | Value |
 |--------|--------|
-| **Root Directory** | **`apps/web`** (recommended) |
+| **Mode** | **Option A (recommended)** |
+| **Root Directory** | **`apps/web`** |
 | **Framework Preset** | Next.js |
 | **Install Command** | **`cd ../.. && pnpm install`** (already in **`apps/web/vercel.json`**) |
 | **Build Command** | **`cd ../.. && pnpm exec turbo run build --filter=@acme/web`** (same file) |
 | **Output Directory** | *(empty — framework default)* |
 
-If the Vercel project **Root Directory** is the **repository root** (default for many imports), the root **`vercel.json`** must include **`"outputDirectory": "apps/web/.next"`** so Vercel finds the Next build output (otherwise deploy fails: *Next.js output directory ".next" was not found*). Middleware skips **`/_next`** so static CSS/JS are not redirected. Prefer **Root Directory = `apps/web`** long-term: then clear **Output Directory** in the dashboard and rely on **`apps/web/vercel.json`** only.
+Option B (root deploy) tetap valid:
+
+| Setting | Value |
+|--------|--------|
+| **Mode** | **Option B** |
+| **Root Directory** | repository root |
+| **Install Command** | `pnpm install` |
+| **Build Command** | `pnpm exec turbo run build --filter=@acme/web` |
+| **Output Directory** | `apps/web/.next` |
+
+Do not mix **Root Directory = `apps/web`** with **Output Directory = `apps/web/.next`**; that mismatch can break artifact lookup paths.
 
 **Prisma:** `@acme/database` runs **`postinstall`: `prisma generate`** — no DB connection required for generate.
 
