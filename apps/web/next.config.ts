@@ -2,7 +2,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { NextConfig } from "next";
 
-const workspaceRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+//const workspaceRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+
+const workspaceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)),"../..");
+
 
 // CJS plugin — Prisma monorepo workaround copies query engine into the server bundle output
 // eslint-disable-next-line @typescript-eslint/no-require-imports
