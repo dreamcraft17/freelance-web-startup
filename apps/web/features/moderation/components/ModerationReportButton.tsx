@@ -24,11 +24,19 @@ type Props = {
   target: ModerationReportTargetPayload;
   intent: ModerationReportIntent;
   variant?: "button" | "text";
+  /** Narrower trigger for dense tables / mobile trust row */
+  density?: "default" | "compact";
   className?: string;
 };
 
 /** Generic intake UI for `POST /api/reports` (double-submit CSRF handled by fetchWithCsrf). */
-export function ModerationReportButton({ target, intent, variant = "button", className }: Props) {
+export function ModerationReportButton({
+  target,
+  intent,
+  variant = "button",
+  density = "default",
+  className
+}: Props) {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const [category, setCategory] = useState<ReportCategory>("policy");
@@ -127,8 +135,12 @@ export function ModerationReportButton({ target, intent, variant = "button", cla
 
   const triggerClass =
     variant === "text"
-      ? "text-[11px] font-semibold text-slate-500 underline-offset-2 hover:text-[#433C93] hover:underline disabled:opacity-50"
-      : "inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50";
+      ? density === "compact"
+        ? "text-[10px] font-semibold uppercase tracking-wide text-slate-500 underline-offset-2 hover:text-[#433C93] hover:underline disabled:opacity-50 px-1 py-2"
+        : "text-[11px] font-semibold text-slate-500 underline-offset-2 hover:text-[#433C93] hover:underline disabled:opacity-50"
+      : density === "compact"
+        ? "inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50"
+        : "inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50";
 
   return (
     <>

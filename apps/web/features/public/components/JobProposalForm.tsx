@@ -15,16 +15,29 @@ type JobProposalFormProps = {
   labels: {
     title: string;
     subtitle: string;
+    guidanceKicker: string;
+    guidanceIntro: string;
+    guidanceBullets: string[];
     introLabel: string;
+    introHint: string;
     introPlaceholder: string;
+    experienceLabel: string;
+    experienceHint: string;
+    experiencePlaceholder: string;
     approachLabel: string;
+    approachHint: string;
     approachPlaceholder: string;
     timelineLabel: string;
+    timelineHint: string;
     timelinePlaceholder: string;
+    quoteSectionKicker: string;
     amountLabel: string;
+    amountHint: string;
     daysLabel: string;
+    daysHint: string;
     reassurance: string;
     firstStep: string;
+    submitCtaSubtitle: string;
     send: string;
     sending: string;
     loadingOverlay: string;
@@ -44,6 +57,7 @@ type JobProposalFormProps = {
 
 type DraftShape = {
   intro: string;
+  experience: string;
   approach: string;
   timeline: string;
   amount: string;
@@ -62,6 +76,7 @@ export function JobProposalForm({
 }: JobProposalFormProps) {
   const router = useRouter();
   const [intro, setIntro] = useState("");
+  const [experience, setExperience] = useState("");
   const [approach, setApproach] = useState("");
   const [timeline, setTimeline] = useState("");
   const [amount, setAmount] = useState("");
@@ -86,6 +101,7 @@ export function JobProposalForm({
       const parsed = JSON.parse(raw) as Partial<DraftShape>;
       return {
         intro: typeof parsed.intro === "string" ? parsed.intro : "",
+        experience: typeof parsed.experience === "string" ? parsed.experience : "",
         approach: typeof parsed.approach === "string" ? parsed.approach : "",
         timeline: typeof parsed.timeline === "string" ? parsed.timeline : "",
         amount: typeof parsed.amount === "string" ? parsed.amount : "",
@@ -111,6 +127,7 @@ export function JobProposalForm({
     const hasValue = Object.values(draft).some((v) => v.trim().length > 0);
     if (!hasValue) return;
     setIntro(draft.intro);
+    setExperience(draft.experience);
     setApproach(draft.approach);
     setTimeline(draft.timeline);
     setAmount(draft.amount);
@@ -123,7 +140,7 @@ export function JobProposalForm({
     if (!hasHydratedRef.current || submitting) return;
     const timer = window.setTimeout(() => {
       try {
-        const draft: DraftShape = { intro, approach, timeline, amount, estimatedDays };
+        const draft: DraftShape = { intro, experience, approach, timeline, amount, estimatedDays };
         const hasValue = Object.values(draft).some((v) => v.trim().length > 0);
         if (!hasValue) {
           clearDraftStorage();
@@ -136,7 +153,7 @@ export function JobProposalForm({
       }
     }, 350);
     return () => window.clearTimeout(timer);
-  }, [intro, approach, timeline, amount, estimatedDays, draftKey, labels.savedLocally, submitting]);
+  }, [intro, experience, approach, timeline, amount, estimatedDays, draftKey, labels.savedLocally, submitting]);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -148,7 +165,11 @@ export function JobProposalForm({
       jobId,
       bidAmount: Number(amount),
       estimatedDays: Number(estimatedDays),
-      coverLetter: `Intro:\n${intro.trim()}\n\nApproach:\n${approach.trim()}\n\nTimeline/availability:\n${timeline.trim()}`
+      coverLetter:
+        `Intro:\n${intro.trim()}\n\n` +
+        `Relevant experience:\n${experience.trim()}\n\n` +
+        `Approach:\n${approach.trim()}\n\n` +
+        `Timeline & availability:\n${timeline.trim()}`
     };
 
     const parsed = submitBidSchema.safeParse(payload);
@@ -173,6 +194,7 @@ export function JobProposalForm({
       }
       setSuccess(labels.success);
       setIntro("");
+      setExperience("");
       setApproach("");
       setTimeline("");
       setAmount("");
@@ -217,6 +239,16 @@ export function JobProposalForm({
     <>
       <AuthSubmitOverlay active={submitting} message={labels.loadingOverlay} />
       <form className="space-y-3" onSubmit={onSubmit}>
+        <div className="space-y-1 rounded-lg border border-indigo-100 bg-indigo-50/65 px-3 py-2.5 sm:px-3.5">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-indigo-700">{labels.guidanceKicker}</p>
+          <p className="text-[11px] leading-relaxed text-slate-700">{labels.guidanceIntro}</p>
+          <ul className="mt-1.5 list-disc space-y-0.5 pl-4 text-[11px] leading-relaxed text-slate-600">
+            {labels.guidanceBullets.map((line) => (
+              <li key={line}>{line}</li>
+            ))}
+          </ul>
+        </div>
+
         <div className="space-y-1">
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{labels.title}</p>
           <p className="mt-1 text-xs text-slate-600">{labels.subtitle}</p>
@@ -227,13 +259,32 @@ export function JobProposalForm({
           <label className="text-xs font-semibold text-slate-700" htmlFor="proposal-intro">
             {labels.introLabel}
           </label>
+          <p className="text-[11px] text-slate-500">{labels.introHint}</p>
           <textarea
             id="proposal-intro"
-            className="min-h-20 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-[#3525cd]/40 focus:ring-2 focus:ring-[#3525cd]/20"
+            className="min-h-[5.25rem] w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-[15px] text-slate-900 outline-none transition focus:border-[#3525cd]/40 focus:ring-2 focus:ring-[#3525cd]/20 sm:min-h-20 sm:text-sm"
             placeholder={labels.introPlaceholder}
             value={intro}
             onChange={(e) => setIntro(e.target.value)}
             disabled={submitting}
+            autoComplete="off"
+            required
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <label className="text-xs font-semibold text-slate-700" htmlFor="proposal-experience">
+            {labels.experienceLabel}
+          </label>
+          <p className="text-[11px] text-slate-500">{labels.experienceHint}</p>
+          <textarea
+            id="proposal-experience"
+            className="min-h-[5.25rem] w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-[15px] text-slate-900 outline-none transition focus:border-[#3525cd]/40 focus:ring-2 focus:ring-[#3525cd]/20 sm:min-h-20 sm:text-sm"
+            placeholder={labels.experiencePlaceholder}
+            value={experience}
+            onChange={(e) => setExperience(e.target.value)}
+            disabled={submitting}
+            autoComplete="off"
             required
           />
         </div>
@@ -242,13 +293,15 @@ export function JobProposalForm({
           <label className="text-xs font-semibold text-slate-700" htmlFor="proposal-approach">
             {labels.approachLabel}
           </label>
+          <p className="text-[11px] text-slate-500">{labels.approachHint}</p>
           <textarea
             id="proposal-approach"
-            className="min-h-24 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-[#3525cd]/40 focus:ring-2 focus:ring-[#3525cd]/20"
+            className="min-h-[6rem] w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-[15px] text-slate-900 outline-none transition focus:border-[#3525cd]/40 focus:ring-2 focus:ring-[#3525cd]/20 sm:min-h-24 sm:text-sm"
             placeholder={labels.approachPlaceholder}
             value={approach}
             onChange={(e) => setApproach(e.target.value)}
             disabled={submitting}
+            autoComplete="off"
             required
           />
         </div>
@@ -257,51 +310,61 @@ export function JobProposalForm({
           <label className="text-xs font-semibold text-slate-700" htmlFor="proposal-timeline">
             {labels.timelineLabel}
           </label>
+          <p className="text-[11px] text-slate-500">{labels.timelineHint}</p>
           <textarea
             id="proposal-timeline"
-            className="min-h-20 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-[#3525cd]/40 focus:ring-2 focus:ring-[#3525cd]/20"
+            className="min-h-[5.25rem] w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-[15px] text-slate-900 outline-none transition focus:border-[#3525cd]/40 focus:ring-2 focus:ring-[#3525cd]/20 sm:min-h-20 sm:text-sm"
             placeholder={labels.timelinePlaceholder}
             value={timeline}
             onChange={(e) => setTimeline(e.target.value)}
             disabled={submitting}
+            autoComplete="off"
             required
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-2">
-          <label className="space-y-1">
-            <span className="text-xs font-semibold text-slate-700">{labels.amountLabel}</span>
-            <input
-              type="number"
-              min={1}
-              step="1"
-              inputMode="decimal"
-              placeholder={currency}
-              className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-[#3525cd]/40 focus:ring-2 focus:ring-[#3525cd]/20"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              disabled={submitting}
-              required
-            />
-          </label>
-          <label className="space-y-1">
-            <span className="text-xs font-semibold text-slate-700">{labels.daysLabel}</span>
-            <input
-              type="number"
-              min={1}
-              max={365}
-              step="1"
-              className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-[#3525cd]/40 focus:ring-2 focus:ring-[#3525cd]/20"
-              value={estimatedDays}
-              onChange={(e) => setEstimatedDays(e.target.value)}
-              disabled={submitting}
-              required
-            />
-          </label>
-        </div>
+        <fieldset className="space-y-2 rounded-xl border border-slate-200/90 bg-slate-50/50 p-3 sm:p-3.5">
+          <legend className="sr-only">{labels.quoteSectionKicker}</legend>
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-600">{labels.quoteSectionKicker}</p>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <label className="space-y-1">
+              <span className="text-xs font-semibold text-slate-700">{labels.amountLabel}</span>
+              <span className="block text-[11px] font-normal leading-snug text-slate-500">{labels.amountHint}</span>
+              <input
+                type="number"
+                min={1}
+                step="1"
+                inputMode="decimal"
+                placeholder={currency}
+                className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-[15px] text-slate-900 outline-none transition focus:border-[#3525cd]/40 focus:ring-2 focus:ring-[#3525cd]/20 sm:h-10 sm:text-sm"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                disabled={submitting}
+                required
+              />
+            </label>
+            <label className="space-y-1">
+              <span className="text-xs font-semibold text-slate-700">{labels.daysLabel}</span>
+              <span className="block text-[11px] font-normal leading-snug text-slate-500">{labels.daysHint}</span>
+              <input
+                type="number"
+                min={1}
+                max={365}
+                step="1"
+                inputMode="numeric"
+                className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-[15px] text-slate-900 outline-none transition focus:border-[#3525cd]/40 focus:ring-2 focus:ring-[#3525cd]/20 sm:h-10 sm:text-sm"
+                value={estimatedDays}
+                onChange={(e) => setEstimatedDays(e.target.value)}
+                disabled={submitting}
+                required
+              />
+            </label>
+          </div>
+        </fieldset>
 
-        <p className="text-xs text-slate-600">{labels.reassurance}</p>
-        <p className="text-xs text-slate-500">{labels.firstStep}</p>
+        <p className="text-xs leading-relaxed text-slate-600">{labels.reassurance}</p>
+        <p className="text-xs leading-relaxed text-slate-500">{labels.firstStep}</p>
+        <p className="text-[11px] font-medium leading-relaxed text-slate-700">{labels.submitCtaSubtitle}</p>
 
         {error ? <p className="rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-800">{error}</p> : null}
         {success ? <p className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-800">{success}</p> : null}
@@ -319,12 +382,13 @@ export function JobProposalForm({
         {success && !conversationThreadId && clientUserId ? (
           <p className="text-[11px] text-slate-500">{labels.conversationError}</p>
         ) : null}
-        <div className="sticky bottom-0 z-10 border-t border-slate-200/90 bg-white/95 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur-sm md:static md:z-0 md:border-0 md:bg-transparent md:p-0 md:backdrop-blur-none">
+        <div className="sticky bottom-0 z-10 rounded-t-xl border border-slate-200/90 bg-white/95 pb-[max(0.85rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-8px_28px_rgba(15,23,42,0.08)] backdrop-blur-md sm:rounded-none sm:border-0 sm:bg-transparent sm:pb-0 sm:pt-2 sm:shadow-none sm:backdrop-blur-none md:static md:z-0">
           <div className="flex flex-col gap-2">
             <button
               type="button"
               onClick={() => {
                 setIntro("");
+                setExperience("");
                 setApproach("");
                 setTimeline("");
                 setAmount("");
@@ -339,7 +403,7 @@ export function JobProposalForm({
             <button
               type="submit"
               disabled={submitting}
-              className="nw-cta-primary inline-flex w-full items-center justify-center px-4 py-2.5 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-70"
+              className="nw-cta-primary inline-flex min-h-[48px] w-full touch-manipulation items-center justify-center rounded-xl px-4 py-3 text-[15px] font-semibold disabled:cursor-not-allowed disabled:opacity-70 sm:min-h-0 sm:py-2.5 sm:text-sm"
             >
               {submitting ? labels.sending : labels.send}
             </button>

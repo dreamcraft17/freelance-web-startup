@@ -50,10 +50,10 @@ export function ActivationChecklistCard({ title, intro, steps, allCompleteBanner
             <Link
               href={step.href}
               className={cn(
-                "flex gap-3 rounded-lg border px-3 py-3 transition md:px-4",
+                "flex min-h-[52px] gap-3 rounded-lg border px-3 py-3.5 transition md:min-h-0 md:px-4 md:py-3",
                 step.done
                   ? "border-emerald-200/70 bg-emerald-50/40"
-                  : "border-slate-200 bg-slate-50/50 hover:border-[#433C93]/30 hover:bg-white"
+                  : "border-slate-200 bg-slate-50/50 hover:border-[#433C93]/30 hover:bg-white active:bg-white"
               )}
             >
               <span className="mt-0.5 shrink-0" aria-hidden>

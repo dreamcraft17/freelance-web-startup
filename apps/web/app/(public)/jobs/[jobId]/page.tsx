@@ -18,6 +18,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
 import type { Translator } from "@/lib/i18n/create-translator";
+import { localizedBidStatusLabel } from "@/lib/i18n/marketplace-status-labels";
+import { analyzeCoverLetterCompleteness } from "@/lib/proposals/cover-letter-completeness";
+import { OwnerBidMobileCards, type OwnerBidMobileVm } from "@/components/client-jobs/OwnerBidMobileCards";
 
 type PageProps = {
   params: Promise<{ jobId: string }>;
@@ -104,6 +107,47 @@ function contractStatusHint(status: string, t: Translator): string {
   return t("public.jobDetail.contractAvailable");
 }
 
+function describeOwnerBidConversationState(
+  convo:
+    | { awaitingReply: boolean; hasMessages: boolean; lastMessageAt: Date | null }
+    | undefined,
+  t: Translator
+) {
+  if (!convo) {
+    return {
+      awaiting: false,
+      title: t("public.jobDetail.noConversationYet"),
+      detail: t("public.jobDetail.discussInviteDetail"),
+      meta: ""
+    };
+  }
+
+  const rel = convo.lastMessageAt ? formatRelativeTime(convo.lastMessageAt, t) : null;
+
+  if (convo.awaitingReply) {
+    return {
+      awaiting: true,
+      title: t("public.jobDetail.unreadMessage"),
+      detail: t("public.jobDetail.waitingReply"),
+      meta: rel ? t("public.jobDetail.lastMessage", { time: rel }) : t("public.jobDetail.noMessagesYet")
+    };
+  }
+  if (convo.hasMessages) {
+    return {
+      awaiting: false,
+      title: t("public.jobDetail.conversationActive"),
+      detail: t("public.jobDetail.conversationOngoing"),
+      meta: rel ? t("public.jobDetail.lastMessage", { time: rel }) : t("public.jobDetail.noMessagesYet")
+    };
+  }
+  return {
+    awaiting: false,
+    title: t("public.jobDetail.threadActive"),
+    detail: t("public.jobDetail.threadReadyDetail"),
+    meta: rel ? t("public.jobDetail.lastMessage", { time: rel }) : t("public.jobDetail.noMessagesYet")
+  };
+}
+
 export default async function JobDetailPage({ params, searchParams }: PageProps) {
   const { t, locale } = await getServerTranslator();
   const { jobId: rawId } = await params;
@@ -138,6 +182,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
           status: true,
           bidAmount: true,
           estimatedDays: true,
+          coverLetter: true,
           createdAt: true,
           freelancer: { select: { userId: true, fullName: true, username: true } },
           contract: { select: { id: true, status: true } }
@@ -247,6 +292,67 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
   if (topSignals.length === 0) topSignals.push(t("public.jobDetail.signalReviewWorth"));
   const showPostedFeedback = isClientOwner && from === "job-posted";
 
+  const ownerBidMobileVms: OwnerBidMobileVm[] = isClientOwner
+    ? bidRows.map((bid) => {
+        const profile = profileMap.get(bid.freelancer.userId);
+        const convo = conversationMap.get(bid.freelancer.userId);
+        const cover = analyzeCoverLetterCompleteness(bid.coverLetter);
+        const pct = cover.pct;
+        const completenessFine = pct >= 80;
+        const completenessThin = pct <= 45;
+        const locLine =
+          [profile?.city, profile?.workMode].filter(Boolean).join(" · ") || t("public.jobDetail.notSpecified");
+        let locFootnote: string | null = null;
+        if (job.city && profile?.city) {
+          locFootnote =
+            job.city.toLowerCase() === profile.city.toLowerCase()
+              ? t("public.jobDetail.locationRelevant")
+              : t("public.jobDetail.locationDifferent");
+        }
+        const isAcceptedRow = bid.status === BidStatus.ACCEPTED;
+        const mutedAfter = Boolean(acceptedBid) && !isAcceptedRow;
+        const covLines = describeOwnerBidConversationState(convo, t);
+        const profilePct =
+          profile?.profileCompleteness != null
+            ? t("public.jobDetail.profileCompletenessPct", {
+                percent: profile.profileCompleteness
+              })
+            : t("public.jobDetail.notAvailable");
+
+        return {
+          bidId: bid.id,
+          jobId: job.id,
+          freelancerName: bid.freelancer.fullName,
+          freelancerUsername: bid.freelancer.username,
+          freelancerUserId: bid.freelancer.userId,
+          amountLine: formatMoney(bid.bidAmount, job.currency),
+          daysLine:
+            bid.estimatedDays != null ? t("public.jobDetail.dayTimeline", { count: bid.estimatedDays }) : null,
+          completenessPct: pct,
+          completenessFine,
+          completenessThin,
+          profilePctLine: profilePct,
+          profileStrengthHint: profileStrengthHint(profile?.profileCompleteness ?? null, t),
+          locationLine: locLine,
+          locationFootnote: locFootnote,
+          bidStatusDisplay: localizedBidStatusLabel(bid.status, t),
+          bidDecisionHint: bidDecisionHint(bid.status, t),
+          submittedLine: `${t("public.jobDetail.submitted")} · ${new Intl.DateTimeFormat(undefined, {
+            month: "short",
+            day: "numeric"
+          }).format(bid.createdAt)}`,
+          isAccepted: isAcceptedRow,
+          isMutedAfterAccept: mutedAfter,
+          convoThreadId: convo?.threadId ?? null,
+          conversationAwaitingReply: covLines.awaiting,
+          conversationTitle: covLines.title,
+          conversationDetail: covLines.detail,
+          conversationMeta: covLines.meta,
+          bidStatusRaw: bid.status
+        };
+      })
+    : [];
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 md:px-6">
       <nav className="text-muted-foreground mb-6 text-sm">
@@ -260,16 +366,14 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
       <section className="mb-6 border border-slate-200 bg-white p-5 sm:p-6">
         {showPostedFeedback ? (
           <div className="mb-4 rounded-md border border-emerald-200 bg-emerald-50/70 px-4 py-3">
-            <p className="text-sm font-semibold text-emerald-900">Job posted successfully.</p>
-            <p className="mt-1 text-xs text-emerald-800">
-              Next: review incoming proposals here, or monitor all active listings from your jobs dashboard.
-            </p>
+            <p className="text-sm font-semibold text-emerald-900">{t("public.jobDetail.jobPostedBannerTitle")}</p>
+            <p className="mt-1 text-xs text-emerald-800">{t("public.jobDetail.jobPostedBannerBody")}</p>
             <div className="mt-2 flex flex-wrap items-center gap-3 text-xs font-semibold">
               <Link href={"/client/jobs?review=needs-review" as Route} className="text-[#433C93] hover:underline">
-                Review jobs needing attention
+                {t("public.jobDetail.jobPostedBannerPrimary")}
               </Link>
               <Link href={"/client/jobs" as Route} className="text-slate-700 hover:underline">
-                Back to all jobs
+                {t("public.jobDetail.jobPostedBannerSecondary")}
               </Link>
             </div>
           </div>
@@ -339,16 +443,36 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
                     labels={{
                       title: t("public.jobDetail.formGuideTitle"),
                       subtitle: t("public.jobDetail.formGuideSubtitle"),
+                      guidanceKicker: t("public.jobDetail.formGuidanceKicker"),
+                      guidanceIntro: t("public.jobDetail.formGuidanceIntro"),
+                      guidanceBullets: [
+                        t("public.jobDetail.formGuidanceBullet1"),
+                        t("public.jobDetail.formGuidanceBullet2"),
+                        t("public.jobDetail.formGuidanceBullet3"),
+                        t("public.jobDetail.formGuidanceBullet4"),
+                        t("public.jobDetail.formGuidanceBullet5"),
+                        t("public.jobDetail.formGuidanceBullet6")
+                      ],
                       introLabel: t("public.jobDetail.formIntroLabel"),
+                      introHint: t("public.jobDetail.formIntroHint"),
                       introPlaceholder: t("public.jobDetail.formIntroPlaceholder"),
+                      experienceLabel: t("public.jobDetail.formExperienceLabel"),
+                      experienceHint: t("public.jobDetail.formExperienceHint"),
+                      experiencePlaceholder: t("public.jobDetail.formExperiencePlaceholder"),
                       approachLabel: t("public.jobDetail.formApproachLabel"),
+                      approachHint: t("public.jobDetail.formApproachHint"),
                       approachPlaceholder: t("public.jobDetail.formApproachPlaceholder"),
                       timelineLabel: t("public.jobDetail.formTimelineLabel"),
+                      timelineHint: t("public.jobDetail.formTimelineHint"),
                       timelinePlaceholder: t("public.jobDetail.formTimelinePlaceholder"),
+                      quoteSectionKicker: t("public.jobDetail.formQuoteSectionKicker"),
                       amountLabel: t("public.jobDetail.formAmountLabel"),
+                      amountHint: t("public.jobDetail.formAmountHint"),
                       daysLabel: t("public.jobDetail.formDaysLabel"),
+                      daysHint: t("public.jobDetail.formDaysHint"),
                       reassurance: t("public.jobDetail.applyReassurance"),
                       firstStep: t("public.jobDetail.formFirstStep"),
+                      submitCtaSubtitle: t("public.jobDetail.formSubmitCtaSubtitle"),
                       send: t("public.jobDetail.sendProposal"),
                       sending: t("public.jobDetail.sendingProposal"),
                       loadingOverlay: t("public.jobDetail.sendingProposalOverlay"),
@@ -556,38 +680,60 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
 
               {bidRows.length === 0 ? (
                 <div className="rounded-md border border-dashed border-slate-300 bg-white px-4 py-6 text-sm text-slate-600">
-                  <p>{t("public.jobDetail.noProposalsYet")}</p>
-                  <p className="mt-1 text-xs text-slate-500">
-                    Keep this listing clear and active. You can return to your jobs list to monitor new activity.
-                  </p>
-                  <div className="mt-3 flex flex-wrap items-center gap-3 text-xs font-semibold">
+                  <p className="font-semibold text-slate-900">{t("public.jobDetail.proposalsEmptyTitle")}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-600">{t("public.jobDetail.proposalsEmptyWhy")}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-700">{t("public.jobDetail.proposalsEmptyNext")}</p>
+                  <div className="mt-4 flex flex-wrap items-center gap-3 text-xs font-semibold">
                     <Link href={"/client/jobs?review=needs-review" as Route} className="text-[#433C93] hover:underline">
-                      Check needs review
+                      {t("public.jobDetail.proposalsEmptyPrimary")}
                     </Link>
                     <Link href={"/client/jobs" as Route} className="text-slate-700 hover:underline">
-                      Open my jobs
+                      {t("public.jobDetail.proposalsEmptySecondary")}
                     </Link>
                   </div>
                 </div>
               ) : (
-                <div className="overflow-x-auto rounded-lg border border-slate-200">
-                  <table className="w-full min-w-[940px] border-collapse text-left text-sm">
-                    <thead>
-                      <tr className="border-b border-slate-100 bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                        <th className="px-3 py-2.5">{t("public.jobDetail.tableFreelancer")}</th>
-                        <th className="px-3 py-2.5">{t("public.jobDetail.tablePrice")}</th>
-                        <th className="px-3 py-2.5">{t("public.jobDetail.tableProfileStrength")}</th>
-                        <th className="px-3 py-2.5">{t("public.jobDetail.tableLocationMode")}</th>
-                        <th className="px-3 py-2.5">{t("public.jobDetail.tableConversation")}</th>
-                        <th className="px-3 py-2.5">{t("public.jobDetail.tableStatus")}</th>
-                        <th className="px-3 py-2.5">{t("public.jobDetail.tableSafety")}</th>
-                        <th className="px-3 py-2.5 text-right">{t("public.jobDetail.tableNextAction")}</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
+                <>
+                  <OwnerBidMobileCards
+                    bids={ownerBidMobileVms}
+                    copy={{
+                      compareKicker: t("public.jobDetail.ownerReviewMobileKicker"),
+                      priceLabel: t("public.jobDetail.tablePrice"),
+                      completenessLabel: t("public.jobDetail.tableProposalCompleteness"),
+                      proposalFine: t("public.jobDetail.proposalCompletenessFine"),
+                      proposalMedium: t("public.jobDetail.proposalCompletenessOk"),
+                      proposalThin: t("public.jobDetail.proposalCompletenessThin"),
+                      profileLabel: t("public.jobDetail.tableProfileStrength"),
+                      locationLabel: t("public.jobDetail.tableLocationMode"),
+                      discussHint: t("public.jobDetail.discussProminentHint"),
+                      quickActionsLabel: t("public.jobDetail.discussProminentLabel"),
+                      reportSecondaryNote: t("public.jobDetail.reportSecondaryNote"),
+                      browseFreelancerLabel: t("public.jobDetail.mobileBrowseFreelancer"),
+                      navigateJobLabel: t("public.jobDetail.mobileBackToJob"),
+                      hiredLabel: t("public.jobDetail.hired")
+                    }}
+                    freelancerProfileAriaName={t("public.jobDetail.freelancerProfileAria")}
+                  />
+                  <div className="hidden overflow-x-auto rounded-lg border border-slate-200 md:block">
+                    <table className="w-full min-w-[1100px] border-collapse text-left text-sm">
+                      <thead>
+                        <tr className="border-b border-slate-100 bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                          <th className="px-3 py-2.5">{t("public.jobDetail.tableFreelancer")}</th>
+                          <th className="px-3 py-2.5">{t("public.jobDetail.tablePrice")}</th>
+                          <th className="px-3 py-2.5">{t("public.jobDetail.tableProposalCompleteness")}</th>
+                          <th className="px-3 py-2.5">{t("public.jobDetail.tableProfileStrength")}</th>
+                          <th className="px-3 py-2.5">{t("public.jobDetail.tableLocationMode")}</th>
+                          <th className="px-3 py-2.5">{t("public.jobDetail.tableConversation")}</th>
+                          <th className="px-3 py-2.5">{t("public.jobDetail.tableStatus")}</th>
+                          <th className="px-3 py-2.5">{t("public.jobDetail.tableSafety")}</th>
+                          <th className="px-3 py-2.5 text-right">{t("public.jobDetail.tableNextAction")}</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
                       {bidRows.map((bid) => {
                         const profile = profileMap.get(bid.freelancer.userId);
                         const convo = conversationMap.get(bid.freelancer.userId);
+                        const completeness = analyzeCoverLetterCompleteness(bid.coverLetter);
                         const isAccepted = bid.status === BidStatus.ACCEPTED;
                         const isMutedAfterAccept = Boolean(acceptedBid) && !isAccepted;
                         return (
@@ -625,9 +771,23 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
                               ) : null}
                             </td>
                             <td className="px-3 py-3 text-xs text-slate-600">
+                              <p className="text-base font-semibold tabular-nums text-slate-900">{completeness.pct}%</p>
+                              <p className="mt-0.5 text-[11px] text-slate-500">
+                                {completeness.pct >= 80
+                                  ? t("public.jobDetail.proposalCompletenessFine")
+                                  : completeness.pct <= 45
+                                    ? t("public.jobDetail.proposalCompletenessThin")
+                                    : t("public.jobDetail.proposalCompletenessOk")}
+                              </p>
+                            </td>
+                            <td className="px-3 py-3 text-xs text-slate-600">
                               {profile?.profileCompleteness != null ? (
                                 <div>
-                                  <p className="font-medium text-slate-800">{profile.profileCompleteness}% complete</p>
+                                  <p className="font-medium text-slate-800">
+                                    {t("public.jobDetail.profileCompletenessPct", {
+                                      percent: profile.profileCompleteness
+                                    })}
+                                  </p>
                                   <p className="text-[11px] text-slate-500">{profileStrengthHint(profile.profileCompleteness, t)}</p>
                                 </div>
                               ) : (
@@ -655,6 +815,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
                                       threadId={null}
                                       jobId={job.id}
                                       freelancerUserId={bid.freelancer.userId}
+                                      prominence="primary"
                                     />
                                   </div>
                                 </div>
@@ -680,6 +841,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
                                       threadId={convo.threadId}
                                       jobId={job.id}
                                       freelancerUserId={bid.freelancer.userId}
+                                      prominence="primary"
                                     />
                                   </div>
                                 </div>
@@ -688,7 +850,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
                             <td className="px-3 py-3">
                               <div>
                                 <span className="inline-flex rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
-                                  {bid.status.replace(/_/g, " ").toLowerCase()}
+                                  {localizedBidStatusLabel(bid.status, t)}
                                 </span>
                                 <p className="mt-1 text-[11px] text-slate-500">{bidDecisionHint(bid.status, t)}</p>
                               </div>
@@ -696,7 +858,10 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
                             <td className="px-3 py-3">
                               <ModerationReportButton
                                 intent="bid"
+                                variant="text"
+                                density="compact"
                                 target={{ subjectType: "BID", subjectBidId: bid.id }}
+                                className="text-slate-500"
                               />
                             </td>
                             <td className="px-3 py-3 text-right">
@@ -708,6 +873,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
                     </tbody>
                   </table>
                 </div>
+                </>
               )}
 
               <div className="flex flex-wrap items-center gap-3 text-sm">
