@@ -64,6 +64,8 @@ export function AdminModerationReportRowActions({ reportId, status, assigneeId, 
       }
       setNote("");
       router.refresh();
+    } catch {
+      setErr("Network error — try again.");
     } finally {
       setBusy(false);
     }

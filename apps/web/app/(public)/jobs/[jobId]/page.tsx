@@ -6,6 +6,7 @@ import { BidStatus, UserRole } from "@acme/types";
 import { db } from "@acme/database";
 import { getSessionFromCookies } from "@src/lib/auth";
 import { isStaffRole } from "@/features/admin/lib/access";
+import { ModerationReportButton } from "@/features/moderation/components/ModerationReportButton";
 import { ReportJobButton } from "@/features/moderation/components/ReportJobButton";
 import { loginReturnTo, registerFreelancerReturnToJob } from "@/features/auth/lib/register-intents";
 import { SaveJobButton } from "@/features/saved/components/SaveJobButton";
@@ -579,6 +580,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
                         <th className="px-3 py-2.5">{t("public.jobDetail.tableLocationMode")}</th>
                         <th className="px-3 py-2.5">{t("public.jobDetail.tableConversation")}</th>
                         <th className="px-3 py-2.5">{t("public.jobDetail.tableStatus")}</th>
+                        <th className="px-3 py-2.5">{t("public.jobDetail.tableSafety")}</th>
                         <th className="px-3 py-2.5 text-right">{t("public.jobDetail.tableNextAction")}</th>
                       </tr>
                     </thead>
@@ -690,6 +692,12 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
                                 </span>
                                 <p className="mt-1 text-[11px] text-slate-500">{bidDecisionHint(bid.status, t)}</p>
                               </div>
+                            </td>
+                            <td className="px-3 py-3">
+                              <ModerationReportButton
+                                intent="bid"
+                                target={{ subjectType: "BID", subjectBidId: bid.id }}
+                              />
                             </td>
                             <td className="px-3 py-3 text-right">
                               <BidDecisionAction bidId={bid.id} currentStatus={bid.status} />

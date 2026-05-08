@@ -4,7 +4,7 @@ import { AdminModerationReportsTable } from "@/features/admin/components/reports
 import { AdminReportsFilterBar } from "@/features/admin/components/reports/AdminReportsFilterBar";
 import { sessionToActor } from "@/lib/auth";
 import { requireAdminAccess } from "@/features/admin/lib/server-auth";
-import type { ModerationReport } from "@prisma/client";
+import type { ModerationReport } from "@acme/database";
 import { ModerationReportService } from "@/server/services/moderation-report.service";
 
 type SearchParams = {

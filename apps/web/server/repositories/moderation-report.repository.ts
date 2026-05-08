@@ -1,10 +1,11 @@
-import { db, Prisma } from "@acme/database";
-import type {
-  ModerationReport,
-  ModerationReportNote,
-  ModerationReportStatus,
-  ModerationReportSubjectType
-} from "@prisma/client";
+import {
+  db,
+  Prisma,
+  type ModerationReport,
+  type ModerationReportNote,
+  type ModerationReportStatus,
+  type ModerationReportSubjectType
+} from "@acme/database";
 
 export type ModerationReportListFilters = {
   status?: ModerationReportStatus;

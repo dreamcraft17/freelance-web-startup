@@ -4,6 +4,7 @@
  * Prerequisites:
  *   - `DATABASE_URL`, `SESSION_SECRET` (>=16 chars) set for the web app
  *   - Migrations applied: `pnpm db:migrate`
+ *   - Seeded admin (`pnpm db:seed`): defaults `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` for `/api/admin/reports` assertion
  *   - Web dev or prod server: `pnpm --filter @acme/web dev` (default base http://127.0.0.1:3000)
  *
  * Run: `pnpm test:e2e` or `node --test scripts/e2e-marketplace-flow.mjs`
@@ -21,6 +22,7 @@ import { test } from "node:test";
 
 const BASE_URL = (process.env.BASE_URL ?? "http://127.0.0.1:3000").replace(/\/$/, "");
 const SESSION = "acme_session";
+const NW_CSRF_HEADER = "X-CSRF-Token";
 
 const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
 
@@ -90,6 +92,52 @@ function sessionCookiePairFromResponse(res) {
     }
   }
   return null;
+}
+
+/** `{name}=value` pair from Set-Cookie (no attributes). */
+function namedCookiePairFromResponse(res, name) {
+  for (const line of getSetCookieLines(res)) {
+    const [pair] = line.split(";");
+    const p = pair?.trim();
+    if (p?.startsWith(`${name}=`)) return p;
+  }
+  return null;
+}
+
+function mergeCookiePairs(a, b) {
+  if (!a) return b ?? "";
+  if (!b) return a;
+  return `${a}; ${b}`;
+}
+
+async function postWithCsrf(path, cookieSessionPair, jsonBody) {
+  const csrfRes = await fetchWithRedirects(`${BASE_URL}/api/auth/csrf`, {
+    method: "GET",
+    headers: { Accept: "application/json", Cookie: cookieSessionPair }
+  });
+  const { body: csrfBody } = await readJson(csrfRes);
+  if (csrfRes.status !== 200) {
+    throw new Error(`csrf mint failed ${csrfRes.status}: ${JSON.stringify(csrfBody)}`);
+  }
+  const csrfToken = csrfBody.data?.csrfToken;
+  const csrfPair = namedCookiePairFromResponse(csrfRes, "acme_csrf");
+  if (!csrfToken || !csrfPair) {
+    throw new Error(`missing csrf (${csrfRes.status}) body=${JSON.stringify(csrfBody)}`);
+  }
+  const merged = mergeCookiePairs(cookieSessionPair, csrfPair);
+  const res = await fetchWithRedirects(`${BASE_URL}${path}`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Cookie: merged,
+      [NW_CSRF_HEADER]: csrfToken,
+      Origin: new URL(BASE_URL).origin
+    },
+    body: JSON.stringify(jsonBody)
+  });
+  const { body } = await readJson(res);
+  return { res, body };
 }
 
 async function readJson(res) {
@@ -205,6 +253,36 @@ test("full marketplace flow (register → reviews & aggregates)", async () => {
   assert.equal(bidRes.res.status, 201, JSON.stringify(bidRes.body));
   const bidId = bidRes.body.data.id;
   assert.ok(bidId);
+
+  // Trust: client reports the bid (participant → policy allows)
+  const report = await postWithCsrf(
+    "/api/reports",
+    cookieClient,
+    {
+      subjectType: "BID",
+      subjectBidId: bidId,
+      category: "policy",
+      description: "E2E moderation smoke: client reports this proposal for staff queue verification."
+    }
+  );
+  assert.equal(report.res.status, 201, JSON.stringify(report.body));
+  assert.equal(report.body.success, true);
+  const createdReportId = report.body.data?.id;
+  assert.ok(createdReportId);
+
+  const adminEmail = (process.env.SEED_ADMIN_EMAIL ?? "admin@nearwork.local").toLowerCase().trim();
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD ?? "NearWorkAdminDev123!";
+  const adminLogin = await api("/api/auth/login", {
+    method: "POST",
+    json: { email: adminEmail, password: adminPassword }
+  });
+  assert.equal(adminLogin.res.status, 200, JSON.stringify(adminLogin.body));
+  const cookieAdmin = sessionCookiePairFromResponse(adminLogin.res);
+  assert.ok(cookieAdmin, "admin login should set session");
+  const queue = await api("/api/admin/reports?page=1&limit=50", { cookie: cookieAdmin });
+  assert.equal(queue.res.status, 200, JSON.stringify(queue.body));
+  const seen = queue.body.data?.items?.some((r) => r.id === createdReportId);
+  assert.ok(seen, "admin queue should include the submitted report");
 
   // 7) Notification: new bid (client)
   const notifAfterBid = await api("/api/notifications", { cookie: cookieClient });
