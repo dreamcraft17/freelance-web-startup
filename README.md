@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v76  
-> Last synchronized: 2026-05-09 — Vercel fallback artifact + launcher runtime module fallback.
+> **Doc revision:** v77  
+> Last synchronized: 2026-05-09 — Vercel fallback dipindah ke script `pnpm vercel:build` (schema-safe).
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -351,7 +351,7 @@ Use **Root Directory = `apps/web`** so Vercel treats the folder as a normal Next
 | **Build Command** | **`cd ../.. && pnpm exec turbo run build --filter=@acme/web`** (same file) |
 | **Output Directory** | *(empty — framework default)* |
 
-If the Vercel project **Root Directory** is the **repository root** (default for many imports), the root **`vercel.json`** must include **`"outputDirectory": "apps/web/.next"`** so Vercel finds the Next build output (otherwise deploy fails: *Next.js output directory ".next" was not found*). Middleware skips **`/_next`** so static CSS/JS are not redirected. Repo ini juga menambahkan fallback build command yang menyalin `apps/web/.next` ke `web/.next` untuk kompatibilitas sementara dengan project setting lama yang masih mencari path tersebut (`ENOENT /web/.next/routes-manifest.json`), lalu menyalin paket `next` ter-resolve ke `web/node_modules/next` agar launcher runtime di path `web` bisa me-resolve `next/dist/compiled/next-server/server.runtime.prod.js`. Prefer **Root Directory = `apps/web`** long-term: then clear **Output Directory** in the dashboard and rely on **`apps/web/vercel.json`** only.
+If the Vercel project **Root Directory** is the **repository root** (default for many imports), the root **`vercel.json`** must include **`"outputDirectory": "apps/web/.next"`** so Vercel finds the Next build output (otherwise deploy fails: *Next.js output directory ".next" was not found*). Middleware skips **`/_next`** so static CSS/JS are not redirected. Repo ini juga menambahkan fallback deploy command (dipanggil via script root `pnpm vercel:build`) yang menyalin `apps/web/.next` ke `web/.next` untuk kompatibilitas sementara dengan project setting lama yang masih mencari path tersebut (`ENOENT /web/.next/routes-manifest.json`), lalu menyalin paket `next` ter-resolve ke `web/node_modules/next` agar launcher runtime di path `web` bisa me-resolve `next/dist/compiled/next-server/server.runtime.prod.js`. Prefer **Root Directory = `apps/web`** long-term: then clear **Output Directory** in the dashboard and rely on **`apps/web/vercel.json`** only.
 
 **Prisma:** `@acme/database` runs **`postinstall`: `prisma generate`** — no DB connection required for generate.
 
