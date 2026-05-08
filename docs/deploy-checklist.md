@@ -1,7 +1,7 @@
 # Production deploy checklist (web + database)
 
-> **Doc revision:** v3  
-> Last synchronized: 2026-05-09 (fallback `web/.next` + runtime fix `next` root dependency).
+> **Doc revision:** v4  
+> Last synchronized: 2026-05-09 (fallback `web/.next` + copy paket `next` ke `web/node_modules` untuk launcher).
 
 Checklist singkat sebelum merilis NearWork ke lingkungan produksi. Sesuaikan penyedia hosting (mis. Vercel) dengan variabel yang sama di dashboard mereka.
 
@@ -31,6 +31,7 @@ Dari root monorepo:
 - Repo ini menyimpan fallback di `vercel.json` root: setelah build `@acme/web`, artefak `.next` disalin ke `web/.next`.
 - Tujuan fallback: deployment tetap lolos walau project setting Vercel masih menunjuk output lama `web/.next`.
 - Dependency runtime `next` dipasang di `package.json` root (bukan hanya devDependency) agar launcher fungsi di `/var/task/web/___next_launcher.cjs` bisa resolve `next/dist/compiled/next-server/server.runtime.prod.js`.
+- Build command juga menyalin direktori paket `next` ter-resolve ke `web/node_modules/next` agar resolver Node dari launcher `web` tetap menemukan modul runtime.
 - Tetap direkomendasikan merapikan setting dashboard nanti (Root Directory / Output Directory) saat memungkinkan.
 
 ## Optional: seed untuk E2E atau admin dev di staging saja
