@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v71  
-> Last synchronized: 2026-05-01 — homepage visual alignment pass refined hero proportions and expanded marketing footer structure to match final target layout.
+> **Doc revision:** v72  
+> Last synchronized: 2026-05-08 — link ke checklist deploy produksi (`docs/deploy-checklist.md`).
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -332,6 +332,7 @@ pnpm exec tsc --noEmit -p apps/web
 
 Topic docs live in **`docs/`**. See **`docs/DOCUMENTATION-MAINTENANCE.md`** for which files to touch when you change security, UI, or APIs.
 
+- **Production deploy gate (commands + env)** → [`docs/deploy-checklist.md`](docs/deploy-checklist.md)
 - **Apa produk ini (non-teknis)?** → [`docs/apa-itu-nearwork.md`](docs/apa-itu-nearwork.md)
 
 ### Vercel (monorepo → `apps/web`)

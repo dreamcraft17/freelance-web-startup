@@ -19,6 +19,22 @@ function SuggestedSteps({ children }: { children: ReactNode }) {
   );
 }
 
+function EmptyContext({ what, why, next }: { what: string; why: string; next: string }) {
+  return (
+    <div className="mt-3 space-y-2 border-t border-slate-200/80 pt-3 text-xs leading-relaxed text-slate-600">
+      <p>
+        <span className="font-semibold text-slate-800">{what}</span>
+      </p>
+      <p>
+        <span className="font-semibold text-slate-800">{why}</span>
+      </p>
+      <p>
+        <span className="font-semibold text-slate-800">{next}</span>
+      </p>
+    </div>
+  );
+}
+
 export function FreelancersPublicEmpty({ categorySelected, hasFilters }: FreelancersPublicEmptyProps) {
   const { t } = useI18n();
 
@@ -29,6 +45,11 @@ export function FreelancersPublicEmpty({ categorySelected, hasFilters }: Freelan
         <p className="mt-2 max-w-lg text-sm leading-relaxed text-slate-600">
           {t("public.freelancers.emptyCategoryBody")}
         </p>
+        <EmptyContext
+          what={t("public.freelancers.emptyCategoryWhat")}
+          why={t("public.freelancers.emptyCategoryWhy")}
+          next={t("public.freelancers.emptyCategoryNext")}
+        />
         <SuggestedSteps>
           <li>{t("public.freelancers.emptyCategoryStep1")}</li>
           <li>{t("public.freelancers.emptyCategoryStep2")}</li>
@@ -53,6 +74,11 @@ export function FreelancersPublicEmpty({ categorySelected, hasFilters }: Freelan
         <p className="mt-2 max-w-lg text-sm leading-relaxed text-slate-600">
           {t("public.freelancers.emptyFiltersBody")}
         </p>
+        <EmptyContext
+          what={t("public.freelancers.emptyFiltersWhat")}
+          why={t("public.freelancers.emptyFiltersWhy")}
+          next={t("public.freelancers.emptyFiltersNext")}
+        />
         <SuggestedSteps>
           <li>{t("public.freelancers.emptyFiltersStep1")}</li>
           <li>{t("public.freelancers.emptyFiltersStep2")}</li>
@@ -76,6 +102,11 @@ export function FreelancersPublicEmpty({ categorySelected, hasFilters }: Freelan
       <p className="mt-2 max-w-lg text-sm leading-relaxed text-slate-600">
         {t("public.freelancers.emptyDefaultBody")}
       </p>
+      <EmptyContext
+        what={t("public.freelancers.emptyDefaultWhat")}
+        why={t("public.freelancers.emptyDefaultWhy")}
+        next={t("public.freelancers.emptyDefaultNext")}
+      />
       <SuggestedSteps>
         <li>{t("public.freelancers.emptyDefaultStep1")}</li>
         <li>{t("public.freelancers.emptyDefaultStep2")}</li>

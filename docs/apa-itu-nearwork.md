@@ -1,7 +1,7 @@
 # Apa itu NearWork?
 
-> **Doc revision:** v4  
-> Last synchronized: 2026-04-25 (positioning dipertegas: structured freelance marketplace).
+> **Doc revision:** v5  
+> Last synchronized: 2026-05-08 (onboarding & empty-state guidance di app; deploy checklist).
 
 Dokumen ini menjawab secara singkat: **produk ini apa**, **untuk siapa**, dan **apa yang dilakukan user di dalamnya**—tanpa detail teknis implementasi.
 
@@ -14,6 +14,8 @@ Dokumen ini menjawab secara singkat: **produk ini apa**, **untuk siapa**, dan **
 Repo monorepo ini (nama kerja: **Freelance-web**) adalah **aplikasi web** yang menjalankan produk NearWork (UI, API, database, autentikasi).
 
 Pengguna dapat memilih **Bahasa Indonesia** atau **English** pada antarmuka (preferensi tersimpan untuk kunjungan berikutnya).
+
+Awal rilis: dasbor klien/freelancer dan beberapa halaman publik memberi **checklist langkah nyata** (bukan angka palsu) serta empty state yang menjelaskan *apa yang terjadi*, *mengapa kosong*, dan *apa yang dilakukan berikutnya*—termasuk pengingat bahwa proposal dan chat tetap terikat pada job yang sama.
 
 ---
 

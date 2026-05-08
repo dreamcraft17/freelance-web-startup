@@ -39,6 +39,201 @@
       "secondaryMessages": "Pesan"
     }
   },
+  "activation": {
+    "shared": {
+      "jobContextReminder": "Proposal dan chat tetap nempel ke lowongan—agar cakupan dan keputusan rekrut tetap bisa dilacak.",
+      "clientLiquidityIntro": "Brief yang jelas menarik balasan lebih baik: sebutkan hasil akhir, tenggat, kendala, dan cara Anda memutuskan.",
+      "freelancerLiquidityIntro": "Proposal kuat menyitir brief, menawarkan milestone, dan menunjukkan Anda memahami kendala."
+    },
+    "client": {
+      "checklistTitle": "Daftar onboarding Anda",
+      "checklistIntro": "Empat pencapaian nyata—dari profil, lowongan, proposal, hingga pesan (bukan angka kosmetik).",
+      "allComplete": "Starter checklist selesai. Tetap cepat merespons proposal—proposal tetap terikat ke setiap listing.",
+      "liquidityTitle": "Dapatkan proposal yang lebih baik",
+      "steps": {
+        "profile": {
+          "label": "Lengkapi profil klien",
+          "hint": "Tambah info perusahaan dan lokasi di Pengaturan—freelancer memakainya untuk mempercayai brief Anda."
+        },
+        "first_job": {
+          "label": "Pasang lowongan pertama",
+          "hint": "Publikasikan brief ringkas supaya freelancer bisa bid dengan ruang lingkup dan waktu yang realistis."
+        },
+        "review_proposal": {
+          "label": "Tinjau proposal",
+          "hint": "Buka job klien dan periksa bid—bandingkan kecocokan, timeline, dan harga berdampingan."
+        },
+        "discussion": {
+          "label": "Mulai diskusi",
+          "hint": "Balas dari Pesan atau dari peninjauan proposal—semuanya tetap tersaji per lowongan."
+        }
+      },
+      "liquidity": {
+        "b1": "Awali dengan outcome yang Anda butuhkan, deliverable, dan cara Anda mengukur “selesai”.",
+        "b2": "Sebutkan anggaran dengan jujur dan kapan Anda berencana memutuskan—mengurangi churn untuk semua pihak.",
+        "b3": "Balas clarifikasi lewat Pesan—utas tetap tertaut ke listing lowongan itu."
+      }
+    },
+    "freelancer": {
+      "checklistTitle": "Daftar onboarding Anda",
+      "checklistIntro": "Lacak progres nyata—kelengkapan profil, interaksi board, proposal, hingga pesan pertama.",
+      "allComplete": "Starter checklist selesai. Pertahankan proposal terarah per lowongan—percakapan tetap tertaut pada listing tersebut.",
+      "liquidityTitle": "Kirim proposal yang bikin lolos seleksi",
+      "steps": {
+        "profile": {
+          "label": "Lengkapi profil freelancer",
+          "hint": "Headline, bio, dan ketersediaan—klien membacanya sebelum percaya pada bid Anda."
+        },
+        "browse_jobs": {
+          "label": "Jelajahi atau simpan lowongan",
+          "hint": "Gunakan halaman Jobs (simpan listing yang Anda suka) sampai Anda mengirim proposal pertama—dicatat ketika Anda benar-benar berinteraksi dengan posting nyata."
+        },
+        "first_proposal": {
+          "label": "Kirim proposal pertama",
+          "hint": "Bid dengan rencana, harga, dan timeline ringkas tertaut pada lowongan itu—bukan pitch generik."
+        },
+        "discussion": {
+          "label": "Buka diskusi",
+          "hint": "Pesan lewat alur job atau proposal agar konteks tetap tertaut pada proses hire."
+        }
+      },
+      "liquidity": {
+        "b1": "Cerminkan bahasa di brief dan sebutkan asumsi yang sudah Anda cek.",
+        "b2": "Tawarkan rencana bertahap dengan satu langkah jelas berikutnya yang bisa disetujui klien.",
+        "b3": "Pakai Pesan untuk tindak lanjut—semua percakapan tetap bertumpu pada listing lowongan tersebut."
+      }
+    }
+  },
+  "notifications": {
+    "pageSubtitle": "Proposal, pesan, verifikasi, dan update hiring—belum dibaca akan ditandai sampai Anda membukanya.",
+    "emptyTitle": "Belum ada notifikasi.",
+    "emptyDescription": "Masih sepi karena belum ada aktivitas di inbox Anda. Ketika freelancer bid, percakapan dimulai, atau status berubah, entri akan muncul dengan tautan cepat.",
+    "emptyPrimary": "Buka Pesan",
+    "emptySecondary": "Jelajahi lowongan",
+    "filterEmptyTitle": "Belum ada di tab ini.",
+    "filterEmptyDescription": "Ganti kategori atau tunggu bid, chat, atau update kontrak baru.",
+    "categoryAll": "Semua",
+    "categoryProposals": "Proposal",
+    "categoryMessages": "Pesan",
+    "categoryContracts": "Kontrak",
+    "unreadLabel": "Belum dibaca",
+    "readLabel": "Sudah dibaca",
+    "unreadCaption": "Ketuk untuk menandai sudah dibaca dan ke halaman job atau percakapan jika ada tautan.",
+    "readCaption": "Sudah dibuka atau dibersihkan—tetap tersimpan untuk referensi."
+  },
+  "messages": {
+    "pageSubtitle": "Inbox + chat terikat pada hiring—percakapan mengikuti role atau kontrak ketika relevan.",
+    "inboxHeading": "Inbox",
+    "conversationsSuffix": "percakapan",
+    "conversationPanel": "Percakapan",
+    "backToInbox": "Inbox",
+    "previewEmpty": "Belum ada pesan — sapalah dulu",
+    "awaitingReply": "Menunggu balasan Anda",
+    "sent": "Terkirim",
+    "emptyThreadsTitle": "Belum ada utas",
+    "emptyThreadsDescription": "Masih kosong karena belum ada pesan. Utas dibuka dari proposal, pekerjaan terkontrak, atau saat Anda mengetuk Pesan dari profil—semuanya tetap tertaut pada setiap listing lowongan.",
+    "emptyThreadsBrowseJobs": "Jelajahi lowongan",
+    "emptyThreadsFreelancers": "Lihat freelancer",
+    "pickThreadTitle": "Pilih percakapan",
+    "pickThreadDescription": "Pilih utas untuk membaca pesan dan membalas. Di ponsel, ketuk sebuah percakapan; gunakan tombol Balik untuk kembali ke inbox.",
+    "pickBrowseJobs": "Jelajahi lowongan",
+    "pickNotifications": "Notifikasi",
+    "startThreadTitle": "Mulai utas ini",
+    "startThreadBody": "Kirim ucapan pembuka untuk menyelaraskan ruang lingkup, timing, atau langkah selanjutnya. Pesan dikirim instan ke pihak lain.",
+    "startBullet1": "Klarifikasi scope dan timeline keputusan sejak awal.",
+    "startBullet2": "Rujuk lowongan atau kontrak—konteks otomatis terbawa.",
+    "composePlaceholder": "Tulis pesan…",
+    "send": "Mengirim",
+    "sendCta": "Kirim",
+    "composeHint": "Enter untuk kirim · Shift+Enter untuk baris baru",
+    "sendErrorFallback": "Tidak dapat mengirim pesan",
+    "inboxAria": "Percakapan",
+    "workspaceKicker": "Ruang kerja",
+    "inboxOneConversation": "1 percakapan",
+    "inboxManyConversations": "{{count}} percakapan",
+    "threadTypeJob": "Lowongan",
+    "threadTypeContract": "Kontrak",
+    "threadTypeDirect": "Langsung",
+    "threadTitleFallback": "Percakapan",
+    "threadHeaderFallback": "Utas",
+    "youPrefix": "Anda · ",
+    "viewJob": "Lihat lowongan",
+    "lastActivityPrefix": "Terakhir aktif",
+    "contextJobLabel": "Lowongan:",
+    "contextWithLabel": "Dengan:",
+    "contextProposalLabel": "Proposal:",
+    "threadTiedHint": "Utas terikat pada alur proposal ini.",
+    "backToJob": "Ke lowongan",
+    "handoffFromProposal": "Percakapan dibuka dari proposal terbaru Anda.",
+    "handoffFromConversation": "Percakapan dibuka dari peninjauan proposal job. Lanjutkan diskusi dan pilih langkah berikutnya."
+  },
+  "dashboard": {
+    "client": {
+      "finishProfileCardTitle": "Selesaikan profil klien",
+      "finishProfileCardBody": "Beberapa detail membuka akses posting job dan membantu freelancer mempercayai brief Anda.",
+      "finishProfileCta": "Lengkapkan pengaturan",
+      "jobsEmptyNoProfileTitle": "Belum ada lowongan",
+      "jobsEmptyNoProfileBody": "Apa: daftar ini hanya menampilkan role yang Anda posting. Mengapa: profil Anda belum siap merekrut. Berikutnya: buka Pengaturan, lengkapi perusahaan, lalu posting brief.",
+      "jobsEmptyFirstTitle": "Pasang lowongan pertama",
+      "jobsEmptyFirstBody": "Apa: Anda belum punya listing aktif di sini. Mengapa: tim awal sering baru draft. Berikutnya: publikasikan brief jelas—anggaran, mode kerja, dan timing—agar proposal tetap tertaut ke lowongan itu.",
+      "jobsEmptyFirstPrimary": "Pasang lowongan",
+      "jobsEmptyFirstSecondary": "Lihat freelancer",
+      "bidsEmptyNoProfileTitle": "Bid muncul setelah Anda posting",
+      "bidsEmptyNoProfileBody": "Apa: inbox proposal kosong. Mengapa: klien butuh role live untuk terima bid. Berikutnya: selesaikan setup dan pasang minimal satu lowongan.",
+      "bidsEmptyNoBidsTitle": "Belum ada proposal",
+      "bidsEmptyNoBidsBody": "Apa: belum ada freelancer bid. Mengapa: board mungkin sepi atau brief perlu lebih jelas. Berikutnya: perbaiki job, tambah konteks, dan cepat merespons di Pesan—utas tertaut pada setiap lowongan.",
+      "bidsEmptyNoBidsPrimary": "Pasang lowongan",
+      "bidsEmptyNoBidsSecondary": "Lihat job saya",
+      "contractsEmptyTitle": "Belum ada kontrak",
+      "contractsEmptyBody": "Apa: belum ada rekor hire aktif. Mengapa: kontrak terbuka setelah Anda terima bid. Berikutnya: tinjau proposal di job Anda, shortlist, lalu terima ketika siap.",
+      "contractsEmptyPrimary": "Tinjau lowongan terbuka",
+      "contractsEmptySecondary": "Jelajahi freelancer"
+    },
+    "freelancer": {
+      "profileCardTitleNew": "Lengkapi profil freelancer",
+      "profileCardTitleBoost": "Kuatkan profil Anda",
+      "profileCardBodyNew": "Skill, mode kerja, dan bio singkat membuka proposal dan kuota Anda terlihat penuh.",
+      "profileCardBodyBoost": "{{percent}}% selesai—headline, bio, dan tarif membantu Anda menang pekerjaan.",
+      "profileCardCta": "Lengkapi profil",
+      "activityEmptyNoProfileTitle": "Timeline Anda dimulai setelah setup",
+      "activityEmptyNoProfileBody": "Apa: belum ada aktivitas hire. Mengapa: proposal membutuhkan profil lengkap. Berikutnya: tambah bio, headline, dan mode kerja lalu kirim bid fokus pada job nyata.",
+      "activityEmptyNoActivityTitle": "Belum ada aktivitas proposal",
+      "activityEmptyNoActivityBody": "Apa: belum ada bid atau update hire di feed Anda. Mengapa: Anda belum kirim proposal atau belum ada perubahan baru. Berikutnya: telusuri lowongan terbuka, simpan listing, dan kirim proposal yang referensi-setiap brief—chat tetap terikat lowongannya.",
+      "activityEmptyPrimary": "Cari lowongan",
+      "activityEmptySecondary": "Pantau proposal",
+      "openJobsEmptyTitle": "Tidak ada listing di snapshot ini",
+      "openJobsEmptyBody": "Apa: panel ini sampel kecil. Mengapa: filter atau timing menyembunyikan relevan. Berikutnya: buka board lengkap, simpan listing, dan kirim proposal yang mengacu pada brief masing-masing.",
+      "openJobsEmptyCta": "Ke papan lowongan",
+      "profileRequiredBanner": "Proposal baru butuh profil lengkap.",
+      "profileRequiredSub": "Update kontrak tetap ada di bawah.",
+      "welcomeGeneric": "Selamat datang kembali",
+      "welcomeNamed": "Selamat datang kembali, {{name}}",
+      "subtitleHasProfile": "{{name}} · proposal, kuota, dan lowongan terbuka satu layar.",
+      "subtitleNoProfile": "Selesaikan pengaturan untuk bid dan pantau proposal serta kontrak di sini.",
+      "browseJobsCta": "Jelajahi lowongan",
+      "overviewTitle": "Ringkas",
+      "overviewSubtitle": "Angka langsung dari paket Anda dan profil.",
+      "quickActionsHeading": "Langkah cepat",
+      "statActiveBids": "Bid aktif",
+      "statActiveContracts": "Kontrak aktif",
+      "statRemainingQuota": "Sisa kuota",
+      "statProfileCompletion": "Kelengkapan profil",
+      "attentionKicker": "Perlu diperhatikan",
+      "attentionAccepted": "{{count}} bid diterima",
+      "attentionAwaiting": "{{count}} utas menunggu balasan Anda",
+      "attentionProposalUpdates": "{{count}} update proposal (7h)",
+      "quickCompleteProfile": "Lengkapi profil",
+      "quickFindJobs": "Cari lowongan",
+      "quickTrackProposals": "Pantau proposal",
+      "quickAvailability": "Update ketersediaan",
+      "activityTitle": "Aktivitas terbaru",
+      "activitySubtitle": "Proposal dan pembaruan kontrak",
+      "activityViewAll": "Lihat semua",
+      "openJobsTitle": "Lowongan terbuka & rekomendasi",
+      "openJobsSubtitle": "{{count}} role di papan",
+      "openJobsSeeAll": "Lihat semua"
+    }
+  },
   "footer": {
     "product": "Produk",
     "company": "Perusahaan",
@@ -537,7 +732,16 @@
       "emptyUseCaseOne": "Desain landing page untuk website bisnis lokal",
       "emptyUseCaseTwo": "Editing video untuk konten media sosial mingguan",
       "emptyUseCaseThree": "Fotografer event on-site untuk acara akhir pekan",
-      "emptyUseCaseFour": "Tutor matematika untuk sesi hybrid online dan tatap muka"
+      "emptyUseCaseFour": "Tutor matematika untuk sesi hybrid online dan tatap muka",
+      "emptyCategoryWhat": "Apa: belum ada apa pun di kelompok skill ini saat ini.",
+      "emptyCategoryWhy": "Mengapa: klien hanya terlihat jika mereka memposting role nyata—tidak ada data isian.",
+      "emptyCategoryNext": "Berikutnya: perluas kategori atau pasang brief jika Anda yang merekrut.",
+      "emptyFiltersWhat": "Apa: nol baris setelah filter diterapkan.",
+      "emptyFiltersWhy": "Mengapa: papan awal akses bisa tipis dan filter ketat memperkeras itu.",
+      "emptyFiltersNext": "Berikutnya: longgarkan satu filter, atau simpan lowongan yang Anda minati.",
+      "emptyActionWhat": "Apa: tidak ada lowongan terbuka terlihat di papan.",
+      "emptyActionWhy": "Mengapa: akses awal berarti posting muncul hanya saat klien publikasi—tidak ada listing phantom.",
+      "emptyActionNext": "Berikutnya: pasang brief kredibel dulu lalu jagalah proposal dan Pesan tertaut pada job itu."
     },
     "freelancers": {
       "sectionTitle": "Eksplorasi freelancer",
@@ -687,6 +891,15 @@
       "emptyDefaultStep3": "Kembali lagi setelah undangan early-access meluas—daftar ini akan bergerak duluan.",
       "emptyDefaultPrimary": "Buat profil freelancer",
       "emptyDefaultSecondary": "Jelajahi lowongan →",
+      "emptyCategoryWhat": "Apa: tidak ada yang muncul di slice kategori ini.",
+      "emptyCategoryWhy": "Mengapa: penawaran memang rendah atau filter menumpuk sempit.",
+      "emptyCategoryNext": "Berikutnya: buka satu filter per langkah atau pindah ke Jobs jika maksudnya merekrut untuk brief tertentu.",
+      "emptyFiltersWhat": "Apa: tidak ada freelancer yang cocok dengan semua pilihan Anda.",
+      "emptyFiltersWhy": "Mengapa: gabungan kata kunci, kota, dan mode bisa membuat board tipis menghasilkan nol.",
+      "emptyFiltersNext": "Berikutnya: coba utamakan remote, lebarkan kota, atau rapatkan filter satu per satu.",
+      "emptyDefaultWhat": "Apa: daftar kosong secara nyata.",
+      "emptyDefaultWhy": "Mengapa: freelancer baru muncul setelah mempublikasikan profil nyata—kami tidak mengisi listing palsu.",
+      "emptyDefaultNext": "Berikutnya: lengkapi profil freelancer / pasang brief hiring—dan jaga percakapan tetap terikat pada job konkret.",
       "profileFallback": "Ringkasan layanan freelancer"
     },
     "freelancerProfile": {

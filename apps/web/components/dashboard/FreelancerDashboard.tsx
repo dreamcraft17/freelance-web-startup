@@ -14,8 +14,51 @@ import {
   Zap
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ActivationChecklistCard, type ActivationChecklistStepVm } from "@/components/onboarding/ActivationChecklistCard";
+import { MarketplaceLiquidityHints } from "@/components/onboarding/MarketplaceLiquidityHints";
 import { DashboardEmptyState } from "./DashboardEmptyState";
 import { DashboardStatCard } from "./DashboardStatCard";
+
+export type FreelancerDashboardCopy = {
+  browseJobsCta: string;
+  overviewTitle: string;
+  overviewSubtitle: string;
+  quickActionsHeading: string;
+  statActiveBids: string;
+  statActiveContracts: string;
+  statRemainingQuota: string;
+  statProfileCompletion: string;
+  attentionKicker: string;
+  attentionAccepted: string;
+  attentionAwaiting: string;
+  attentionProposalUpdates: string;
+  profileCardTitleNew: string;
+  profileCardTitleBoost: string;
+  profileCardBodyNew: string;
+  profileCardBodyBoost: string;
+  profileCardCta: string;
+  quickCompleteProfile: string;
+  quickFindJobs: string;
+  quickTrackProposals: string;
+  quickAvailability: string;
+  activityTitle: string;
+  activitySubtitle: string;
+  activityViewAll: string;
+  openJobsTitle: string;
+  openJobsSubtitle: string;
+  openJobsSeeAll: string;
+  activityEmptyNoProfileTitle: string;
+  activityEmptyNoProfileBody: string;
+  activityEmptyNoActivityTitle: string;
+  activityEmptyNoActivityBody: string;
+  activityEmptyPrimary: string;
+  activityEmptySecondary: string;
+  openJobsEmptyTitle: string;
+  openJobsEmptyBody: string;
+  openJobsEmptyCta: string;
+  profileRequiredBanner: string;
+  profileRequiredSub: string;
+};
 
 export type FreelancerDashboardBid = {
   id: string;
@@ -56,6 +99,8 @@ type ActivityItem =
   | { kind: "contract"; at: Date; contract: FreelancerDashboardContract };
 
 type FreelancerDashboardProps = {
+  welcomeTitle: string;
+  subtitle: string;
   displayName: string;
   greetingName: string | null;
   hasProfile: boolean;
@@ -78,6 +123,19 @@ type FreelancerDashboardProps = {
     acceptedBids: number;
     awaitingReplyThreads: number;
     proposalUpdates: number;
+  };
+  copy: FreelancerDashboardCopy;
+  activationChecklist: {
+    title: string;
+    intro: string;
+    steps: ActivationChecklistStepVm[];
+    allCompleteBanner: string | null;
+  };
+  liquidityTips: {
+    title: string;
+    intro: string;
+    bullets: string[];
+    footer: string;
   };
 };
 
@@ -126,10 +184,12 @@ const browseJobsCtaClass =
   "inline-flex w-full items-center justify-center gap-2 rounded-lg border-2 border-[#3525cd] bg-white px-5 py-3 text-base font-semibold text-[#3525cd] shadow-sm transition hover:bg-[#3525cd]/[0.06] sm:w-auto sm:min-w-[11rem] sm:px-6";
 
 export function FreelancerDashboard({
-  displayName,
-  greetingName,
+  welcomeTitle,
+  subtitle,
+  displayName: _displayName,
+  greetingName: _greetingName,
   hasProfile,
-  username,
+  username: _username,
   profileCompleteness,
   showStrongProfileCard,
   stats,
@@ -137,19 +197,18 @@ export function FreelancerDashboard({
   recentContracts,
   openJobs,
   openTotal,
-  attention
+  attention,
+  copy,
+  activationChecklist,
+  liquidityTips
 }: FreelancerDashboardProps) {
   const activity = buildActivity(recentBids, recentContracts);
-  const welcomeLine = greetingName ? `Welcome back, ${greetingName}` : "Welcome back";
-  const subline = hasProfile
-    ? `${displayName}${username ? ` · @${username}` : ""} · Bids, quota, and open roles in one view.`
-    : "Finish setup to bid on jobs and track proposals and contracts here.";
 
   const quickLinks = [
-    { label: "Complete profile", href: "/freelancer/profile" as Route, icon: UserRound, primary: true as const },
-    { label: "Find jobs", href: "/jobs" as Route, icon: Compass, primary: true as const },
-    { label: "Track proposals", href: "/freelancer/proposals" as Route, icon: FileText, primary: false as const },
-    { label: "Update availability", href: "/freelancer/profile" as Route, icon: CalendarClock, primary: false as const }
+    { label: copy.quickCompleteProfile, href: "/freelancer/profile" as Route, icon: UserRound, primary: true as const },
+    { label: copy.quickFindJobs, href: "/jobs" as Route, icon: Compass, primary: true as const },
+    { label: copy.quickTrackProposals, href: "/freelancer/proposals" as Route, icon: FileText, primary: false as const },
+    { label: copy.quickAvailability, href: "/freelancer/profile" as Route, icon: CalendarClock, primary: false as const }
   ];
 
   return (
@@ -158,59 +217,68 @@ export function FreelancerDashboard({
         <div className="min-w-0 space-y-1">
           <p className="text-xs font-medium text-slate-500">Freelancer dashboard</p>
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900 md:text-[1.65rem] md:leading-snug">
-            {welcomeLine}
+            {welcomeTitle}
           </h1>
-          <p className="max-w-lg text-sm leading-snug text-slate-600">{subline}</p>
+          <p className="max-w-lg text-sm leading-snug text-slate-600">{subtitle}</p>
         </div>
         <Link href={"/jobs" as Route} className={browseJobsCtaClass}>
           <Compass className="h-5 w-5 shrink-0" aria-hidden />
-          Browse jobs
+          {copy.browseJobsCta}
         </Link>
       </header>
 
+      <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
+        <ActivationChecklistCard
+          title={activationChecklist.title}
+          intro={activationChecklist.intro}
+          steps={activationChecklist.steps}
+          allCompleteBanner={activationChecklist.allCompleteBanner}
+        />
+        <MarketplaceLiquidityHints
+          title={liquidityTips.title}
+          intro={liquidityTips.intro}
+          bullets={liquidityTips.bullets}
+          footer={liquidityTips.footer}
+        />
+      </div>
+
       <section aria-label="Overview and actions" className={panelClass}>
-        {sectionLabel("Overview", "Live counts from your plan and profile.")}
+        {sectionLabel(copy.overviewTitle, copy.overviewSubtitle)}
 
         <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <DashboardStatCard
             variant="emphasized"
-            label="Active bids"
+            label={copy.statActiveBids}
             value={stats.activeBids}
             icon={Target}
           />
           <DashboardStatCard
             variant="emphasized"
-            label="Active contracts"
+            label={copy.statActiveContracts}
             value={stats.activeContracts}
             icon={Briefcase}
           />
           <DashboardStatCard
             variant="emphasized"
-            label="Remaining quota"
+            label={copy.statRemainingQuota}
             value={stats.bidQuotaRemaining}
             hint={stats.bidQuotaHint}
             icon={Zap}
           />
           <DashboardStatCard
             variant="emphasized"
-            label="Profile completion"
+            label={copy.statProfileCompletion}
             value={stats.profileReadiness}
             hint={stats.profileHint}
             icon={UserRound}
           />
         </div>
         <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50/70 px-4 py-3">
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Attention now</p>
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{copy.attentionKicker}</p>
           <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-700">
-            <span>
-              <span className="font-semibold">{attention.acceptedBids}</span> bid accepted
-            </span>
-            <span>
-              <span className="font-semibold">{attention.awaitingReplyThreads}</span> message thread awaiting reply
-            </span>
-            <span>
-              <span className="font-semibold">{attention.proposalUpdates}</span> proposal status update
-            </span>
+            <span>{copy.attentionAccepted.split("{{count}}").join(String(attention.acceptedBids))}</span>
+            <span>{copy.attentionAwaiting.split("{{count}}").join(String(attention.awaitingReplyThreads))}</span>
+            <span>{copy.attentionProposalUpdates.split("{{count}}").join(String(attention.proposalUpdates))}</span>
           </div>
         </div>
 
@@ -223,12 +291,12 @@ export function FreelancerDashboard({
                 </span>
                 <div className="min-w-0">
                   <h3 className="text-sm font-semibold text-slate-900">
-                    {hasProfile ? "Strengthen your profile" : "Complete your freelancer profile"}
+                    {hasProfile ? copy.profileCardTitleBoost : copy.profileCardTitleNew}
                   </h3>
                   <p className="mt-0.5 text-xs leading-relaxed text-slate-600 sm:text-sm">
                     {hasProfile
-                      ? `${profileCompleteness ?? 0}% complete—headline, bio, and rates help you win work.`
-                      : "Skills, work mode, and a short bio unlock proposals and full quota visibility."}
+                      ? copy.profileCardBodyBoost.split("{{percent}}").join(String(profileCompleteness ?? 0))
+                      : copy.profileCardBodyNew}
                   </p>
                 </div>
               </div>
@@ -236,7 +304,7 @@ export function FreelancerDashboard({
                 href={"/freelancer/profile" as Route}
                 className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-[#3525cd] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#2d1fb0]"
               >
-                Complete profile
+                {copy.profileCardCta}
                 <ArrowRight className="h-4 w-4 opacity-90" aria-hidden />
               </Link>
             </div>
@@ -244,7 +312,7 @@ export function FreelancerDashboard({
         ) : null}
 
         <div className="mt-5 border-t border-slate-100 pt-5">
-          <h3 className="text-xs font-medium uppercase tracking-wide text-slate-500">Quick actions</h3>
+          <h3 className="text-xs font-medium uppercase tracking-wide text-slate-500">{copy.quickActionsHeading}</h3>
           <ul className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
             {quickLinks.map((item) => (
               <li key={item.label}>
@@ -274,9 +342,9 @@ export function FreelancerDashboard({
         <section className="lg:col-span-7" aria-label="Recent activity">
           <div className={panelClass}>
             <div className="flex flex-wrap items-start justify-between gap-2">
-              {sectionLabel("Recent activity", "Proposals and contract updates")}
+              {sectionLabel(copy.activityTitle, copy.activitySubtitle)}
               <Link href={"/freelancer/proposals" as Route} className={linkClass}>
-                View all
+                {copy.activityViewAll}
               </Link>
             </div>
 
@@ -286,9 +354,9 @@ export function FreelancerDashboard({
                   tone="elevated"
                   kicker="Profile"
                   icon={ClipboardList}
-                  title="Your timeline starts after setup"
-                  description="Create your freelancer profile to send proposals and see every update in one place."
-                  action={{ label: "Complete profile", href: "/freelancer/profile" }}
+                  title={copy.activityEmptyNoProfileTitle}
+                  description={copy.activityEmptyNoProfileBody}
+                  action={{ label: copy.profileCardCta, href: "/freelancer/profile" }}
                 />
               </div>
             ) : hasProfile && activity.length === 0 ? (
@@ -297,10 +365,10 @@ export function FreelancerDashboard({
                   tone="elevated"
                   kicker="Timeline"
                   icon={Inbox}
-                  title="No proposal activity yet"
-                  description="Send your first bid to start tracking client responses and contract updates."
-                  action={{ label: "Find jobs", href: "/jobs" }}
-                  secondaryAction={{ label: "Track proposals", href: "/freelancer/proposals" }}
+                  title={copy.activityEmptyNoActivityTitle}
+                  description={copy.activityEmptyNoActivityBody}
+                  action={{ label: copy.activityEmptyPrimary, href: "/jobs" }}
+                  secondaryAction={{ label: copy.activityEmptySecondary, href: "/freelancer/proposals" }}
                 />
               </div>
             ) : (
@@ -308,8 +376,8 @@ export function FreelancerDashboard({
                 {!hasProfile ? (
                   <li className="pb-3">
                     <div className="rounded-lg border border-amber-200/80 bg-amber-50/50 px-3 py-2.5 text-xs leading-relaxed text-amber-950">
-                      <span className="font-medium">Profile required for new bids.</span>{" "}
-                      <span className="text-amber-900/90">Contract updates still appear below.</span>
+                      <span className="font-medium">{copy.profileRequiredBanner}</span>{" "}
+                      <span className="text-amber-900/90">{copy.profileRequiredSub}</span>
                     </div>
                   </li>
                 ) : null}
@@ -367,9 +435,12 @@ export function FreelancerDashboard({
         <section className="lg:col-span-5" aria-label="Open jobs">
           <div className={panelClass}>
             <div className="flex flex-wrap items-start justify-between gap-2">
-              {sectionLabel("Open & recommended jobs", `${openTotal} role${openTotal === 1 ? "" : "s"} on the board`)}
+              {sectionLabel(
+                copy.openJobsTitle,
+                copy.openJobsSubtitle.split("{{count}}").join(String(openTotal))
+              )}
               <Link href={"/jobs" as Route} className={linkClass}>
-                See all
+                {copy.openJobsSeeAll}
               </Link>
             </div>
 
@@ -379,9 +450,9 @@ export function FreelancerDashboard({
                   tone="elevated"
                   kicker="Opportunities"
                   icon={Briefcase}
-                  title="No listings in this snapshot"
-                  description="The job board updates as clients post work. Open the full board to search and filter roles that fit you."
-                  action={{ label: "Browse job board", href: "/jobs" }}
+                  title={copy.openJobsEmptyTitle}
+                  description={copy.openJobsEmptyBody}
+                  action={{ label: copy.openJobsEmptyCta, href: "/jobs" }}
                 />
               </div>
             ) : (

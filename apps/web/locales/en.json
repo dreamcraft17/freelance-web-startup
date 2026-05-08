@@ -39,6 +39,201 @@
       "secondaryMessages": "Messages"
     }
   },
+  "activation": {
+    "shared": {
+      "jobContextReminder": "Proposals and chats stay tied to the job—they keep scope and hires traceable.",
+      "clientLiquidityIntro": "Clear briefs attract better replies: say outcome, deadlines, constraints, and how you’ll decide.",
+      "freelancerLiquidityIntro": "Strong proposals cite the brief, propose a milestone, and show you understood the constraints."
+    },
+    "client": {
+      "checklistTitle": "Your onboarding checklist",
+      "checklistIntro": "Four real milestones—tracked from your profile, listings, proposals, and messages (not vanity metrics).",
+      "allComplete": "Starter checklist complete. Keep replies fast on proposals—they stay tied to each job listing.",
+      "liquidityTitle": "Get better proposals",
+      "steps": {
+        "profile": {
+          "label": "Complete client profile",
+          "hint": "Add company basics and location in Settings—freelancers use this to trust your brief."
+        },
+        "first_job": {
+          "label": "Post your first job",
+          "hint": "Publish a concise brief so freelancers can bid with realistic scope and timing."
+        },
+        "review_proposal": {
+          "label": "Review a proposal",
+          "hint": "Open Client jobs and inspect bids—compare fit, timeline, and price side by side."
+        },
+        "discussion": {
+          "label": "Start a discussion",
+          "hint": "Reply from Messages or proposal review—everything stays threaded to the job."
+        }
+      },
+      "liquidity": {
+        "b1": "Lead with the outcome you need, deliverables, and how you’ll measure “done”.",
+        "b2": "State budget honestly and when you plan to decide—reduces churn for everyone.",
+        "b3": "Respond in Messages for clarifications—the thread stays anchored to that job listing."
+      }
+    },
+    "freelancer": {
+      "checklistTitle": "Your onboarding checklist",
+      "checklistIntro": "Track real progress—profile completeness, catalogue engagement, bids, and first messages.",
+      "allComplete": "Starter checklist complete. Keep proposals scoped to each job—they and chat stay tied to that listing.",
+      "liquidityTitle": "Ship proposals that convert",
+      "steps": {
+        "profile": {
+          "label": "Complete freelancer profile",
+          "hint": "Headline, bio, and availability—clients skim this before trusting your bid."
+        },
+        "browse_jobs": {
+          "label": "Browse or shortlist roles",
+          "hint": "Use Jobs (save listings you like) until you submit your first proposal—counts when you engage with real postings."
+        },
+        "first_proposal": {
+          "label": "Send your first proposal",
+          "hint": "Bid with a concise plan, price, and timeline tied to that job—not a generic pitch."
+        },
+        "discussion": {
+          "label": "Open a discussion",
+          "hint": "Message from job or proposal flows so context stays tied to the hire."
+        }
+      },
+      "liquidity": {
+        "b1": "Mirror language from the brief and call out assumptions you validated.",
+        "b2": "Offer a phased plan with one clear next step the client can say yes to.",
+        "b3": "Use Messages for follow-ups—all conversation stays anchored to that job listing."
+      }
+    }
+  },
+  "notifications": {
+    "pageSubtitle": "Bids, messages, verification, and hiring updates—unread stays highlighted until you open it.",
+    "emptyTitle": "No notifications yet.",
+    "emptyDescription": "This is quiet because nothing landed in your inbox. When freelancers bid, conversations start, or status changes arrive, threads show here with quick links.",
+    "emptyPrimary": "Open Messages",
+    "emptySecondary": "Browse jobs",
+    "filterEmptyTitle": "Nothing in this tab yet.",
+    "filterEmptyDescription": "Switch category or wait for new bids, chats, or contract updates.",
+    "categoryAll": "All",
+    "categoryProposals": "Proposals",
+    "categoryMessages": "Messages",
+    "categoryContracts": "Contracts",
+    "unreadLabel": "Unread",
+    "readLabel": "Read",
+    "unreadCaption": "Tap to mark read and jump to related job or conversation when linked.",
+    "readCaption": "Opened or dismissed—still here for reference."
+  },
+  "messages": {
+    "pageSubtitle": "Inbox + chat tied to hiring—threads stay anchored to roles or contracts when relevant.",
+    "inboxHeading": "Inbox",
+    "conversationsSuffix": "conversations",
+    "conversationPanel": "Conversation",
+    "backToInbox": "Inbox",
+    "previewEmpty": "No messages yet — say hello",
+    "awaitingReply": "Awaiting your reply",
+    "sent": "Sent",
+    "emptyThreadsTitle": "No threads yet",
+    "emptyThreadsDescription": "This is empty because nobody has messaged yet. Threads open from proposals, hired work, or when you tap Message on profiles—everything stays anchored to each job listing.",
+    "emptyThreadsBrowseJobs": "Browse jobs",
+    "emptyThreadsFreelancers": "Browse freelancers",
+    "pickThreadTitle": "Select a conversation",
+    "pickThreadDescription": "Pick a thread to read sent messages and reply. On mobile tap a conversation; use Back to return to this inbox.",
+    "pickBrowseJobs": "Browse jobs",
+    "pickNotifications": "Notifications",
+    "startThreadTitle": "Start this thread",
+    "startThreadBody": "Send an opening note to align on scope, timing, or next steps. Messages deliver instantly to the other party.",
+    "startBullet1": "Clarify scope and decision timeline early.",
+    "startBullet2": "Reference the job or contract—context carries through automatically.",
+    "composePlaceholder": "Write a message…",
+    "send": "Sending",
+    "sendCta": "Send",
+    "composeHint": "Enter to send · Shift+Enter for a new line",
+    "sendErrorFallback": "Could not send message",
+    "inboxAria": "Conversations",
+    "workspaceKicker": "Workspace",
+    "inboxOneConversation": "1 conversation",
+    "inboxManyConversations": "{{count}} conversations",
+    "threadTypeJob": "Job",
+    "threadTypeContract": "Contract",
+    "threadTypeDirect": "Direct",
+    "threadTitleFallback": "Conversation",
+    "threadHeaderFallback": "Thread",
+    "youPrefix": "You · ",
+    "viewJob": "View job",
+    "lastActivityPrefix": "Last activity",
+    "contextJobLabel": "Job:",
+    "contextWithLabel": "With:",
+    "contextProposalLabel": "Proposal:",
+    "threadTiedHint": "Thread tied to this proposal flow.",
+    "backToJob": "Back to job",
+    "handoffFromProposal": "Conversation opened from your latest proposal.",
+    "handoffFromConversation": "Conversation opened from job proposal review. Continue the discussion and choose your next step."
+  },
+  "dashboard": {
+    "client": {
+      "finishProfileCardTitle": "Finish your client profile",
+      "finishProfileCardBody": "A few details unlock job posting and help freelancers trust your briefs.",
+      "finishProfileCta": "Complete setup",
+      "jobsEmptyNoProfileTitle": "No jobs to show yet",
+      "jobsEmptyNoProfileBody": "What: this list only shows roles you have posted. Why: your profile is not finished for hiring. Next: open Settings, add company details, then post a brief.",
+      "jobsEmptyFirstTitle": "Post your first job",
+      "jobsEmptyFirstBody": "What: you have no active listings here. Why: early teams often draft before publishing. Next: publish a clear brief—budget, work mode, and timing—so proposals stay tied to that job.",
+      "jobsEmptyFirstPrimary": "Post a job",
+      "jobsEmptyFirstSecondary": "Browse freelancers",
+      "bidsEmptyNoProfileTitle": "Bids will appear after you post",
+      "bidsEmptyNoProfileBody": "What: proposal inbox is empty. Why: clients need a live role to receive bids. Next: finish setup and publish at least one job.",
+      "bidsEmptyNoBidsTitle": "No bids yet",
+      "bidsEmptyNoBidsBody": "What: no freelancers have bid on your listings. Why: the board may be quiet or the brief needs more clarity. Next: refine the job, share context, and reply quickly in Messages—threads stay tied to each job.",
+      "bidsEmptyNoBidsPrimary": "Post a job",
+      "bidsEmptyNoBidsSecondary": "View my jobs",
+      "contractsEmptyTitle": "No contracts yet",
+      "contractsEmptyBody": "What: no active hire records. Why: contracts open after you accept a bid. Next: review proposals on your job, shortlist, then accept when ready.",
+      "contractsEmptyPrimary": "Review open jobs",
+      "contractsEmptySecondary": "Browse freelancers"
+    },
+    "freelancer": {
+      "profileCardTitleNew": "Complete your freelancer profile",
+      "profileCardTitleBoost": "Strengthen your profile",
+      "profileCardBodyNew": "Skills, work mode, and a short bio unlock proposals and full quota visibility.",
+      "profileCardBodyBoost": "{{percent}}% complete—headline, bio, and rates help you win work.",
+      "profileCardCta": "Complete profile",
+      "activityEmptyNoProfileTitle": "Your timeline starts after setup",
+      "activityEmptyNoProfileBody": "What: no hiring activity yet. Why: proposals require a complete profile. Next: add bio, headline, and work mode, then send a focused bid from a real job.",
+      "activityEmptyNoActivityTitle": "No proposal activity yet",
+      "activityEmptyNoActivityBody": "What: no bids or hire updates in your feed. Why: you have not sent a proposal or nothing changed recently. Next: browse open jobs, save roles you like, and send a tailored proposal—chats stay tied to that job.",
+      "activityEmptyPrimary": "Find jobs",
+      "activityEmptySecondary": "Track proposals",
+      "openJobsEmptyTitle": "No listings in this snapshot",
+      "openJobsEmptyBody": "What: this panel shows a small sample. Why: filters or timing may hide matches. Next: open the full job board, save roles, and send proposals that reference each brief.",
+      "openJobsEmptyCta": "Browse job board",
+      "profileRequiredBanner": "Profile required for new bids.",
+      "profileRequiredSub": "Contract updates still appear below.",
+      "welcomeGeneric": "Welcome back",
+      "welcomeNamed": "Welcome back, {{name}}",
+      "subtitleHasProfile": "{{name}} · proposals, quota, and open roles in one view.",
+      "subtitleNoProfile": "Finish setup to bid on jobs and track proposals and contracts here.",
+      "browseJobsCta": "Browse jobs",
+      "overviewTitle": "Overview",
+      "overviewSubtitle": "Live counts from your plan and profile.",
+      "quickActionsHeading": "Quick actions",
+      "statActiveBids": "Active bids",
+      "statActiveContracts": "Active contracts",
+      "statRemainingQuota": "Remaining quota",
+      "statProfileCompletion": "Profile completion",
+      "attentionKicker": "Attention now",
+      "attentionAccepted": "{{count}} bids accepted",
+      "attentionAwaiting": "{{count}} threads awaiting your reply",
+      "attentionProposalUpdates": "{{count}} proposal updates (7d)",
+      "quickCompleteProfile": "Complete profile",
+      "quickFindJobs": "Find jobs",
+      "quickTrackProposals": "Track proposals",
+      "quickAvailability": "Update availability",
+      "activityTitle": "Recent activity",
+      "activitySubtitle": "Proposals and contract updates",
+      "activityViewAll": "View all",
+      "openJobsTitle": "Open & recommended jobs",
+      "openJobsSubtitle": "{{count}} roles on the board",
+      "openJobsSeeAll": "See all"
+    }
+  },
   "footer": {
     "product": "Product",
     "company": "Company",
@@ -537,7 +732,16 @@
       "emptyUseCaseOne": "Landing page design for a local business website",
       "emptyUseCaseTwo": "Video editing for weekly social media content",
       "emptyUseCaseThree": "On-site event photographer for a weekend event",
-      "emptyUseCaseFour": "Math tutor for hybrid online and in-person sessions"
+      "emptyUseCaseFour": "Math tutor for hybrid online and in-person sessions",
+      "emptyCategoryWhat": "What: nothing in this skill bucket right now.",
+      "emptyCategoryWhy": "Why: clients only appear when they post real roles—there is no filler data.",
+      "emptyCategoryNext": "Next: widen the category or post a brief if you are hiring.",
+      "emptyFiltersWhat": "What: zero rows after applying filters.",
+      "emptyFiltersWhy": "Why: early boards are sparse and strict filters compound that.",
+      "emptyFiltersNext": "Next: loosen one filter at a time, or save jobs you care about.",
+      "emptyActionWhat": "What: no open jobs visible on the board.",
+      "emptyActionWhy": "Why: early access means postings appear only when clients publish—no phantom listings.",
+      "emptyActionNext": "Next: post a credible brief first, then keep proposals and Messages tied to that job."
     },
     "freelancers": {
       "sectionTitle": "Freelancer discovery",
@@ -687,6 +891,15 @@
       "emptyDefaultStep3": "Come back after early-access invites roll out—this list will move first.",
       "emptyDefaultPrimary": "Create a freelancer profile",
       "emptyDefaultSecondary": "Browse jobs →",
+      "emptyCategoryWhat": "What: nobody is surfaced in this category slice.",
+      "emptyCategoryWhy": "Why: either supply is genuinely low or filters are narrowly stacked.",
+      "emptyCategoryNext": "Next: clear one filter at a time, or pivot to Jobs if you meant to hire for a brief.",
+      "emptyFiltersWhat": "What: no freelancers match everything you selected.",
+      "emptyFiltersWhy": "Why: combined keyword, city, and mode can silently zero out sparse boards.",
+      "emptyFiltersNext": "Next: try remote-first, widen city, or keep one filter at a time.",
+      "emptyDefaultWhat": "What: the roster is genuinely empty.",
+      "emptyDefaultWhy": "Why: freelancers appear only after they publish real profiles—we do not preload fake listings.",
+      "emptyDefaultNext": "Next: create your freelancer profile / post a hiring brief—and keep chats tied to concrete jobs.",
       "profileFallback": "Freelancer work overview"
     },
     "freelancerProfile": {

@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v82  
-> Last synchronized: 2026-05-08 (moderation: report entry points expanded; Prisma types via @acme/database; ESLint flat config for CI; e2e bid report + admin queue).
+> **Doc revision:** v83  
+> Last synchronized: 2026-05-08 (onboarding activation i18n + messages/notifications copy; public empty-state What/Why/Next ID parity; `docs/deploy-checklist.md`).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,6 +9,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
+- **2026-05-08 — Early-launch activation & empty-state i18n:** checklist onboarding klien/freelancer (state nyata DB) + petunjuk likuiditas brief/proposal; empty state publik `/jobs` & `/freelancers` memakai blok What/Why/Next; halaman `/messages` & `/notifications` serta workspace pesan memakai kamus EN/ID; subtitle notifikasi tanpa menekankan billing. Checklist deploy produksi: `docs/deploy-checklist.md`.
 - **2026-05-08 — Trust & safety (moderation MVP):** ditambahkan model `ModerationReport` + `ModerationReportNote`, status `OPEN` / `IN_REVIEW` / `RESOLVED` / `DISMISSED`, dukungan subjek `USER` / `JOB` / `BID` / `REVIEW` / `MESSAGE_THREAD` / `MESSAGE`, intake `POST /api/reports`, antrean `/admin/reports` dengan triage (assign, catatan internal, resolve/dismiss). Job dapat disembunyikan dari discovery publik lewat `moderationHiddenAt`; staff `ADMIN`/`SUPPORT_ADMIN` dapat suspend/reactivate akun `CLIENT`/`FREELANCER` dari `/admin/users`.
 - **2026-05-08 — Moderation intake UX + CI hygiene:** UI laporan memakai satu komponen konsisten (`ModerationReportButton`): profil publik freelancer (user + ulasan), kolom trust pada tabel proposal owner job, daftar proposal freelancer, serta thread/pesan di Messages. Tipe Prisma moderasi diekspor dari `@acme/database` supaya `pnpm typecheck` aplikasi tidak bergantung langsung ke `@prisma/client`. `eslint.config.mjs` + `outputFileTracingRoot` menstabilkan `next lint`/tracing di monorepo; skrip `scripts/e2e-marketplace-flow.mjs` memverifikasi laporan BID + kemunculan di `/api/admin/reports` (butuh user admin hasil seed).
 - **2026-05-01 — Homepage composition parity pass:** section hero dipoles lagi (headline scale/spacing, search card density, CTA sizing) dan footer landing diganti ke struktur yang lebih lengkap (brand+social, navigasi kolom, form newsletter, locale marker) untuk mendekati referensi visual final secara menyeluruh.

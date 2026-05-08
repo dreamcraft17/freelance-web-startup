@@ -19,6 +19,7 @@ import {
   Send,
   Sparkles
 } from "lucide-react";
+import { useI18n } from "@/features/i18n/I18nProvider";
 
 export type ThreadListItem = {
   threadId: string;
@@ -74,32 +75,19 @@ function formatMessageTime(iso: string): string {
   }).format(new Date(iso));
 }
 
-function threadTitle(peers: ThreadListItem["peers"]): string {
-  if (peers.length === 0) return "Conversation";
+function threadTitle(peers: ThreadListItem["peers"], emptyLabel: string): string {
+  if (peers.length === 0) return emptyLabel;
   return peers.map((p) => p.displayName).join(" · ");
 }
 
-function peerInitials(peers: ThreadListItem["peers"]): string {
-  const name = threadTitle(peers);
+function peerInitials(peers: ThreadListItem["peers"], emptyLabel: string): string {
+  const name = threadTitle(peers, emptyLabel);
   const parts = name.split(/\s+/).filter(Boolean);
   if (parts.length === 0) return "?";
   if (parts.length === 1) return parts[0]!.slice(0, 2).toUpperCase();
   const a = parts[0]![0] ?? "";
   const b = parts[1]![0] ?? "";
   return `${a}${b}`.toUpperCase() || "?";
-}
-
-function threadTypeLabel(type: string): string {
-  switch (type) {
-    case "JOB":
-      return "Job";
-    case "CONTRACT":
-      return "Contract";
-    case "DIRECT":
-      return "Direct";
-    default:
-      return type;
-  }
 }
 
 function previewText(body: string, max = 80): string {
@@ -123,6 +111,7 @@ export function MessagesWorkspace({
   currentUserId,
   selectedContext
 }: MessagesWorkspaceProps) {
+  const { t } = useI18n();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [body, setBody] = useState("");
@@ -142,7 +131,7 @@ export function MessagesWorkspace({
       });
       const json = (await res.json()) as { success?: boolean; error?: string };
       if (!res.ok || json.success === false) {
-        setSendError(json.error ?? "Could not send message");
+        setSendError(json.error ?? t("messages.sendErrorFallback"));
         return;
       }
       setBody("");
@@ -151,6 +140,20 @@ export function MessagesWorkspace({
   };
 
   const hideListOnMobileWhenThread = Boolean(selectedThreadId);
+  const threadTitleFallback = t("messages.threadTitleFallback");
+
+  const threadTypeLabel = (threadType: string) => {
+    switch (threadType) {
+      case "JOB":
+        return t("messages.threadTypeJob");
+      case "CONTRACT":
+        return t("messages.threadTypeContract");
+      case "DIRECT":
+        return t("messages.threadTypeDirect");
+      default:
+        return threadType;
+    }
+  };
 
   return (
     <div
@@ -165,7 +168,7 @@ export function MessagesWorkspace({
           threads.length === 0 ? "md:max-w-none md:flex-1" : "md:w-[min(100%,360px)]",
           hideListOnMobileWhenThread ? "hidden md:flex" : "flex"
         )}
-        aria-label="Conversations"
+        aria-label={t("messages.inboxAria")}
       >
         <div className="border-b border-slate-100 bg-gradient-to-b from-slate-50/95 to-white px-4 py-4">
           <div className="flex items-center gap-2">
@@ -173,9 +176,13 @@ export function MessagesWorkspace({
               <Inbox className="h-4 w-4" strokeWidth={2} aria-hidden />
             </span>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Inbox</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                {t("messages.inboxHeading")}
+              </p>
               <p className="text-sm font-medium text-slate-800">
-                {threads.length} conversation{threads.length === 1 ? "" : "s"}
+                {threads.length === 1
+                  ? t("messages.inboxOneConversation")
+                  : t("messages.inboxManyConversations", { count: threads.length })}
               </p>
             </div>
           </div>
@@ -186,33 +193,33 @@ export function MessagesWorkspace({
             <div className="p-4 sm:p-5">
               <DashboardEmptyState
                 tone="elevated"
-                kicker="Messages"
+                kicker={t("nav.messages")}
                 icon={MessageCircle}
-                title="No threads yet"
-                description="When you reach out from a job, contract, or direct thread, your conversations land here with previews and timestamps—ready to pick up anytime."
-                action={{ label: "Browse jobs", href: "/jobs" }}
-                secondaryAction={{ label: "Browse freelancers", href: "/freelancers" }}
+                title={t("messages.emptyThreadsTitle")}
+                description={t("messages.emptyThreadsDescription")}
+                action={{ label: t("messages.emptyThreadsBrowseJobs"), href: "/jobs" }}
+                secondaryAction={{ label: t("messages.emptyThreadsFreelancers"), href: "/freelancers" }}
               />
             </div>
           ) : (
             <ul className="divide-y divide-slate-100">
-              {threads.map((t) => {
-                const active = t.threadId === selectedThreadId;
-                const last = t.lastMessage;
+              {threads.map((thread) => {
+                const active = thread.threadId === selectedThreadId;
+                const last = thread.lastMessage;
                 const unread = Boolean(last && last.senderId !== currentUserId);
-                const title = threadTitle(t.peers);
+                const rowTitle = threadTitle(thread.peers, threadTitleFallback);
                 const previewSource = last?.body ?? "";
-                const preview = previewSource ? previewText(previewSource) : "No messages yet — say hello";
+                const preview = previewSource ? previewText(previewSource) : t("messages.previewEmpty");
                 const prefix = last
                   ? last.senderId === currentUserId
-                    ? "You · "
+                    ? t("messages.youPrefix")
                     : ""
                   : "";
 
                 return (
-                  <li key={t.threadId}>
+                  <li key={thread.threadId}>
                     <Link
-                      href={`/messages?thread=${t.threadId}` as Route}
+                      href={`/messages?thread=${thread.threadId}` as Route}
                       scroll={false}
                       className={cn(
                         "flex gap-3 px-4 py-3.5 transition hover:bg-slate-50/90",
@@ -228,7 +235,7 @@ export function MessagesWorkspace({
                               : "bg-gradient-to-br from-slate-100 to-slate-50 text-slate-600 ring-slate-200/80"
                           )}
                         >
-                          {peerInitials(t.peers)}
+                          {peerInitials(thread.peers, threadTitleFallback)}
                         </div>
                         {unread ? (
                           <span
@@ -245,13 +252,13 @@ export function MessagesWorkspace({
                               unread ? "font-semibold text-slate-900" : "font-medium text-slate-800"
                             )}
                           >
-                            {title}
+                            {rowTitle}
                           </p>
                           <time
                             className="shrink-0 text-[11px] font-medium tabular-nums text-slate-400"
-                            dateTime={t.updatedAt}
+                            dateTime={thread.updatedAt}
                           >
-                            {formatThreadTime(t.updatedAt)}
+                            {formatThreadTime(thread.updatedAt)}
                           </time>
                         </div>
                         <p
@@ -265,12 +272,14 @@ export function MessagesWorkspace({
                         </p>
                         <div className="mt-2 flex flex-wrap items-center gap-2">
                           <span className="rounded-md bg-slate-100/90 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-500">
-                            {threadTypeLabel(t.type)}
+                            {threadTypeLabel(thread.type)}
                           </span>
                           {unread ? (
-                            <span className="text-[10px] font-semibold text-[#3525cd]">Awaiting your reply</span>
+                            <span className="text-[10px] font-semibold text-[#3525cd]">
+                              {t("messages.awaitingReply")}
+                            </span>
                           ) : last && last.senderId === currentUserId ? (
-                            <span className="text-[10px] font-medium text-slate-400">Sent</span>
+                            <span className="text-[10px] font-medium text-slate-400">{t("messages.sent")}</span>
                           ) : null}
                         </div>
                       </div>
@@ -289,19 +298,19 @@ export function MessagesWorkspace({
           threads.length === 0 && "hidden",
           !selectedThreadId ? "hidden md:flex" : "flex"
         )}
-        aria-label="Conversation"
+        aria-label={t("messages.conversationPanel")}
       >
         {!selectedThreadId ? (
           <div className="flex flex-1 flex-col items-center justify-center p-6 md:p-10">
             <div className="w-full max-w-md">
               <DashboardEmptyState
                 tone="elevated"
-                kicker="Workspace"
+                kicker={t("messages.workspaceKicker")}
                 icon={MessageSquare}
-                title="Select a conversation"
-                description="Pick a thread from the list to read the full history and reply. On your phone, tap a name to open the chat—use the back control to return to your inbox."
-                action={{ label: "Browse jobs", href: "/jobs" }}
-                secondaryAction={{ label: "Notifications", href: "/notifications" }}
+                title={t("messages.pickThreadTitle")}
+                description={t("messages.pickThreadDescription")}
+                action={{ label: t("messages.pickBrowseJobs"), href: "/jobs" }}
+                secondaryAction={{ label: t("messages.pickNotifications"), href: "/notifications" }}
               />
             </div>
           </div>
@@ -314,16 +323,18 @@ export function MessagesWorkspace({
                 scroll={false}
               >
                 <ArrowLeft className="h-4 w-4" aria-hidden />
-                Inbox
+                {t("messages.backToInbox")}
               </Link>
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="flex min-w-0 items-start gap-3">
                   <div className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#3525cd]/15 to-violet-500/10 text-sm font-bold text-[#3525cd] ring-1 ring-[#3525cd]/15 sm:flex">
-                    {selectedThread ? peerInitials(selectedThread.peers) : "?"}
+                    {selectedThread ? peerInitials(selectedThread.peers, threadTitleFallback) : "?"}
                   </div>
                   <div className="min-w-0">
                     <h2 className="truncate text-lg font-semibold tracking-tight text-slate-900 md:text-xl">
-                      {selectedThread ? threadTitle(selectedThread.peers) : "Thread"}
+                      {selectedThread
+                        ? threadTitle(selectedThread.peers, threadTitleFallback)
+                        : t("messages.threadHeaderFallback")}
                     </h2>
                     <div className="mt-1 flex flex-wrap items-center gap-2">
                       {selectedThread ? (
@@ -337,12 +348,13 @@ export function MessagesWorkspace({
                           className="inline-flex items-center gap-1 text-xs font-semibold text-[#3525cd] hover:underline"
                         >
                           <Briefcase className="h-3.5 w-3.5" aria-hidden />
-                          View job
+                          {t("messages.viewJob")}
                         </Link>
                       ) : null}
                       {selectedThread?.lastMessage ? (
                         <span className="text-xs text-slate-500">
-                          Last activity {formatThreadTime(selectedThread.lastMessage.createdAt)}
+                          {t("messages.lastActivityPrefix")}{" "}
+                          {formatThreadTime(selectedThread.lastMessage.createdAt)}
                         </span>
                       ) : null}
                     </div>
@@ -361,23 +373,25 @@ export function MessagesWorkspace({
               <div className="border-b border-slate-200/80 bg-slate-50 px-4 py-2.5 md:px-5">
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600">
                   <span>
-                    <span className="font-semibold text-slate-700">Job:</span> {selectedContext.jobTitle}
+                    <span className="font-semibold text-slate-700">{t("messages.contextJobLabel")}</span>{" "}
+                    {selectedContext.jobTitle}
                   </span>
                   <span>
-                    <span className="font-semibold text-slate-700">With:</span> {selectedContext.counterpartLabel}
+                    <span className="font-semibold text-slate-700">{t("messages.contextWithLabel")}</span>{" "}
+                    {selectedContext.counterpartLabel}
                   </span>
                   {selectedContext.proposalStatus ? (
                     <span>
-                      <span className="font-semibold text-slate-700">Proposal:</span>{" "}
+                      <span className="font-semibold text-slate-700">{t("messages.contextProposalLabel")}</span>{" "}
                       {selectedContext.proposalStatus.replace(/_/g, " ").toLowerCase()}
                     </span>
                   ) : null}
-                  <span className="text-slate-500">Thread tied to this proposal flow.</span>
+                  <span className="text-slate-500">{t("messages.threadTiedHint")}</span>
                   <Link
                     href={`/jobs/${selectedContext.jobId}` as Route}
                     className="font-semibold text-[#3525cd] hover:underline"
                   >
-                    Back to job
+                    {t("messages.backToJob")}
                   </Link>
                 </div>
               </div>
@@ -390,19 +404,16 @@ export function MessagesWorkspace({
                     <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#3525cd]/10 text-[#3525cd] ring-1 ring-[#3525cd]/15">
                       <Sparkles className="h-6 w-6" aria-hidden />
                     </span>
-                    <h3 className="mt-4 text-base font-semibold text-slate-900">Start this thread</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                      Send an opening note to align on scope, timing, or next steps. Messages deliver instantly to the
-                      other party.
-                    </p>
+                    <h3 className="mt-4 text-base font-semibold text-slate-900">{t("messages.startThreadTitle")}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-600">{t("messages.startThreadBody")}</p>
                     <ul className="mt-5 space-y-2 text-left text-xs text-slate-500">
                       <li className="flex gap-2">
                         <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#3525cd]/50" aria-hidden />
-                        Confirm availability and preferred working hours early.
+                        {t("messages.startBullet1")}
                       </li>
                       <li className="flex gap-2">
                         <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#3525cd]/50" aria-hidden />
-                        Reference the job or contract so context stays clear.
+                        {t("messages.startBullet2")}
                       </li>
                     </ul>
                   </div>
@@ -456,7 +467,7 @@ export function MessagesWorkspace({
                   <textarea
                     value={body}
                     onChange={(e) => setBody(e.target.value)}
-                    placeholder="Write a message…"
+                    placeholder={t("messages.composePlaceholder")}
                     rows={3}
                     className="min-h-[5.25rem] flex-1 resize-y rounded-xl border border-slate-200 bg-slate-50/40 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#3525cd]/35 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3525cd]/20"
                     disabled={isPending}
@@ -476,17 +487,17 @@ export function MessagesWorkspace({
                     {isPending ? (
                       <>
                         <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-                        Sending
+                        {t("messages.send")}
                       </>
                     ) : (
                       <>
                         <Send className="h-4 w-4" aria-hidden />
-                        Send
+                        {t("messages.sendCta")}
                       </>
                     )}
                   </Button>
                 </div>
-                <p className="mt-2 text-[11px] text-slate-500">Enter to send · Shift+Enter for a new line</p>
+                <p className="mt-2 text-[11px] text-slate-500">{t("messages.composeHint")}</p>
               </div>
             </div>
           </>

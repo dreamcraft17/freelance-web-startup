@@ -15,8 +15,32 @@ import {
   Users
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ActivationChecklistCard, type ActivationChecklistStepVm } from "@/components/onboarding/ActivationChecklistCard";
+import { MarketplaceLiquidityHints } from "@/components/onboarding/MarketplaceLiquidityHints";
 import { DashboardEmptyState } from "./DashboardEmptyState";
 import { DashboardStatCard } from "./DashboardStatCard";
+
+export type ClientDashboardCopy = {
+  finishProfileCardTitle: string;
+  finishProfileCardBody: string;
+  finishProfileCta: string;
+  jobsEmptyNoProfileTitle: string;
+  jobsEmptyNoProfileBody: string;
+  jobsEmptyFirstTitle: string;
+  jobsEmptyFirstBody: string;
+  jobsEmptyFirstPrimary: string;
+  jobsEmptyFirstSecondary: string;
+  bidsEmptyNoProfileTitle: string;
+  bidsEmptyNoProfileBody: string;
+  bidsEmptyNoBidsTitle: string;
+  bidsEmptyNoBidsBody: string;
+  bidsEmptyNoBidsPrimary: string;
+  bidsEmptyNoBidsSecondary: string;
+  contractsEmptyTitle: string;
+  contractsEmptyBody: string;
+  contractsEmptyPrimary: string;
+  contractsEmptySecondary: string;
+};
 
 export type ClientDashboardJob = {
   id: string;
@@ -69,6 +93,19 @@ type ClientDashboardProps = {
   recentJobs: ClientDashboardJob[];
   recentBids: ClientDashboardBid[];
   recentContracts: ClientDashboardContract[];
+  copy: ClientDashboardCopy;
+  activationChecklist: {
+    title: string;
+    intro: string;
+    steps: ActivationChecklistStepVm[];
+    allCompleteBanner: string | null;
+  };
+  liquidityTips: {
+    title: string;
+    intro: string;
+    bullets: string[];
+    footer: string;
+  };
 };
 
 const linkClass =
@@ -120,7 +157,10 @@ export function ClientDashboard({
   stats,
   recentJobs,
   recentBids,
-  recentContracts
+  recentContracts,
+  copy,
+  activationChecklist,
+  liquidityTips
 }: ClientDashboardProps) {
   const welcomeLine = greetingName ? `Welcome back, ${greetingName}` : "Welcome back";
   const subline = hasProfile
@@ -179,6 +219,21 @@ export function ClientDashboard({
         </div>
       </section>
 
+      <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
+        <ActivationChecklistCard
+          title={activationChecklist.title}
+          intro={activationChecklist.intro}
+          steps={activationChecklist.steps}
+          allCompleteBanner={activationChecklist.allCompleteBanner}
+        />
+        <MarketplaceLiquidityHints
+          title={liquidityTips.title}
+          intro={liquidityTips.intro}
+          bullets={liquidityTips.bullets}
+          footer={liquidityTips.footer}
+        />
+      </div>
+
       {/* Summary */}
       <section aria-labelledby="client-summary-heading">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
@@ -228,17 +283,15 @@ export function ClientDashboard({
               <Sparkles className="h-5 w-5" strokeWidth={1.75} aria-hidden />
             </span>
             <div className="min-w-0">
-              <h3 className="text-base font-semibold text-slate-900">Finish your client profile</h3>
-              <p className="mt-1 text-sm leading-relaxed text-slate-600">
-                A few details unlock job posting and help freelancers trust your briefs.
-              </p>
+              <h3 className="text-base font-semibold text-slate-900">{copy.finishProfileCardTitle}</h3>
+              <p className="mt-1 text-sm leading-relaxed text-slate-600">{copy.finishProfileCardBody}</p>
             </div>
           </div>
           <Link
             href={"/settings" as Route}
             className="mt-4 inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-lg bg-[#433C93] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4d45a5] md:mt-0 md:w-auto"
           >
-            Complete setup
+            {copy.finishProfileCta}
             <ArrowRight className="h-4 w-4 opacity-90" aria-hidden />
           </Link>
         </div>
@@ -316,19 +369,19 @@ export function ClientDashboard({
                 tone="elevated"
                 kicker="Profile"
                 icon={FolderOpen}
-                title="No jobs to show yet"
-                description="Create your client profile in settings, then post a role to see it listed here with bid counts and status."
-                action={{ label: "Complete setup", href: "/settings" }}
+                title={copy.jobsEmptyNoProfileTitle}
+                description={copy.jobsEmptyNoProfileBody}
+                action={{ label: copy.finishProfileCta, href: "/settings" }}
               />
             ) : listJobs.length === 0 ? (
               <DashboardEmptyState
                 tone="elevated"
                 kicker="Hiring"
                 icon={Briefcase}
-                title="Post your first job"
-                description="Share a clear brief to receive proposals. Set budget, work mode, and timing before you go live—you can keep a draft until you are ready."
-                action={{ label: "Post a job", href: "/client/jobs/new" }}
-                secondaryAction={{ label: "Browse freelancers", href: "/freelancers" }}
+                title={copy.jobsEmptyFirstTitle}
+                description={copy.jobsEmptyFirstBody}
+                action={{ label: copy.jobsEmptyFirstPrimary, href: "/client/jobs/new" }}
+                secondaryAction={{ label: copy.jobsEmptyFirstSecondary, href: "/freelancers" }}
               />
             ) : (
               <ul className="divide-y divide-slate-100">
@@ -398,19 +451,19 @@ export function ClientDashboard({
                 tone="elevated"
                 kicker="Proposals"
                 icon={Inbox}
-                title="Bids will appear after you post"
-                description="Finish your client profile and publish a job to receive proposals from freelancers."
-                action={{ label: "Complete setup", href: "/settings" }}
+                title={copy.bidsEmptyNoProfileTitle}
+                description={copy.bidsEmptyNoProfileBody}
+                action={{ label: copy.finishProfileCta, href: "/settings" }}
               />
             ) : recentBids.length === 0 ? (
               <DashboardEmptyState
                 tone="elevated"
                 kicker="Inbox"
                 icon={Users}
-                title="No bids yet"
-                description="When freelancers respond to your listings, their proposals and rates show up here for easy review."
-                action={{ label: "Post a job", href: "/client/jobs/new" }}
-                secondaryAction={{ label: "View my jobs", href: "/client/jobs" }}
+                title={copy.bidsEmptyNoBidsTitle}
+                description={copy.bidsEmptyNoBidsBody}
+                action={{ label: copy.bidsEmptyNoBidsPrimary, href: "/client/jobs/new" }}
+                secondaryAction={{ label: copy.bidsEmptyNoBidsSecondary, href: "/client/jobs" }}
               />
             ) : (
               <ul className="space-y-3">
@@ -464,10 +517,10 @@ export function ClientDashboard({
               tone="elevated"
               kicker="Hires"
               icon={FileSignature}
-              title="No contracts yet"
-              description="When you accept a bid, the engagement appears here with status and value so you can track delivery alongside messages."
-              action={{ label: "Review open jobs", href: "/client/jobs" }}
-              secondaryAction={{ label: "Browse freelancers", href: "/freelancers" }}
+              title={copy.contractsEmptyTitle}
+              description={copy.contractsEmptyBody}
+              action={{ label: copy.contractsEmptyPrimary, href: "/client/jobs" }}
+              secondaryAction={{ label: copy.contractsEmptySecondary, href: "/freelancers" }}
             />
           ) : (
             <ul className="grid gap-3 sm:grid-cols-2">

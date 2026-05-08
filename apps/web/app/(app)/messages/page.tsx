@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { db } from "@acme/database";
 import { getSessionFromCookies, sessionToActor } from "@src/lib/auth";
-import { getAppLocale } from "@/lib/i18n/server-locale";
+import { getServerTranslator } from "@/lib/i18n/server-translator";
 import {
   MessagesWorkspace,
   type MessageItem,
@@ -34,10 +34,10 @@ export default async function MessagesPage({
 
   const actor = sessionToActor(session);
   const messageService = new MessageService();
-  const [threadResult, sp, locale] = await Promise.all([
+  const [threadResult, sp, { t }] = await Promise.all([
     messageService.listThreadsForActor(actor),
     searchParams.then(pick),
-    getAppLocale()
+    getServerTranslator()
   ]);
   const { items: threadRows } = threadResult;
 
@@ -109,22 +109,16 @@ export default async function MessagesPage({
       <header className="border-b border-slate-200/80 pb-5">
         <p className="text-xs font-medium uppercase tracking-[0.12em] text-slate-500">NearWork</p>
         <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900 md:text-[1.65rem]">
-          Messages
+          {t("nav.messages")}
         </h1>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
-          Inbox and chat in one workspace—threads stay tied to jobs or contracts when they matter.
-        </p>
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">{t("messages.pageSubtitle")}</p>
       </header>
       {sp.from === "proposal" || sp.from === "job-conversation" ? (
         <ProposalHandoffBanner
           message={
             sp.from === "proposal"
-              ? locale === "id"
-                ? "Percakapan dibuka dari proposal terbaru Anda."
-                : "Conversation opened from your latest proposal."
-              : locale === "id"
-                ? "Percakapan dibuka dari review proposal job. Lanjutkan diskusi dan tentukan langkah berikutnya."
-                : "Conversation opened from job proposal review. Continue the discussion and choose your next step."
+              ? t("messages.handoffFromProposal")
+              : t("messages.handoffFromConversation")
           }
         />
       ) : null}
