@@ -1,13 +1,20 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v81  
-> Last synchronized: 2026-05-09 (public `/jobs` marketplace: premium hero + gradient surfaces, enriched job cards with real client/skills/proposal counts, pulse rail from DB activity, mobile filter sheet; brand `#3525cd`).
+> **Doc revision:** v82  
+> Last synchronized: 2026-05-09 (public `/jobs` editorial marketplace pass: neutral hero, live snapshot panel, denser job rows + honest activity badges).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-09 — Public jobs marketplace editorial pass (`/jobs`)
+
+- **Hero**: neutral editorial shell, activity strip from **pulse** aggregates, category browse chips, **live snapshot** column (featured first job + real proposal/job/freelancer rows from `PublicStatsService`)—no decorative placeholder card.
+- **Search**: compact **h-10** controls, `rounded-lg`, work-mode pills—less “giant AI search” footprint.
+- **Job list**: flatter **`rounded-lg`** cards, **no gradient orb**, tighter padding; **client initials** avatar; budget / proposals / posted time in one scan line; badges **grounded in data** (“Few applicants” only when `bidCount ≤ 2`, “High activity” when `bidCount ≥ 10`).
+- **Mobile**: filter trigger + sheet use **tighter radii/spacing** (`rounded-lg` / `rounded-t-xl`).
 
 ### 2026-05-09 — Public jobs marketplace premium pass (`/jobs`)
 
