@@ -12,6 +12,7 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "@acme/database": "workspace:*",
     "@acme/types": "workspace:*",
     "@acme/utils": "workspace:*"
