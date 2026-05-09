@@ -8,13 +8,18 @@ import { useI18n } from "@/features/i18n/I18nProvider";
 import { cn } from "@/lib/utils";
 import { LogoutButton } from "./LogoutButton";
 
-export function SidebarAccountActions() {
+type SidebarAccountActionsProps = {
+  /** Tighter inset for premium floating sidebar footer. */
+  compact?: boolean;
+};
+
+export function SidebarAccountActions({ compact = false }: SidebarAccountActionsProps) {
   const { t } = useI18n();
   const pathname = usePathname() ?? "";
   const settingsActive = pathname === "/settings" || pathname.startsWith("/settings/");
 
   return (
-    <div className="border-t border-slate-100/90 px-3 py-3">
+    <div className={cn("border-t border-slate-100/90", compact ? "px-2 py-2.5" : "px-3 py-3")}>
       <p className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
         {t("workspace.accountSection")}
       </p>

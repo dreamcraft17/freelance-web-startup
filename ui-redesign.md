@@ -1,13 +1,18 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v79  
-> Last synchronized: 2026-05-09 (client dashboard “at a glance” + discussion stat; freelancer dashboard stat grid + next-action reply banner; shared EN/ID stat hints).
+> **Doc revision:** v80  
+> Last synchronized: 2026-05-09 (freelancer workspace shell: floating sidebar + desktop inbox/search chrome; dashboard hero/onboarding playbook + pulse rows with real aggregates only).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-09 — Freelancer dashboard “career workspace” pass
+
+- `/freelancer` layout adopts **premium DashboardShell**: frosted floating sidebar (`rounded-3xl`), clearer icon rail navigation, localized **jobs keyword search**, inbox/notification badges (real unread + awaiting reply), and community help card (**no billing checkout** beyond existing early-access copy).
+- Freelancer dashboard view: dark **hero** surface with translucent stat tiles (**proposals submitted, active contracts, review signal, saves**), onboarding **journey** checklist (progress meter + elevated step cards), **proposal playbook + liquidity hints**, workspace pulse ribbons, authentic **7-day pulse** pane, threaded **conversation shortcuts**, skill bars keyed to profile years, and refreshed job sampler.
 
 ### 2026-05-09 — Role dashboards liquidity read
 
