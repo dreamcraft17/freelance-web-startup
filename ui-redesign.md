@@ -1,13 +1,19 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v78  
-> Last synchronized: 2026-05-08 (proposal guidance + owner review cards/table + messages hiring context + activation tap targets).
+> **Doc revision:** v79  
+> Last synchronized: 2026-05-09 (client dashboard “at a glance” + discussion stat; freelancer dashboard stat grid + next-action reply banner; shared EN/ID stat hints).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-09 — Role dashboards liquidity read
+
+- Client `/client`: hero card + expanded **At a glance** grid (five stats: jobs, proposals, discussions awaiting reply, active contracts, completed hires); section chrome + summaries pull from localized copy; hints no longer ship hardcoded English in the loader.
+- Freelancer `/freelancer`: matching premium shell (brand kicker header card, softer panel shadow), fifth stat column for **threads awaiting reply**, localized quota/profile hints, amber **next action** strip with Messages CTA when reply backlog is non-zero, localized activity/open-job empty kickers.
+- Principle unchanged: counts and flags are **live service data only** (`MessageService` thread backlog, quotas, bids, contracts), not invented funnel KPIs.
 
 ### 2026-05-08 — Proposal & review trust surfaces
 

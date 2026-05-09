@@ -21,6 +21,14 @@ import type { Translator } from "@/lib/i18n/create-translator";
 import { localizedBidStatusLabel } from "@/lib/i18n/marketplace-status-labels";
 import { analyzeCoverLetterCompleteness } from "@/lib/proposals/cover-letter-completeness";
 import { OwnerBidMobileCards, type OwnerBidMobileVm } from "@/components/client-jobs/OwnerBidMobileCards";
+import {
+  NW_BADGE_NEUTRAL,
+  NW_CARD,
+  NW_CARD_INSET,
+  NW_PAGE_WRAP,
+  NW_SECTION_KICKER,
+  NW_SIDEBAR_STICKY
+} from "@/lib/marketplace/nw-classes";
 
 type PageProps = {
   params: Promise<{ jobId: string }>;
@@ -164,6 +172,14 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
     viewerIsStaff: Boolean(session && isStaffRole(session.role))
   });
   if (!job) notFound();
+
+  const jobSkillRows = await db.jobSkill.findMany({
+    where: { jobId: job.id },
+    select: { skill: { select: { name: true } } }
+  });
+  const jobSkillNames = [...new Set(jobSkillRows.map((r) => r.skill.name).filter(Boolean))].sort((a, b) =>
+    a.localeCompare(b)
+  );
 
   const owner = await db.job.findFirst({
     where: { id: job.id, deletedAt: null },
@@ -354,22 +370,22 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
     : [];
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 md:px-6">
-      <nav className="text-muted-foreground mb-6 text-sm">
-        <Link href="/jobs" className="hover:text-foreground underline-offset-4 hover:underline">
+    <div className={NW_PAGE_WRAP}>
+      <nav className="mb-8 text-sm text-slate-500">
+        <Link href="/jobs" className="font-medium text-[#3525cd] underline-offset-4 hover:underline">
           {t("public.jobs.pageTitle")}
         </Link>
-        <span className="mx-2">/</span>
-        <span className="text-foreground">{t("public.jobDetail.details")}</span>
+        <span className="mx-2 text-slate-300">/</span>
+        <span className="font-medium text-slate-900">{t("public.jobDetail.details")}</span>
       </nav>
 
-      <section className="mb-6 border border-slate-200 bg-white p-5 sm:p-6">
+      <section className={`${NW_CARD} mb-8 p-6 sm:p-8`}>
         {showPostedFeedback ? (
-          <div className="mb-4 rounded-md border border-emerald-200 bg-emerald-50/70 px-4 py-3">
+          <div className="mb-6 rounded-xl border border-emerald-200/80 bg-emerald-50/80 px-4 py-4">
             <p className="text-sm font-semibold text-emerald-900">{t("public.jobDetail.jobPostedBannerTitle")}</p>
             <p className="mt-1 text-xs text-emerald-800">{t("public.jobDetail.jobPostedBannerBody")}</p>
             <div className="mt-2 flex flex-wrap items-center gap-3 text-xs font-semibold">
-              <Link href={"/client/jobs?review=needs-review" as Route} className="text-[#433C93] hover:underline">
+              <Link href={"/client/jobs?review=needs-review" as Route} className="text-[#3525cd] hover:underline">
                 {t("public.jobDetail.jobPostedBannerPrimary")}
               </Link>
               <Link href={"/client/jobs" as Route} className="text-slate-700 hover:underline">
@@ -378,51 +394,66 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
             </div>
           </div>
         ) : null}
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr),auto] lg:items-start">
-          <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">{job.title}</h1>
-              <SaveJobButton jobId={job.id} />
-              {session && !isClientOwner ? <ReportJobButton jobId={job.id} /> : null}
-            </div>
-            <p className="mt-2 text-sm font-medium text-slate-600">
-              {[categoryLabel, job.workMode, jobLocation].filter(Boolean).join(" · ") || t("public.jobDetail.openRole")}
-            </p>
-            <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-slate-700">{job.description}</p>
-
-            <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="rounded border border-slate-200 bg-slate-50 px-3 py-2">
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t("public.jobDetail.budget")}</p>
-                <p className="mt-0.5 text-sm font-bold text-slate-900">{budgetLine(job, t)}</p>
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr),20rem] lg:items-start">
+          <div className="min-w-0 space-y-5">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className={NW_SECTION_KICKER}>{categoryLabel}</p>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <span className={`${NW_BADGE_NEUTRAL} border-emerald-200/80 bg-emerald-50/90 uppercase tracking-wide text-emerald-900`}>
+                    {t("public.jobDetail.statusOpen")}
+                  </span>
+                  {publicBidCount > 0 ? (
+                    <span className={`${NW_BADGE_NEUTRAL}`}>
+                      {publicBidCount === 1
+                        ? t("public.jobDetail.proposalActivity", { count: publicBidCount })
+                        : t("public.jobDetail.proposalActivity_plural", { count: publicBidCount })}
+                    </span>
+                  ) : (
+                    <span className={`${NW_BADGE_NEUTRAL} bg-white`}>{t("public.jobDetail.proposalAwaiting")}</span>
+                  )}
+                  <span className={`${NW_BADGE_NEUTRAL} bg-white`}>{postedAtLabel}</span>
+                </div>
               </div>
-              <div className="rounded border border-slate-200 bg-slate-50 px-3 py-2">
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t("public.jobDetail.locationLabel")}</p>
-                <p className="mt-0.5 text-sm font-bold text-slate-900">{jobLocation || t("public.jobDetail.notSpecified")}</p>
-              </div>
-              <div className="rounded border border-slate-200 bg-slate-50 px-3 py-2">
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t("public.filters.workMode")}</p>
-                <p className="mt-0.5 text-sm font-bold text-slate-900">
-                  {job.workMode === "REMOTE"
-                    ? t("public.filters.workModeRemote")
-                    : job.workMode === "ONSITE"
-                      ? t("public.filters.workModeOnSite")
-                      : job.workMode === "HYBRID"
-                        ? t("public.filters.workModeHybrid")
-                        : job.workMode}
-                </p>
-              </div>
-              <div className="rounded border border-slate-200 bg-slate-50 px-3 py-2">
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t("public.jobDetail.postedLabel")}</p>
-                <p className="mt-0.5 text-sm font-bold text-slate-900">{postedAtLabel}</p>
+              <div className="flex flex-wrap items-center gap-2">
+                <SaveJobButton jobId={job.id} />
+                {session && !isClientOwner ? <ReportJobButton jobId={job.id} /> : null}
               </div>
             </div>
 
-            <div className="mt-3 flex flex-wrap gap-1.5">
-              {topSignals.slice(0, 4).map((signal) => (
-                <span
-                  key={signal}
-                  className="rounded border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-700"
-                >
+            <div>
+              <h1 className="text-balance text-3xl font-bold tracking-tight text-slate-950 sm:text-[2.125rem] sm:leading-tight">
+                {job.title}
+              </h1>
+              <p className="mt-3 text-xl font-semibold text-slate-900">{budgetLine(job, t)}</p>
+              <p className="mt-3 text-sm font-medium leading-relaxed text-slate-600">
+                {[categoryLabel, job.workMode === "REMOTE"
+                  ? t("public.filters.workModeRemote")
+                  : job.workMode === "ONSITE"
+                    ? t("public.filters.workModeOnSite")
+                    : job.workMode === "HYBRID"
+                      ? t("public.filters.workModeHybrid")
+                      : job.workMode,
+                jobLocation].filter(Boolean).join(" · ") || t("public.jobDetail.openRole")}
+              </p>
+            </div>
+
+            {jobSkillNames.length > 0 ? (
+              <div>
+                <p className={NW_SECTION_KICKER}>{t("public.jobDetail.skillsSectionTitle")}</p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {jobSkillNames.map((name) => (
+                    <span key={name} className={`${NW_BADGE_NEUTRAL} bg-slate-50 px-3 py-1 font-medium text-slate-800`}>
+                      {name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
+            <div className="flex flex-wrap gap-2">
+              {topSignals.slice(0, 5).map((signal) => (
+                <span key={signal} className={`${NW_BADGE_NEUTRAL} text-[10px] uppercase tracking-wide`}>
                   {signal}
                 </span>
               ))}
@@ -430,8 +461,10 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
           </div>
 
           {showFreelancerApplyPanel ? (
-            <aside className="w-full border border-slate-200 bg-slate-50 p-4 lg:sticky lg:top-24 lg:w-72">
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{t("public.jobDetail.applyKicker")}</p>
+            <aside
+              className={`${NW_CARD_INSET} ${NW_SIDEBAR_STICKY} w-full border-slate-200/90 bg-gradient-to-b from-[#faf9ff] to-white p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] lg:w-[20rem]`}
+            >
+              <p className={NW_SECTION_KICKER}>{t("public.jobDetail.applyKicker")}</p>
               <p className="mt-1 text-sm font-semibold text-slate-800">{t("public.jobDetail.applyDescription")}</p>
               <div className="mt-3 space-y-2">
                 {isFreelancerViewer ? (
@@ -543,43 +576,63 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
       </p>
 
       <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">{t("public.jobDetail.budget")}</CardTitle>
-            <CardDescription>{budgetLine(job, t)}</CardDescription>
-          </CardHeader>
-          {bidDeadline ? (
-            <CardContent className="text-muted-foreground pt-0 text-sm">
-              {t("public.jobDetail.proposalsClose", { date: bidDeadline })}
-            </CardContent>
-          ) : null}
-        </Card>
+        <section className={`${NW_CARD} p-6 sm:p-7`}>
+          <p className={NW_SECTION_KICKER}>{t("public.jobDetail.postingSnapshotTitle")}</p>
+          <div className="mt-5 grid gap-6 lg:grid-cols-3">
+            <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-4">
+              <p className="text-xs font-semibold text-slate-500">{t("public.jobDetail.budget")}</p>
+              <p className="mt-1 text-lg font-bold text-slate-950">{budgetLine(job, t)}</p>
+              {bidDeadline ? (
+                <p className="mt-2 text-xs text-slate-600">{t("public.jobDetail.proposalsClose", { date: bidDeadline })}</p>
+              ) : null}
+            </div>
+            <div className="rounded-xl border border-slate-100 bg-white p-4">
+              <p className="text-xs font-semibold text-slate-500">{t("public.filters.category")}</p>
+              <p className="mt-1 text-sm font-semibold text-slate-900">{categoryLabel}</p>
+              <p className="mt-2 text-xs leading-relaxed text-slate-600">
+                {[job.workMode === "REMOTE"
+                  ? t("public.filters.workModeRemote")
+                  : job.workMode === "ONSITE"
+                    ? t("public.filters.workModeOnSite")
+                    : job.workMode === "HYBRID"
+                      ? t("public.filters.workModeHybrid")
+                      : job.workMode,
+                jobLocation || t("public.jobDetail.notSpecified")]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </p>
+              {jobSkillNames.length > 0 ? (
+                <p className="mt-2 text-xs text-slate-500">
+                  {t("public.jobDetail.skillsSectionTitle")}: {jobSkillNames.slice(0, 5).join(", ")}
+                  {jobSkillNames.length > 5 ? ` +${jobSkillNames.length - 5}` : ""}
+                </p>
+              ) : (
+                <p className="mt-2 text-xs text-slate-500">{t("public.jobDetail.skillsEmpty")}</p>
+              )}
+            </div>
+            <div className="rounded-xl border border-[#3525cd]/14 bg-[#3525cd]/[0.04] p-4">
+              <p className="text-xs font-semibold text-[#3525cd]">{t("public.jobDetail.client")}</p>
+              <p className="mt-1 text-sm font-semibold text-slate-900">
+                {job.clientProfile.displayName}
+                {job.clientProfile.companyName ? (
+                  <>
+                    {" "}
+                    <span className="font-normal text-slate-600">({job.clientProfile.companyName})</span>
+                  </>
+                ) : null}
+              </p>
+              <div className="mt-2 space-y-1 text-xs text-slate-700">
+                {job.clientProfile.industry ? <p>{job.clientProfile.industry}</p> : null}
+                {clientLocation ? <p>{clientLocation}</p> : null}
+                {!job.clientProfile.industry && !clientLocation ? (
+                  <p className="text-slate-600">{t("public.jobDetail.noClientDetails")}</p>
+                ) : null}
+              </div>
+            </div>
+          </div>
+        </section>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">{t("public.filters.category")}</CardTitle>
-            <CardDescription>{categoryLabel}</CardDescription>
-          </CardHeader>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">{t("public.jobDetail.client")}</CardTitle>
-            <CardDescription>
-              {job.clientProfile.displayName}
-              {job.clientProfile.companyName ? ` · ${job.clientProfile.companyName}` : ""}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="text-muted-foreground space-y-1 text-sm">
-            {job.clientProfile.industry ? <p>{job.clientProfile.industry}</p> : null}
-            {clientLocation ? <p>{clientLocation}</p> : null}
-            {!job.clientProfile.industry && !clientLocation ? (
-              <p className="text-muted-foreground/80">{t("public.jobDetail.noClientDetails")}</p>
-            ) : null}
-          </CardContent>
-        </Card>
-
-        <Card>
+        <Card id="nw-proposal-section" className="scroll-mt-28">
           <CardHeader>
             <CardTitle className="text-base">
               {isClientOwner ? t("public.jobDetail.proposalReview") : t("public.jobDetail.sendProposal")}
@@ -903,12 +956,36 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
           )}
         </Card>
 
-        <div>
-          <h2 className="mb-3 text-lg font-semibold tracking-tight">{t("public.jobDetail.description")}</h2>
-          <Separator className="mb-4" />
-          <p className="text-muted-foreground whitespace-pre-wrap text-sm leading-relaxed">{job.description}</p>
-        </div>
+        <section className={`${NW_CARD} p-6 sm:p-7`}>
+          <p className={NW_SECTION_KICKER}>{t("public.jobDetail.description")}</p>
+          <Separator className="mb-4 mt-3" />
+          <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-700 sm:text-[15px]">{job.description}</p>
+          {jobSkillNames.length === 0 ? (
+            <p className="mt-4 text-xs text-slate-500">{t("public.jobDetail.skillsEmpty")}</p>
+          ) : null}
+        </section>
       </div>
+
+      {showFreelancerApplyPanel ? (
+        <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200/90 bg-white/95 px-4 py-3 shadow-[0_-8px_30px_-12px_rgba(15,23,42,0.12)] backdrop-blur-md md:hidden">
+          {isFreelancerViewer ? (
+            <Link
+              href={`#nw-proposal-section`}
+              className="nw-cta-primary inline-flex w-full items-center justify-center rounded-xl px-4 py-3.5 text-sm font-semibold"
+            >
+              {t("public.jobDetail.sendProposal")}
+            </Link>
+          ) : (
+            <Link
+              href={loginReturnTo(returnToThisJob, "submit-bid") as Route}
+              className="nw-cta-primary inline-flex w-full items-center justify-center rounded-xl px-4 py-3.5 text-sm font-semibold"
+            >
+              {t("public.jobDetail.sendProposal")}
+            </Link>
+          )}
+        </div>
+      ) : null}
+      {showFreelancerApplyPanel ? <div className="h-14 md:h-0" aria-hidden /> : null}
     </div>
   );
 }

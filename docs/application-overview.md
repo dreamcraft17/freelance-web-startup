@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v82  
-> Last synchronized: 2026-05-08 (proposal review + messages hiring context; parity locale status; e2e pre-hire thread).
+> **Doc revision:** v83  
+> Last synchronized: 2026-05-09 (dashboard client/freelancer: stat grid + backlog diskusi terjemahan lengkap).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,7 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Dashboard liquidity cues (2026-05-09):** homepage role dashboards (`/client`, `/freelancer`) kini memasukkan backlog diskusi (awaiting reply) sebagai stat utama dengan copy terlokalisasi; freelancer mendapat dorongan aksi cepat menuju inbox saat ada balasan tertunda.
 - **Conversion polish — proposal & messages (2026-05-08):** alur inti marketplace diperhalus tanpa billing: panduan ringan di form proposal, review proposal owner (kedalaman/compare + diskusi menonjol), konteks utas pesan terikat job + status listing/proposal + micro-CTA langkah berikutnya; smoke HTTP menambahkan skenario klien membuka utas `JOB` dan mengirim pesan setelah bid masuk (dengan CSRF).
 - **Activation & operator docs (2026-05-08):** dashboard klien/freelancer memandu langkah awal berbasis data akun (profil, job, proposal, diskusi); surface pesan/notifikasi memakai string terlokalisasi; publik `/jobs` & `/freelancers` memperjelas konteks kosong (apa/mengapa/langkah berikutnya). Rujukan deploy: `docs/deploy-checklist.md`.
 - **Trust & safety reporting (2026-05-08):** pengguna terautentikasi dapat mengirim laporan konten via `POST /api/reports` (subjek user/job/bid/review/thread/message). Titik masuk UI meliputi job publik (non-owner), profil freelancer publik (lapor user; lapor ulasan kecuali si penulis ulasan), grid proposal pada owner job, daftar proposal freelancer, serta header thread + tiap pesan lawan bicara di Messages. Staff `ADMIN`/`MODERATOR`/`SUPPORT_ADMIN` menangani antrean `/admin/reports` (assignee, status, catatan internal). Job dapat disembunyikan dari pencarian publik via moderasi (`moderationHiddenAt`); pemilik job + staff tetap dapat mengakses konteks di app. `ADMIN`/`SUPPORT_ADMIN` dapat suspend/reactivate akun `CLIENT`/`FREELANCER` untuk operasional keamanan awal.
