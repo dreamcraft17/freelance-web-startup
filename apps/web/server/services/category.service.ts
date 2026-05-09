@@ -41,16 +41,14 @@ export class CategoryService {
 
     if (!parentSlug) {
       const where = { isActive: true as const };
-      const [items, total] = await Promise.all([
-        db.category.findMany({
-          where,
-          orderBy: [{ displayOrder: "asc" }, { slug: "asc" }],
-          skip,
-          take: limit,
-          select: { id: true, slug: true, name: true, displayOrder: true }
-        }),
-        db.category.count({ where })
-      ]);
+      const items = await db.category.findMany({
+        where,
+        orderBy: [{ displayOrder: "asc" }, { slug: "asc" }],
+        skip,
+        take: limit,
+        select: { id: true, slug: true, name: true, displayOrder: true }
+      });
+      const total = await db.category.count({ where });
       return { mode: "categories", items, total };
     }
 
@@ -63,16 +61,14 @@ export class CategoryService {
     }
 
     const subWhere = { categoryId: parent.id, isActive: true as const };
-    const [items, total] = await Promise.all([
-      db.subcategory.findMany({
-        where: subWhere,
-        orderBy: [{ displayOrder: "asc" }, { slug: "asc" }],
-        skip,
-        take: limit,
-        select: { id: true, slug: true, name: true, displayOrder: true, categoryId: true }
-      }),
-      db.subcategory.count({ where: subWhere })
-    ]);
+    const items = await db.subcategory.findMany({
+      where: subWhere,
+      orderBy: [{ displayOrder: "asc" }, { slug: "asc" }],
+      skip,
+      take: limit,
+      select: { id: true, slug: true, name: true, displayOrder: true, categoryId: true }
+    });
+    const total = await db.subcategory.count({ where: subWhere });
 
     return {
       mode: "subcategories",

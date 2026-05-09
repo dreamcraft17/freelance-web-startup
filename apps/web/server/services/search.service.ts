@@ -382,16 +382,16 @@ export class SearchService {
 
     const where = buildJobsListingWhere(input, opts, now);
 
-    const [total, rows] = await Promise.all([
-      db.job.count({ where }),
-      db.job.findMany({
-        where,
-        select: JOB_LIST_SELECT,
-        orderBy: { createdAt: "desc" },
-        take: limit,
-        skip
-      })
-    ]);
+    // Sequential count → findMany: avoids holding 2 pool connections at once (session poolers
+    // e.g. `pool_size: 15` / EMAXCONNSESSION under parallel page loads).
+    const total = await db.job.count({ where });
+    const rows = await db.job.findMany({
+      where,
+      select: JOB_LIST_SELECT,
+      orderBy: { createdAt: "desc" },
+      take: limit,
+      skip
+    });
 
     return {
       items: rows.map((r) => mapJob(r, now, opts.locale)),
@@ -413,30 +413,29 @@ export class SearchService {
 
     const fw = buildFreelancerListingWhereFragments(input);
 
-    const [rows, countRows] = await Promise.all([
-      db.$queryRaw<
-        {
-          id: string;
-          userId: string;
-          username: string;
-          fullName: string;
-          headline: string | null;
-          primaryCategoryName: string | null;
-          workMode: string;
-          city: string | null;
-          country: string | null;
-          lat: { toString(): string } | null;
-          lng: { toString(): string } | null;
-          hourlyRate: { toString(): string } | null;
-          availabilityStatus: string;
-          reviewCount: number | bigint;
-          averageReviewRating: number | { toString(): string } | null;
-          createdAt: Date;
-          isFeatured: boolean;
-          isBoosted: boolean;
-          boostedUntil: Date | null;
-        }[]
-      >`
+    const listSql = db.$queryRaw<
+      {
+        id: string;
+        userId: string;
+        username: string;
+        fullName: string;
+        headline: string | null;
+        primaryCategoryName: string | null;
+        workMode: string;
+        city: string | null;
+        country: string | null;
+        lat: { toString(): string } | null;
+        lng: { toString(): string } | null;
+        hourlyRate: { toString(): string } | null;
+        availabilityStatus: string;
+        reviewCount: number | bigint;
+        averageReviewRating: number | { toString(): string } | null;
+        createdAt: Date;
+        isFeatured: boolean;
+        isBoosted: boolean;
+        boostedUntil: Date | null;
+      }[]
+    >`
         SELECT
           fp."id",
           fp."userId",
@@ -485,8 +484,8 @@ export class SearchService {
           (CASE WHEN fp."isFeatured" = true THEN 1 ELSE 0 END) DESC,
           fp."createdAt" DESC
         LIMIT ${limit} OFFSET ${skip}
-      `,
-      db.$queryRaw<{ count: bigint }[]>`
+      `;
+    const countSql = db.$queryRaw<{ count: bigint }[]>`
         SELECT COUNT(*)::bigint AS count
         FROM "FreelancerProfile" fp
         WHERE
@@ -496,8 +495,9 @@ export class SearchService {
           ${fw.wfCategory}
           ${fw.wfSkill}
           ${fw.wfKeyword}
-      `
-    ]);
+      `;
+    const countRows = await countSql;
+    const rows = await listSql;
 
     const total = Number(countRows[0]?.count ?? 0n);
     return {

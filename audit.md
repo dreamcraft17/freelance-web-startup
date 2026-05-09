@@ -1,13 +1,14 @@
 # Audit teknis — Freelance-web (monorepo)
 
-> **Doc revision:** v11  
-> Last synchronized: 2026-05-09 (job listing via Prisma findMany/count; freelancer search tetap `$queryRaw`).
+> **Doc revision:** v12  
+> Last synchronized: 2026-05-09 (kurangi tekanan pool: serialisasi count/list + gabung transaksi stats publik).
 
 **Lingkup:** `apps/web`, `packages/*`, dan jalur operasional yang mempengaruhi produksi.  
 **Tanggal referensi:** April 2026 (sinkron dengan update terakhir implementasi).
 
 ## Addendum update (April 2026)
 
+- **2026-05-09 — Pool pressure / `EMAXCONNSESSION` (read path):** halaman publik `/jobs` dan `/freelancers` memanggil **satu** transaksi Prisma untuk `getMarketplacePulse` + `getHeroPanelActivity` (bukan dua transaksi paralel). `SearchService` menyerialkan pasangan **`count` → `findMany`** untuk job list dan **`COUNT` → list** untuk freelancer `$queryRaw`; `CategoryService.list` juga menyerialkan pasangan tersebut. Layout freelancer menyerialkan **notifikasi unread** dan **inbox awaiting reply** (bukan `Promise.all`). Tujuan: menurunkan checkout koneksi bersamaan terhadap pool session (`pool_size` kecil di penyedia managed Postgres).
 - **2026-04-27 — Source tree consistency hardening:** struktur runtime `apps/web` dinormalisasi ke root-level folders (`app`, `components`, `features`, `lib`, `server`) dan ketergantungan pada `apps/web/src` dihapus untuk mengurangi ambiguitas path/alias yang rawan salah import.
 - **2026-04-27 — Credential hygiene pass:** `credential.md` tidak lagi memuat nilai credential konkret; kini hanya berisi template env placeholders. `credential.example.md` ditambahkan sebagai referensi aman, sementara `.gitignore` tetap memblokir file credential lokal.
 - **2026-04-24 — Graceful API degradation for pool exhaustion:** `withApiHandler` sekarang memetakan error Prisma `EMAXCONNSESSION` / `max clients reached` menjadi `503 Service Unavailable` dengan kode `DB_POOL_EXHAUSTED` dan header `Retry-After`, menggantikan pola unhandled 500 saat DB pool session sedang jenuh.

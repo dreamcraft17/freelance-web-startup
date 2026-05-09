@@ -3,6 +3,117 @@ import { AvailabilityStatus, BidStatus, JobStatus, JobVisibility } from "@acme/t
 
 /** Lightweight, read-only aggregates for public “marketplace pulse” copy (no PII). */
 export class PublicStatsService {
+  /**
+   * Runs pulse counts + hero listing queries in **one** interactive transaction so public pages
+   * (`/jobs`, `/freelancers`) do not open two concurrent DB sessions (important when the pooler
+   * enforces a low `pool_size`, e.g. EMAXCONNSESSION / max clients reached).
+   */
+  async getPulseAndHeroForPublicBrowse(): Promise<{
+    pulse: {
+      bidsLast24h: number;
+      freelancersAvailable: number;
+      openPublicJobs: number;
+    };
+    heroPanelActivity: Awaited<ReturnType<PublicStatsService["getHeroPanelActivity"]>>;
+  }> {
+    const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    return db.$transaction(async (tx) => {
+      const bidsLast24h = await tx.bid.count({ where: { createdAt: { gte: since24h } } });
+      const freelancersAvailable = await tx.freelancerProfile.count({
+        where: {
+          deletedAt: null,
+          availabilityStatus: AvailabilityStatus.AVAILABLE,
+          user: { deletedAt: null }
+        }
+      });
+      const openPublicJobs = await tx.job.count({
+        where: {
+          deletedAt: null,
+          status: JobStatus.OPEN,
+          visibility: JobVisibility.PUBLIC,
+          moderationHiddenAt: null
+        }
+      });
+
+      const freelancers = await tx.freelancerProfile.findMany({
+        where: {
+          deletedAt: null,
+          availabilityStatus: AvailabilityStatus.AVAILABLE,
+          user: { deletedAt: null }
+        },
+        orderBy: { updatedAt: "desc" },
+        take: 2,
+        select: {
+          fullName: true,
+          headline: true,
+          city: true,
+          workMode: true,
+          availabilityStatus: true
+        }
+      });
+
+      const jobs = await tx.job.findMany({
+        where: {
+          deletedAt: null,
+          status: JobStatus.OPEN,
+          visibility: JobVisibility.PUBLIC,
+          moderationHiddenAt: null
+        },
+        orderBy: { createdAt: "desc" },
+        take: 2,
+        select: {
+          title: true,
+          city: true,
+          workMode: true,
+          createdAt: true
+        }
+      });
+
+      const recentBids = await tx.bid.findMany({
+        where: {
+          status: { not: BidStatus.WITHDRAWN },
+          job: {
+            deletedAt: null,
+            status: JobStatus.OPEN,
+            visibility: JobVisibility.PUBLIC,
+            moderationHiddenAt: null
+          }
+        },
+        orderBy: { createdAt: "desc" },
+        take: 3,
+        select: {
+          createdAt: true,
+          freelancer: { select: { fullName: true } },
+          job: { select: { title: true } }
+        }
+      });
+
+      return {
+        pulse: { bidsLast24h, freelancersAvailable, openPublicJobs },
+        heroPanelActivity: {
+          freelancerRows: freelancers.map((item) => ({
+            title: item.fullName,
+            specialty: item.headline,
+            location: item.city,
+            workMode: item.workMode,
+            availability: item.availabilityStatus
+          })),
+          jobRows: jobs.map((item) => ({
+            title: item.title,
+            location: item.city,
+            workMode: item.workMode,
+            createdAt: item.createdAt.toISOString()
+          })),
+          proposalRows: recentBids.map((b) => ({
+            freelancerName: b.freelancer.fullName,
+            jobTitle: b.job.title,
+            createdAt: b.createdAt.toISOString()
+          }))
+        }
+      };
+    });
+  }
+
   async getHeroPanelActivity(): Promise<{
     freelancerRows: Array<{
       title: string;
