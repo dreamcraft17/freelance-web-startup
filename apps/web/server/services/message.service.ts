@@ -11,27 +11,30 @@ export class MessageService {
   /**
    * Lightweight unread signal for top-nav badges:
    * count threads whose latest visible message was sent by someone else.
+   * Single SQL round-trip (avoids findMany + nested N loads; releases pool slots faster).
    */
   async countAwaitingReplyThreadsForUser(userId: string): Promise<number> {
-    const rows = await db.messageThreadParticipant.findMany({
-      where: { userId },
-      select: {
-        thread: {
-          select: {
-            messages: {
-              where: { deletedAt: null },
-              orderBy: { createdAt: "desc" },
-              take: 1,
-              select: { senderId: true }
-            }
-          }
-        }
-      }
-    });
-    return rows.reduce((total, row) => {
-      const last = row.thread.messages[0];
-      return last && last.senderId !== userId ? total + 1 : total;
-    }, 0);
+    const rows = await db.$queryRaw<[{ c: bigint }]>`
+      WITH participant_threads AS (
+        SELECT mtp."threadId"
+        FROM "MessageThreadParticipant" mtp
+        WHERE mtp."userId" = ${userId}
+      ),
+      last_messages AS (
+        SELECT
+          m."threadId",
+          m."senderId",
+          ROW_NUMBER() OVER (PARTITION BY m."threadId" ORDER BY m."createdAt" DESC) AS rn
+        FROM "Message" m
+        WHERE m."deletedAt" IS NULL
+          AND m."threadId" IN (SELECT "threadId" FROM participant_threads)
+      )
+      SELECT COUNT(*)::bigint AS c
+      FROM last_messages lm
+      WHERE lm.rn = 1
+        AND lm."senderId" IS DISTINCT FROM ${userId}
+    `;
+    return Number(rows[0]?.c ?? 0n);
   }
 
   private async assertClientFreelancerPair(clientUserId: string, freelancerUserId: string) {

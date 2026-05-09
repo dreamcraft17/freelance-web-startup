@@ -1,7 +1,7 @@
 # @acme/database
 
-> **Doc revision:** v6  
-> Last synchronized: 2026-05-09 (connection-pool guidance for session-mode poolers; app serializes hot-path queries).
+> **Doc revision:** v7  
+> Last synchronized: 2026-05-09 (pool note: app uses React `cache()` for duplicate badge reads per request + serialized dashboard batches).
 
 PostgreSQL access via **Prisma**: schema, migrations, and generated client.
 
@@ -26,6 +26,7 @@ Mitigations used in this repo:
 
 - Prefer **one interactive `$transaction`** when a page needs several reads (see `PublicStatsService.getPulseAndHeroForPublicBrowse`).
 - Prefer **sequential** `count` → `findMany` instead of parallel `Promise.all` on the same route unless you have headroom.
+- **`react` `cache()`** for expensive reads that repeat in the same RSC tree (e.g. nav badge counts used in both a layout and a child page — see `apps/web/lib/server/navigation-badges-cache.ts`).
 - For **serverless**, point Prisma at a pooler URL that matches your deployment model (or add a conservative `connection_limit` query param only when your provider documents it).
 
 The API layer maps pool exhaustion to **`503`** with `DB_POOL_EXHAUSTED` where applicable (`withApiHandler`).
