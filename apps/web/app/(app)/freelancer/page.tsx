@@ -9,8 +9,8 @@ import type { FreelancerHeroStatVm } from "@/components/dashboard/FreelancerDash
 import type { FreelancerProposalPlaybookSection } from "@/components/onboarding/FreelancerProposalPlaybook";
 import type { ActivationChecklistStepVm } from "@/components/onboarding/ActivationChecklistCard";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
+import { getAwaitingReplyThreadCountCached } from "@/lib/server/navigation-badges-cache";
 import { JobService } from "@/server/services/job.service";
-import { MessageService } from "@/server/services/message.service";
 import { OnboardingActivationService } from "@/server/services/onboarding-activation.service";
 import { QuotaService } from "@/server/services/quota.service";
 import {
@@ -44,58 +44,56 @@ export default async function FreelancerDashboardPage() {
   }));
   const allActivationDone = stepsVm.every((x) => x.done);
 
-  const [profile, recentContractsRaw, openJobsResult] = await Promise.all([
-    db.freelancerProfile.findFirst({
-      where: { userId: session.userId, deletedAt: null },
-      select: {
-        id: true,
-        username: true,
-        fullName: true,
-        profileCompleteness: true,
-        availabilityStatus: true,
-        verificationStatus: true,
-        averageReviewRating: true,
-        reviewCount: true,
-        _count: { select: { savedByUsers: true } }
+  const profile = await db.freelancerProfile.findFirst({
+    where: { userId: session.userId, deletedAt: null },
+    select: {
+      id: true,
+      username: true,
+      fullName: true,
+      profileCompleteness: true,
+      availabilityStatus: true,
+      verificationStatus: true,
+      averageReviewRating: true,
+      reviewCount: true,
+      _count: { select: { savedByUsers: true } }
+    }
+  });
+  const recentContractsRaw = await db.contract.findMany({
+    where: { freelancerUserId: session.userId, deletedAt: null },
+    orderBy: { updatedAt: "desc" },
+    take: 5,
+    include: {
+      bid: {
+        include: {
+          job: { select: { id: true, title: true } }
+        }
       }
-    }),
-    db.contract.findMany({
-      where: { freelancerUserId: session.userId, deletedAt: null },
+    }
+  });
+  const openJobsResult = await new JobService().listOpenJobs({ page: 1, limit: 9 });
+
+  let quota: Awaited<ReturnType<QuotaService["getUsageForFreelancerUser"]>> | null = null;
+  let recentBids: FreelancerDashboardBid[] = [];
+  if (profile) {
+    quota = await new QuotaService().getUsageForFreelancerUser(session.userId);
+    recentBids = await db.bid.findMany({
+      where: { freelancerId: profile.id },
       orderBy: { updatedAt: "desc" },
       take: 5,
       include: {
-        bid: {
-          include: {
-            job: { select: { id: true, title: true } }
+        job: {
+          select: {
+            id: true,
+            title: true,
+            slug: true,
+            status: true,
+            workMode: true,
+            currency: true
           }
         }
       }
-    }),
-    new JobService().listOpenJobs({ page: 1, limit: 9 })
-  ]);
-
-  const [quota, recentBids] = profile
-    ? await Promise.all([
-        new QuotaService().getUsageForFreelancerUser(session.userId),
-        db.bid.findMany({
-          where: { freelancerId: profile.id },
-          orderBy: { updatedAt: "desc" },
-          take: 5,
-          include: {
-            job: {
-              select: {
-                id: true,
-                title: true,
-                slug: true,
-                status: true,
-                workMode: true,
-                currency: true
-              }
-            }
-          }
-        })
-      ])
-    : [null, [] as FreelancerDashboardBid[]];
+    });
+  }
 
   let acceptedBids = 0;
   let proposalUpdates = 0;
@@ -109,36 +107,35 @@ export default async function FreelancerDashboardPage() {
   }> = [];
 
   if (profile) {
-    const [acc, pu, atr, btc, ts, ctr] = await Promise.all([
-      db.bid.count({ where: { freelancerId: profile.id, status: BidStatus.ACCEPTED } }),
-      db.bid.count({
-        where: {
-          freelancerId: profile.id,
-          updatedAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }
-        }
-      }),
-      new MessageService().countAwaitingReplyThreadsForUser(session.userId),
-      db.bid.count({ where: { freelancerId: profile.id } }),
-      db.freelancerSkill.findMany({
-        where: { freelancerProfileId: profile.id },
-        orderBy: [{ years: "desc" }, { createdAt: "desc" }],
-        take: 5,
-        select: {
-          years: true,
-          skill: { select: { name: true } }
-        }
-      }),
-      db.messageThread.findMany({
-        where: { participants: { some: { userId: session.userId } } },
-        orderBy: { updatedAt: "desc" },
-        take: 4,
-        select: {
-          id: true,
-          updatedAt: true,
-          job: { select: { id: true, title: true } }
-        }
-      })
-    ]);
+    // Sequential (not Promise.all): one pool checkout at a time. Awaiting-reply matches layout via React cache.
+    const acc = await db.bid.count({ where: { freelancerId: profile.id, status: BidStatus.ACCEPTED } });
+    const pu = await db.bid.count({
+      where: {
+        freelancerId: profile.id,
+        updatedAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }
+      }
+    });
+    const atr = await getAwaitingReplyThreadCountCached(session.userId);
+    const btc = await db.bid.count({ where: { freelancerId: profile.id } });
+    const ts = await db.freelancerSkill.findMany({
+      where: { freelancerProfileId: profile.id },
+      orderBy: [{ years: "desc" }, { createdAt: "desc" }],
+      take: 5,
+      select: {
+        years: true,
+        skill: { select: { name: true } }
+      }
+    });
+    const ctr = await db.messageThread.findMany({
+      where: { participants: { some: { userId: session.userId } } },
+      orderBy: { updatedAt: "desc" },
+      take: 4,
+      select: {
+        id: true,
+        updatedAt: true,
+        job: { select: { id: true, title: true } }
+      }
+    });
     acceptedBids = acc;
     proposalUpdates = pu;
     awaitingReplyThreads = atr;

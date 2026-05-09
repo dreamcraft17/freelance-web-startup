@@ -4,8 +4,8 @@ import { BidStatus, ContractStatus, JobStatus } from "@acme/types";
 import { db } from "@acme/database";
 import { getSessionFromCookies } from "@src/lib/auth";
 import type { ActivationChecklistStepVm } from "@/components/onboarding/ActivationChecklistCard";
+import { getAwaitingReplyThreadCountCached } from "@/lib/server/navigation-badges-cache";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
-import { MessageService } from "@/server/services/message.service";
 import { OnboardingActivationService } from "@/server/services/onboarding-activation.service";
 import {
   ClientDashboard,
@@ -60,46 +60,44 @@ export default async function ClientDashboardPage() {
   }));
   const allActivationDone = stepsVm.every((x) => x.done);
 
-  const [clientProfile, activeContractsCount, completedHiresCount, recentContractsRaw] = await Promise.all([
-    db.clientProfile.findFirst({
-      where: { userId: session.userId, deletedAt: null },
-      select: { id: true, displayName: true }
-    }),
-    db.contract.count({
-      where: {
-        clientUserId: session.userId,
-        deletedAt: null,
-        status: {
-          in: [ContractStatus.PENDING, ContractStatus.ACTIVE, ContractStatus.IN_PROGRESS]
+  const clientProfile = await db.clientProfile.findFirst({
+    where: { userId: session.userId, deletedAt: null },
+    select: { id: true, displayName: true }
+  });
+  const activeContractsCount = await db.contract.count({
+    where: {
+      clientUserId: session.userId,
+      deletedAt: null,
+      status: {
+        in: [ContractStatus.PENDING, ContractStatus.ACTIVE, ContractStatus.IN_PROGRESS]
+      }
+    }
+  });
+  const completedHiresCount = await db.contract.count({
+    where: {
+      clientUserId: session.userId,
+      deletedAt: null,
+      status: ContractStatus.COMPLETED
+    }
+  });
+  const recentContractsRaw = await db.contract.findMany({
+    where: { clientUserId: session.userId, deletedAt: null },
+    orderBy: { updatedAt: "desc" },
+    take: 6,
+    select: {
+      id: true,
+      status: true,
+      updatedAt: true,
+      amount: true,
+      currency: true,
+      bid: {
+        select: {
+          job: { select: { id: true, title: true } },
+          freelancer: { select: { fullName: true, username: true } }
         }
       }
-    }),
-    db.contract.count({
-      where: {
-        clientUserId: session.userId,
-        deletedAt: null,
-        status: ContractStatus.COMPLETED
-      }
-    }),
-    db.contract.findMany({
-      where: { clientUserId: session.userId, deletedAt: null },
-      orderBy: { updatedAt: "desc" },
-      take: 6,
-      select: {
-        id: true,
-        status: true,
-        updatedAt: true,
-        amount: true,
-        currency: true,
-        bid: {
-          select: {
-            job: { select: { id: true, title: true } },
-            freelancer: { select: { fullName: true, username: true } }
-          }
-        }
-      }
-    })
-  ]);
+    }
+  });
 
   const hasProfile = Boolean(clientProfile);
 
@@ -110,59 +108,56 @@ export default async function ClientDashboardPage() {
   let recentBidsRaw: ClientBidRow[] = [];
 
   if (clientProfile) {
-    const [open, incoming, jobs, bids, latestBidByJob] = await Promise.all([
-      db.job.count({
-        where: {
-          clientProfileId: clientProfile.id,
-          deletedAt: null,
-          status: JobStatus.OPEN
-        }
-      }),
-      db.bid.count({
-        where: {
-          status: { in: [BidStatus.SUBMITTED, BidStatus.SHORTLISTED] },
-          job: { clientProfileId: clientProfile.id, deletedAt: null }
-        }
-      }),
-      db.job.findMany({
-        where: { clientProfileId: clientProfile.id, deletedAt: null },
-        orderBy: { updatedAt: "desc" },
-        take: 10,
-        select: {
-          id: true,
-          title: true,
-          status: true,
-          workMode: true,
-          city: true,
-          createdAt: true,
-          updatedAt: true,
-          category: { select: { name: true } },
-          _count: { select: { bids: true } }
-        }
-      }),
-      db.bid.findMany({
-        where: { job: { clientProfileId: clientProfile.id, deletedAt: null } },
-        orderBy: { createdAt: "desc" },
-        take: 8,
-        select: {
-          id: true,
-          status: true,
-          createdAt: true,
-          bidAmount: true,
-          job: { select: { id: true, title: true, currency: true } },
-          freelancer: { select: { fullName: true, username: true } }
-        }
-      }),
-      db.bid.groupBy({
-        by: ["jobId"],
-        where: { job: { clientProfileId: clientProfile.id, deletedAt: null } },
-        _max: { createdAt: true }
-      })
-    ]);
+    const open = await db.job.count({
+      where: {
+        clientProfileId: clientProfile.id,
+        deletedAt: null,
+        status: JobStatus.OPEN
+      }
+    });
+    const incoming = await db.bid.count({
+      where: {
+        status: { in: [BidStatus.SUBMITTED, BidStatus.SHORTLISTED] },
+        job: { clientProfileId: clientProfile.id, deletedAt: null }
+      }
+    });
+    const jobs = await db.job.findMany({
+      where: { clientProfileId: clientProfile.id, deletedAt: null },
+      orderBy: { updatedAt: "desc" },
+      take: 10,
+      select: {
+        id: true,
+        title: true,
+        status: true,
+        workMode: true,
+        city: true,
+        createdAt: true,
+        updatedAt: true,
+        category: { select: { name: true } },
+        _count: { select: { bids: true } }
+      }
+    });
+    const bids = await db.bid.findMany({
+      where: { job: { clientProfileId: clientProfile.id, deletedAt: null } },
+      orderBy: { createdAt: "desc" },
+      take: 8,
+      select: {
+        id: true,
+        status: true,
+        createdAt: true,
+        bidAmount: true,
+        job: { select: { id: true, title: true, currency: true } },
+        freelancer: { select: { fullName: true, username: true } }
+      }
+    });
+    const latestBidByJob = await db.bid.groupBy({
+      by: ["jobId"],
+      where: { job: { clientProfileId: clientProfile.id, deletedAt: null } },
+      _max: { createdAt: true }
+    });
     openJobsCount = open;
     incomingBidsCount = incoming;
-    awaitingReplyThreads = await new MessageService().countAwaitingReplyThreadsForUser(session.userId);
-    recentJobsRaw = jobs;
+    awaitingReplyThreads = await getAwaitingReplyThreadCountCached(session.userId);
     recentBidsRaw = bids;
     const latestBidMap = new Map(latestBidByJob.map((x) => [x.jobId, x._max.createdAt ?? null]));
     recentJobsRaw = jobs.map((j) => ({ ...j, latestBidAt: latestBidMap.get(j.id) ?? null }));
