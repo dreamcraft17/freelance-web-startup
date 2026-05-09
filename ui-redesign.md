@@ -1,13 +1,21 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v80  
-> Last synchronized: 2026-05-09 (freelancer workspace shell: floating sidebar + desktop inbox/search chrome; dashboard hero/onboarding playbook + pulse rows with real aggregates only).
+> **Doc revision:** v81  
+> Last synchronized: 2026-05-09 (public `/jobs` marketplace: premium hero + gradient surfaces, enriched job cards with real client/skills/proposal counts, pulse rail from DB activity, mobile filter sheet; brand `#3525cd`).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-09 — Public jobs marketplace premium pass (`/jobs`)
+
+- Full-width **hero**: soft violet gradient, trust row, abstract “opportunity density” panel (non-data illustrative), elevated **search card** (keyword, location, category, primary CTA), popular chips + **work-mode chips** including “any mode”.
+- **Three-column** layout retained with **floating** filter column (accordion, category/budget/posted/work mode — posted windows are real query params), **mobile filter sheet** (drawer-style, touch-friendly).
+- **Job cards**: NearWork indigo CTAs, bookmark/save (**real** saved state when logged in via server-resolved ids), **verified client** badge from `ClientProfile.verificationStatus`, **exact proposal count** from `_count.bids`, skill chips from `JobSkill`, heuristic “great match” chip with honest tooltip (freshness/budget/featured—not ML).
+- **Marketplace pulse**: recent **open jobs** with per-row `createdAt`, recent **bids** with freelancer name + timestamp; **insights** strip drops fabricated “avg response” in favor of three **live aggregates** (open public jobs, bids 24h, freelancers available) + footnote.
+- i18n: new `public.jobs.*` strings (EN/ID) for hero, pulse, notifications CTA, chips; listing data paths extended in `SearchService`/`JobService` (SSR-friendly; no new client-only data layers).
 
 ### 2026-05-09 — Freelancer dashboard “career workspace” pass
 

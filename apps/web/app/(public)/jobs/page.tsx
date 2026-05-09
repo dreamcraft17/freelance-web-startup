@@ -2,14 +2,19 @@ import type { Route } from "next";
 import Link from "next/link";
 import { searchJobsSchema } from "@acme/validators";
 import { UserRole } from "@acme/types";
+import { db } from "@acme/database";
+import { CheckCircle2, Search, Sparkles } from "lucide-react";
 import { getSessionFromCookies } from "@src/lib/auth";
 import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
+import { JobsMarketplaceMobileFilters } from "@/features/public/components/JobsMarketplaceMobileFilters";
 import { JobsPublicEmpty } from "@/features/public/components/JobsPublicEmpty";
 import { JobsPublicList, type JobsPublicCard } from "@/features/public/components/JobsPublicList";
+import { jobsBrowseQueryString } from "@/features/public/lib/jobs-browse-query";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
 import { CategoryService } from "@/server/services/category.service";
 import { JobService } from "@/server/services/job.service";
 import { PublicStatsService } from "@/server/services/public-stats.service";
+import type { OpenJobListItem } from "@/server/services/job.service";
 
 export const revalidate = 60;
 
@@ -24,22 +29,10 @@ function pick(sp: SearchParams): Record<string, string> {
   return out;
 }
 
-function toPublicJobCard(job: {
-  id: string;
-  title: string;
-  description: string;
-  translationSource: "en" | "id";
-  isTranslated: boolean;
-  categoryId: string;
-  budgetMin: { toString(): string } | null;
-  budgetMax: { toString(): string } | null;
-  currency: string;
-  budgetType: string;
-  workMode: string;
-  city: string | null;
-  createdAt: string;
-  isFeaturedActive: boolean;
-}, categoryName: string | null): JobsPublicCard {
+function toPublicJobCard(
+  job: OpenJobListItem,
+  categoryName: string | null
+): JobsPublicCard {
   const min = job.budgetMin != null ? Number(job.budgetMin) : null;
   const max = job.budgetMax != null ? Number(job.budgetMax) : null;
   return {
@@ -56,29 +49,21 @@ function toPublicJobCard(job: {
     workMode: job.workMode,
     city: job.city,
     createdAt: job.createdAt,
-    isFeaturedActive: job.isFeaturedActive
+    isFeaturedActive: job.isFeaturedActive,
+    clientDisplayName: job.clientDisplayName,
+    clientVerified: job.clientVerified,
+    bidCount: job.bidCount,
+    skillNames: job.skillNames
   };
 }
 
-function jobsQueryString(args: {
-  keyword: string;
-  city: string;
-  workMode: string;
-  categoryId: string;
-  minBudget: string;
-  postedWithinDays: string;
-  page: number;
-}): string {
-  const u = new URLSearchParams();
-  if (args.keyword.trim()) u.set("keyword", args.keyword.trim());
-  if (args.city.trim()) u.set("city", args.city.trim());
-  if (args.workMode) u.set("workMode", args.workMode);
-  if (args.categoryId.trim()) u.set("categoryId", args.categoryId.trim());
-  if (args.minBudget.trim()) u.set("minBudget", args.minBudget.trim());
-  if (args.postedWithinDays.trim()) u.set("postedWithinDays", args.postedWithinDays.trim());
-  if (args.page > 1) u.set("page", String(args.page));
-  const s = u.toString();
-  return s ? `?${s}` : "";
+async function loadSavedJobIds(userId: string, jobIds: string[]): Promise<string[]> {
+  if (jobIds.length === 0) return [];
+  const rows = await db.savedJob.findMany({
+    where: { userId, jobId: { in: jobIds } },
+    select: { jobId: true }
+  });
+  return rows.map((r) => r.jobId);
 }
 
 function relativeTime(input: string, locale: string): string {
@@ -129,6 +114,9 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
   const categoryMap = new Map(categories.map((c) => [c.id, c.name]));
   const jobs = items.map((job) => toPublicJobCard(job, categoryMap.get(job.categoryId) ?? null));
 
+  const savedJobIds =
+    session && items.length > 0 ? await loadSavedJobIds(session.userId, items.map((j) => j.id)) : [];
+
   const keyword = query.keyword ?? "";
   const city = query.city ?? "";
   const workMode = (query.workMode ?? "") as "" | "REMOTE" | "ONSITE" | "HYBRID";
@@ -138,6 +126,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
   const postedWithinDays = query.postedWithinDays != null ? String(query.postedWithinDays) : "";
   const totalPages = Math.max(1, Math.ceil(total / query.limit));
 
+  const qArgs = { keyword, city, workMode, categoryId, minBudget, postedWithinDays, page: 1 };
   const hasFilters =
     Boolean(keyword.trim()) ||
     Boolean(city.trim()) ||
@@ -148,12 +137,19 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
   const categorySelected = Boolean(categoryId.trim());
   const noJobsBaseline = jobs.length === 0 && !hasFilters && !categorySelected;
   const quickTags = [
-    { label: t("public.jobs.quickTagDesign"), href: jobsQueryString({ keyword: "desain", city, workMode, categoryId, minBudget, postedWithinDays, page: 1 }) },
-    { label: t("public.jobs.quickTagVideo"), href: jobsQueryString({ keyword: "video", city, workMode, categoryId, minBudget, postedWithinDays, page: 1 }) },
-    { label: t("public.jobs.quickTagRemote"), href: jobsQueryString({ keyword, city: "", workMode: "REMOTE", categoryId, minBudget, postedWithinDays, page: 1 }) },
-    { label: t("public.jobs.quickTagPartTime"), href: jobsQueryString({ keyword: "part time", city, workMode, categoryId, minBudget, postedWithinDays, page: 1 }) },
-    { label: t("public.jobs.quickTagFullTime"), href: jobsQueryString({ keyword: "full time", city, workMode, categoryId, minBudget, postedWithinDays, page: 1 }) }
+    { label: t("public.jobs.quickTagDesign"), href: jobsBrowseQueryString({ ...qArgs, keyword: "desain" }) },
+    { label: t("public.jobs.quickTagVideo"), href: jobsBrowseQueryString({ ...qArgs, keyword: "video" }) },
+    { label: t("public.jobs.quickTagRemote"), href: jobsBrowseQueryString({ ...qArgs, city: "", workMode: "REMOTE" }) },
+    { label: t("public.jobs.quickTagPartTime"), href: jobsBrowseQueryString({ ...qArgs, keyword: "part time" }) },
+    { label: t("public.jobs.quickTagFullTime"), href: jobsBrowseQueryString({ ...qArgs, keyword: "full time" }) }
   ];
+  const workModeChipClass = (active: boolean) =>
+    [
+      "rounded-full px-3 py-1 text-xs font-semibold transition",
+      active
+        ? "bg-[#3525cd] text-white shadow-sm"
+        : "border border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+    ].join(" ");
   const topDemandCategories = Array.from(
     jobs.reduce<Map<string, { label: string; count: number }>>((map, job) => {
       if (!job.categoryName) return map;
@@ -171,6 +167,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
     .map(([, value]) => value)
     .sort((a, b) => b.count - a.count)
     .slice(0, 3);
+
   const viewerRole =
     session?.role === UserRole.CLIENT
       ? "CLIENT"
@@ -178,267 +175,506 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
         ? "FREELANCER"
         : null;
 
+  const filterBase = {
+    keyword,
+    city,
+    workMode,
+    categoryId,
+    minBudget,
+    postedWithinDays,
+    page
+  };
+
   return (
-    <div className="mx-auto max-w-[1280px] px-4 pb-10 pt-6 md:px-6 md:pt-8">
-      <header className="space-y-4">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">{t("public.jobs.sectionTitle")}</p>
-          <h1 className="mt-2 text-2xl font-bold text-[#071027] md:text-3xl">{t("public.jobs.boardTitle")}</h1>
-          <p className="mt-2 max-w-3xl text-sm text-slate-600">{t("public.jobs.boardDescription")}</p>
-        </div>
-        <div className="sticky top-[4.75rem] z-30 rounded-2xl border border-[#e5e7eb] bg-white p-4 shadow-[0_1px_2px_rgba(2,6,23,0.04)] md:p-5">
-          <form method="get" action="/jobs" className="grid gap-3 lg:grid-cols-[minmax(0,1.9fr),minmax(0,1fr),minmax(0,1fr),auto] lg:items-center">
-            <input
-              name="keyword"
-              defaultValue={keyword}
-              placeholder={t("public.jobs.searchKeywordPlaceholder")}
-              className="h-11 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-900 outline-none transition focus:border-[#4f35e8]"
-            />
-            <input
-              name="city"
-              defaultValue={city}
-              placeholder={t("public.jobs.searchLocationPlaceholder")}
-              className="h-11 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-900 outline-none transition focus:border-[#4f35e8]"
-            />
-            <select
-              name="categoryId"
-              defaultValue={categoryId}
-              className="h-11 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-900 outline-none transition focus:border-[#4f35e8]"
-            >
-              <option value="">{t("public.filters.allCategories")}</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-            <button type="submit" className="inline-flex h-11 items-center justify-center rounded-lg bg-[#4f35e8] px-6 text-sm font-semibold text-white hover:bg-[#4326d9]">
-              {t("public.jobs.searchAction")}
-            </button>
-          </form>
-          <div className="mt-3 flex flex-wrap items-center gap-1.5 text-xs">
-            <span className="font-semibold text-slate-500">{t("public.jobs.quickSearchLabel")}</span>
-            {quickTags.map((tag) => (
-              <Link key={tag.label} href={`/jobs${tag.href}` as Route} className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 font-medium text-slate-700 hover:border-slate-300">
-                {tag.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </header>
-
-      <div className="mt-6 lg:grid lg:grid-cols-[260px,minmax(0,1fr),280px] lg:items-start lg:gap-6">
-        <aside className="hidden lg:block lg:sticky lg:top-[11.25rem]">
-          <div className="space-y-4 rounded-2xl border border-[#e5e7eb] bg-white p-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-base font-semibold text-slate-900">{t("public.filters.title")}</h2>
-              <Link href="/jobs" className="text-xs font-semibold text-[#4f35e8] hover:underline">
-                {t("public.filters.reset")}
-              </Link>
-            </div>
-            <details open className="border-t border-slate-100 pt-3">
-              <summary className="cursor-pointer text-sm font-semibold text-slate-800">{t("public.filters.category")}</summary>
-              <div className="mt-2 space-y-1 text-sm">
-                <Link href={`/jobs${jobsQueryString({ keyword, city, workMode, categoryId: "", minBudget, postedWithinDays, page: 1 })}` as Route} className={`block ${categoryId === "" ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>
-                  {t("public.filters.allCategories")}
-                </Link>
-                {categories.slice(0, 8).map((c) => (
-                  <Link key={c.id} href={`/jobs${jobsQueryString({ keyword, city, workMode, categoryId: c.id, minBudget, postedWithinDays, page: 1 })}` as Route} className={`block ${categoryId === c.id ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>
-                    {c.name}
-                  </Link>
-                ))}
-              </div>
-            </details>
-            <details open className="border-t border-slate-100 pt-3">
-              <summary className="cursor-pointer text-sm font-semibold text-slate-800">{t("public.jobs.budgetFilterLabel")}</summary>
-              <div className="mt-2 space-y-1 text-sm">
-                {[
-                  { value: "500000", label: t("public.jobs.budgetFilter500k") },
-                  { value: "1000000", label: t("public.jobs.budgetFilter1m") },
-                  { value: "3000000", label: t("public.jobs.budgetFilter3m") }
-                ].map((item) => (
-                  <Link key={item.value} href={`/jobs${jobsQueryString({ keyword, city, workMode, categoryId, minBudget: item.value, postedWithinDays, page: 1 })}` as Route} className={`block ${minBudget === item.value ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
-            </details>
-            <details open className="border-t border-slate-100 pt-3">
-              <summary className="cursor-pointer text-sm font-semibold text-slate-800">{t("public.jobs.workTypeFilterLabel")}</summary>
-              <div className="mt-2 space-y-1 text-sm">
-                <Link href={`/jobs${jobsQueryString({ keyword, city: "", workMode: "REMOTE", categoryId, minBudget, postedWithinDays, page: 1 })}` as Route} className={`block ${workMode === "REMOTE" ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>{t("public.filters.workModeRemote")}</Link>
-                <Link href={`/jobs${jobsQueryString({ keyword, city, workMode: "ONSITE", categoryId, minBudget, postedWithinDays, page: 1 })}` as Route} className={`block ${workMode === "ONSITE" ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>{t("public.filters.workModeOnSite")}</Link>
-                <Link href={`/jobs${jobsQueryString({ keyword, city, workMode: "HYBRID", categoryId, minBudget, postedWithinDays, page: 1 })}` as Route} className={`block ${workMode === "HYBRID" ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>{t("public.filters.workModeHybrid")}</Link>
-              </div>
-            </details>
-            <details open className="border-t border-slate-100 pt-3">
-              <summary className="cursor-pointer text-sm font-semibold text-slate-800">{t("public.jobs.experienceLevelLabel")}</summary>
-              <div className="mt-2 space-y-1 text-sm">
-                <span className="block text-slate-700">{t("public.jobs.experienceEntry")}</span>
-                <span className="block text-slate-700">{t("public.jobs.experienceMid")}</span>
-                <span className="block text-slate-700">{t("public.jobs.experienceSenior")}</span>
-              </div>
-            </details>
-          </div>
-        </aside>
-
-        <div className="order-1 min-w-0 space-y-4 lg:order-2">
-          <div className="lg:hidden">
-            <details className="rounded-xl border border-[#e5e7eb] bg-white p-3">
-              <summary className="cursor-pointer text-sm font-semibold text-slate-900">{t("public.jobs.mobileFilterSummary")}</summary>
-              <div className="mt-2 flex flex-wrap gap-2 text-xs">
-                <Link href={`/jobs${jobsQueryString({ keyword, city: "", workMode: "REMOTE", categoryId, minBudget, postedWithinDays, page: 1 })}` as Route} className="rounded border border-slate-200 px-2 py-1">{t("public.filters.workModeRemote")}</Link>
-                <Link href={`/jobs${jobsQueryString({ keyword, city, workMode: "", categoryId, minBudget: "1000000", postedWithinDays, page: 1 })}` as Route} className="rounded border border-slate-200 px-2 py-1">{t("public.jobs.budgetFilter1m")}</Link>
-                <Link href={`/jobs${jobsQueryString({ keyword, city, workMode, categoryId, minBudget, postedWithinDays: "1", page: 1 })}` as Route} className="rounded border border-slate-200 px-2 py-1">{t("public.jobs.postedFilter24h")}</Link>
-              </div>
-            </details>
-          </div>
-
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#e5e7eb] bg-white px-4 py-3">
+    <div className="min-h-screen bg-[#f4f3f1]">
+      <section className="relative overflow-hidden border-b border-white/70 bg-gradient-to-br from-[#ede9ff] via-[#f7f4ff] to-[#faf8f4]">
+        <div className="pointer-events-none absolute left-[-10%] top-[-20%] h-[420px] w-[420px] rounded-full bg-[#3525cd]/10 blur-3xl" />
+        <div className="pointer-events-none absolute right-[-5%] top-[10%] h-[280px] w-[280px] rounded-full bg-amber-200/25 blur-3xl" />
+        <div className="relative mx-auto max-w-[1440px] px-4 pb-12 pt-10 md:px-6 md:pb-14 md:pt-14">
+          <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1.1fr),minmax(0,0.9fr)] lg:gap-14">
             <div>
-              <p className="text-sm font-bold text-slate-900">
-                {total === 1 ? t("public.jobs.resultOne") : t("public.jobs.resultMany", { count: total })}
-              </p>
-              <p className="text-xs text-slate-600">{t("public.jobs.resultHint")}</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#5246ae]">{t("public.jobs.sectionTitle")}</p>
+              <h1 className="mt-3 text-3xl font-bold leading-[1.12] tracking-tight text-[#0b1220] sm:text-4xl md:text-5xl">
+                {t("public.jobs.heroHeadlineBefore")}{" "}
+                <span className="bg-gradient-to-r from-[#3525cd] to-[#5b4ddb] bg-clip-text text-transparent">
+                  {t("public.jobs.heroHeadlineAccent")}
+                </span>
+              </h1>
+              <p className="mt-4 max-w-xl text-base text-slate-600 md:text-lg">{t("public.jobs.boardDescription")}</p>
+              <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm font-medium text-slate-700">
+                <li className="inline-flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" aria-hidden />
+                  {t("public.jobs.trustFree")}
+                </li>
+                <li className="inline-flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" aria-hidden />
+                  {t("public.jobs.trustClients")}
+                </li>
+                <li className="inline-flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" aria-hidden />
+                  {t("public.jobs.trustPayments")}
+                </li>
+              </ul>
             </div>
-            <div className="flex items-center gap-2 text-xs">
-              <span className="font-semibold text-slate-500">{t("public.jobs.sortLabel")}</span>
-              <select className="rounded-md border border-slate-200 bg-white px-2 py-1 text-slate-700">
-                <option>{t("public.jobs.sortRelevant")}</option>
-              </select>
+            <div className="relative">
+              <div className="absolute -inset-px rounded-[26px] bg-gradient-to-br from-white/90 to-white/40 blur-[2px]" />
+              <div className="relative aspect-[4/3] overflow-hidden rounded-[24px] border border-white/80 bg-white/70 shadow-[0_28px_80px_-40px_rgba(53,37,205,0.55)] backdrop-blur-sm">
+                <div className="absolute inset-0 bg-gradient-to-t from-[#3525cd]/[0.07] to-transparent" />
+                <div className="flex h-full flex-col justify-between p-6 sm:p-8">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-900 ring-1 ring-emerald-100">
+                      <Sparkles className="h-3.5 w-3.5" aria-hidden />
+                      {t("public.jobs.heroPanelKicker")}
+                    </span>
+                    <span className="rounded-full bg-slate-900/[0.04] px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                      NearWork
+                    </span>
+                  </div>
+                  <div className="space-y-3">
+                    <p className="text-sm font-semibold text-slate-800">{t("public.jobs.heroVisualTitle")}</p>
+                    <p className="text-sm leading-relaxed text-slate-600">{t("public.jobs.heroVisualBody")}</p>
+                    <div className="h-2 overflow-hidden rounded-full bg-slate-200/80">
+                      <div className="h-full w-[72%] rounded-full bg-gradient-to-r from-[#3525cd] to-violet-400 shadow-[0_0_24px_rgba(53,37,205,0.35)]" />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          {total > 0 ? (
-            <JobsPublicList jobs={jobs} />
-          ) : null}
-
-          {jobs.length === 0 ? (
-            <JobsPublicEmpty categorySelected={categorySelected} hasFilters={hasFilters} viewerRole={viewerRole} />
-          ) : null}
-
-          <section className="rounded-xl border border-[#e5e7eb] bg-white p-4">
-            <div className="mb-3 flex items-center justify-between gap-2">
-              <h2 className="text-base font-semibold text-slate-900">{t("public.jobs.demandTrendTitle")}</h2>
-              <Link href="/jobs" className="text-xs font-semibold text-[#4f35e8] hover:underline">
-                {t("public.jobs.viewAllSmall")}
-              </Link>
-            </div>
-            <div className="grid gap-2 sm:grid-cols-3">
-              {(topDemandCategories.length > 0 ? topDemandCategories : [{ label: t("public.jobs.quickTagVideo"), count: 0 }, { label: t("public.jobs.quickTagDesign"), count: 0 }, { label: t("public.jobs.quickTagCopy"), count: 0 }]).map((item, idx) => (
-                <div key={`${item.label}-${idx}`} className="rounded-lg border border-slate-200 px-3 py-2.5">
-                  <p className="text-sm font-semibold text-slate-900">
-                    {item.label} {idx === 0 ? "🔥" : ""}
-                  </p>
-                  <p className="text-xs text-slate-500">
-                    {item.count > 0 ? t("public.jobs.demandCount", { count: item.count }) : t("public.jobs.demandFallback")}
-                  </p>
+          <div className="relative z-10 mx-auto mt-10 max-w-[1200px]">
+            <div className="rounded-[22px] border border-white/80 bg-white/90 p-4 shadow-[0_22px_60px_-34px_rgba(15,23,42,0.35)] backdrop-blur-md md:p-5">
+              <form method="get" action="/jobs" className="grid gap-3 lg:grid-cols-[minmax(0,2fr),minmax(0,1fr),minmax(0,1fr),auto] lg:items-end">
+                <div className="relative">
+                  <label className="sr-only" htmlFor="nw-jobs-q">
+                    {t("public.jobs.searchKeywordPlaceholder")}
+                  </label>
+                  <Search
+                    className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+                    aria-hidden
+                  />
+                  <input
+                    id="nw-jobs-q"
+                    name="keyword"
+                    defaultValue={keyword}
+                    placeholder={t("public.jobs.searchKeywordPlaceholder")}
+                    className="h-12 w-full rounded-2xl border border-slate-200/90 bg-white pl-10 pr-3 text-sm font-medium text-slate-900 shadow-sm outline-none ring-0 transition focus:border-[#3525cd]/50 focus:ring-2 focus:ring-[#3525cd]/20"
+                  />
                 </div>
-              ))}
+                <div>
+                  <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                    {t("public.filters.location")}
+                  </label>
+                  <input
+                    name="city"
+                    defaultValue={city}
+                    placeholder={t("public.jobs.searchLocationPlaceholder")}
+                    className="h-12 w-full rounded-2xl border border-slate-200/90 bg-white px-3 text-sm font-medium text-slate-900 shadow-sm outline-none focus:border-[#3525cd]/50 focus:ring-2 focus:ring-[#3525cd]/20"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                    {t("public.filters.category")}
+                  </label>
+                  <select
+                    name="categoryId"
+                    defaultValue={categoryId}
+                    className="h-12 w-full rounded-2xl border border-slate-200/90 bg-white px-3 text-sm font-medium text-slate-900 shadow-sm outline-none focus:border-[#3525cd]/50 focus:ring-2 focus:ring-[#3525cd]/20"
+                  >
+                    <option value="">{t("public.filters.allCategories")}</option>
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <button
+                  type="submit"
+                  className="inline-flex h-12 items-center justify-center rounded-2xl bg-[#3525cd] px-6 text-sm font-semibold text-white shadow-[0_14px_34px_-18px_rgba(53,37,205,0.9)] transition hover:bg-[#2b1daa]"
+                >
+                  {t("public.jobs.searchAction")}
+                </button>
+              </form>
+              <p className="mt-3 text-xs text-slate-500">{t("public.jobs.searchExamplesHint")}</p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                  {t("public.jobs.quickSearchLabel")}
+                </span>
+                {quickTags.map((tag) => (
+                  <Link
+                    key={tag.label}
+                    href={`/jobs${tag.href}` as Route}
+                    className="rounded-full border border-slate-200/80 bg-slate-50/90 px-3 py-1 text-xs font-semibold text-slate-700 transition hover:border-[#3525cd]/30 hover:bg-white"
+                  >
+                    {tag.label}
+                  </Link>
+                ))}
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Link
+                  href={`/jobs${jobsBrowseQueryString({ ...qArgs, workMode: "" })}` as Route}
+                  className={workModeChipClass(workMode === "")}
+                >
+                  {t("public.filters.workModeAny")}
+                </Link>
+                <Link
+                  href={`/jobs${jobsBrowseQueryString({ ...qArgs, workMode: "REMOTE" })}` as Route}
+                  className={workModeChipClass(workMode === "REMOTE")}
+                >
+                  {t("public.filters.workModeRemote")}
+                </Link>
+                <Link
+                  href={`/jobs${jobsBrowseQueryString({ ...qArgs, workMode: "ONSITE" })}` as Route}
+                  className={workModeChipClass(workMode === "ONSITE")}
+                >
+                  {t("public.filters.workModeOnSite")}
+                </Link>
+                <Link
+                  href={`/jobs${jobsBrowseQueryString({ ...qArgs, workMode: "HYBRID" })}` as Route}
+                  className={workModeChipClass(workMode === "HYBRID")}
+                >
+                  {t("public.filters.workModeHybrid")}
+                </Link>
+              </div>
             </div>
-          </section>
-
-          {totalPages > 1 ? (
-            <nav
-              className="flex items-center justify-between border-t border-slate-200 pt-6 text-sm"
-              aria-label={t("public.pagination.label")}
-            >
-              {page > 1 ? (
-                <Link
-                  href={
-                    `/jobs${jobsQueryString({ keyword, city, workMode, categoryId, minBudget, postedWithinDays, page: page - 1 })}` as Route
-                  }
-                  className="font-bold text-[#3525cd] hover:underline"
-                >
-                  {t("public.pagination.previous")}
-                </Link>
-              ) : (
-                <span className="text-slate-300">{t("public.pagination.previous")}</span>
-              )}
-              <span className="text-xs font-semibold text-slate-600">
-                {t("public.pagination.pageOf", { page, total: totalPages })}
-              </span>
-              {page < totalPages ? (
-                <Link
-                  href={
-                    `/jobs${jobsQueryString({ keyword, city, workMode, categoryId, minBudget, postedWithinDays, page: page + 1 })}` as Route
-                  }
-                  className="font-bold text-[#3525cd] hover:underline"
-                >
-                  {t("public.pagination.next")}
-                </Link>
-              ) : (
-                <span className="text-slate-300">{t("public.pagination.next")}</span>
-              )}
-            </nav>
-          ) : null}
+          </div>
         </div>
+      </section>
 
-        <aside className={["order-3 min-w-0 space-y-4", noJobsBaseline ? "mt-6" : "mt-5 lg:mt-0 lg:sticky lg:top-[11.25rem]"].join(" ")}>
-          <section className="rounded-2xl border border-[#e5e7eb] bg-white p-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-base font-semibold text-slate-900">{t("public.jobs.liveActivityTitle")}</h2>
-              <Link href="/notifications" className="text-xs font-semibold text-[#4f35e8] hover:underline">
-                {t("public.jobs.viewAllSmall")}
+      <div className="mx-auto max-w-[1440px] px-4 pb-16 pt-8 md:px-6">
+        <div className="lg:grid lg:grid-cols-[280px,minmax(0,1fr),300px] lg:items-start lg:gap-8">
+          <aside className="mb-5 hidden lg:sticky lg:top-28 lg:mb-0 lg:block">
+            <div className="space-y-1 rounded-[22px] border border-white/70 bg-white/95 p-5 shadow-[0_20px_50px_-38px_rgba(15,23,42,0.45)] backdrop-blur-sm">
+              <div className="mb-3 flex items-center justify-between">
+                <h2 className="text-sm font-semibold text-slate-900">{t("public.filters.title")}</h2>
+                <Link href="/jobs" className="text-xs font-semibold text-[#3525cd] hover:underline">
+                  {t("public.filters.reset")}
+                </Link>
+              </div>
+              <details open className="group border-t border-slate-100 pt-4 first:border-t-0 first:pt-0">
+                <summary className="cursor-pointer list-none text-sm font-semibold text-slate-800 marker:content-none [&::-webkit-details-marker]:hidden">
+                  {t("public.filters.category")}
+                </summary>
+                <div className="mt-3 space-y-1 text-sm">
+                  <Link
+                    href={`/jobs${jobsBrowseQueryString({ ...filterBase, categoryId: "", page: 1 })}` as Route}
+                    className={`block rounded-xl px-2 py-1.5 ${categoryId === "" ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
+                  >
+                    {t("public.filters.allCategories")}
+                  </Link>
+                  {categories.slice(0, 12).map((c) => (
+                    <Link
+                      key={c.id}
+                      href={`/jobs${jobsBrowseQueryString({ ...filterBase, categoryId: c.id, page: 1 })}` as Route}
+                      className={`block rounded-xl px-2 py-1.5 ${categoryId === c.id ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
+                    >
+                      {c.name}
+                    </Link>
+                  ))}
+                </div>
+              </details>
+              <details open className="group border-t border-slate-100 pt-4">
+                <summary className="cursor-pointer list-none text-sm font-semibold text-slate-800 marker:content-none [&::-webkit-details-marker]:hidden">
+                  {t("public.jobs.budgetFilterLabel")}
+                </summary>
+                <div className="mt-3 space-y-1 text-sm">
+                  {[
+                    { value: "500000", label: t("public.jobs.budgetFilter500k") },
+                    { value: "1000000", label: t("public.jobs.budgetFilter1m") },
+                    { value: "3000000", label: t("public.jobs.budgetFilter3m") }
+                  ].map((item) => (
+                    <Link
+                      key={item.value}
+                      href={`/jobs${jobsBrowseQueryString({ ...filterBase, minBudget: item.value, page: 1 })}` as Route}
+                      className={`block rounded-xl px-2 py-1.5 ${minBudget === item.value ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              </details>
+              <details open className="group border-t border-slate-100 pt-4">
+                <summary className="cursor-pointer list-none text-sm font-semibold text-slate-800 marker:content-none [&::-webkit-details-marker]:hidden">
+                  {t("public.jobs.postedFilterLabel")}
+                </summary>
+                <div className="mt-3 space-y-1 text-sm">
+                  {[
+                    { value: "1", label: t("public.jobs.postedFilter24h") },
+                    { value: "7", label: t("public.jobs.postedFilter7d") },
+                    { value: "30", label: t("public.jobs.postedFilter30d") }
+                  ].map((item) => (
+                    <Link
+                      key={item.value}
+                      href={`/jobs${jobsBrowseQueryString({ ...filterBase, postedWithinDays: item.value, page: 1 })}` as Route}
+                      className={`block rounded-xl px-2 py-1.5 ${postedWithinDays === item.value ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              </details>
+              <details open className="group border-t border-slate-100 pt-4">
+                <summary className="cursor-pointer list-none text-sm font-semibold text-slate-800 marker:content-none [&::-webkit-details-marker]:hidden">
+                  {t("public.jobs.workTypeFilterLabel")}
+                </summary>
+                <div className="mt-3 space-y-1 text-sm">
+                  <Link
+                    href={`/jobs${jobsBrowseQueryString({ ...filterBase, workMode: "REMOTE", page: 1 })}` as Route}
+                    className={`block rounded-xl px-2 py-1.5 ${workMode === "REMOTE" ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
+                  >
+                    {t("public.filters.workModeRemote")}
+                  </Link>
+                  <Link
+                    href={`/jobs${jobsBrowseQueryString({ ...filterBase, workMode: "ONSITE", page: 1 })}` as Route}
+                    className={`block rounded-xl px-2 py-1.5 ${workMode === "ONSITE" ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
+                  >
+                    {t("public.filters.workModeOnSite")}
+                  </Link>
+                  <Link
+                    href={`/jobs${jobsBrowseQueryString({ ...filterBase, workMode: "HYBRID", page: 1 })}` as Route}
+                    className={`block rounded-xl px-2 py-1.5 ${workMode === "HYBRID" ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
+                  >
+                    {t("public.filters.workModeHybrid")}
+                  </Link>
+                </div>
+              </details>
+            </div>
+          </aside>
+
+          <div className="order-1 min-w-0 space-y-5 lg:order-2">
+            <div className="lg:hidden">
+              <JobsMarketplaceMobileFilters
+                keyword={keyword}
+                city={city}
+                workMode={workMode}
+                categoryId={categoryId}
+                minBudget={minBudget}
+                postedWithinDays={postedWithinDays}
+                categories={categories}
+              />
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-4 rounded-[20px] border border-white/70 bg-white/95 px-5 py-4 shadow-sm backdrop-blur-sm">
+              <div className="flex items-start gap-2">
+                <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-[#3525cd]" aria-hidden />
+                <div>
+                  <p className="text-base font-bold text-slate-900">
+                    {total === 1 ? t("public.jobs.resultOne") : t("public.jobs.resultMany", { count: total })}
+                  </p>
+                  <p className="text-sm text-slate-600">{t("public.jobs.resultHint")}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <span className="hidden font-semibold text-slate-500 sm:inline">{t("public.jobs.sortLabel")}</span>
+                <select
+                  className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-800 shadow-sm"
+                  aria-label={t("public.jobs.sortLabel")}
+                  disabled
+                >
+                  <option>{t("public.jobs.sortRelevant")}</option>
+                </select>
+              </div>
+            </div>
+
+            {total > 0 ? <JobsPublicList jobs={jobs} savedJobIds={savedJobIds} /> : null}
+
+            {jobs.length === 0 ? (
+              <JobsPublicEmpty categorySelected={categorySelected} hasFilters={hasFilters} viewerRole={viewerRole} />
+            ) : null}
+
+            <section className="rounded-[22px] border border-white/70 bg-white/95 p-5 shadow-sm backdrop-blur-sm">
+              <div className="mb-4 flex items-center justify-between gap-2">
+                <h2 className="text-base font-semibold text-slate-900">{t("public.jobs.demandTrendTitle")}</h2>
+                <Link href="/jobs" className="text-xs font-semibold text-[#3525cd] hover:underline">
+                  {t("public.jobs.viewAllSmall")}
+                </Link>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-3">
+                {(topDemandCategories.length > 0
+                  ? topDemandCategories
+                  : [
+                      { label: t("public.jobs.quickTagVideo"), count: 0 },
+                      { label: t("public.jobs.quickTagDesign"), count: 0 },
+                      { label: t("public.jobs.quickTagCopy"), count: 0 }
+                    ]
+                ).map((item, idx) => (
+                  <div
+                    key={`${item.label}-${idx}`}
+                    className="rounded-[18px] border border-slate-200/80 bg-slate-50/50 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]"
+                  >
+                    <p className="text-sm font-semibold text-slate-900">
+                      {item.label}
+                      {idx === 0 ? " · 🔥" : ""}
+                    </p>
+                    <p className="mt-1 text-xs text-slate-500">
+                      {item.count > 0 ? t("public.jobs.demandCount", { count: item.count }) : t("public.jobs.demandFallback")}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {totalPages > 1 ? (
+              <nav
+                className="flex items-center justify-between border-t border-slate-200/80 pt-8 text-sm"
+                aria-label={t("public.pagination.label")}
+              >
+                {page > 1 ? (
+                  <Link
+                    href={
+                      `/jobs${jobsBrowseQueryString({ ...filterBase, page: page - 1 })}` as Route
+                    }
+                    className="font-bold text-[#3525cd] hover:underline"
+                  >
+                    {t("public.pagination.previous")}
+                  </Link>
+                ) : (
+                  <span className="text-slate-300">{t("public.pagination.previous")}</span>
+                )}
+                <span className="text-xs font-semibold text-slate-600">
+                  {t("public.pagination.pageOf", { page, total: totalPages })}
+                </span>
+                {page < totalPages ? (
+                  <Link
+                    href={
+                      `/jobs${jobsBrowseQueryString({ ...filterBase, page: page + 1 })}` as Route
+                    }
+                    className="font-bold text-[#3525cd] hover:underline"
+                  >
+                    {t("public.pagination.next")}
+                  </Link>
+                ) : (
+                  <span className="text-slate-300">{t("public.pagination.next")}</span>
+                )}
+              </nav>
+            ) : null}
+          </div>
+
+          <aside
+            className={["order-3 min-w-0 space-y-5", noJobsBaseline ? "mt-6" : "mt-4 lg:mt-0 lg:sticky lg:top-28"].join(
+              " "
+            )}
+          >
+            <section className="rounded-[22px] border border-white/70 bg-white/95 p-5 shadow-[0_20px_50px_-38px_rgba(15,23,42,0.35)] backdrop-blur-sm">
+              <div className="flex items-center justify-between gap-2">
+                <h2 className="text-base font-semibold text-slate-900">{t("public.jobs.pulseTitle")}</h2>
+                <Link href="/notifications" className="text-xs font-semibold text-[#3525cd] hover:underline">
+                  {t("public.jobs.viewAllSmall")}
+                </Link>
+              </div>
+              <p className="mt-1 text-xs text-slate-500">{t("public.jobs.pulseSubtitle")}</p>
+
+              <div className="mt-4 space-y-3">
+                <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400">
+                  {t("public.jobs.pulseFreshJobs")}
+                </p>
+                <ul className="space-y-2 text-sm">
+                  {heroPanelActivity.jobRows.length === 0 ? (
+                    <li className="rounded-xl border border-dashed border-slate-200 px-3 py-2 text-slate-500">
+                      {t("public.jobs.pulseEmptyJobs")}
+                    </li>
+                  ) : (
+                    heroPanelActivity.jobRows.map((job) => (
+                      <li
+                        key={`${job.title}-${job.createdAt}`}
+                        className="rounded-xl border border-slate-200/80 bg-gradient-to-br from-white to-slate-50/80 px-3 py-2.5 shadow-[0_8px_24px_-20px_rgba(15,23,42,0.35)]"
+                      >
+                        <p className="font-semibold text-slate-900 line-clamp-2">{job.title}</p>
+                        <p className="mt-1 text-xs text-slate-500">
+                          {t("public.jobs.pulseJobMeta", {
+                            time: relativeTime(job.createdAt, locale),
+                            place: job.location ?? t("public.jobs.noCity")
+                          })}
+                        </p>
+                      </li>
+                    ))
+                  )}
+                </ul>
+              </div>
+
+              <div className="mt-5 space-y-3 border-t border-slate-100 pt-4">
+                <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400">
+                  {t("public.jobs.pulseProposals")}
+                </p>
+                <ul className="space-y-2 text-sm">
+                  {heroPanelActivity.proposalRows.length === 0 ? (
+                    <li className="rounded-xl border border-dashed border-slate-200 px-3 py-2 text-slate-500">
+                      {t("public.jobs.pulseEmptyProposals")}
+                    </li>
+                  ) : (
+                    heroPanelActivity.proposalRows.map((row) => (
+                      <li
+                        key={`${row.freelancerName}-${row.createdAt}-${row.jobTitle}`}
+                        className="rounded-xl border border-slate-200/80 bg-gradient-to-br from-[#faf9ff] to-white px-3 py-2.5"
+                      >
+                        <p className="text-slate-800">{t("public.jobs.liveProposalLine", { name: row.freelancerName })}</p>
+                        <p className="mt-1 text-xs text-slate-500 line-clamp-1">{row.jobTitle}</p>
+                        <p className="mt-0.5 text-[11px] font-medium text-slate-400">
+                          {relativeTime(row.createdAt, locale)}
+                        </p>
+                      </li>
+                    ))
+                  )}
+                </ul>
+              </div>
+            </section>
+
+            <section className="rounded-[22px] border border-white/70 bg-white/95 p-5 shadow-sm backdrop-blur-sm">
+              <h2 className="text-base font-semibold text-slate-900">{t("public.jobs.insightTitle")}</h2>
+              <div className="mt-4 grid grid-cols-1 gap-3">
+                <div className="rounded-[18px] border border-slate-200/80 bg-slate-50/60 px-4 py-3">
+                  <p className="text-2xl font-bold tabular-nums text-slate-900">{pulse.openPublicJobs}</p>
+                  <p className="text-xs text-slate-600">{t("public.jobs.insightOpenRoles")}</p>
+                </div>
+                <div className="rounded-[18px] border border-slate-200/80 bg-slate-50/60 px-4 py-3">
+                  <p className="text-2xl font-bold tabular-nums text-slate-900">{pulse.bidsLast24h}</p>
+                  <p className="text-xs text-slate-600">{t("public.jobs.insightApplyVolume")}</p>
+                </div>
+                <div className="rounded-[18px] border border-slate-200/80 bg-slate-50/60 px-4 py-3">
+                  <p className="text-2xl font-bold tabular-nums text-slate-900">{pulse.freelancersAvailable}</p>
+                  <p className="text-xs text-slate-600">{t("public.jobs.insightFreelancerActive")}</p>
+                </div>
+              </div>
+              <p className="mt-3 text-xs text-slate-500">{t("public.jobs.insightFootnote")}</p>
+            </section>
+
+            <section className="rounded-[22px] border border-white/70 bg-gradient-to-br from-[#3525cd] to-[#4f3ae0] p-5 text-white shadow-[0_24px_60px_-36px_rgba(53,37,205,0.8)]">
+              <p className="text-sm font-semibold">{t("public.jobs.notifyCardTitle")}</p>
+              <p className="mt-2 text-sm text-white/85">{t("public.jobs.notifyCardBody")}</p>
+              <Link
+                href="/notifications"
+                className="mt-4 inline-flex w-full items-center justify-center rounded-2xl bg-white px-3 py-2.5 text-sm font-semibold text-[#3525cd] shadow-sm hover:bg-white/95"
+              >
+                {t("public.jobs.notifyCardCta")}
               </Link>
-            </div>
-            <ul className="mt-3 space-y-2 text-sm text-slate-700">
-              {heroPanelActivity.jobRows.slice(0, 2).map((job) => (
-                <li key={job.title} className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-2">
-                  {t("public.jobs.liveNewJob", { title: job.title, time: relativeTime(items[0]?.createdAt ?? new Date().toISOString(), locale) })}
-                </li>
-              ))}
-              {heroPanelActivity.freelancerRows[0] ? (
-                <li className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-2">
-                  {t("public.jobs.liveFreelancerApply", { name: heroPanelActivity.freelancerRows[0].title })}
-                </li>
-              ) : null}
-            </ul>
-          </section>
+            </section>
 
-          <section className="rounded-2xl border border-[#e5e7eb] bg-white p-4">
-            <h2 className="text-base font-semibold text-slate-900">{t("public.jobs.insightTitle")}</h2>
-            <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
-              <div className="rounded-lg border border-slate-200 p-2.5">
-                <p className="text-lg font-bold text-slate-900">{pulse.openPublicJobs}</p>
-                <p className="text-xs text-slate-600">{t("public.jobs.insightJobsToday")}</p>
-              </div>
-              <div className="rounded-lg border border-slate-200 p-2.5">
-                <p className="text-lg font-bold text-slate-900">18m</p>
-                <p className="text-xs text-slate-600">{t("public.jobs.insightAvgResponse")}</p>
-              </div>
-              <div className="rounded-lg border border-slate-200 p-2.5">
-                <p className="text-lg font-bold text-slate-900">{pulse.bidsLast24h}</p>
-                <p className="text-xs text-slate-600">{t("public.jobs.insightApplyVolume")}</p>
-              </div>
-              <div className="rounded-lg border border-slate-200 p-2.5">
-                <p className="text-lg font-bold text-slate-900">{pulse.freelancersAvailable}</p>
-                <p className="text-xs text-slate-600">{t("public.jobs.insightFreelancerActive")}</p>
-              </div>
-            </div>
-          </section>
+            <section className="rounded-[22px] border border-white/70 bg-white/95 p-5 shadow-sm backdrop-blur-sm">
+              <h2 className="text-base font-semibold text-slate-900">{t("public.jobs.quickTipsTitle")}</h2>
+              <p className="mt-2 text-sm text-slate-600">{t("public.jobs.quickTipApply")}</p>
+            </section>
 
-          <section className="rounded-2xl border border-[#e5e7eb] bg-white p-4">
-            <h2 className="text-base font-semibold text-slate-900">{t("public.jobs.quickTipsTitle")}</h2>
-            <p className="mt-2 text-sm text-slate-600">{t("public.jobs.quickTipApply")}</p>
-          </section>
-
-          <section className="rounded-2xl border border-[#e5e7eb] bg-white p-4">
-            <p className="text-sm font-semibold text-slate-900">{t("public.jobs.smallCtaTitle")}</p>
-            <AuthAwareCtaLink
-              href={"/client/jobs/new" as Route}
-              intent="post-job"
-              unauthenticatedTo="register"
-              registerRoleHint="client"
-              className="mt-3 inline-flex w-full items-center justify-center rounded-lg bg-[#4f35e8] px-3 py-2.5 text-sm font-semibold text-white hover:bg-[#4326d9]"
-            >
-              {t("public.jobs.smallCtaPrimary")}
-            </AuthAwareCtaLink>
-            <Link href="/freelancer/profile" className="mt-2 inline-flex w-full items-center justify-center rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
-              {t("public.jobs.smallCtaSecondary")}
-            </Link>
-          </section>
-        </aside>
+            <section className="rounded-[22px] border border-white/70 bg-white/95 p-5 shadow-sm backdrop-blur-sm">
+              <p className="text-sm font-semibold text-slate-900">{t("public.jobs.smallCtaTitle")}</p>
+              <AuthAwareCtaLink
+                href={"/client/jobs/new" as Route}
+                intent="post-job"
+                unauthenticatedTo="register"
+                registerRoleHint="client"
+                className="mt-3 inline-flex w-full items-center justify-center rounded-2xl bg-[#3525cd] px-3 py-2.5 text-sm font-semibold text-white shadow-[0_12px_28px_-16px_rgba(53,37,205,0.9)] hover:bg-[#2b1daa]"
+              >
+                {t("public.jobs.smallCtaPrimary")}
+              </AuthAwareCtaLink>
+              <Link
+                href="/freelancer/profile"
+                className="mt-2 inline-flex w-full items-center justify-center rounded-2xl border border-slate-200/90 bg-white px-3 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+              >
+                {t("public.jobs.smallCtaSecondary")}
+              </Link>
+            </section>
+          </aside>
+        </div>
       </div>
     </div>
   );

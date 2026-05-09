@@ -3,7 +3,9 @@
 import { fetchWithCsrf } from "@/features/auth/lib/fetch-with-csrf";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
+import { Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/features/i18n/I18nProvider";
 
 type ApiOk<T> = { success: true; data: T };
 type ApiErr = { success: false; error?: string };
@@ -14,12 +16,14 @@ async function readJson<T>(res: Response): Promise<T> {
 
 type SaveJobButtonProps = {
   jobId: string;
-  /** When set with `onSavedChange`, skips loading ids from the API (grid mode). */
+  /** When set, skips loading ids from the API (e.g. server-resolved saved state). */
   initialSaved?: boolean;
   onSavedChange?: (saved: boolean) => void;
   size?: "default" | "sm" | "lg" | "icon";
   variant?: "default" | "outline" | "secondary" | "ghost";
   className?: string;
+  /** Compact bookmark control for dense cards (labels from i18n). */
+  appearance?: "label" | "icon";
 };
 
 export function SaveJobButton({
@@ -28,10 +32,12 @@ export function SaveJobButton({
   onSavedChange,
   size = "sm",
   variant = "outline",
-  className
+  className,
+  appearance = "label"
 }: SaveJobButtonProps) {
   const pathname = usePathname();
-  const controlled = initialSaved !== undefined && onSavedChange !== undefined;
+  const { t } = useI18n();
+  const controlled = initialSaved !== undefined;
   const [saved, setSaved] = useState<boolean | null>(controlled ? initialSaved : null);
   const [busy, setBusy] = useState(false);
   const onSavedChangeRef = useRef(onSavedChange);
@@ -103,24 +109,50 @@ export function SaveJobButton({
     }
   };
 
+  const iconSize = appearance === "icon" ? "icon" : size;
+  const iconVariant = appearance === "icon" ? "ghost" : variant;
+
   if (saved === null) {
     return (
-      <Button type="button" size={size} variant={variant} className={className} disabled>
-        …
+      <Button
+        type="button"
+        size={iconSize}
+        variant={iconVariant}
+        className={className}
+        disabled
+        aria-busy
+      >
+        {appearance === "icon" ? (
+          <Bookmark className="h-4 w-4 opacity-40" aria-hidden />
+        ) : (
+          "…"
+        )}
       </Button>
     );
   }
 
+  const labelBusy = busy ? "…" : saved ? t("public.jobs.savedJobShort") : t("public.jobs.saveJobShort");
+  const aria = saved ? t("public.jobs.savedJobShort") : t("public.jobs.saveJobShort");
+
   return (
     <Button
       type="button"
-      size={size}
-      variant={saved ? "secondary" : variant}
+      size={iconSize}
+      variant={saved && appearance === "icon" ? "secondary" : appearance === "icon" ? iconVariant : saved ? "secondary" : variant}
       className={className}
       disabled={busy}
+      aria-label={appearance === "icon" ? aria : undefined}
+      aria-pressed={appearance === "icon" ? saved : undefined}
       onClick={() => void toggle()}
     >
-      {busy ? "…" : saved ? "Saved" : "Save job"}
+      {appearance === "icon" ? (
+        <Bookmark
+          className={["h-4 w-4", saved ? "fill-[#3525cd] text-[#3525cd]" : "text-slate-500"].join(" ")}
+          aria-hidden
+        />
+      ) : (
+        labelBusy
+      )}
     </Button>
   );
 }
