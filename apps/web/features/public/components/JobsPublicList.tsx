@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Building2, Clock3, MapPin, Users } from "lucide-react";
 import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
 import { useI18n } from "@/features/i18n/I18nProvider";
+import { formatMoneyAmount, normalizeCurrencyCode } from "@/lib/format-money";
 import { SaveJobButton } from "@/features/saved/components/SaveJobButton";
 
 /** Public job card shape for `/jobs` marketplace listing. */
@@ -29,15 +30,6 @@ export type JobsPublicCard = {
   skillNames: string[];
 };
 
-function formatMoney(amount: number | null, currency: string): string {
-  if (amount == null || !Number.isFinite(amount)) return "—";
-  try {
-    return new Intl.NumberFormat(undefined, { style: "currency", currency, maximumFractionDigits: 0 }).format(amount);
-  } catch {
-    return `${amount} ${currency}`;
-  }
-}
-
 type ListProps = {
   jobs: JobsPublicCard[];
   /** When provided, avoids N+1 saved-state fetches (see `SaveJobButton`). */
@@ -45,7 +37,7 @@ type ListProps = {
 };
 
 export function JobsPublicList({ jobs, savedJobIds }: ListProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   const workModeLabel = (wm: string) => {
     if (wm === "REMOTE") return t("public.filters.workModeRemote");
@@ -56,9 +48,12 @@ export function JobsPublicList({ jobs, savedJobIds }: ListProps) {
 
   const budgetLabelLocalized = (job: JobsPublicCard): string => {
     const { budgetMin: min, budgetMax: max, currency, budgetType } = job;
-    if (min != null && max != null) return `${formatMoney(min, currency)} – ${formatMoney(max, currency)}`;
-    if (min != null) return t("public.jobs.budgetFrom", { amount: formatMoney(min, currency) });
-    if (max != null) return t("public.jobs.budgetUpTo", { amount: formatMoney(max, currency) });
+    const cur = normalizeCurrencyCode(currency);
+    const opt = { locale, maximumFractionDigits: cur === "IDR" ? 0 : 2 } as const;
+    if (min != null && max != null)
+      return `${formatMoneyAmount(min, cur, opt)} – ${formatMoneyAmount(max, cur, opt)}`;
+    if (min != null) return t("public.jobs.budgetFrom", { amount: formatMoneyAmount(min, cur, opt) });
+    if (max != null) return t("public.jobs.budgetUpTo", { amount: formatMoneyAmount(max, cur, opt) });
     return budgetType.replace(/_/g, " ");
   };
 

@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v89  
-> Last synchronized: 2026-05-09 (public `/jobs` — sidebar filter desktop selaras `rounded-lg` dengan sheet mobile + search).
+> **Doc revision:** v90  
+> Last synchronized: 2026-05-09 (format uang marketplace: `@/lib/format-money` mengikuti mata uang job/kontrak + locale EN/IDR; kartu/dashboard/admin/catalog subscription menampilkan IDR/alat FX secara konsisten).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,6 +9,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
+- **2026-05-09 — Locale-aware & job-currency money display:** helper `apps/web/lib/format-money.ts` (unit test `format-money.unit.test.ts`) menjadi sumber utama `formatMoneyAmount` / `formatMoneyRange` / format IDR ringkas untuk UI `id`. Angka proposal/kontrak/budget mengikuti **mata uang tersimpan** (fallback model lama USD bila kosong); rate jam freelancer tanpa kolom mata uang tetap ditampilkan dengan default tampilan **IDR**. Permukaan tambahan: admin bids/contracts/donations, catalog subscription admin, blok job terbaru di `/freelancers`.
 - **2026-05-09 — Public jobs filter chrome:** link filter di sidebar desktop `/jobs` memakai **`rounded-lg`** konsisten dengan bar pencarian dan lembar filter mobile (tanpa ubah query/param).
 - **2026-05-09 — Public jobs discovery editorial:** `/jobs` mempertahankan data nyata (klien, verifikasi, skill, jumlah proposal, pulse) dengan UI yang lebih **marketplace/editorial**: hero lebih netral dan padat, kolom kanan **snapshot** dari job/proposal/freelancer terbaru, kartu listing lebih rata dan rapat, badge status (mis. sedikit pelamar / ramai) hanya saat didukung angka proposal; filter mobile sedikit lebih ringkas.
 - **2026-05-09 — Public jobs discovery premium:** halaman `/jobs` memakai hero gradien lebar + kartu pencarian mengambang, kartu lowongan dengan identitas klien (nama perusahaan/display), badge verifikasi nyata, jumlah proposal dari database, skill pada job, bookmark/simpan untuk user login, serta sidebar “Marketplace pulse” berbasis job/bid terbaru (bukan placeholder waktu). Filter desktop + lembar filter mobile; wawasan pasar hanya agregat nyata (open jobs, apply 24h, freelancer available)—tanpa metrik respons palsu.

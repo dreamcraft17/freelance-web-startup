@@ -14,7 +14,7 @@ export default async function FreelancerProposalsPage() {
     redirect("/login?returnUrl=/freelancer/proposals");
   }
 
-  const { t } = await getServerTranslator();
+  const { t, locale } = await getServerTranslator();
   const emptyOnboarding = {
     step1: t("public.moderation.onboardingProposalStep1"),
     step2: t("public.moderation.onboardingProposalStep2"),
@@ -74,6 +74,7 @@ export default async function FreelancerProposalsPage() {
       </header>
 
       <FreelancerProposalsWorkspace
+        locale={locale}
         hasProfile={Boolean(profile)}
         proposals={proposals}
         emptyOnboarding={emptyOnboarding}

@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useI18n } from "@/features/i18n/I18nProvider";
+import { formatMoneyAmount } from "@/lib/format-money";
+import type { AppLocale } from "@/lib/i18n/types";
 import { SaveJobButton } from "./SaveJobButton";
 
 export type SerializableJobCard = {
@@ -20,20 +23,13 @@ export type SerializableJobCard = {
 type ApiOk<T> = { success: true; data: T };
 type ApiErr = { success: false };
 
-function formatMoney(amount: number | null, currency: string): string {
-  if (amount == null || !Number.isFinite(amount)) return "—";
-  try {
-    return new Intl.NumberFormat(undefined, { style: "currency", currency, maximumFractionDigits: 0 }).format(amount);
-  } catch {
-    return `${amount} ${currency}`;
-  }
-}
-
-function budgetLabel(job: SerializableJobCard): string {
+function budgetLabel(job: SerializableJobCard, locale: AppLocale): string {
   const { budgetMin: min, budgetMax: max, currency, budgetType } = job;
-  if (min != null && max != null) return `${formatMoney(min, currency)} – ${formatMoney(max, currency)}`;
-  if (min != null) return `From ${formatMoney(min, currency)}`;
-  if (max != null) return `Up to ${formatMoney(max, currency)}`;
+  const opt = { locale, maximumFractionDigits: 0 } as const;
+  if (min != null && max != null)
+    return `${formatMoneyAmount(min, currency, opt)} – ${formatMoneyAmount(max, currency, opt)}`;
+  if (min != null) return `From ${formatMoneyAmount(min, currency, opt)}`;
+  if (max != null) return `Up to ${formatMoneyAmount(max, currency, opt)}`;
   return budgetType.replace(/_/g, " ");
 }
 
@@ -42,6 +38,7 @@ type JobsBrowseGridProps = {
 };
 
 export function JobsBrowseGrid({ jobs }: JobsBrowseGridProps) {
+  const { locale } = useI18n();
   const [savedIds, setSavedIds] = useState<Set<string> | null>(null);
 
   useEffect(() => {
@@ -107,7 +104,7 @@ export function JobsBrowseGrid({ jobs }: JobsBrowseGridProps) {
                 </CardHeader>
                 <CardContent className="text-muted-foreground space-y-1 text-xs">
                   <p>
-                    <span className="font-medium text-foreground">{budgetLabel(job)}</span>
+                    <span className="font-medium text-foreground">{budgetLabel(job, locale)}</span>
                     <span className="mx-1">·</span>
                     {job.workMode}
                     {job.city ? (

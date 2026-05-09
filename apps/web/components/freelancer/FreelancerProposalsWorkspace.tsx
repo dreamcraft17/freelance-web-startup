@@ -6,6 +6,8 @@ import { useMemo, useState } from "react";
 import { BidStatus } from "@acme/types";
 import { ModerationReportButton } from "@/features/moderation/components/ModerationReportButton";
 import { DashboardEmptyState } from "@/components/dashboard/DashboardEmptyState";
+import type { AppLocale } from "@/lib/i18n/types";
+import { formatMoneyAmount } from "@/lib/format-money";
 import { cn } from "@/lib/utils";
 import { FileText, Inbox } from "lucide-react";
 
@@ -28,15 +30,6 @@ const FILTERS: { key: FilterKey; label: string; statuses: BidStatus[] | null }[]
   { key: "accepted", label: "Accepted", statuses: [BidStatus.ACCEPTED] },
   { key: "rejected", label: "Rejected", statuses: [BidStatus.REJECTED] }
 ];
-
-function money(amount: number, currency: string): string {
-  if (!Number.isFinite(amount)) return "—";
-  try {
-    return new Intl.NumberFormat(undefined, { style: "currency", currency, maximumFractionDigits: 0 }).format(amount);
-  } catch {
-    return `${amount} ${currency}`;
-  }
-}
 
 function formatDate(iso: string): string {
   const d = new Date(iso);
@@ -91,10 +84,12 @@ function statusOrder(status: string): number {
 }
 
 export function FreelancerProposalsWorkspace({
+  locale,
   hasProfile,
   proposals,
   emptyOnboarding
 }: {
+  locale: AppLocale;
   hasProfile: boolean;
   proposals: FreelancerProposalRow[];
   emptyOnboarding?: { step1: string; step2: string; step3: string };
@@ -241,7 +236,7 @@ export function FreelancerProposalsWorkspace({
                       {humanizeStatus(p.status)}
                     </span>
                     <p className="text-lg font-semibold tabular-nums text-slate-900">
-                      {money(p.amount, p.currency)}
+                      {formatMoneyAmount(p.amount, p.currency, { locale, maximumFractionDigits: 0 })}
                     </p>
                     <ModerationReportButton
                       intent="bid"

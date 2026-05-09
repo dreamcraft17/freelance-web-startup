@@ -1,3 +1,6 @@
+import { formatMoneyAmount, normalizeCurrencyCode } from "@/lib/format-money";
+import type { AppLocale } from "@/lib/i18n/types";
+
 export type PlanRow = {
   id: string;
   code: string;
@@ -9,12 +12,13 @@ export type PlanRow = {
   entitlements: unknown;
 };
 
-function formatPrice(cents: number, currency: string): string {
-  try {
-    return new Intl.NumberFormat(undefined, { style: "currency", currency }).format(cents / 100);
-  } catch {
-    return `${currency} ${(cents / 100).toFixed(2)}`;
-  }
+function formatSubscriptionPrice(locale: AppLocale, cents: number, currency: string): string {
+  const amount = cents / 100;
+  const cur = normalizeCurrencyCode(currency);
+  return formatMoneyAmount(amount, cur, {
+    locale,
+    maximumFractionDigits: cur === "IDR" ? 0 : 2
+  });
 }
 
 function entitlementsPreview(raw: unknown): string {
@@ -30,7 +34,7 @@ function entitlementsPreview(raw: unknown): string {
 /**
  * Published plan definitions (catalog). Shown even when subscriber count is low—helps finance/product align on structure.
  */
-export function SubscriptionPlanCatalog({ plans }: { plans: PlanRow[] }) {
+export function SubscriptionPlanCatalog({ plans, locale }: { plans: PlanRow[]; locale: AppLocale }) {
   if (plans.length === 0) {
     return (
       <section className="rounded-lg border border-dashed border-slate-300 bg-slate-50/80 px-3.5 py-6 text-center">
@@ -73,7 +77,9 @@ export function SubscriptionPlanCatalog({ plans }: { plans: PlanRow[] }) {
                 {p.isActive ? "Active" : "Inactive"}
               </span>
             </div>
-            <p className="mt-2 text-lg font-semibold tabular-nums text-slate-900">{formatPrice(p.priceCents, p.currency)}</p>
+            <p className="mt-2 text-lg font-semibold tabular-nums text-slate-900">
+              {formatSubscriptionPrice(locale, p.priceCents, p.currency)}
+            </p>
             <p className="text-[11px] font-medium uppercase tracking-wide text-slate-500">{p.billingCycle}</p>
             <div className="mt-3 border-t border-slate-200/80 pt-2">
               <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Entitlements (JSON)</p>

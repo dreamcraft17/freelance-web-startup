@@ -48,7 +48,7 @@ export default async function ClientDashboardPage() {
     redirect("/login?returnUrl=/client");
   }
 
-  const { t } = await getServerTranslator();
+  const { t, locale } = await getServerTranslator();
   const activationSvc = new OnboardingActivationService();
   const activationRaw = await activationSvc.getClientActivation(session.userId);
   const stepsVm: ActivationChecklistStepVm[] = activationRaw.map((s) => ({
@@ -230,6 +230,7 @@ export default async function ClientDashboardPage() {
 
   return (
     <ClientDashboard
+      locale={locale}
       welcomeLine={
         greetingName
           ? t("dashboard.client.welcomeNamed", { name: greetingName })

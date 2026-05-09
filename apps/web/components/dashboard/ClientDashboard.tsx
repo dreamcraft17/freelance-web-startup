@@ -15,6 +15,8 @@ import {
   Sparkles,
   Users
 } from "lucide-react";
+import { formatMoneyAmount } from "@/lib/format-money";
+import type { AppLocale } from "@/lib/i18n/types";
 import { cn } from "@/lib/utils";
 import { ActivationChecklistCard, type ActivationChecklistStepVm } from "@/components/onboarding/ActivationChecklistCard";
 import { MarketplaceLiquidityHints } from "@/components/onboarding/MarketplaceLiquidityHints";
@@ -98,6 +100,7 @@ export type ClientDashboardContract = {
 };
 
 type ClientDashboardProps = {
+  locale: AppLocale;
   welcomeLine: string;
   subline: string;
   hasProfile: boolean;
@@ -140,19 +143,6 @@ const primaryCtaClass =
 const panelSurface =
   "rounded-xl border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]";
 
-function money(amount: unknown, currency: string): string {
-  const n =
-    amount != null && typeof (amount as { toString?: () => string }).toString === "function"
-      ? Number(amount)
-      : NaN;
-  if (!Number.isFinite(n)) return "—";
-  try {
-    return new Intl.NumberFormat(undefined, { style: "currency", currency, maximumFractionDigits: 0 }).format(n);
-  } catch {
-    return `${n} ${currency}`;
-  }
-}
-
 function formatShortDate(d: Date): string {
   return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric" }).format(d);
 }
@@ -174,6 +164,7 @@ type QuickAction = {
 };
 
 export function ClientDashboard({
+  locale,
   welcomeLine,
   subline,
   hasProfile,
@@ -511,7 +502,7 @@ export function ClientDashboard({
                       <span className="rounded-md bg-white px-1.5 py-0.5 font-medium capitalize text-slate-700 ring-1 ring-slate-200/80">
                         {humanizeStatus(bid.status)}
                       </span>
-                      <span className="font-medium text-slate-700">{money(bid.bidAmount, bid.job.currency)}</span>
+                      <span className="font-medium text-slate-700">{formatMoneyAmount(bid.bidAmount, bid.job.currency, { locale, maximumFractionDigits: 0 })}</span>
                       <span className="text-slate-400">· {formatShortDate(bid.createdAt)}</span>
                     </div>
                   </li>
@@ -566,7 +557,7 @@ export function ClientDashboard({
                     {c.currency && c.amount != null ? (
                       <>
                         {" · "}
-                        {money(c.amount, c.currency)}
+                        {formatMoneyAmount(c.amount, c.currency ?? "USD", { locale, maximumFractionDigits: 0 })}
                       </>
                     ) : null}
                     {" · "}

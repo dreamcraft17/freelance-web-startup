@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { submitBidSchema } from "@acme/validators";
 import { fetchWithCsrf } from "@/features/auth/lib/fetch-with-csrf";
 import { AuthSubmitOverlay } from "@/features/auth/components/AuthSubmitOverlay";
+import { useI18n } from "@/features/i18n/I18nProvider";
+import { exampleNumericMoneyPlaceholder } from "@/lib/format-money";
 
 type JobProposalFormProps = {
   jobId: string;
@@ -74,6 +76,7 @@ export function JobProposalForm({
   labels,
   onSubmitted
 }: JobProposalFormProps) {
+  const { locale } = useI18n();
   const router = useRouter();
   const [intro, setIntro] = useState("");
   const [experience, setExperience] = useState("");
@@ -335,7 +338,8 @@ export function JobProposalForm({
                 min={1}
                 step="1"
                 inputMode="decimal"
-                placeholder={currency}
+                placeholder={exampleNumericMoneyPlaceholder(currency)}
+                title={locale === "id" ? `Angka penuh dalam ${currency}` : `Full number in ${currency}`}
                 className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-[15px] text-slate-900 outline-none transition focus:border-[#3525cd]/40 focus:ring-2 focus:ring-[#3525cd]/20 sm:h-10 sm:text-sm"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}

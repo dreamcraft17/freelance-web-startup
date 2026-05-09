@@ -1,4 +1,6 @@
 import { db } from "@acme/database";
+import { formatMoneyAmount } from "@/lib/format-money";
+import type { AppLocale } from "@/lib/i18n/types";
 import {
   ContractStatus,
   JobStatus,
@@ -6,16 +8,6 @@ import {
   UserRole,
   VerificationStatus
 } from "@acme/types";
-
-function money(amount: unknown, currency = "USD"): string {
-  const n = typeof amount === "number" ? amount : Number(amount);
-  if (Number.isNaN(n)) return "—";
-  try {
-    return new Intl.NumberFormat(undefined, { style: "currency", currency }).format(n);
-  } catch {
-    return `${currency} ${n.toFixed(2)}`;
-  }
-}
 
 export type AdminOverviewData = {
   counts: {
@@ -61,7 +53,7 @@ export type AdminOverviewData = {
   }>;
 };
 
-export async function getAdminOverviewData(): Promise<AdminOverviewData> {
+export async function getAdminOverviewData(locale: AppLocale): Promise<AdminOverviewData> {
   const startOfDay = new Date();
   startOfDay.setHours(0, 0, 0, 0);
 
@@ -150,7 +142,10 @@ export async function getAdminOverviewData(): Promise<AdminOverviewData> {
   ]);
 
   const sum = donationAgg._sum.amount;
-  const donationTotal = sum != null ? money(sum) : money(0);
+  const donationTotal =
+    sum != null
+      ? formatMoneyAmount(sum, "USD", { locale })
+      : formatMoneyAmount(0, "USD", { locale });
 
   const subMap = Object.fromEntries(subscriptionGroups.map((g) => [g.status, g._count.id])) as Partial<
     Record<SubscriptionStatus, number>
@@ -180,7 +175,7 @@ export async function getAdminOverviewData(): Promise<AdminOverviewData> {
     id: b.id,
     jobTitle: b.job.title,
     freelancerUsername: b.freelancer.username,
-    amountLabel: money(b.bidAmount, b.job.currency ?? "USD"),
+    amountLabel: formatMoneyAmount(b.bidAmount, b.job.currency ?? "USD", { locale }),
     status: b.status,
     createdAt: b.createdAt
   }));
@@ -194,7 +189,7 @@ export async function getAdminOverviewData(): Promise<AdminOverviewData> {
 
   const recentDonations = recentDonationsRaw.map((d) => ({
     id: d.id,
-    amountLabel: money(d.amount, d.currency ?? "USD"),
+    amountLabel: formatMoneyAmount(d.amount, d.currency ?? "USD", { locale }),
     email: d.user?.email ?? null,
     createdAt: d.createdAt
   }));

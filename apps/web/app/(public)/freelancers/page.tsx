@@ -4,7 +4,9 @@ import { searchFreelancersSchema } from "@acme/validators";
 import { WorkMode } from "@acme/types";
 import { FreelancersBrowseList, type PublicFreelancerCard } from "@/features/public/components/FreelancersBrowseList";
 import { FreelancersPublicEmpty } from "@/features/public/components/FreelancersPublicEmpty";
+import { formatMoneyAmount, formatMoneyRange, normalizeCurrencyCode } from "@/lib/format-money";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
+import type { AppLocale } from "@/lib/i18n/types";
 import { CategoryService } from "@/server/services/category.service";
 import { GeoService } from "@/server/services/geo.service";
 import type { FreelancerSearchItem, JobSearchItem } from "@/server/services/search.service";
@@ -82,19 +84,28 @@ function mapResponseMinutes(f: PublicFreelancerCard): number {
   return 240;
 }
 
-function formatBudget(job: JobSearchItem, t: (key: string, values?: Record<string, string | number>) => string): string {
+function formatBudget(
+  job: JobSearchItem,
+  t: (key: string, values?: Record<string, string | number>) => string,
+  locale: AppLocale
+): string {
+  const cur = normalizeCurrencyCode(job.currency ?? "IDR");
+  const frac = cur === "IDR" ? 0 : 2;
+  const fmtOpts = { locale, maximumFractionDigits: frac } as const;
+
   const min = job.budgetMin != null ? Number(job.budgetMin) : null;
   const max = job.budgetMax != null ? Number(job.budgetMax) : null;
-  const currency = job.currency || "IDR";
-  const format = (value: number) =>
-    new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency,
-      maximumFractionDigits: 0
-    }).format(value);
-  if (Number.isFinite(min) && Number.isFinite(max)) return `${format(min as number)} - ${format(max as number)}`;
-  if (Number.isFinite(min)) return t("public.jobDetail.budgetFrom", { amount: format(min as number) });
-  if (Number.isFinite(max)) return t("public.jobDetail.budgetUpTo", { amount: format(max as number) });
+  const hasMin = min != null && Number.isFinite(min);
+  const hasMax = max != null && Number.isFinite(max);
+
+  if (hasMin && hasMax) {
+    const range = formatMoneyRange(min!, max!, cur, fmtOpts);
+    return range ?? t("public.freelancers.rateOnRequest");
+  }
+  if (hasMin)
+    return t("public.jobDetail.budgetFrom", { amount: formatMoneyAmount(min, cur, fmtOpts) });
+  if (hasMax)
+    return t("public.jobDetail.budgetUpTo", { amount: formatMoneyAmount(max, cur, fmtOpts) });
   return t("public.freelancers.rateOnRequest");
 }
 
@@ -429,7 +440,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
                 <Link key={job.id} href={`/jobs/${job.id}` as Route} className="block rounded-lg border border-slate-200 px-3 py-2.5 hover:border-slate-300">
                   <p className="line-clamp-1 text-sm font-semibold text-slate-900">{job.title}</p>
                   <p className="mt-1 text-xs text-slate-600">
-                    {formatBudget(job, t)} · {job.city || workModeLabel(job.workMode, t)} · {relativeTime(job.createdAt, locale)}
+                    {formatBudget(job, t, locale)} · {job.city || workModeLabel(job.workMode, t)} · {relativeTime(job.createdAt, locale)}
                   </p>
                 </Link>
               ))}

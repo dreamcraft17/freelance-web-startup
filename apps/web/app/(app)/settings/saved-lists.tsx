@@ -4,40 +4,36 @@ import { getSessionFromCookies, sessionToActor } from "@src/lib/auth";
 import { SavedFreelancerUnsaveButton, SavedJobUnsaveButton } from "@/features/saved/components/SavedListRefreshButtons";
 import { SavedItemsService } from "@/server/services/saved-items.service";
 import { SettingsSectionCard } from "@/components/settings/SettingsSectionCard";
+import { formatMoneyAmount } from "@/lib/format-money";
+import { getServerTranslator } from "@/lib/i18n/server-translator";
+import type { AppLocale } from "@/lib/i18n/types";
 import { Briefcase, Users } from "lucide-react";
 
-function formatMoney(amount: unknown, currency: string): string {
-  const n =
-    amount != null && typeof (amount as { toString?: () => string }).toString === "function"
-      ? Number(amount)
-      : NaN;
-  if (!Number.isFinite(n)) return "—";
-  try {
-    return new Intl.NumberFormat(undefined, { style: "currency", currency, maximumFractionDigits: 0 }).format(n);
-  } catch {
-    return `${n} ${currency}`;
-  }
-}
-
-function budgetLine(job: {
-  budgetMin: unknown;
-  budgetMax: unknown;
-  currency: string;
-  budgetType: string;
-}): string {
+function budgetLine(
+  job: {
+    budgetMin: unknown;
+    budgetMax: unknown;
+    currency: string;
+    budgetType: string;
+  },
+  locale: AppLocale
+): string {
   const min = job.budgetMin;
   const max = job.budgetMax;
+  const opt = { locale, maximumFractionDigits: 0 } as const;
   if (min != null && max != null) {
-    return `${formatMoney(min, job.currency)} – ${formatMoney(max, job.currency)}`;
+    return `${formatMoneyAmount(min, job.currency, opt)} – ${formatMoneyAmount(max, job.currency, opt)}`;
   }
-  if (min != null) return `From ${formatMoney(min, job.currency)}`;
-  if (max != null) return `Up to ${formatMoney(max, job.currency)}`;
+  if (min != null) return `From ${formatMoneyAmount(min, job.currency, opt)}`;
+  if (max != null) return `Up to ${formatMoneyAmount(max, job.currency, opt)}`;
   return String(job.budgetType).replace(/_/g, " ");
 }
 
 export async function SavedListsSection() {
   const session = await getSessionFromCookies();
   if (!session) return null;
+
+  const { locale } = await getServerTranslator();
 
   const actor = sessionToActor(session);
   const savedItems = new SavedItemsService();
@@ -120,7 +116,7 @@ export async function SavedListsSection() {
                         </Link>
                       </p>
                       <p className="mt-1 text-xs text-slate-500">
-                        {budgetLine(job)} · {job.workMode}
+                        {budgetLine(job, locale)} · {job.workMode}
                         {job.city ? ` · ${job.city}` : ""}
                         {job.status !== "OPEN" ? ` · ${job.status}` : ""}
                       </p>

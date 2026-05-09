@@ -17,6 +17,8 @@ import {
 import type { FreelancerProposalPlaybookSection } from "@/components/onboarding/FreelancerProposalPlaybook";
 import { FreelancerProposalPlaybook } from "@/components/onboarding/FreelancerProposalPlaybook";
 import { ActivationChecklistCard, type ActivationChecklistStepVm } from "@/components/onboarding/ActivationChecklistCard";
+import { formatMoneyAmount } from "@/lib/format-money";
+import type { AppLocale } from "@/lib/i18n/types";
 import { cn } from "@/lib/utils";
 import { MarketplaceLiquidityHints } from "@/components/onboarding/MarketplaceLiquidityHints";
 import { DashboardEmptyState } from "./DashboardEmptyState";
@@ -143,6 +145,7 @@ type ActivityItem =
   | { kind: "contract"; at: Date; contract: FreelancerDashboardContract };
 
 type FreelancerDashboardProps = {
+  locale: AppLocale;
   welcomeTitle: string;
   subtitle: string;
   hasProfile: boolean;
@@ -198,19 +201,6 @@ type FreelancerDashboardProps = {
   };
 };
 
-function money(amount: unknown, currency: string): string {
-  const n =
-    amount != null && typeof (amount as { toString?: () => string }).toString === "function"
-      ? Number(amount)
-      : NaN;
-  if (!Number.isFinite(n)) return "—";
-  try {
-    return new Intl.NumberFormat(undefined, { style: "currency", currency, maximumFractionDigits: 0 }).format(n);
-  } catch {
-    return `${n} ${currency}`;
-  }
-}
-
 function formatShortDate(d: Date): string {
   return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric" }).format(d);
 }
@@ -231,6 +221,7 @@ const surfaceCard =
   "rounded-3xl border border-slate-200/75 bg-white p-6 shadow-[0_16px_48px_-36px_rgba(15,23,42,0.35)] md:p-7";
 
 export function FreelancerDashboard({
+  locale,
   welcomeTitle,
   subtitle,
   hasProfile,
@@ -469,7 +460,7 @@ export function FreelancerDashboard({
                           {item.bid.job.title}
                         </Link>
                         <p className="mt-1 text-xs leading-relaxed text-slate-600">
-                          {item.bid.status.replace(/_/g, " ")} · {money(item.bid.bidAmount, item.bid.job.currency)}
+                          {item.bid.status.replace(/_/g, " ")} · {formatMoneyAmount(item.bid.bidAmount, item.bid.job.currency, { locale, maximumFractionDigits: 0 })}
                           {item.bid.estimatedDays != null ? ` · ~${item.bid.estimatedDays}d` : null}
                         </p>
                       </div>

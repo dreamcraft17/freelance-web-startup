@@ -2,6 +2,8 @@ import Link from "next/link";
 import type { Route } from "next";
 import { MapPin, Navigation, Radar, Sparkles, Users } from "lucide-react";
 import { DashboardEmptyState } from "@/components/dashboard/DashboardEmptyState";
+import type { AppLocale } from "@/lib/i18n/types";
+import { defaultFreelancerRateCurrency, formatMoneyAmount } from "@/lib/format-money";
 import { cn } from "@/lib/utils";
 
 export type ClientNearbyDiscovery = "geo" | "city" | "none";
@@ -23,6 +25,7 @@ export type ClientNearbyFreelancerRow = {
 };
 
 type ClientNearbyTalentViewProps = {
+  locale: AppLocale;
   discovery: ClientNearbyDiscovery;
   hasProfile: boolean;
   areaLabel: string | null;
@@ -51,15 +54,9 @@ function workModeLabel(mode: string): string {
   }
 }
 
-function formatHourly(rate: number | null): string | null {
+function formatHourly(rate: number | null, locale: AppLocale): string | null {
   if (rate == null || !Number.isFinite(rate)) return null;
-  try {
-    return new Intl.NumberFormat(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(
-      rate
-    );
-  } catch {
-    return `$${Math.round(rate)}`;
-  }
+  return formatMoneyAmount(rate, defaultFreelancerRateCurrency(), { locale, maximumFractionDigits: 0 });
 }
 
 function initials(name: string): string {
@@ -70,6 +67,7 @@ function initials(name: string): string {
 }
 
 export function ClientNearbyTalentView({
+  locale,
   discovery,
   hasProfile,
   areaLabel,
@@ -239,7 +237,7 @@ export function ClientNearbyTalentView({
         <ul className="grid gap-4 sm:grid-cols-2">
           {freelancers.map((f) => {
             const dist = formatDistance(f.distanceKm);
-            const hourly = formatHourly(f.hourlyRate);
+            const hourly = formatHourly(f.hourlyRate, locale);
             const locationLine = [f.city, f.country].filter(Boolean).join(", ") || "Location on request";
             return (
               <li key={f.id}>

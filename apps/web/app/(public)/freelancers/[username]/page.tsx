@@ -17,6 +17,7 @@ import { db } from "@acme/database";
 import { getSessionFromCookies } from "@src/lib/auth";
 import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
 import { ModerationReportButton } from "@/features/moderation/components/ModerationReportButton";
+import { defaultFreelancerRateCurrency, formatMoneyAmount } from "@/lib/format-money";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
 import {
   NW_BADGE_NEUTRAL,
@@ -35,7 +36,7 @@ type PageProps = {
 };
 
 export default async function FreelancerPublicProfilePage({ params }: PageProps) {
-  const { t } = await getServerTranslator();
+  const { t, locale } = await getServerTranslator();
   const { username: raw } = await params;
   const username = raw?.trim() ?? "";
   if (!username) notFound();
@@ -125,9 +126,7 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
   const rateValue = profile.hourlyRate ?? profile.fixedStartingPrice;
   const hasRate = rateValue != null;
   const rateText = hasRate
-    ? new Intl.NumberFormat(undefined, { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(
-        Number(rateValue)
-      )
+    ? formatMoneyAmount(Number(rateValue), defaultFreelancerRateCurrency(), { locale, maximumFractionDigits: 0 })
     : t("public.freelancerProfile.rateOnRequest");
   const ratingText =
     profile.averageReviewRating != null && Number.isFinite(profile.averageReviewRating)

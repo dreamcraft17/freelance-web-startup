@@ -1,7 +1,7 @@
 # Production deploy checklist (web + database)
 
-> **Doc revision:** v4  
-> Last synchronized: 2026-05-09 (e2e harness: CSRF mint + cookie jar; DB must have categories via seed).
+> **Doc revision:** v5  
+> Last synchronized: 2026-05-09 (troubleshooting: bersihkan `apps/web/.next` + build ulang jika dev/API mengembalikan 500 dengan `Cannot find module './vendor-chunks/jose@…'`).
 
 Checklist singkat sebelum merilis NearWork ke lingkungan produksi. Sesuaikan penyedia hosting (mis. Vercel) dengan variabel yang sama di dashboard mereka.
 
@@ -25,6 +25,10 @@ Dari root monorepo:
 - [ ] `pnpm --filter @acme/web build`
 
 > Skrip `build` web sudah menjalankan `prisma generate` lewat filter database; tetap jalankan `db:generate`/`migrate:deploy` di pipeline deploy Anda agar urutan konsisten dengan DB yang dipakai runtime.
+
+### Dev / CI: artefak `.next` tidak selaras
+
+Setelah mengganti dependensi atau jika beberapa route API mengembalikan **500 halaman HTML** (bukan JSON) dan log menunjukkan `Cannot find module './vendor-chunks/jose@…'`, hapus cache build lalu bangun ulang: `rm -rf apps/web/.next && pnpm --filter @acme/web build`. Untuk **`pnpm test:e2e`**, jalankan terhadap server yang memakai artefak segar (dev dimulai ulang setelah clean build, atau `next start` setelah `build`).
 
 ## Vercel monorepo settings (pilih salah satu)
 
