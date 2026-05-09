@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v83  
-> Last synchronized: 2026-05-09 (dashboard client/freelancer: stat grid + backlog diskusi terjemahan lengkap).
+> **Doc revision:** v84  
+> Last synchronized: 2026-05-09 (freelancer route shell: sidebar premium + pencarian job + badge real; dasbor konten terstruktur).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,7 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Freelancer UX shell refresh (2026-05-09):** pengalaman rute freelancer membedakan pola visual “premium workspace” dibanding tenant klien: sidebar mengambang, pencarian job global di desktop, serta indikator inbox/notifikasi memakai data unread/awaiting reply services; kartu onboarding + playbook kini menonjol di halaman utama.
 - **Dashboard liquidity cues (2026-05-09):** homepage role dashboards (`/client`, `/freelancer`) kini memasukkan backlog diskusi (awaiting reply) sebagai stat utama dengan copy terlokalisasi; freelancer mendapat dorongan aksi cepat menuju inbox saat ada balasan tertunda.
 - **Conversion polish — proposal & messages (2026-05-08):** alur inti marketplace diperhalus tanpa billing: panduan ringan di form proposal, review proposal owner (kedalaman/compare + diskusi menonjol), konteks utas pesan terikat job + status listing/proposal + micro-CTA langkah berikutnya; smoke HTTP menambahkan skenario klien membuka utas `JOB` dan mengirim pesan setelah bid masuk (dengan CSRF).
 - **Activation & operator docs (2026-05-08):** dashboard klien/freelancer memandu langkah awal berbasis data akun (profil, job, proposal, diskusi); surface pesan/notifikasi memakai string terlokalisasi; publik `/jobs` & `/freelancers` memperjelas konteks kosong (apa/mengapa/langkah berikutnya). Rujukan deploy: `docs/deploy-checklist.md`.

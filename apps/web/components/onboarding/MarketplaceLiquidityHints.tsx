@@ -12,7 +12,7 @@ export function MarketplaceLiquidityHints({ title, intro, bullets, footer }: Pro
   return (
     <section
       aria-label={title}
-      className="rounded-xl border border-slate-200/90 bg-[#faf9ff]/80 px-4 py-4 md:px-5 md:py-5"
+      className="rounded-3xl border border-slate-200/82 bg-gradient-to-b from-[#faf9ff] to-white px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] md:px-6 md:py-6"
     >
       <h2 className="text-sm font-semibold leading-snug text-slate-900">{title}</h2>
       <p className="mt-2 text-xs leading-relaxed text-slate-600 md:text-[13px]">{intro}</p>

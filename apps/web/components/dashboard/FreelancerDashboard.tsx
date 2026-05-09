@@ -2,9 +2,9 @@ import Link from "next/link";
 import type { Route } from "next";
 import {
   ArrowRight,
+  BadgeCheck,
   Briefcase,
   CalendarClock,
-  ClipboardList,
   Compass,
   FileText,
   Inbox,
@@ -14,17 +14,16 @@ import {
   UserRound,
   Zap
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import type { FreelancerProposalPlaybookSection } from "@/components/onboarding/FreelancerProposalPlaybook";
+import { FreelancerProposalPlaybook } from "@/components/onboarding/FreelancerProposalPlaybook";
 import { ActivationChecklistCard, type ActivationChecklistStepVm } from "@/components/onboarding/ActivationChecklistCard";
+import { cn } from "@/lib/utils";
 import { MarketplaceLiquidityHints } from "@/components/onboarding/MarketplaceLiquidityHints";
 import { DashboardEmptyState } from "./DashboardEmptyState";
-import { DashboardStatCard } from "./DashboardStatCard";
+import { FreelancerDashboardHero, type FreelancerHeroStatVm } from "./FreelancerDashboardHero";
 
 export type FreelancerDashboardCopy = {
-  dashboardKicker: string;
   browseJobsCta: string;
-  overviewTitle: string;
-  overviewSubtitle: string;
   quickActionsHeading: string;
   statActiveBids: string;
   statActiveContracts: string;
@@ -68,6 +67,30 @@ export type FreelancerDashboardCopy = {
   openJobsEmptyKicker: string;
   nextActionAwaitingBanner: string;
   openMessagesCta: string;
+  pulseStripTitle: string;
+  playbookTitle: string;
+  playbookIntro: string;
+  playbookFooter: string;
+  pulseQuotaLabel: string;
+  pulseProfileLabel: string;
+  pulseAwaitingLabel: string;
+  snapshotTitle: string;
+  snapshotSubtitle: string;
+  snapshotBidUpdatesLabel: string;
+  snapshotAcceptedLabel: string;
+  snapshotAwaitingLabel: string;
+  snapshotSavedLabel: string;
+  conversationsTitle: string;
+  conversationsSubtitle: string;
+  conversationsSeeAll: string;
+  conversationsEmptyTitle: string;
+  conversationsEmptyBody: string;
+  skillsTitle: string;
+  skillsSubtitle: string;
+  skillsEmptyBody: string;
+  skillsYearsShort: string;
+  heroMotivation: string;
+  heroTrustCaption: string;
 };
 
 export type FreelancerDashboardBid = {
@@ -104,6 +127,17 @@ export type FreelancerOpenJob = {
   city: string | null;
 };
 
+export type FreelancerSkillChipVm = {
+  name: string;
+  years: number | null;
+};
+
+export type FreelancerConversationVm = {
+  threadId: string;
+  title: string;
+  updatedAt: Date;
+};
+
 type ActivityItem =
   | { kind: "bid"; at: Date; bid: FreelancerDashboardBid }
   | { kind: "contract"; at: Date; contract: FreelancerDashboardContract };
@@ -124,6 +158,22 @@ type FreelancerDashboardProps = {
     threadsAwaiting: string;
     threadsAwaitingHint: string;
   };
+  heroStats: FreelancerHeroStatVm[];
+  heroTrustPills: string[];
+  proposalPlaybook: {
+    title: string;
+    intro: string;
+    footer: string;
+    sections: FreelancerProposalPlaybookSection[];
+  };
+  snapshot: {
+    bidUpdates7d: string;
+    acceptedBids: string;
+    awaitingReplyThreads: string;
+    savedByClients: string;
+  };
+  skills: FreelancerSkillChipVm[];
+  conversations: FreelancerConversationVm[];
   recentBids: FreelancerDashboardBid[];
   recentContracts: FreelancerDashboardContract[];
   openJobs: FreelancerOpenJob[];
@@ -174,23 +224,11 @@ function buildActivity(bids: FreelancerDashboardBid[], contracts: FreelancerDash
   return items.slice(0, 8);
 }
 
-function sectionLabel(title: string, subtitle?: string) {
-  return (
-    <div className="min-w-0">
-      <h2 className="text-xs font-medium uppercase tracking-wide text-slate-500">{title}</h2>
-      {subtitle ? <p className="mt-0.5 text-sm leading-snug text-slate-600">{subtitle}</p> : null}
-    </div>
-  );
-}
-
 const linkClass =
   "text-sm font-medium text-[#3525cd] underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/25 focus-visible:ring-offset-2 rounded-sm";
 
-const panelClass =
-  "rounded-2xl border border-slate-200/85 bg-white p-5 shadow-[0_2px_12px_-4px_rgba(15,23,42,0.08)] md:p-6";
-
-const browseJobsCtaClass =
-  "inline-flex w-full items-center justify-center gap-2 rounded-lg border-2 border-[#3525cd] bg-white px-5 py-3 text-base font-semibold text-[#3525cd] shadow-sm transition hover:bg-[#3525cd]/[0.06] sm:w-auto sm:min-w-[11rem] sm:px-6";
+const surfaceCard =
+  "rounded-3xl border border-slate-200/75 bg-white p-6 shadow-[0_16px_48px_-36px_rgba(15,23,42,0.35)] md:p-7";
 
 export function FreelancerDashboard({
   welcomeTitle,
@@ -199,6 +237,12 @@ export function FreelancerDashboard({
   profileCompleteness,
   showStrongProfileCard,
   stats,
+  heroStats,
+  heroTrustPills,
+  proposalPlaybook,
+  snapshot,
+  skills,
+  conversations,
   recentBids,
   recentContracts,
   openJobs,
@@ -218,111 +262,55 @@ export function FreelancerDashboard({
   ];
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
-      <header className="rounded-2xl border border-slate-200/85 bg-white p-6 shadow-[0_2px_12px_-4px_rgba(15,23,42,0.08)] md:p-8">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
-          <div className="min-w-0 space-y-2">
-            <p className="text-xs font-medium uppercase tracking-[0.14em] text-[#3525cd]/85">{copy.dashboardKicker}</p>
-            <h1 className="text-2xl font-semibold tracking-tight text-slate-900 md:text-[1.65rem] md:leading-snug">
-              {welcomeTitle}
-            </h1>
-            <p className="max-w-lg text-sm leading-relaxed text-slate-600 md:text-[15px]">{subtitle}</p>
+    <div className="mx-auto max-w-6xl space-y-8 md:space-y-10">
+      <FreelancerDashboardHero
+        welcomeTitle={welcomeTitle}
+        subtitle={subtitle}
+        motivation={copy.heroMotivation}
+        browseJobsCta={copy.browseJobsCta}
+        stats={heroStats}
+        trustLine={copy.heroTrustCaption}
+        trustPills={heroTrustPills}
+      />
+
+      {hasProfile && attention.awaitingReplyThreads > 0 ? (
+        <div className="flex flex-col gap-3 rounded-3xl border border-amber-200/80 bg-gradient-to-r from-amber-50/95 to-white px-5 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between md:px-6">
+          <div className="flex items-start gap-3">
+            <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-amber-100/90 text-amber-900">
+              <MessageCircle className="h-5 w-5" aria-hidden />
+            </span>
+            <p className="text-sm leading-relaxed text-amber-950/90">{copy.nextActionAwaitingBanner}</p>
           </div>
-          <Link href={"/jobs" as Route} className={browseJobsCtaClass}>
-            <Compass className="h-5 w-5 shrink-0" aria-hidden />
-            {copy.browseJobsCta}
+          <Link
+            href={"/messages" as Route}
+            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-[#3525cd] px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-[#3525cd]/25 transition hover:bg-[#2d1fb0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/40 focus-visible:ring-offset-2"
+          >
+            {copy.openMessagesCta}
+            <ArrowRight className="h-4 w-4 opacity-90" aria-hidden />
           </Link>
         </div>
-      </header>
+      ) : null}
 
-      <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
-        <ActivationChecklistCard
-          title={activationChecklist.title}
-          intro={activationChecklist.intro}
-          steps={activationChecklist.steps}
-          allCompleteBanner={activationChecklist.allCompleteBanner}
-        />
-        <MarketplaceLiquidityHints
-          title={liquidityTips.title}
-          intro={liquidityTips.intro}
-          bullets={liquidityTips.bullets}
-          footer={liquidityTips.footer}
-        />
-      </div>
-
-      <section aria-label="Overview and actions" className={panelClass}>
-        {sectionLabel(copy.overviewTitle, copy.overviewSubtitle)}
-
-        <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
-          <DashboardStatCard
-            variant="emphasized"
-            label={copy.statActiveBids}
-            value={stats.activeBids}
-            icon={Target}
+      <div className="grid gap-6 lg:grid-cols-12 lg:items-start">
+        <div className="space-y-6 lg:col-span-7">
+          <ActivationChecklistCard
+            title={activationChecklist.title}
+            intro={activationChecklist.intro}
+            steps={activationChecklist.steps}
+            allCompleteBanner={activationChecklist.allCompleteBanner}
+            variant="journey"
           />
-          <DashboardStatCard
-            variant="emphasized"
-            label={copy.statActiveContracts}
-            value={stats.activeContracts}
-            icon={Briefcase}
-          />
-          <DashboardStatCard
-            variant="emphasized"
-            label={copy.statAwaitingReplies}
-            value={stats.threadsAwaiting}
-            hint={stats.threadsAwaitingHint}
-            icon={MessageCircle}
-          />
-          <DashboardStatCard
-            variant="emphasized"
-            label={copy.statRemainingQuota}
-            value={stats.bidQuotaRemaining}
-            hint={stats.bidQuotaHint}
-            icon={Zap}
-          />
-          <DashboardStatCard
-            variant="emphasized"
-            label={copy.statProfileCompletion}
-            value={stats.profileReadiness}
-            hint={stats.profileHint}
-            icon={UserRound}
-          />
-        </div>
-
-        {hasProfile && attention.awaitingReplyThreads > 0 ? (
-          <div className="mt-4 flex flex-col gap-3 rounded-xl border border-amber-200/85 bg-gradient-to-br from-amber-50/90 to-white px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm text-amber-950/90">{copy.nextActionAwaitingBanner}</p>
-            <Link
-              href={"/messages" as Route}
-              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-[#3525cd] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#2d1fb0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/35 focus-visible:ring-offset-2"
-            >
-              {copy.openMessagesCta}
-              <ArrowRight className="h-4 w-4 opacity-90" aria-hidden />
-            </Link>
-          </div>
-        ) : null}
-
-        <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50/70 px-4 py-3">
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{copy.attentionKicker}</p>
-          <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-700">
-            <span>{copy.attentionAccepted.split("{{count}}").join(String(attention.acceptedBids))}</span>
-            <span>{copy.attentionAwaiting.split("{{count}}").join(String(attention.awaitingReplyThreads))}</span>
-            <span>{copy.attentionProposalUpdates.split("{{count}}").join(String(attention.proposalUpdates))}</span>
-          </div>
-        </div>
-
-        {showStrongProfileCard ? (
-          <div className="mt-5 border-t border-slate-100 pt-5">
-            <div className="flex flex-col gap-3 rounded-lg border border-slate-200 border-l-[3px] border-l-[#3525cd] bg-slate-50/70 p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+          {showStrongProfileCard ? (
+            <div className="flex flex-col gap-4 rounded-3xl border border-[#3525cd]/16 bg-gradient-to-br from-[#3525cd]/[0.07] to-white p-5 shadow-[0_12px_40px_-30px_rgba(53,37,205,0.45)] sm:flex-row sm:items-center sm:justify-between sm:gap-5 md:p-6">
               <div className="flex min-w-0 gap-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white text-[#3525cd] ring-1 ring-slate-200/80">
-                  <Sparkles className="h-4 w-4" strokeWidth={1.75} aria-hidden />
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white text-[#3525cd] shadow-sm ring-1 ring-slate-200/85">
+                  <Sparkles className="h-[22px] w-[22px]" strokeWidth={1.75} aria-hidden />
                 </span>
                 <div className="min-w-0">
-                  <h3 className="text-sm font-semibold text-slate-900">
+                  <h3 className="text-[15px] font-semibold text-slate-900">
                     {hasProfile ? copy.profileCardTitleBoost : copy.profileCardTitleNew}
                   </h3>
-                  <p className="mt-0.5 text-xs leading-relaxed text-slate-600 sm:text-sm">
+                  <p className="mt-1 text-sm leading-relaxed text-slate-600">
                     {hasProfile
                       ? copy.profileCardBodyBoost.split("{{percent}}").join(String(profileCompleteness ?? 0))
                       : copy.profileCardBodyNew}
@@ -331,65 +319,124 @@ export function FreelancerDashboard({
               </div>
               <Link
                 href={"/freelancer/profile" as Route}
-                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-[#3525cd] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#2d1fb0]"
+                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-[#3525cd] px-5 py-2.5 text-sm font-semibold text-white shadow-md transition hover:bg-[#2d1fb0]"
               >
                 {copy.profileCardCta}
                 <ArrowRight className="h-4 w-4 opacity-90" aria-hidden />
               </Link>
             </div>
-          </div>
-        ) : null}
+          ) : null}
 
-        <div className="mt-5 border-t border-slate-100 pt-5">
-          <h3 className="text-xs font-medium uppercase tracking-wide text-slate-500">{copy.quickActionsHeading}</h3>
-          <ul className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-            {quickLinks.map((item) => (
-              <li key={item.label}>
-                <Link
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition",
-                    item.primary
-                      ? "bg-[#3525cd]/10 text-[#3525cd] ring-1 ring-[#3525cd]/15 hover:bg-[#3525cd]/14"
-                      : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
-                  )}
-                >
-                  <item.icon
-                    className={cn("h-4 w-4 shrink-0", item.primary ? "text-[#3525cd]" : "text-slate-400")}
-                    strokeWidth={1.5}
-                    aria-hidden
-                  />
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <div className={cn(surfaceCard)}>
+            <div className="flex flex-wrap items-end justify-between gap-3 border-b border-slate-100 pb-5">
+              <div>
+                <h2 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">{copy.pulseStripTitle}</h2>
+                <div className="mt-4 flex flex-wrap gap-2 md:gap-3">
+                  <span className="inline-flex items-center gap-2 rounded-2xl border border-slate-200/85 bg-slate-50/80 px-3 py-2 text-xs shadow-sm md:text-[13px]">
+                    <Target className="h-4 w-4 text-[#3525cd]" aria-hidden />
+                    <span className="font-medium text-slate-700">{copy.statActiveBids}</span>
+                    <span className="font-semibold tabular-nums text-slate-900">{stats.activeBids}</span>
+                  </span>
+                  <span className="inline-flex items-center gap-2 rounded-2xl border border-slate-200/85 bg-slate-50/80 px-3 py-2 text-xs shadow-sm md:text-[13px]">
+                    <Zap className="h-4 w-4 text-amber-600" aria-hidden />
+                    <span className="font-medium text-slate-700">{copy.pulseQuotaLabel}</span>
+                    <span className="font-semibold tabular-nums text-slate-900">{stats.bidQuotaRemaining}</span>
+                  </span>
+                  <span className="inline-flex items-center gap-2 rounded-2xl border border-slate-200/85 bg-slate-50/80 px-3 py-2 text-xs shadow-sm md:text-[13px]">
+                    <UserRound className="h-4 w-4 text-indigo-600" aria-hidden />
+                    <span className="font-medium text-slate-700">{copy.pulseProfileLabel}</span>
+                    <span className="font-semibold tabular-nums text-slate-900">{stats.profileReadiness}</span>
+                  </span>
+                  <span className="inline-flex items-center gap-2 rounded-2xl border border-slate-200/85 bg-slate-50/80 px-3 py-2 text-xs shadow-sm md:text-[13px]">
+                    <MessageCircle className="h-4 w-4 text-sky-600" aria-hidden />
+                    <span className="font-medium text-slate-700">{copy.pulseAwaitingLabel}</span>
+                    <span className="font-semibold tabular-nums text-slate-900">{stats.threadsAwaiting}</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 rounded-2xl border border-slate-100 bg-gradient-to-br from-slate-50/90 to-white px-4 py-4 md:flex md:flex-wrap md:items-center md:justify-between md:gap-6">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">{copy.attentionKicker}</p>
+                <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm text-slate-700">
+                  <span>{copy.attentionAccepted.split("{{count}}").join(snapshot.acceptedBids)}</span>
+                  <span>{copy.attentionAwaiting.split("{{count}}").join(snapshot.awaitingReplyThreads)}</span>
+                  <span>{copy.attentionProposalUpdates.split("{{count}}").join(snapshot.bidUpdates7d)}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 border-t border-slate-100 pt-5">
+              <h3 className="text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-500">{copy.quickActionsHeading}</h3>
+              <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+                {quickLinks.map((item) => (
+                  <li key={item.label}>
+                    <Link
+                      href={item.href}
+                      className={cn(
+                        "flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium transition",
+                        item.primary
+                          ? "bg-[#3525cd]/10 text-[#3525cd] ring-1 ring-[#3525cd]/18 hover:bg-[#3525cd]/14"
+                          : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+                      )}
+                    >
+                      <item.icon
+                        className={cn("h-4 w-4 shrink-0", item.primary ? "text-[#3525cd]" : "text-slate-400")}
+                        strokeWidth={1.5}
+                        aria-hidden
+                      />
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
-      </section>
+
+        <div className="space-y-6 lg:col-span-5">
+          <FreelancerProposalPlaybook
+            title={proposalPlaybook.title}
+            intro={proposalPlaybook.intro}
+            sections={proposalPlaybook.sections}
+            footerHint={proposalPlaybook.footer}
+          />
+          <MarketplaceLiquidityHints
+            title={liquidityTips.title}
+            intro={liquidityTips.intro}
+            bullets={liquidityTips.bullets}
+            footer={liquidityTips.footer}
+          />
+        </div>
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-12 lg:items-start">
-        <section className="lg:col-span-7" aria-label="Recent activity">
-          <div className={panelClass}>
+        <section className="lg:col-span-5" aria-label={copy.activityTitle}>
+          <div className={surfaceCard}>
             <div className="flex flex-wrap items-start justify-between gap-2">
-              {sectionLabel(copy.activityTitle, copy.activitySubtitle)}
+              <div>
+                <h2 className="text-lg font-semibold tracking-tight text-slate-900">{copy.activityTitle}</h2>
+                <p className="mt-1 text-sm text-slate-600">{copy.activitySubtitle}</p>
+              </div>
               <Link href={"/freelancer/proposals" as Route} className={linkClass}>
                 {copy.activityViewAll}
               </Link>
             </div>
 
             {!hasProfile && activity.length === 0 ? (
-              <div className="mt-5">
+              <div className="mt-6">
                 <DashboardEmptyState
                   tone="elevated"
                   kicker={copy.activityEmptyKickerProfile}
-                  icon={ClipboardList}
+                  icon={FileText}
                   title={copy.activityEmptyNoProfileTitle}
                   description={copy.activityEmptyNoProfileBody}
                   action={{ label: copy.profileCardCta, href: "/freelancer/profile" }}
                 />
               </div>
             ) : hasProfile && activity.length === 0 ? (
-              <div className="mt-5">
+              <div className="mt-6">
                 <DashboardEmptyState
                   tone="elevated"
                   kicker={copy.activityEmptyKickerTimeline}
@@ -401,32 +448,27 @@ export function FreelancerDashboard({
                 />
               </div>
             ) : (
-              <ul className="mt-5 divide-y divide-slate-100">
+              <ul className="mt-6 divide-y divide-slate-100">
                 {!hasProfile ? (
-                  <li className="pb-3">
-                    <div className="rounded-lg border border-amber-200/80 bg-amber-50/50 px-3 py-2.5 text-xs leading-relaxed text-amber-950">
-                      <span className="font-medium">{copy.profileRequiredBanner}</span>{" "}
+                  <li className="pb-4">
+                    <div className="rounded-2xl border border-amber-200/80 bg-amber-50/50 px-4 py-3 text-xs leading-relaxed text-amber-950">
+                      <span className="font-semibold">{copy.profileRequiredBanner}</span>{" "}
                       <span className="text-amber-900/90">{copy.profileRequiredSub}</span>
                     </div>
                   </li>
                 ) : null}
                 {activity.map((item) =>
                   item.kind === "bid" ? (
-                    <li
-                      key={`bid-${item.bid.id}`}
-                      className="flex flex-wrap items-start justify-between gap-2 py-3 first:pt-0"
-                    >
+                    <li key={`bid-${item.bid.id}`} className="flex flex-wrap items-start justify-between gap-3 py-4 first:pt-0">
                       <div className="min-w-0">
-                        <p className="text-[11px] font-medium uppercase tracking-wide text-slate-500">
-                          {copy.activityKindProposal}
-                        </p>
+                        <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{copy.activityKindProposal}</p>
                         <Link
                           href={`/jobs/${item.bid.job.id}` as Route}
-                          className="mt-0.5 block text-sm font-medium text-slate-900 hover:text-[#3525cd]"
+                          className="mt-0.5 block text-sm font-semibold text-slate-900 hover:text-[#3525cd]"
                         >
                           {item.bid.job.title}
                         </Link>
-                        <p className="mt-0.5 text-xs leading-relaxed text-slate-600">
+                        <p className="mt-1 text-xs leading-relaxed text-slate-600">
                           {item.bid.status.replace(/_/g, " ")} · {money(item.bid.bidAmount, item.bid.job.currency)}
                           {item.bid.estimatedDays != null ? ` · ~${item.bid.estimatedDays}d` : null}
                         </p>
@@ -438,19 +480,17 @@ export function FreelancerDashboard({
                   ) : (
                     <li
                       key={`contract-${item.contract.id}`}
-                      className="flex flex-wrap items-start justify-between gap-2 py-3 first:pt-0"
+                      className="flex flex-wrap items-start justify-between gap-3 py-4 first:pt-0"
                     >
                       <div className="min-w-0">
-                        <p className="text-[11px] font-medium uppercase tracking-wide text-slate-500">
-                          {copy.activityKindContract}
-                        </p>
+                        <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{copy.activityKindContract}</p>
                         <Link
                           href={`/jobs/${item.contract.bid.job.id}` as Route}
-                          className="mt-0.5 block text-sm font-medium text-slate-900 hover:text-[#3525cd]"
+                          className="mt-0.5 block text-sm font-semibold text-slate-900 hover:text-[#3525cd]"
                         >
                           {item.contract.bid.job.title}
                         </Link>
-                        <p className="mt-0.5 text-xs leading-relaxed text-slate-600">
+                        <p className="mt-1 text-xs leading-relaxed text-slate-600">
                           {item.contract.status.replace(/_/g, " ")}
                         </p>
                       </div>
@@ -465,18 +505,128 @@ export function FreelancerDashboard({
           </div>
         </section>
 
-        <section className="lg:col-span-5" aria-label="Open jobs">
-          <div className={panelClass}>
+        <section className="space-y-6 lg:col-span-4" aria-label={copy.snapshotTitle}>
+          <div className={surfaceCard}>
+            <div>
+              <h2 className="text-lg font-semibold tracking-tight text-slate-900">{copy.snapshotTitle}</h2>
+              <p className="mt-1 text-sm leading-relaxed text-slate-600">{copy.snapshotSubtitle}</p>
+            </div>
+            <ul className="mt-5 space-y-4">
+              <li className="flex items-start gap-3">
+                <span className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200/65">
+                  <FileText className="h-[18px] w-[18px]" aria-hidden />
+                </span>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{copy.snapshotBidUpdatesLabel}</p>
+                  <p className="mt-1 text-xl font-semibold tabular-nums text-slate-900">{snapshot.bidUpdates7d}</p>
+                </div>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl bg-[#3525cd]/12 text-[#3525cd] ring-1 ring-[#3525cd]/22">
+                  <BadgeCheck className="h-[18px] w-[18px]" aria-hidden />
+                </span>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{copy.snapshotAcceptedLabel}</p>
+                  <p className="mt-1 text-xl font-semibold tabular-nums text-slate-900">{snapshot.acceptedBids}</p>
+                </div>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl bg-sky-50 text-sky-800 ring-1 ring-sky-200/70">
+                  <MessageCircle className="h-[18px] w-[18px]" aria-hidden />
+                </span>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{copy.snapshotAwaitingLabel}</p>
+                  <p className="mt-1 text-xl font-semibold tabular-nums text-slate-900">{snapshot.awaitingReplyThreads}</p>
+                </div>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl bg-rose-50 text-rose-800 ring-1 ring-rose-200/70">
+                  <Briefcase className="h-[18px] w-[18px]" aria-hidden />
+                </span>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{copy.snapshotSavedLabel}</p>
+                  <p className="mt-1 text-xl font-semibold tabular-nums text-slate-900">{snapshot.savedByClients}</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div className={surfaceCard}>
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h2 className="text-lg font-semibold tracking-tight text-slate-900">{copy.conversationsTitle}</h2>
+                <p className="mt-0.5 text-sm text-slate-600">{copy.conversationsSubtitle}</p>
+              </div>
+              <Link href={"/messages" as Route} className={linkClass}>
+                {copy.conversationsSeeAll}
+              </Link>
+            </div>
+            {conversations.length === 0 ? (
+              <div className="mt-5 rounded-2xl border border-dashed border-slate-200/90 bg-slate-50/50 px-4 py-6 text-center">
+                <p className="text-sm font-semibold text-slate-800">{copy.conversationsEmptyTitle}</p>
+                <p className="mt-2 text-xs leading-relaxed text-slate-600">{copy.conversationsEmptyBody}</p>
+              </div>
+            ) : (
+              <ul className="mt-5 space-y-3">
+                {conversations.map((c) => (
+                  <li key={c.threadId}>
+                    <Link
+                      href={`/messages?thread=${encodeURIComponent(c.threadId)}` as Route}
+                      className="block rounded-2xl border border-slate-100 bg-slate-50/55 px-3.5 py-3 shadow-sm transition hover:border-slate-200 hover:bg-white"
+                    >
+                      <p className="text-sm font-semibold text-slate-900">{c.title}</p>
+                      <p className="mt-1 text-xs text-slate-500">{formatShortDate(c.updatedAt)}</p>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </section>
+
+        <section className="space-y-6 lg:col-span-3" aria-label={copy.skillsTitle}>
+          <div className={surfaceCard}>
+            <div>
+              <h2 className="text-lg font-semibold tracking-tight text-slate-900">{copy.skillsTitle}</h2>
+              <p className="mt-1 text-sm text-slate-600">{copy.skillsSubtitle}</p>
+            </div>
+            {skills.length === 0 ? (
+              <p className="mt-5 rounded-2xl border border-dashed border-slate-200/90 bg-slate-50/50 px-4 py-5 text-sm leading-relaxed text-slate-600">{copy.skillsEmptyBody}</p>
+            ) : (
+              <ul className="mt-5 space-y-4">
+                {skills.map((s) => {
+                  const y = Math.min(10, Math.max(1, s.years ?? 1));
+                  const pct = Math.min(100, Math.max(12, Math.round((y / 10) * 100)));
+                  const yearsSuffix = copy.skillsYearsShort.replace("{{years}}", String(s.years ?? "—"));
+                  return (
+                    <li key={s.name}>
+                      <div className="flex items-center justify-between gap-2 text-sm font-medium text-slate-900">
+                        <span className="truncate">{s.name}</span>
+                        <span className="shrink-0 text-xs tabular-nums text-slate-500">{yearsSuffix}</span>
+                      </div>
+                      <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200/80">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-[#3525cd] to-indigo-400"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+
+          <div className={surfaceCard}>
             <div className="flex flex-wrap items-start justify-between gap-2">
-              {sectionLabel(
-                copy.openJobsTitle,
-                copy.openJobsSubtitle.split("{{count}}").join(String(openTotal))
-              )}
+              <div>
+                <h2 className="text-lg font-semibold tracking-tight text-slate-900">{copy.openJobsTitle}</h2>
+                <p className="mt-1 text-sm text-slate-600">{copy.openJobsSubtitle.split("{{count}}").join(String(openTotal))}</p>
+              </div>
               <Link href={"/jobs" as Route} className={linkClass}>
                 {copy.openJobsSeeAll}
               </Link>
             </div>
-
             {openJobs.length === 0 ? (
               <div className="mt-5">
                 <DashboardEmptyState
@@ -494,10 +644,10 @@ export function FreelancerDashboard({
                   <li key={job.id}>
                     <Link
                       href={`/jobs/${job.id}` as Route}
-                      className="block rounded-lg border border-slate-100 bg-slate-50/50 px-3 py-2.5 transition hover:border-slate-200 hover:bg-slate-50"
+                      className="block rounded-2xl border border-slate-100 bg-slate-50/55 px-3.5 py-3 shadow-sm transition hover:border-slate-200 hover:bg-white"
                     >
-                      <p className="text-sm font-medium leading-snug text-slate-900">{job.title}</p>
-                      <p className="mt-0.5 text-xs text-slate-500">
+                      <p className="text-sm font-semibold leading-snug text-slate-900">{job.title}</p>
+                      <p className="mt-1 text-xs text-slate-500">
                         {job.workMode}
                         {job.city ? ` · ${job.city}` : ""}
                       </p>
