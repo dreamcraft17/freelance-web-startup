@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v78  
-> Last synchronized: 2026-05-09 — public `/jobs` premium marketplace pass (hero, cards, pulse, mobile filters) + listing trust fields from DB.
+> **Doc revision:** v79  
+> Last synchronized: 2026-05-09 — worker loads monorepo `.env` / skips DB sweep cleanly; local dev troubleshooting for Next `.next` cache + DB pool limits.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -281,6 +281,20 @@ pnpm db:migrate
 ```bash
 pnpm dev
 ```
+
+This starts **all** packages that define a `dev` task (web, admin, worker, etc.). The **worker** reads `DATABASE_URL` from the **monorepo root** `.env` or `.env.local` (it does not load `apps/web/.env.local` automatically). If you only need the web UI, run:
+
+```bash
+pnpm --filter @acme/web dev
+```
+
+**Local dev — common noise in logs**
+
+| Symptom | What it usually means |
+|--------|------------------------|
+| `DATABASE_URL` / Prisma errors in **`@acme/worker`** | Root env missing or worker not needed — use root `.env` with `DATABASE_URL`, or run web-only (above). Without DB, the worker idles after a clear warning. |
+| `EMAXCONNSESSION` / `max clients reached` (pool ~15) | Hosted Postgres pooler session limit; reduce concurrent dev tabs/processes, or use a connection string / tier with a higher pool, or a **direct** (non-pooler) URL for local dev. |
+| `Cannot find module './…js'` / `vendor-chunks/jose` under **`apps/web/.next`** | Stale or partial Next build after hot reload — stop dev, run `rm -rf apps/web/.next`, start again. |
 
 ### Type checking
 
