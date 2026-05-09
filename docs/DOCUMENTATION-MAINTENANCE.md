@@ -1,7 +1,7 @@
 # Documentation maintenance (NearWork)
 
-> **Doc revision:** v10  
-> Last synchronized: 2026-05-09 (sinkron dokumentasi untuk premium pass halaman publik `/jobs`).
+> **Doc revision:** v12  
+> Last synchronized: 2026-05-09 (tambahan `docs/deploy-checklist.md` — troubleshooting `.next`/vendor-chunks untuk e2e/API 500).
 
 ## AUTO — wajib untuk AI & kontributor
 

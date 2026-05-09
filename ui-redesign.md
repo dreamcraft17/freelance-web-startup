@@ -1,13 +1,19 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v83  
-> Last synchronized: 2026-05-09 (public `/jobs` — desktop sidebar filter links + pulse empty rows use `rounded-lg` for parity with search + mobile sheet).
+> **Doc revision:** v84  
+> Last synchronized: 2026-05-09 (money display: shared `format-money` helpers align job/contract currency with EN/IDR locale; optional compact IDR copy for Indonesian UI).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-09 — Locale + currency presentation (marketplace-wide)
+
+- **Principle:** job/bid/contract amounts use **stored ISO currency**; UI locale chooses grouping/symbol conventions (`id-ID` grouping for Indonesian app locale; IDR-specific compact helpers where used).
+- **Implementation:** consolidate on `apps/web/lib/format-money.ts` for cards, dashboards, proposals, admin financial tables, and subscription catalog tiles—avoid raw `Intl.NumberFormat(undefined, …)` in product surfaces.
+- **Profile hourly rates:** no per-profile currency column yet; display defaults to **IDR** until schema extends.
 
 ### 2026-05-09 — Public jobs marketplace editorial pass (`/jobs`)
 

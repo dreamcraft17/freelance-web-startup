@@ -7,6 +7,7 @@ import {
   type ClientNearbyDiscovery,
   type ClientNearbyFreelancerRow
 } from "@/components/client-nearby/ClientNearbyTalentView";
+import { getServerTranslator } from "@/lib/i18n/server-translator";
 import { GeoService } from "@/server/services/geo.service";
 import { SearchService } from "@/server/services/search.service";
 
@@ -41,6 +42,8 @@ export default async function ClientNearbyTalentPage({
   if (!session) {
     redirect("/login?returnUrl=/client/nearby");
   }
+
+  const { locale } = await getServerTranslator();
 
   const [sp, profile] = await Promise.all([
     searchParams.then(pick),
@@ -200,6 +203,7 @@ export default async function ClientNearbyTalentPage({
       </header>
 
       <ClientNearbyTalentView
+        locale={locale}
         discovery={discovery}
         hasProfile={hasProfile}
         areaLabel={areaLabel}

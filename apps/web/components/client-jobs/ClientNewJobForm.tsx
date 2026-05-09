@@ -72,7 +72,7 @@ export function ClientNewJobForm({ categories }: ClientNewJobFormProps) {
   const [budgetType, setBudgetType] = useState<BudgetType>(BudgetType.RANGE);
   const [budgetMin, setBudgetMin] = useState("");
   const [budgetMax, setBudgetMax] = useState("");
-  const [currency, setCurrency] = useState("USD");
+  const [currency, setCurrency] = useState("IDR");
   const [workMode, setWorkMode] = useState<WorkMode>(WorkMode.REMOTE);
   const [city, setCity] = useState("");
   const [bidDeadlineLocal, setBidDeadlineLocal] = useState("");
@@ -98,7 +98,7 @@ export function ClientNewJobForm({ categories }: ClientNewJobFormProps) {
       categoryId,
       workMode,
       budgetType,
-      currency: currency.trim().toUpperCase().slice(0, 3) || "USD"
+      currency: currency.trim().toUpperCase().slice(0, 3) || "IDR"
     };
 
     if (subcategoryId) payload.subcategoryId = subcategoryId;
@@ -348,7 +348,7 @@ export function ClientNewJobForm({ categories }: ClientNewJobFormProps) {
                     value={currency}
                     onChange={(e) => setCurrency(e.target.value.toUpperCase())}
                     maxLength={3}
-                    placeholder="USD"
+                    placeholder="IDR"
                     className={inputClass}
                     required
                   />

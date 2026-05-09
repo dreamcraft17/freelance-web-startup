@@ -32,7 +32,7 @@ export default async function FreelancerDashboardPage() {
     redirect("/login?returnUrl=/freelancer");
   }
 
-  const { t } = await getServerTranslator();
+  const { t, locale } = await getServerTranslator();
   const onboardingSvc = new OnboardingActivationService();
   const activationRaw = await onboardingSvc.getFreelancerActivation(session.userId);
   const stepsVm: ActivationChecklistStepVm[] = activationRaw.map((s) => ({
@@ -335,6 +335,7 @@ export default async function FreelancerDashboardPage() {
 
   return (
     <FreelancerDashboard
+      locale={locale}
       welcomeTitle={welcomeTitle}
       subtitle={subtitle}
       hasProfile={hasProfile}

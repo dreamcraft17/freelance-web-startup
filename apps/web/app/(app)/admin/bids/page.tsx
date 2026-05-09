@@ -1,4 +1,6 @@
 import { db } from "@acme/database";
+import { formatMoneyAmount } from "@/lib/format-money";
+import { getServerTranslator } from "@/lib/i18n/server-translator";
 import { BidStatus } from "@acme/types";
 import { AdminEmptyState, AdminPageIntro } from "@/features/admin/components/AdminUi";
 import { AdminBidsFilters } from "@/features/admin/components/bids/AdminBidsFilters";
@@ -9,18 +11,9 @@ type SearchParams = { status?: string; q?: string; freelancer?: string };
 
 const PAGE_LIMIT = 120;
 
-function formatMoney(amount: unknown, currency: string): string {
-  const n = typeof amount === "number" ? amount : Number(amount);
-  if (Number.isNaN(n)) return "—";
-  try {
-    return new Intl.NumberFormat(undefined, { style: "currency", currency }).format(n);
-  } catch {
-    return `${currency} ${n.toFixed(2)}`;
-  }
-}
-
 export default async function AdminBidsPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   await requireAdminAccess("bids");
+  const { locale } = await getServerTranslator();
   const sp = await searchParams;
   const q = sp.q?.trim() || undefined;
   const freelancer = sp.freelancer?.trim() || undefined;
@@ -57,7 +50,7 @@ export default async function AdminBidsPage({ searchParams }: { searchParams: Pr
       freelancerHandle: name ? handle : undefined,
       jobTitle: b.job.title,
       jobSlug: b.job.slug,
-      amountLabel: formatMoney(b.bidAmount, b.job.currency ?? "USD"),
+      amountLabel: formatMoneyAmount(b.bidAmount, b.job.currency ?? "USD", { locale }),
       status: b.status,
       createdAt: b.createdAt
     };

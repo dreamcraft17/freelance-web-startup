@@ -10,7 +10,9 @@ import { JobsMarketplaceMobileFilters } from "@/features/public/components/JobsM
 import { JobsPublicEmpty } from "@/features/public/components/JobsPublicEmpty";
 import { JobsPublicList, type JobsPublicCard } from "@/features/public/components/JobsPublicList";
 import { jobsBrowseQueryString } from "@/features/public/lib/jobs-browse-query";
+import { formatMoneyAmount } from "@/lib/format-money";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
+import type { AppLocale } from "@/lib/i18n/types";
 import { CategoryService } from "@/server/services/category.service";
 import { JobService } from "@/server/services/job.service";
 import { PublicStatsService } from "@/server/services/public-stats.service";
@@ -73,29 +75,17 @@ function initialsFromName(name: string): string {
   return `${parts[0]![0] ?? ""}${parts[parts.length - 1]![0] ?? ""}`.toUpperCase() || "?";
 }
 
-function formatBudgetShort(job: JobsPublicCard, locale: string): string {
+function formatBudgetShort(job: JobsPublicCard, appLocale: AppLocale): string {
   const min = job.budgetMin;
   const max = job.budgetMax;
   const { currency } = job;
-  try {
-    if (min != null && max != null && Number.isFinite(min) && Number.isFinite(max)) {
-      return `${new Intl.NumberFormat(locale === "id" ? "id-ID" : "en-US", {
-        style: "currency",
-        currency,
-        maximumFractionDigits: 0
-      }).format(min)}–${new Intl.NumberFormat(locale === "id" ? "id-ID" : "en-US", {
-        style: "currency",
-        currency,
-        maximumFractionDigits: 0
-      }).format(max)}`;
-    }
-  } catch {
-    /* fall through */
+  if (min != null && max != null && Number.isFinite(min) && Number.isFinite(max)) {
+    return `${formatMoneyAmount(min, currency, { locale: appLocale, maximumFractionDigits: 0, compact: appLocale === "id" })}–${formatMoneyAmount(max, currency, { locale: appLocale, maximumFractionDigits: 0, compact: appLocale === "id" })}`;
   }
   return "—";
 }
 
-function relativeTime(input: string, locale: string): string {
+function relativeTime(input: string, locale: AppLocale): string {
   const date = new Date(input);
   const diff = Date.now() - date.getTime();
   if (!Number.isFinite(diff) || diff < 0) return "";

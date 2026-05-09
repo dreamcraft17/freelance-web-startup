@@ -16,7 +16,9 @@ import { BidConversationAction } from "@/components/client-jobs/BidConversationA
 import { JobService } from "@/server/services/job.service";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { formatMoneyAmount } from "@/lib/format-money";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
+import type { AppLocale } from "@/lib/i18n/types";
 import type { Translator } from "@/lib/i18n/create-translator";
 import { localizedBidStatusLabel } from "@/lib/i18n/marketplace-status-labels";
 import { analyzeCoverLetterCompleteness } from "@/lib/proposals/cover-letter-completeness";
@@ -35,32 +37,26 @@ type PageProps = {
   searchParams: Promise<{ view?: string; from?: string }>;
 };
 
-function formatMoney(amount: unknown, currency: string): string {
-  const n =
-    amount != null && typeof (amount as { toString?: () => string }).toString === "function"
-      ? Number(amount)
-      : NaN;
-  if (!Number.isFinite(n)) return "—";
-  try {
-    return new Intl.NumberFormat(undefined, { style: "currency", currency, maximumFractionDigits: 0 }).format(n);
-  } catch {
-    return `${n} ${currency}`;
-  }
-}
-
-function budgetLine(job: {
-  budgetMin: unknown;
-  budgetMax: unknown;
-  currency: string;
-  budgetType: string;
-}, t: Translator): string {
+function budgetLine(
+  job: {
+    budgetMin: unknown;
+    budgetMax: unknown;
+    currency: string;
+    budgetType: string;
+  },
+  t: Translator,
+  locale: AppLocale
+): string {
   const min = job.budgetMin;
   const max = job.budgetMax;
+  const opt = { locale, maximumFractionDigits: 0 } as const;
   if (min != null && max != null) {
-    return `${formatMoney(min, job.currency)} – ${formatMoney(max, job.currency)}`;
+    return `${formatMoneyAmount(min, job.currency, opt)} – ${formatMoneyAmount(max, job.currency, opt)}`;
   }
-  if (min != null) return t("public.jobDetail.budgetFrom", { amount: formatMoney(min, job.currency) });
-  if (max != null) return t("public.jobDetail.budgetUpTo", { amount: formatMoney(max, job.currency) });
+  if (min != null)
+    return t("public.jobDetail.budgetFrom", { amount: formatMoneyAmount(min, job.currency, opt) });
+  if (max != null)
+    return t("public.jobDetail.budgetUpTo", { amount: formatMoneyAmount(max, job.currency, opt) });
   return job.budgetType.replace(/_/g, " ");
 }
 
@@ -341,7 +337,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
           freelancerName: bid.freelancer.fullName,
           freelancerUsername: bid.freelancer.username,
           freelancerUserId: bid.freelancer.userId,
-          amountLine: formatMoney(bid.bidAmount, job.currency),
+          amountLine: formatMoneyAmount(bid.bidAmount, job.currency, { locale, maximumFractionDigits: 0 }),
           daysLine:
             bid.estimatedDays != null ? t("public.jobDetail.dayTimeline", { count: bid.estimatedDays }) : null,
           completenessPct: pct,
@@ -425,7 +421,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
               <h1 className="text-balance text-3xl font-bold tracking-tight text-slate-950 sm:text-[2.125rem] sm:leading-tight">
                 {job.title}
               </h1>
-              <p className="mt-3 text-xl font-semibold text-slate-900">{budgetLine(job, t)}</p>
+              <p className="mt-3 text-xl font-semibold text-slate-900">{budgetLine(job, t, locale)}</p>
               <p className="mt-3 text-sm font-medium leading-relaxed text-slate-600">
                 {[categoryLabel, job.workMode === "REMOTE"
                   ? t("public.filters.workModeRemote")
@@ -581,7 +577,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
           <div className="mt-5 grid gap-6 lg:grid-cols-3">
             <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-4">
               <p className="text-xs font-semibold text-slate-500">{t("public.jobDetail.budget")}</p>
-              <p className="mt-1 text-lg font-bold text-slate-950">{budgetLine(job, t)}</p>
+              <p className="mt-1 text-lg font-bold text-slate-950">{budgetLine(job, t, locale)}</p>
               {bidDeadline ? (
                 <p className="mt-2 text-xs text-slate-600">{t("public.jobDetail.proposalsClose", { date: bidDeadline })}</p>
               ) : null}
@@ -818,7 +814,9 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
                               </p>
                             </td>
                             <td className="px-3 py-3">
-                              <p className="font-semibold text-slate-900">{formatMoney(bid.bidAmount, job.currency)}</p>
+                              <p className="font-semibold text-slate-900">
+                                {formatMoneyAmount(bid.bidAmount, job.currency, { locale, maximumFractionDigits: 0 })}
+                              </p>
                               {bid.estimatedDays != null ? (
                                 <p className="text-xs text-slate-500">{t("public.jobDetail.dayTimeline", { count: bid.estimatedDays })}</p>
                               ) : null}

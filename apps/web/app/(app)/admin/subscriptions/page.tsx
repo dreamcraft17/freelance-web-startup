@@ -5,6 +5,7 @@ import { SubscriptionPlanCatalog } from "@/features/admin/components/subscriptio
 import { UserSubscriptionsFilters } from "@/features/admin/components/subscriptions/UserSubscriptionsFilters";
 import { UserSubscriptionsTable } from "@/features/admin/components/subscriptions/UserSubscriptionsTable";
 import { requireAdminAccess } from "@/features/admin/lib/server-auth";
+import { getServerTranslator } from "@/lib/i18n/server-translator";
 
 type SearchParams = { status?: string; plan?: string };
 
@@ -12,6 +13,7 @@ const PAGE_LIMIT = 120;
 
 export default async function AdminSubscriptionsPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   await requireAdminAccess("subscriptions");
+  const { locale } = await getServerTranslator();
   const sp = await searchParams;
   const planCode = sp.plan?.trim() || undefined;
   const status =
@@ -93,7 +95,7 @@ export default async function AdminSubscriptionsPage({ searchParams }: { searchP
         </p>
       </div>
 
-      <SubscriptionPlanCatalog plans={planCatalog} />
+      <SubscriptionPlanCatalog plans={planCatalog} locale={locale} />
 
       <UserSubscriptionsFilters status={status} planCode={planCode} plans={filterPlans} />
 

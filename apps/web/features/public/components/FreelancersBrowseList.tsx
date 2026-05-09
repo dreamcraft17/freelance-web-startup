@@ -4,6 +4,7 @@ import Link from "next/link";
 import { BadgeCheck, MapPin, Star } from "lucide-react";
 import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
 import { useI18n } from "@/features/i18n/I18nProvider";
+import { defaultFreelancerRateCurrency, formatMoneyAmount } from "@/lib/format-money";
 
 export type PublicFreelancerCard = {
   id: string;
@@ -53,7 +54,7 @@ type FreelancersBrowseListProps = {
 };
 
 export function FreelancersBrowseList({ freelancers, activeCityFilter }: FreelancersBrowseListProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   const workModeLabel = (wm: string): string => {
     if (wm === "REMOTE") return t("public.filters.workModeRemote");
@@ -64,15 +65,10 @@ export function FreelancersBrowseList({ freelancers, activeCityFilter }: Freelan
 
   const rateLabel = (f: PublicFreelancerCard): string => {
     if (f.hourlyRate == null || !Number.isFinite(f.hourlyRate)) return t("public.freelancers.rateOnRequest");
-    try {
-      return t("public.freelancers.ratePerHour", {
-        amount: new Intl.NumberFormat(undefined, { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(
-          f.hourlyRate
-        )
-      });
-    } catch {
-      return t("public.freelancers.ratePerHour", { amount: String(f.hourlyRate) });
-    }
+    const cur = defaultFreelancerRateCurrency();
+    return t("public.freelancers.ratePerHour", {
+      amount: formatMoneyAmount(f.hourlyRate, cur, { locale, maximumFractionDigits: 0 })
+    });
   };
 
   const ratingLine = (f: PublicFreelancerCard): string | null => {
