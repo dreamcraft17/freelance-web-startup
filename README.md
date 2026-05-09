@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v79  
-> Last synchronized: 2026-05-09 — worker loads monorepo `.env` / skips DB sweep cleanly; local dev troubleshooting for Next `.next` cache + DB pool limits.
+> **Doc revision:** v80  
+> Last synchronized: 2026-05-09 — Next `serverExternalPackages` for `clsx`/`tailwind-merge`; dev troubleshooting for vendor-chunk + `.next` cache.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -294,7 +294,7 @@ pnpm --filter @acme/web dev
 |--------|------------------------|
 | `DATABASE_URL` / Prisma errors in **`@acme/worker`** | Root env missing or worker not needed — use root `.env` with `DATABASE_URL`, or run web-only (above). Without DB, the worker idles after a clear warning. |
 | `EMAXCONNSESSION` / `max clients reached` (pool ~15) | Hosted Postgres pooler session limit; reduce concurrent dev tabs/processes, or use a connection string / tier with a higher pool, or a **direct** (non-pooler) URL for local dev. |
-| `Cannot find module './…js'` / `vendor-chunks/jose` under **`apps/web/.next`** | Stale or partial Next build after hot reload — stop dev, run `rm -rf apps/web/.next`, start again. |
+| `Cannot find module './…js'` / `vendor-chunks/jose` / **`vendor-chunks/tailwind-merge`** under **`apps/web/.next`** | Stale or partial Next build after hot reload — stop dev, run **`rm -rf apps/web/.next`**, start again. The app also lists `clsx` + `tailwind-merge` in `serverExternalPackages` (`apps/web/next.config.ts`) to reduce flaky webpack vendor chunks in dev. |
 
 ### Type checking
 
