@@ -9,6 +9,7 @@ import {
   FileSignature,
   FolderOpen,
   Inbox,
+  MessageCircle,
   Plus,
   Search,
   Sparkles,
@@ -21,6 +22,26 @@ import { DashboardEmptyState } from "./DashboardEmptyState";
 import { DashboardStatCard } from "./DashboardStatCard";
 
 export type ClientDashboardCopy = {
+  nearworkKicker: string;
+  summaryHeading: string;
+  summarySub: string;
+  statOpenJobs: string;
+  statIncomingProposals: string;
+  statUnreadThreads: string;
+  statActiveContracts: string;
+  statCompletedHires: string;
+  quickActionsHeading: string;
+  quickActionsSub: string;
+  recentJobsHeading: string;
+  recentJobsSub: string;
+  incomingBidsHeading: string;
+  incomingBidsSub: string;
+  contractsHeading: string;
+  contractsSub: string;
+  contractsMessagesLink: string;
+  incomingBidsManageLink: string;
+  proposalNewBadge: string;
+  viewAllJobs: string;
   finishProfileCardTitle: string;
   finishProfileCardBody: string;
   finishProfileCta: string;
@@ -77,14 +98,16 @@ export type ClientDashboardContract = {
 };
 
 type ClientDashboardProps = {
-  greetingName: string | null;
-  displayName: string;
+  welcomeLine: string;
+  subline: string;
   hasProfile: boolean;
   stats: {
     openJobs: string;
     openJobsHint: string;
     incomingBids: string;
     incomingBidsHint: string;
+    threadsAwaiting: string;
+    threadsAwaitingHint: string;
     activeContracts: string;
     activeContractsHint: string;
     hiresCompleted: string;
@@ -151,8 +174,8 @@ type QuickAction = {
 };
 
 export function ClientDashboard({
-  greetingName,
-  displayName,
+  welcomeLine,
+  subline,
   hasProfile,
   stats,
   recentJobs,
@@ -162,11 +185,6 @@ export function ClientDashboard({
   activationChecklist,
   liquidityTips
 }: ClientDashboardProps) {
-  const welcomeLine = greetingName ? `Welcome back, ${greetingName}` : "Welcome back";
-  const subline = hasProfile
-    ? `${displayName} — track listings, proposals, and hires in one place.`
-    : "Create a client profile to post roles and receive proposals from freelancers.";
-
   const listJobs = recentJobs.slice(0, 10);
   const hasJobs = recentJobs.length > 0;
 
@@ -201,10 +219,10 @@ export function ClientDashboard({
   return (
     <div className="mx-auto max-w-6xl space-y-10 pb-10">
       {/* Hero */}
-      <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-8">
+      <section className="rounded-2xl border border-slate-200/85 bg-white p-6 shadow-[0_2px_12px_-4px_rgba(15,23,42,0.08)] md:p-8">
         <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="min-w-0 max-w-2xl space-y-3">
-            <p className="text-xs font-medium uppercase tracking-[0.14em] text-slate-500">NearWork · Client</p>
+            <p className="text-xs font-medium uppercase tracking-[0.14em] text-[#3525cd]/85">{copy.nearworkKicker}</p>
             <h1 className="text-2xl font-semibold tracking-tight text-slate-900 md:text-[1.75rem] md:leading-tight">
               {welcomeLine}
             </h1>
@@ -239,36 +257,43 @@ export function ClientDashboard({
         <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
           <div>
             <h2 id="client-summary-heading" className="text-base font-semibold text-slate-900">
-              At a glance
+              {copy.summaryHeading}
             </h2>
-            <p className="mt-0.5 text-sm text-slate-500">Live counts from your workspace</p>
+            <p className="mt-0.5 text-sm text-slate-500">{copy.summarySub}</p>
           </div>
         </div>
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
           <DashboardStatCard
             variant="emphasized"
-            label="Open jobs"
+            label={copy.statOpenJobs}
             value={stats.openJobs}
             hint={stats.openJobsHint}
             icon={FolderOpen}
           />
           <DashboardStatCard
             variant="emphasized"
-            label="Incoming bids"
+            label={copy.statIncomingProposals}
             value={stats.incomingBids}
             hint={stats.incomingBidsHint}
             icon={Inbox}
           />
           <DashboardStatCard
             variant="emphasized"
-            label="Active contracts"
+            label={copy.statUnreadThreads}
+            value={stats.threadsAwaiting}
+            hint={stats.threadsAwaitingHint}
+            icon={MessageCircle}
+          />
+          <DashboardStatCard
+            variant="emphasized"
+            label={copy.statActiveContracts}
             value={stats.activeContracts}
             hint={stats.activeContractsHint}
             icon={FileSignature}
           />
           <DashboardStatCard
             variant="emphasized"
-            label="Completed hires"
+            label={copy.statCompletedHires}
             value={stats.hiresCompleted}
             hint={stats.hiresCompletedHint}
             icon={CircleCheck}
@@ -301,9 +326,9 @@ export function ClientDashboard({
       <section aria-labelledby="client-quick-actions-heading">
         <div className="mb-4">
           <h2 id="client-quick-actions-heading" className="text-base font-semibold text-slate-900">
-            Quick actions
+            {copy.quickActionsHeading}
           </h2>
-          <p className="mt-0.5 text-sm text-slate-500">Shortcuts to the workflows you use most</p>
+          <p className="mt-0.5 text-sm text-slate-500">{copy.quickActionsSub}</p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {quickActions.map((item) => (
@@ -351,13 +376,13 @@ export function ClientDashboard({
           <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 pb-4">
             <div>
               <h2 id="recent-jobs-heading" className="text-base font-semibold text-slate-900">
-                Recent jobs
+                {copy.recentJobsHeading}
               </h2>
-              <p className="mt-0.5 text-sm text-slate-500">Newest updates across your listings</p>
+              <p className="mt-0.5 text-sm text-slate-500">{copy.recentJobsSub}</p>
             </div>
             {hasProfile && hasJobs ? (
               <Link href={"/client/jobs" as Route} className={linkClass}>
-                View all
+                {copy.viewAllJobs}
                 <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
               </Link>
             ) : null}
@@ -397,7 +422,7 @@ export function ClientDashboard({
                       <div className="mt-1 flex flex-wrap items-center gap-1.5">
                         {hasNewProposal(job.latestBidAt) ? (
                           <span className="rounded-md border border-[#3525cd]/20 bg-[#3525cd]/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#3525cd]">
-                            New proposal
+                            {copy.proposalNewBadge}
                           </span>
                         ) : null}
                         {job.bidCount > 0 ? (
@@ -433,13 +458,13 @@ export function ClientDashboard({
           <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 pb-4">
             <div>
               <h2 id="incoming-bids-heading" className="text-base font-semibold text-slate-900">
-                Incoming bids
+                {copy.incomingBidsHeading}
               </h2>
-              <p className="mt-0.5 text-sm text-slate-500">Latest proposals on your jobs</p>
+              <p className="mt-0.5 text-sm text-slate-500">{copy.incomingBidsSub}</p>
             </div>
             {hasProfile ? (
               <Link href={"/client/jobs" as Route} className={linkClass}>
-                Manage jobs
+                {copy.incomingBidsManageLink}
                 <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
               </Link>
             ) : null}
@@ -499,14 +524,14 @@ export function ClientDashboard({
 
       <section className={cn(panelSurface, "p-5 md:p-6")} aria-labelledby="contracts-heading">
         <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 pb-4">
-          <div>
+            <div>
             <h2 id="contracts-heading" className="text-base font-semibold text-slate-900">
-              Active contracts
+              {copy.contractsHeading}
             </h2>
-            <p className="mt-0.5 text-sm text-slate-500">From kickoff through wrap-up</p>
+            <p className="mt-0.5 text-sm text-slate-500">{copy.contractsSub}</p>
           </div>
           <Link href={"/messages" as Route} className={linkClass}>
-            Messages
+            {copy.contractsMessagesLink}
             <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
           </Link>
         </div>

@@ -206,34 +206,71 @@ export default async function ClientDashboardPage() {
     openJobs: hasProfile ? String(openJobsCount) : "0",
     openJobsHint: hasProfile
       ? openJobsCount > 0
-        ? "Accepting proposals"
-        : "Post a job to open a listing"
-      : "Create a client profile to post",
+        ? t("dashboard.client.statOpenJobsHintListing")
+        : t("dashboard.client.statOpenJobsHintEmpty")
+      : t("dashboard.client.statOpenJobsHintNoProfile"),
     incomingBids: hasProfile ? String(incomingBidsCount) : "0",
     incomingBidsHint: hasProfile
       ? incomingBidsCount > 0
-        ? awaitingReplyThreads > 0
-          ? `${awaitingReplyThreads} message thread${awaitingReplyThreads === 1 ? "" : "s"} awaiting reply`
-          : "Awaiting your review"
-        : "No pending proposals"
-      : "Requires a posted job",
+        ? t("dashboard.client.statIncomingHintReview")
+        : t("dashboard.client.statIncomingHintEmpty")
+      : t("dashboard.client.statIncomingHintNoProfile"),
+    threadsAwaiting: hasProfile ? String(awaitingReplyThreads) : "0",
+    threadsAwaitingHint: hasProfile
+      ? awaitingReplyThreads > 0
+        ? t("dashboard.client.statUnreadThreadsHint")
+        : t("dashboard.client.statUnreadThreadsClear")
+      : t("dashboard.client.statUnreadThreadsNoProfileHint"),
     activeContracts: String(activeContractsCount),
     activeContractsHint:
-      activeContractsCount > 0 ? "In progress or pending start" : "Accept a bid to start a hire",
+      activeContractsCount > 0
+        ? t("dashboard.client.statActiveContractsHintActive")
+        : t("dashboard.client.statActiveContractsHintEmpty"),
     hiresCompleted: String(completedHiresCount),
-    hiresCompletedHint: completedHiresCount > 0 ? "All-time completed hires" : "Completed work counts here"
+    hiresCompletedHint:
+      completedHiresCount > 0
+        ? t("dashboard.client.statCompletedHiresHintActive")
+        : t("dashboard.client.statCompletedHiresHintEmpty")
   };
 
   return (
     <ClientDashboard
-      greetingName={greetingName}
-      displayName={displayName}
+      welcomeLine={
+        greetingName
+          ? t("dashboard.client.welcomeNamed", { name: greetingName })
+          : t("dashboard.client.welcomeGeneric")
+      }
+      subline={
+        hasProfile
+          ? t("dashboard.client.subtitleHasProfile", { workspace: displayName })
+          : t("dashboard.client.subtitleNoProfile")
+      }
       hasProfile={hasProfile}
       stats={stats}
       recentJobs={recentJobs}
       recentBids={recentBids}
       recentContracts={recentContracts}
       copy={{
+        nearworkKicker: t("dashboard.client.nearworkKicker"),
+        summaryHeading: t("dashboard.client.summaryHeading"),
+        summarySub: t("dashboard.client.summarySub"),
+        statOpenJobs: t("dashboard.client.statOpenJobs"),
+        statIncomingProposals: t("dashboard.client.statIncomingProposals"),
+        statUnreadThreads: t("dashboard.client.statUnreadThreads"),
+        statActiveContracts: t("dashboard.client.statActiveContracts"),
+        statCompletedHires: t("dashboard.client.statCompletedHires"),
+        quickActionsHeading: t("dashboard.client.quickActionsHeading"),
+        quickActionsSub: t("dashboard.client.quickActionsSub"),
+        recentJobsHeading: t("dashboard.client.recentJobsHeading"),
+        recentJobsSub: t("dashboard.client.recentJobsSub"),
+        incomingBidsHeading: t("dashboard.client.incomingBidsHeading"),
+        incomingBidsSub: t("dashboard.client.incomingBidsSub"),
+        contractsHeading: t("dashboard.client.contractsHeading"),
+        contractsSub: t("dashboard.client.contractsSub"),
+        contractsMessagesLink: t("dashboard.client.contractsMessagesLink"),
+        incomingBidsManageLink: t("dashboard.client.incomingBidsManageLink"),
+        proposalNewBadge: t("dashboard.client.proposalNewBadge"),
+        viewAllJobs: t("dashboard.client.viewAllJobs"),
         finishProfileCardTitle: t("dashboard.client.finishProfileCardTitle"),
         finishProfileCardBody: t("dashboard.client.finishProfileCardBody"),
         finishProfileCta: t("dashboard.client.finishProfileCta"),

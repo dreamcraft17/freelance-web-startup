@@ -144,6 +144,8 @@ export default async function FreelancerDashboardPage() {
     bidQuotaHint: string;
     profileReadiness: string;
     profileHint: string;
+    threadsAwaiting: string;
+    threadsAwaitingHint: string;
   };
 
   if (!quota) {
@@ -151,34 +153,50 @@ export default async function FreelancerDashboardPage() {
       activeBids: "0",
       activeContracts: "0",
       bidQuotaRemaining: "—",
-      bidQuotaHint: "Create a profile to see your plan limits",
-      profileReadiness: "Not started",
-      profileHint: "Complete setup to unlock bidding"
+      bidQuotaHint: t("dashboard.freelancer.statBidQuotaHintNoProfile"),
+      profileReadiness: t("dashboard.freelancer.statProfileNotStarted"),
+      profileHint: t("dashboard.freelancer.statProfileHintNoProfile"),
+      threadsAwaiting: "0",
+      threadsAwaitingHint: t("dashboard.freelancer.statAwaitingRepliesHintNoProfile")
     };
   } else if (quota.quotasUnlimited) {
     stats = {
       activeBids: String(quota.usage.activeBids),
       activeContracts: String(quota.usage.activeContracts),
-      bidQuotaRemaining: "Unlimited",
-      bidQuotaHint: "No active bid cap on your current plan",
+      bidQuotaRemaining: t("dashboard.freelancer.statQuotaUnlimitedValue"),
+      bidQuotaHint: t("dashboard.freelancer.statQuotaUnlimitedHint"),
       profileReadiness: completeness != null ? `${completeness}%` : "—",
       profileHint:
         completeness != null && completeness < 100
-          ? "Add details clients care about"
-          : "Profile looks complete"
+          ? t("dashboard.freelancer.statProfileHintIncomplete")
+          : t("dashboard.freelancer.statProfileHintComplete"),
+      threadsAwaiting: String(awaitingReplyThreads),
+      threadsAwaitingHint:
+        awaitingReplyThreads > 0
+          ? t("dashboard.freelancer.statAwaitingRepliesHintActive")
+          : t("dashboard.freelancer.statAwaitingRepliesHintClear")
     };
   } else {
     const remBids = quota.remaining.activeBids;
+    const lim = quota.limits.activeBids;
     stats = {
       activeBids: String(quota.usage.activeBids),
       activeContracts: String(quota.usage.activeContracts),
       bidQuotaRemaining: remBids != null ? String(remBids) : "—",
-      bidQuotaHint: `of ${quota.limits.activeBids} allowed on your plan`,
+      bidQuotaHint:
+        remBids != null && lim != null ?
+          t("dashboard.freelancer.statBidQuotaHintPlan", { remaining: remBids, limit: lim })
+        : t("dashboard.freelancer.statBidQuotaHintNoProfile"),
       profileReadiness: completeness != null ? `${completeness}%` : "—",
       profileHint:
         completeness != null && completeness < 100
-          ? "Add details clients care about"
-          : "Profile looks complete"
+          ? t("dashboard.freelancer.statProfileHintIncomplete")
+          : t("dashboard.freelancer.statProfileHintComplete"),
+      threadsAwaiting: String(awaitingReplyThreads),
+      threadsAwaitingHint:
+        awaitingReplyThreads > 0
+          ? t("dashboard.freelancer.statAwaitingRepliesHintActive")
+          : t("dashboard.freelancer.statAwaitingRepliesHintClear")
     };
   }
 
@@ -186,10 +204,7 @@ export default async function FreelancerDashboardPage() {
     <FreelancerDashboard
       welcomeTitle={welcomeTitle}
       subtitle={subtitle}
-      displayName={displayName}
-      greetingName={greetingName}
       hasProfile={hasProfile}
-      username={profile?.username ?? null}
       profileCompleteness={completeness}
       showStrongProfileCard={showStrongProfileCard}
       stats={stats}
@@ -203,6 +218,7 @@ export default async function FreelancerDashboardPage() {
         proposalUpdates
       }}
       copy={{
+        dashboardKicker: t("dashboard.freelancer.dashboardKicker"),
         browseJobsCta: t("dashboard.freelancer.browseJobsCta"),
         overviewTitle: t("dashboard.freelancer.overviewTitle"),
         overviewSubtitle: t("dashboard.freelancer.overviewSubtitle"),
@@ -211,6 +227,7 @@ export default async function FreelancerDashboardPage() {
         statActiveContracts: t("dashboard.freelancer.statActiveContracts"),
         statRemainingQuota: t("dashboard.freelancer.statRemainingQuota"),
         statProfileCompletion: t("dashboard.freelancer.statProfileCompletion"),
+        statAwaitingReplies: t("dashboard.freelancer.statAwaitingReplies"),
         attentionKicker: t("dashboard.freelancer.attentionKicker"),
         attentionAccepted: t("dashboard.freelancer.attentionAccepted"),
         attentionAwaiting: t("dashboard.freelancer.attentionAwaiting"),
@@ -240,7 +257,14 @@ export default async function FreelancerDashboardPage() {
         openJobsEmptyBody: t("dashboard.freelancer.openJobsEmptyBody"),
         openJobsEmptyCta: t("dashboard.freelancer.openJobsEmptyCta"),
         profileRequiredBanner: t("dashboard.freelancer.profileRequiredBanner"),
-        profileRequiredSub: t("dashboard.freelancer.profileRequiredSub")
+        profileRequiredSub: t("dashboard.freelancer.profileRequiredSub"),
+        activityKindProposal: t("dashboard.freelancer.activityKindProposal"),
+        activityKindContract: t("dashboard.freelancer.activityKindContract"),
+        activityEmptyKickerProfile: t("dashboard.freelancer.activityEmptyKickerProfile"),
+        activityEmptyKickerTimeline: t("dashboard.freelancer.activityEmptyKickerTimeline"),
+        openJobsEmptyKicker: t("dashboard.freelancer.openJobsEmptyKicker"),
+        nextActionAwaitingBanner: t("dashboard.freelancer.nextActionAwaitingBanner"),
+        openMessagesCta: t("dashboard.freelancer.openMessagesCta")
       }}
       activationChecklist={{
         title: t("activation.freelancer.checklistTitle"),
