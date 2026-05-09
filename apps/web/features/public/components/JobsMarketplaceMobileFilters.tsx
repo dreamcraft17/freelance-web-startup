@@ -46,7 +46,7 @@ export function JobsMarketplaceMobileFilters(props: {
       <Button
         type="button"
         variant="outline"
-        className="h-11 w-full justify-center gap-2 rounded-2xl border-slate-200/90 bg-white/90 text-sm font-semibold text-slate-800 shadow-sm backdrop-blur-sm"
+        className="h-10 w-full justify-center gap-2 rounded-lg border-slate-200 bg-white text-sm font-semibold text-slate-800 shadow-sm"
         onClick={() => setOpen(true)}
       >
         <SlidersHorizontal className="h-4 w-4" aria-hidden />
@@ -65,15 +65,15 @@ export function JobsMarketplaceMobileFilters(props: {
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
-            className="relative z-10 max-h-[85vh] rounded-t-[22px] border border-slate-200/80 bg-white shadow-[0_-14px_40px_rgba(15,23,42,0.12)]"
+            className="relative z-10 max-h-[85vh] rounded-t-xl border border-slate-200 bg-white shadow-[0_-8px_30px_rgba(15,23,42,0.08)]"
           >
-            <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
+            <div className="flex items-center justify-between border-b border-slate-100 px-3 py-2.5 sm:px-4">
               <h2 id={titleId} className="text-base font-semibold text-slate-900">
                 {t("public.filters.title")}
               </h2>
               <button
                 type="button"
-                className="inline-flex h-10 w-10 items-center justify-center rounded-xl text-slate-600 hover:bg-slate-50"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-slate-600 hover:bg-slate-50"
                 onClick={() => setOpen(false)}
                 aria-label={t("public.jobs.filterSheetClose")}
               >
@@ -81,14 +81,14 @@ export function JobsMarketplaceMobileFilters(props: {
               </button>
             </div>
 
-            <div className="space-y-5 overflow-y-auto overscroll-contain px-4 pb-8 pt-4">
+            <div className="space-y-4 overflow-y-auto overscroll-contain px-3 pb-6 pt-3 sm:px-4">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{t("public.filters.category")}</p>
                 <div className="mt-2 space-y-1.5">
                   <Link
                     href={`/jobs${jobsBrowseQueryString({ ...q, categoryId: "" })}` as Route}
                     onClick={() => setOpen(false)}
-                    className={`block rounded-xl px-3 py-2.5 text-sm font-medium ${
+                    className={`block rounded-lg px-3 py-2 text-sm font-medium ${
                       props.categoryId === "" ? "bg-[#f4f2ff] text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"
                     }`}
                   >
@@ -99,7 +99,7 @@ export function JobsMarketplaceMobileFilters(props: {
                       key={c.id}
                       href={`/jobs${jobsBrowseQueryString({ ...q, categoryId: c.id })}` as Route}
                       onClick={() => setOpen(false)}
-                      className={`block rounded-xl px-3 py-2.5 text-sm font-medium ${
+                      className={`block rounded-lg px-3 py-2 text-sm font-medium ${
                         props.categoryId === c.id ? "bg-[#f4f2ff] text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"
                       }`}
                     >
@@ -121,7 +121,7 @@ export function JobsMarketplaceMobileFilters(props: {
                       key={item.value}
                       href={`/jobs${jobsBrowseQueryString({ ...q, minBudget: item.value })}` as Route}
                       onClick={() => setOpen(false)}
-                      className={`block rounded-xl px-3 py-2.5 text-sm font-medium ${
+                      className={`block rounded-lg px-3 py-2 text-sm font-medium ${
                         props.minBudget === item.value ? "bg-[#f4f2ff] text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"
                       }`}
                     >
@@ -143,7 +143,7 @@ export function JobsMarketplaceMobileFilters(props: {
                       key={item.value}
                       href={`/jobs${jobsBrowseQueryString({ ...q, postedWithinDays: item.value })}` as Route}
                       onClick={() => setOpen(false)}
-                      className={`block rounded-xl px-3 py-2.5 text-sm font-medium ${
+                      className={`block rounded-lg px-3 py-2 text-sm font-medium ${
                         props.postedWithinDays === item.value ? "bg-[#f4f2ff] text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"
                       }`}
                     >
@@ -195,7 +195,7 @@ export function JobsMarketplaceMobileFilters(props: {
               <Link
                 href="/jobs"
                 onClick={() => setOpen(false)}
-                className="block w-full rounded-2xl border border-slate-200 py-3 text-center text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                className="block w-full rounded-lg border border-slate-200 py-2.5 text-center text-sm font-semibold text-slate-700 hover:bg-slate-50"
               >
                 {t("public.filters.reset")}
               </Link>

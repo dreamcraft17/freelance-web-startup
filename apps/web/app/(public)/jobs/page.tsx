@@ -3,7 +3,7 @@ import Link from "next/link";
 import { searchJobsSchema } from "@acme/validators";
 import { UserRole } from "@acme/types";
 import { db } from "@acme/database";
-import { CheckCircle2, Search, Sparkles } from "lucide-react";
+import { CheckCircle2, ChevronRight, Search } from "lucide-react";
 import { getSessionFromCookies } from "@src/lib/auth";
 import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
 import { JobsMarketplaceMobileFilters } from "@/features/public/components/JobsMarketplaceMobileFilters";
@@ -64,6 +64,35 @@ async function loadSavedJobIds(userId: string, jobIds: string[]): Promise<string
     select: { jobId: true }
   });
   return rows.map((r) => r.jobId);
+}
+
+function initialsFromName(name: string): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "?";
+  if (parts.length === 1) return parts[0]!.slice(0, 2).toUpperCase();
+  return `${parts[0]![0] ?? ""}${parts[parts.length - 1]![0] ?? ""}`.toUpperCase() || "?";
+}
+
+function formatBudgetShort(job: JobsPublicCard, locale: string): string {
+  const min = job.budgetMin;
+  const max = job.budgetMax;
+  const { currency } = job;
+  try {
+    if (min != null && max != null && Number.isFinite(min) && Number.isFinite(max)) {
+      return `${new Intl.NumberFormat(locale === "id" ? "id-ID" : "en-US", {
+        style: "currency",
+        currency,
+        maximumFractionDigits: 0
+      }).format(min)}–${new Intl.NumberFormat(locale === "id" ? "id-ID" : "en-US", {
+        style: "currency",
+        currency,
+        maximumFractionDigits: 0
+      }).format(max)}`;
+    }
+  } catch {
+    /* fall through */
+  }
+  return "—";
 }
 
 function relativeTime(input: string, locale: string): string {
@@ -145,11 +174,20 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
   ];
   const workModeChipClass = (active: boolean) =>
     [
-      "rounded-full px-3 py-1 text-xs font-semibold transition",
+      "rounded-md px-2.5 py-1 text-[11px] font-semibold transition",
       active
-        ? "bg-[#3525cd] text-white shadow-sm"
+        ? "bg-[#3525cd] text-white"
         : "border border-slate-200 bg-white text-slate-700 hover:border-slate-300"
     ].join(" ");
+
+  const workModeT = (wm: string) =>
+    wm === "REMOTE"
+      ? t("public.filters.workModeRemote")
+      : wm === "ONSITE"
+        ? t("public.filters.workModeOnSite")
+        : wm === "HYBRID"
+          ? t("public.filters.workModeHybrid")
+          : wm;
   const topDemandCategories = Array.from(
     jobs.reduce<Map<string, { label: string; count: number }>>((map, job) => {
       if (!job.categoryName) return map;
@@ -185,72 +223,160 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
     page
   };
 
+  const featuredJob = jobs[0] ?? null;
+  const heroFreelancer = heroPanelActivity.freelancerRows[0];
+
   return (
-    <div className="min-h-screen bg-[#f4f3f1]">
-      <section className="relative overflow-hidden border-b border-white/70 bg-gradient-to-br from-[#ede9ff] via-[#f7f4ff] to-[#faf8f4]">
-        <div className="pointer-events-none absolute left-[-10%] top-[-20%] h-[420px] w-[420px] rounded-full bg-[#3525cd]/10 blur-3xl" />
-        <div className="pointer-events-none absolute right-[-5%] top-[10%] h-[280px] w-[280px] rounded-full bg-amber-200/25 blur-3xl" />
-        <div className="relative mx-auto max-w-[1440px] px-4 pb-12 pt-10 md:px-6 md:pb-14 md:pt-14">
-          <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1.1fr),minmax(0,0.9fr)] lg:gap-14">
+    <div className="min-h-screen bg-[#f6f6f4]">
+      <section className="border-b border-slate-200/90 bg-[#fafaf9]">
+        <div className="mx-auto max-w-[1360px] px-3 pb-6 pt-7 sm:px-5 md:pb-8 md:pt-9 lg:px-8">
+          <div className="lg:grid lg:grid-cols-[minmax(0,1fr),minmax(300px,380px)] lg:items-start lg:gap-10 xl:gap-14">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#5246ae]">{t("public.jobs.sectionTitle")}</p>
-              <h1 className="mt-3 text-3xl font-bold leading-[1.12] tracking-tight text-[#0b1220] sm:text-4xl md:text-5xl">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">{t("public.jobs.sectionTitle")}</p>
+              <h1 className="mt-2 max-w-[22rem] text-2xl font-semibold leading-tight tracking-tight text-slate-950 sm:max-w-xl sm:text-4xl sm:leading-[1.1] md:text-[2.75rem]">
                 {t("public.jobs.heroHeadlineBefore")}{" "}
-                <span className="bg-gradient-to-r from-[#3525cd] to-[#5b4ddb] bg-clip-text text-transparent">
-                  {t("public.jobs.heroHeadlineAccent")}
-                </span>
+                <span className="text-[#3525cd]">{t("public.jobs.heroHeadlineAccent")}</span>
               </h1>
-              <p className="mt-4 max-w-xl text-base text-slate-600 md:text-lg">{t("public.jobs.boardDescription")}</p>
-              <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm font-medium text-slate-700">
-                <li className="inline-flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" aria-hidden />
+              <p className="mt-2.5 max-w-xl text-sm leading-relaxed text-slate-600">{t("public.jobs.boardDescription")}</p>
+
+              <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 border-y border-slate-200/90 py-3 text-[11px] font-medium tabular-nums text-slate-700 sm:text-xs">
+                <span className="min-w-[7.5rem]">{t("public.jobs.heroStatOpen", { count: pulse.openPublicJobs })}</span>
+                <span className="hidden text-slate-300 sm:inline" aria-hidden>
+                  |
+                </span>
+                <span className="min-w-[7.5rem]">{t("public.jobs.heroStatBids24h", { count: pulse.bidsLast24h })}</span>
+                <span className="hidden text-slate-300 sm:inline" aria-hidden>
+                  |
+                </span>
+                <span>{t("public.jobs.heroStatFreelancers", { count: pulse.freelancersAvailable })}</span>
+              </div>
+
+              <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-slate-600 sm:text-xs">
+                <li className="inline-flex items-center gap-1.5">
+                  <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-600" aria-hidden />
                   {t("public.jobs.trustFree")}
                 </li>
-                <li className="inline-flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" aria-hidden />
+                <li className="inline-flex items-center gap-1.5">
+                  <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-600" aria-hidden />
                   {t("public.jobs.trustClients")}
                 </li>
-                <li className="inline-flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" aria-hidden />
+                <li className="inline-flex items-center gap-1.5">
+                  <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-600" aria-hidden />
                   {t("public.jobs.trustPayments")}
                 </li>
               </ul>
-            </div>
-            <div className="relative">
-              <div className="absolute -inset-px rounded-[26px] bg-gradient-to-br from-white/90 to-white/40 blur-[2px]" />
-              <div className="relative aspect-[4/3] overflow-hidden rounded-[24px] border border-white/80 bg-white/70 shadow-[0_28px_80px_-40px_rgba(53,37,205,0.55)] backdrop-blur-sm">
-                <div className="absolute inset-0 bg-gradient-to-t from-[#3525cd]/[0.07] to-transparent" />
-                <div className="flex h-full flex-col justify-between p-6 sm:p-8">
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-900 ring-1 ring-emerald-100">
-                      <Sparkles className="h-3.5 w-3.5" aria-hidden />
-                      {t("public.jobs.heroPanelKicker")}
-                    </span>
-                    <span className="rounded-full bg-slate-900/[0.04] px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-                      NearWork
-                    </span>
-                  </div>
-                  <div className="space-y-3">
-                    <p className="text-sm font-semibold text-slate-800">{t("public.jobs.heroVisualTitle")}</p>
-                    <p className="text-sm leading-relaxed text-slate-600">{t("public.jobs.heroVisualBody")}</p>
-                    <div className="h-2 overflow-hidden rounded-full bg-slate-200/80">
-                      <div className="h-full w-[72%] rounded-full bg-gradient-to-r from-[#3525cd] to-violet-400 shadow-[0_0_24px_rgba(53,37,205,0.35)]" />
-                    </div>
+
+              {categories.length > 0 ? (
+                <div className="mt-5">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">{t("public.jobs.heroBrowseCategories")}</p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {categories.slice(0, 8).map((c) => (
+                      <Link
+                        key={c.id}
+                        href={`/jobs${jobsBrowseQueryString({ ...qArgs, categoryId: c.id })}` as Route}
+                        className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-800 transition hover:border-slate-300 hover:bg-slate-50"
+                      >
+                        {c.name}
+                      </Link>
+                    ))}
                   </div>
                 </div>
+              ) : null}
+            </div>
+
+            <div className="mt-8 border border-slate-200 bg-white p-4 shadow-sm lg:mt-0">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("public.jobs.heroSnapshotTitle")}</p>
+
+              {featuredJob ? (
+                <Link
+                  href={`/jobs/${featuredJob.id}` as Route}
+                  className="mt-3 block border-l-2 border-[#3525cd] pl-3 transition hover:bg-slate-50/80"
+                >
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-[#3525cd]">{t("public.jobs.heroFeaturedLabel")}</p>
+                  <div className="mt-2 flex gap-3">
+                    <div
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-slate-200 text-[11px] font-semibold text-slate-800"
+                      aria-hidden
+                    >
+                      {initialsFromName(featuredJob.clientDisplayName)}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="line-clamp-2 text-sm font-semibold leading-snug text-slate-900">{featuredJob.title}</p>
+                      <p className="mt-0.5 truncate text-xs text-slate-600">{featuredJob.clientDisplayName}</p>
+                      <p className="mt-1 text-[11px] text-slate-500">
+                        {formatBudgetShort(featuredJob, locale)}
+                        <span className="mx-1.5 text-slate-300">·</span>
+                        {featuredJob.bidCount > 0
+                          ? t("public.jobs.heroFeaturedProposals", { count: featuredJob.bidCount })
+                          : t("public.jobs.heroFeaturedProposalsZero")}
+                        <span className="mx-1.5 text-slate-300">·</span>
+                        {relativeTime(featuredJob.createdAt, locale)}
+                      </p>
+                    </div>
+                    <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-slate-400" aria-hidden />
+                  </div>
+                </Link>
+              ) : null}
+
+              <div className={`space-y-0 divide-y divide-slate-100 ${featuredJob ? "mt-4 border-t border-slate-100 pt-3" : "mt-3"}`}>
+                {heroPanelActivity.proposalRows.slice(0, 2).map((row) => (
+                  <div key={`${row.freelancerName}-${row.createdAt}`} className="flex gap-2 py-2.5 first:pt-0">
+                    <div
+                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-violet-100 text-[10px] font-semibold text-violet-900"
+                      aria-hidden
+                    >
+                      {initialsFromName(row.freelancerName)}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs text-slate-800">{t("public.jobs.liveProposalLine", { name: row.freelancerName })}</p>
+                      <p className="truncate text-[11px] text-slate-500">{row.jobTitle}</p>
+                      <p className="text-[10px] text-slate-400">{relativeTime(row.createdAt, locale)}</p>
+                    </div>
+                  </div>
+                ))}
+                {heroPanelActivity.jobRows.slice(0, featuredJob ? 1 : 2).map((job) => (
+                  <div key={`${job.title}-${job.createdAt}`} className="py-2.5">
+                    <p className="text-xs font-medium text-slate-900 line-clamp-2">{job.title}</p>
+                    <p className="text-[11px] text-slate-500">
+                      {t("public.jobs.pulseJobMeta", {
+                        time: relativeTime(job.createdAt, locale),
+                        place: job.location ?? t("public.jobs.noCity")
+                      })}
+                    </p>
+                  </div>
+                ))}
+                {heroFreelancer ? (
+                  <div className="flex gap-2 py-2.5">
+                    <div
+                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-slate-200 text-[10px] font-semibold text-slate-800"
+                      aria-hidden
+                    >
+                      {initialsFromName(heroFreelancer.title)}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs font-medium text-slate-900">{heroFreelancer.title}</p>
+                      {heroFreelancer.specialty ? (
+                        <p className="truncate text-[11px] text-slate-600">{heroFreelancer.specialty}</p>
+                      ) : null}
+                      <p className="text-[10px] text-slate-400">
+                        {[heroFreelancer.location, workModeT(heroFreelancer.workMode)].filter(Boolean).join(" · ")}
+                      </p>
+                    </div>
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>
 
-          <div className="relative z-10 mx-auto mt-10 max-w-[1200px]">
-            <div className="rounded-[22px] border border-white/80 bg-white/90 p-4 shadow-[0_22px_60px_-34px_rgba(15,23,42,0.35)] backdrop-blur-md md:p-5">
-              <form method="get" action="/jobs" className="grid gap-3 lg:grid-cols-[minmax(0,2fr),minmax(0,1fr),minmax(0,1fr),auto] lg:items-end">
+          <div className="mx-auto mt-6 max-w-[1200px] lg:mt-8">
+            <div className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm sm:p-4">
+              <form method="get" action="/jobs" className="grid gap-2 sm:gap-3 lg:grid-cols-[minmax(0,2fr),minmax(0,1fr),minmax(0,1fr),auto] lg:items-end">
                 <div className="relative">
                   <label className="sr-only" htmlFor="nw-jobs-q">
                     {t("public.jobs.searchKeywordPlaceholder")}
                   </label>
                   <Search
-                    className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+                    className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400"
                     aria-hidden
                   />
                   <input
@@ -258,28 +384,29 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                     name="keyword"
                     defaultValue={keyword}
                     placeholder={t("public.jobs.searchKeywordPlaceholder")}
-                    className="h-12 w-full rounded-2xl border border-slate-200/90 bg-white pl-10 pr-3 text-sm font-medium text-slate-900 shadow-sm outline-none ring-0 transition focus:border-[#3525cd]/50 focus:ring-2 focus:ring-[#3525cd]/20"
+                    autoComplete="off"
+                    className="h-10 w-full rounded-lg border border-slate-200 bg-white pl-9 pr-2.5 text-sm text-slate-900 outline-none transition focus:border-[#3525cd] focus:ring-1 focus:ring-[#3525cd]/30"
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                  <label className="mb-0.5 block text-[10px] font-medium uppercase tracking-wide text-slate-500">
                     {t("public.filters.location")}
                   </label>
                   <input
                     name="city"
                     defaultValue={city}
                     placeholder={t("public.jobs.searchLocationPlaceholder")}
-                    className="h-12 w-full rounded-2xl border border-slate-200/90 bg-white px-3 text-sm font-medium text-slate-900 shadow-sm outline-none focus:border-[#3525cd]/50 focus:ring-2 focus:ring-[#3525cd]/20"
+                    className="h-10 w-full rounded-lg border border-slate-200 bg-white px-2.5 text-sm text-slate-900 outline-none focus:border-[#3525cd] focus:ring-1 focus:ring-[#3525cd]/30"
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                  <label className="mb-0.5 block text-[10px] font-medium uppercase tracking-wide text-slate-500">
                     {t("public.filters.category")}
                   </label>
                   <select
                     name="categoryId"
                     defaultValue={categoryId}
-                    className="h-12 w-full rounded-2xl border border-slate-200/90 bg-white px-3 text-sm font-medium text-slate-900 shadow-sm outline-none focus:border-[#3525cd]/50 focus:ring-2 focus:ring-[#3525cd]/20"
+                    className="h-10 w-full rounded-lg border border-slate-200 bg-white px-2 text-sm text-slate-900 outline-none focus:border-[#3525cd] focus:ring-1 focus:ring-[#3525cd]/30"
                   >
                     <option value="">{t("public.filters.allCategories")}</option>
                     {categories.map((c) => (
@@ -291,27 +418,25 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                 </div>
                 <button
                   type="submit"
-                  className="inline-flex h-12 items-center justify-center rounded-2xl bg-[#3525cd] px-6 text-sm font-semibold text-white shadow-[0_14px_34px_-18px_rgba(53,37,205,0.9)] transition hover:bg-[#2b1daa]"
+                  className="inline-flex h-10 items-center justify-center rounded-lg bg-[#3525cd] px-5 text-sm font-semibold text-white transition hover:bg-[#2b1daa]"
                 >
                   {t("public.jobs.searchAction")}
                 </button>
               </form>
-              <p className="mt-3 text-xs text-slate-500">{t("public.jobs.searchExamplesHint")}</p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">
-                  {t("public.jobs.quickSearchLabel")}
-                </span>
+              <p className="mt-2 text-[11px] text-slate-500">{t("public.jobs.searchExamplesHint")}</p>
+              <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+                <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">{t("public.jobs.quickSearchLabel")}</span>
                 {quickTags.map((tag) => (
                   <Link
                     key={tag.label}
                     href={`/jobs${tag.href}` as Route}
-                    className="rounded-full border border-slate-200/80 bg-slate-50/90 px-3 py-1 text-xs font-semibold text-slate-700 transition hover:border-[#3525cd]/30 hover:bg-white"
+                    className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px] font-medium text-slate-700 hover:border-slate-300 hover:bg-white"
                   >
                     {tag.label}
                   </Link>
                 ))}
               </div>
-              <div className="mt-3 flex flex-wrap gap-2">
+              <div className="mt-2 flex flex-wrap gap-1.5">
                 <Link
                   href={`/jobs${jobsBrowseQueryString({ ...qArgs, workMode: "" })}` as Route}
                   className={workModeChipClass(workMode === "")}
@@ -342,10 +467,10 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
         </div>
       </section>
 
-      <div className="mx-auto max-w-[1440px] px-4 pb-16 pt-8 md:px-6">
+      <div className="mx-auto max-w-[1440px] px-3 pb-12 pt-6 sm:px-5 md:px-6 md:pb-16">
         <div className="lg:grid lg:grid-cols-[280px,minmax(0,1fr),300px] lg:items-start lg:gap-8">
-          <aside className="mb-5 hidden lg:sticky lg:top-28 lg:mb-0 lg:block">
-            <div className="space-y-1 rounded-[22px] border border-white/70 bg-white/95 p-5 shadow-[0_20px_50px_-38px_rgba(15,23,42,0.45)] backdrop-blur-sm">
+          <aside className="mb-4 hidden lg:sticky lg:top-28 lg:mb-0 lg:block">
+            <div className="space-y-1 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
               <div className="mb-3 flex items-center justify-between">
                 <h2 className="text-sm font-semibold text-slate-900">{t("public.filters.title")}</h2>
                 <Link href="/jobs" className="text-xs font-semibold text-[#3525cd] hover:underline">
@@ -455,20 +580,17 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
               />
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-4 rounded-[20px] border border-white/70 bg-white/95 px-5 py-4 shadow-sm backdrop-blur-sm">
-              <div className="flex items-start gap-2">
-                <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-[#3525cd]" aria-hidden />
-                <div>
-                  <p className="text-base font-bold text-slate-900">
-                    {total === 1 ? t("public.jobs.resultOne") : t("public.jobs.resultMany", { count: total })}
-                  </p>
-                  <p className="text-sm text-slate-600">{t("public.jobs.resultHint")}</p>
-                </div>
+            <div className="flex flex-wrap items-end justify-between gap-3 border-b border-slate-200/90 pb-3">
+              <div>
+                <p className="text-sm font-semibold text-slate-900">
+                  {total === 1 ? t("public.jobs.resultOne") : t("public.jobs.resultMany", { count: total })}
+                </p>
+                <p className="text-xs text-slate-600">{t("public.jobs.resultHint")}</p>
               </div>
-              <div className="flex items-center gap-2 text-sm">
-                <span className="hidden font-semibold text-slate-500 sm:inline">{t("public.jobs.sortLabel")}</span>
+              <div className="flex items-center gap-2 text-xs">
+                <span className="hidden font-medium text-slate-500 sm:inline">{t("public.jobs.sortLabel")}</span>
                 <select
-                  className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-800 shadow-sm"
+                  className="rounded-md border border-slate-200 bg-white px-2 py-1.5 text-xs font-medium text-slate-800"
                   aria-label={t("public.jobs.sortLabel")}
                   disabled
                 >
@@ -483,14 +605,14 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
               <JobsPublicEmpty categorySelected={categorySelected} hasFilters={hasFilters} viewerRole={viewerRole} />
             ) : null}
 
-            <section className="rounded-[22px] border border-white/70 bg-white/95 p-5 shadow-sm backdrop-blur-sm">
-              <div className="mb-4 flex items-center justify-between gap-2">
-                <h2 className="text-base font-semibold text-slate-900">{t("public.jobs.demandTrendTitle")}</h2>
+            <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="mb-3 flex items-center justify-between gap-2">
+                <h2 className="text-sm font-semibold text-slate-900">{t("public.jobs.demandTrendTitle")}</h2>
                 <Link href="/jobs" className="text-xs font-semibold text-[#3525cd] hover:underline">
                   {t("public.jobs.viewAllSmall")}
                 </Link>
               </div>
-              <div className="grid gap-3 sm:grid-cols-3">
+              <div className="grid gap-2 sm:grid-cols-3">
                 {(topDemandCategories.length > 0
                   ? topDemandCategories
                   : [
@@ -499,15 +621,9 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                       { label: t("public.jobs.quickTagCopy"), count: 0 }
                     ]
                 ).map((item, idx) => (
-                  <div
-                    key={`${item.label}-${idx}`}
-                    className="rounded-[18px] border border-slate-200/80 bg-slate-50/50 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]"
-                  >
-                    <p className="text-sm font-semibold text-slate-900">
-                      {item.label}
-                      {idx === 0 ? " · 🔥" : ""}
-                    </p>
-                    <p className="mt-1 text-xs text-slate-500">
+                  <div key={`${item.label}-${idx}`} className="border border-slate-100 bg-slate-50/80 px-3 py-2.5">
+                    <p className="text-xs font-semibold text-slate-900">{item.label}</p>
+                    <p className="mt-0.5 text-[11px] text-slate-500">
                       {item.count > 0 ? t("public.jobs.demandCount", { count: item.count }) : t("public.jobs.demandFallback")}
                     </p>
                   </div>
@@ -556,9 +672,9 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
               " "
             )}
           >
-            <section className="rounded-[22px] border border-white/70 bg-white/95 p-5 shadow-[0_20px_50px_-38px_rgba(15,23,42,0.35)] backdrop-blur-sm">
+            <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
               <div className="flex items-center justify-between gap-2">
-                <h2 className="text-base font-semibold text-slate-900">{t("public.jobs.pulseTitle")}</h2>
+                <h2 className="text-sm font-semibold text-slate-900">{t("public.jobs.pulseTitle")}</h2>
                 <Link href="/notifications" className="text-xs font-semibold text-[#3525cd] hover:underline">
                   {t("public.jobs.viewAllSmall")}
                 </Link>
@@ -576,10 +692,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                     </li>
                   ) : (
                     heroPanelActivity.jobRows.map((job) => (
-                      <li
-                        key={`${job.title}-${job.createdAt}`}
-                        className="rounded-xl border border-slate-200/80 bg-gradient-to-br from-white to-slate-50/80 px-3 py-2.5 shadow-[0_8px_24px_-20px_rgba(15,23,42,0.35)]"
-                      >
+                      <li key={`${job.title}-${job.createdAt}`} className="border-l-2 border-slate-200 py-2 pl-3">
                         <p className="font-semibold text-slate-900 line-clamp-2">{job.title}</p>
                         <p className="mt-1 text-xs text-slate-500">
                           {t("public.jobs.pulseJobMeta", {
@@ -604,10 +717,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                     </li>
                   ) : (
                     heroPanelActivity.proposalRows.map((row) => (
-                      <li
-                        key={`${row.freelancerName}-${row.createdAt}-${row.jobTitle}`}
-                        className="rounded-xl border border-slate-200/80 bg-gradient-to-br from-[#faf9ff] to-white px-3 py-2.5"
-                      >
+                      <li key={`${row.freelancerName}-${row.createdAt}-${row.jobTitle}`} className="border-l-2 border-[#3525cd]/25 py-2 pl-3">
                         <p className="text-slate-800">{t("public.jobs.liveProposalLine", { name: row.freelancerName })}</p>
                         <p className="mt-1 text-xs text-slate-500 line-clamp-1">{row.jobTitle}</p>
                         <p className="mt-0.5 text-[11px] font-medium text-slate-400">
@@ -620,55 +730,55 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
               </div>
             </section>
 
-            <section className="rounded-[22px] border border-white/70 bg-white/95 p-5 shadow-sm backdrop-blur-sm">
-              <h2 className="text-base font-semibold text-slate-900">{t("public.jobs.insightTitle")}</h2>
-              <div className="mt-4 grid grid-cols-1 gap-3">
-                <div className="rounded-[18px] border border-slate-200/80 bg-slate-50/60 px-4 py-3">
-                  <p className="text-2xl font-bold tabular-nums text-slate-900">{pulse.openPublicJobs}</p>
-                  <p className="text-xs text-slate-600">{t("public.jobs.insightOpenRoles")}</p>
+            <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+              <h2 className="text-sm font-semibold text-slate-900">{t("public.jobs.insightTitle")}</h2>
+              <div className="mt-3 grid grid-cols-1 gap-2">
+                <div className="border border-slate-100 bg-slate-50 px-3 py-2.5">
+                  <p className="text-xl font-semibold tabular-nums text-slate-900">{pulse.openPublicJobs}</p>
+                  <p className="text-[11px] text-slate-600">{t("public.jobs.insightOpenRoles")}</p>
                 </div>
-                <div className="rounded-[18px] border border-slate-200/80 bg-slate-50/60 px-4 py-3">
-                  <p className="text-2xl font-bold tabular-nums text-slate-900">{pulse.bidsLast24h}</p>
-                  <p className="text-xs text-slate-600">{t("public.jobs.insightApplyVolume")}</p>
+                <div className="border border-slate-100 bg-slate-50 px-3 py-2.5">
+                  <p className="text-xl font-semibold tabular-nums text-slate-900">{pulse.bidsLast24h}</p>
+                  <p className="text-[11px] text-slate-600">{t("public.jobs.insightApplyVolume")}</p>
                 </div>
-                <div className="rounded-[18px] border border-slate-200/80 bg-slate-50/60 px-4 py-3">
-                  <p className="text-2xl font-bold tabular-nums text-slate-900">{pulse.freelancersAvailable}</p>
-                  <p className="text-xs text-slate-600">{t("public.jobs.insightFreelancerActive")}</p>
+                <div className="border border-slate-100 bg-slate-50 px-3 py-2.5">
+                  <p className="text-xl font-semibold tabular-nums text-slate-900">{pulse.freelancersAvailable}</p>
+                  <p className="text-[11px] text-slate-600">{t("public.jobs.insightFreelancerActive")}</p>
                 </div>
               </div>
-              <p className="mt-3 text-xs text-slate-500">{t("public.jobs.insightFootnote")}</p>
+              <p className="mt-2 text-[11px] text-slate-500">{t("public.jobs.insightFootnote")}</p>
             </section>
 
-            <section className="rounded-[22px] border border-white/70 bg-gradient-to-br from-[#3525cd] to-[#4f3ae0] p-5 text-white shadow-[0_24px_60px_-36px_rgba(53,37,205,0.8)]">
+            <section className="rounded-lg border border-[#3525cd]/90 bg-[#3525cd] p-4 text-white shadow-sm">
               <p className="text-sm font-semibold">{t("public.jobs.notifyCardTitle")}</p>
               <p className="mt-2 text-sm text-white/85">{t("public.jobs.notifyCardBody")}</p>
               <Link
                 href="/notifications"
-                className="mt-4 inline-flex w-full items-center justify-center rounded-2xl bg-white px-3 py-2.5 text-sm font-semibold text-[#3525cd] shadow-sm hover:bg-white/95"
+                className="mt-3 inline-flex w-full items-center justify-center rounded-lg bg-white px-3 py-2 text-sm font-semibold text-[#3525cd] hover:bg-white/95"
               >
                 {t("public.jobs.notifyCardCta")}
               </Link>
             </section>
 
-            <section className="rounded-[22px] border border-white/70 bg-white/95 p-5 shadow-sm backdrop-blur-sm">
-              <h2 className="text-base font-semibold text-slate-900">{t("public.jobs.quickTipsTitle")}</h2>
-              <p className="mt-2 text-sm text-slate-600">{t("public.jobs.quickTipApply")}</p>
+            <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+              <h2 className="text-sm font-semibold text-slate-900">{t("public.jobs.quickTipsTitle")}</h2>
+              <p className="mt-1.5 text-xs text-slate-600">{t("public.jobs.quickTipApply")}</p>
             </section>
 
-            <section className="rounded-[22px] border border-white/70 bg-white/95 p-5 shadow-sm backdrop-blur-sm">
+            <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
               <p className="text-sm font-semibold text-slate-900">{t("public.jobs.smallCtaTitle")}</p>
               <AuthAwareCtaLink
                 href={"/client/jobs/new" as Route}
                 intent="post-job"
                 unauthenticatedTo="register"
                 registerRoleHint="client"
-                className="mt-3 inline-flex w-full items-center justify-center rounded-2xl bg-[#3525cd] px-3 py-2.5 text-sm font-semibold text-white shadow-[0_12px_28px_-16px_rgba(53,37,205,0.9)] hover:bg-[#2b1daa]"
+                className="mt-2 inline-flex w-full items-center justify-center rounded-lg bg-[#3525cd] px-3 py-2 text-sm font-semibold text-white hover:bg-[#2b1daa]"
               >
                 {t("public.jobs.smallCtaPrimary")}
               </AuthAwareCtaLink>
               <Link
                 href="/freelancer/profile"
-                className="mt-2 inline-flex w-full items-center justify-center rounded-2xl border border-slate-200/90 bg-white px-3 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+                className="mt-2 inline-flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50"
               >
                 {t("public.jobs.smallCtaSecondary")}
               </Link>

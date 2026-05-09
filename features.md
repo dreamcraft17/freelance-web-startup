@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v87  
-> Last synchronized: 2026-05-09 (public `/jobs` marketplace premium + data nyata: klien, skill, jumlah proposal; pulse & filter mobile).
+> **Doc revision:** v88  
+> Last synchronized: 2026-05-09 (public `/jobs` pass editorial: hero netral + snapshot live, kartu job lebih padat, badge aktivitas dari data).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,6 +9,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
+- **2026-05-09 — Public jobs discovery editorial:** `/jobs` mempertahankan data nyata (klien, verifikasi, skill, jumlah proposal, pulse) dengan UI yang lebih **marketplace/editorial**: hero lebih netral dan padat, kolom kanan **snapshot** dari job/proposal/freelancer terbaru, kartu listing lebih rata dan rapat, badge status (mis. sedikit pelamar / ramai) hanya saat didukung angka proposal; filter mobile sedikit lebih ringkas.
 - **2026-05-09 — Public jobs discovery premium:** halaman `/jobs` memakai hero gradien lebar + kartu pencarian mengambang, kartu lowongan dengan identitas klien (nama perusahaan/display), badge verifikasi nyata, jumlah proposal dari database, skill pada job, bookmark/simpan untuk user login, serta sidebar “Marketplace pulse” berbasis job/bid terbaru (bukan placeholder waktu). Filter desktop + lembar filter mobile; wawasan pasar hanya agregat nyata (open jobs, apply 24h, freelancer available)—tanpa metrik respons palsu.
 - **2026-05-09 — Freelancer workspace premium UX:** navigasi freelancer memakai shell mengambang dengan pencarian job desktop, badge pesan/notifikasi nyata, dan kartu komunitas (help center). Dasbor freelancer memakai hero gradien, playbook proposal + checklist aktivitas journey, serta panel pulse/skill/percakapan yang hanya memakai agregasi Prisma/MessageService tanpa KPI sintetis.
 - **2026-05-09 — Dashboard readability & backlog visibility:** `/client` menampilkan ringkasan lima kartu dari data nyata (termasuk utas pesan yang perlu dibalas klien); `/freelancer` menyelaraskan hierarki visual, menambah kolom stat yang sama untuk backlog balasan freelancer, serta banner aksi cepat menuju Messages saat ada utas tertunda—semua label/hint utama memakai kamus EN/ID.
