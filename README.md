@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v77  
-> Last synchronized: 2026-05-09 — seed loads root `.env` + taxonomy for E2E categories.
+> **Doc revision:** v78  
+> Last synchronized: 2026-05-09 — public `/jobs` premium marketplace pass (hero, cards, pulse, mobile filters) + listing trust fields from DB.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -80,6 +80,7 @@ Platform ini dirancang untuk mendukung **semua jenis freelance**, bukan hanya pr
 - Pass lanjutan `/freelancers` memoles kualitas marketplace list: setiap row menonjolkan role + 1-line value statement + trust/rating + location/work mode + starting price + signals keputusan, CTA tetap satu (`View profile`), dan mode kosong kini menampilkan `Example freelancers` agar user tetap memahami struktur perbandingan sebelum data masuk.
 - Redesign terbaru `/freelancers` menggeser halaman menjadi tool hiring cepat: search bar dominan + quick tags, filter kiri yang ringkas/collapsible, list kandidat tengah dengan hierarchy keputusan (`Nama > Harga > Status > Rating`), panel kanan live insights, CTA utama `Chat`, serta section `Job terbaru dari klien` di bawah listing untuk menjaga continuity aksi.
 - Redesign terbaru `/jobs` mengubah halaman lowongan menjadi board operasional: search bar dominan + quick tags, struktur 3 kolom (filter kiri, list tengah, insight kanan), row lowongan berorientasi scan cepat (judul/client/lokasi/budget/waktu + badge urgensi), dan CTA utama `Apply` dengan `Lihat detail` sebagai aksi sekunder.
+- Pass **2026-05-09** menaikkan `/jobs` ke experience marketplace premium: hero gradien penuh + kartu pencarian mengambang, kartu lowongan dengan nama klien/verifikasi/skill/jumlah proposal nyata, pulse aktivitas dari job & bid terbaru, filter sheet mobile, strip insight tanpa metrik respons palsu; warna primer UI selaras brand `#3525cd`.
 - Navigasi global kini memiliki feedback transisi halaman: progress bar tipis di atas layar saat route berubah, dim/fade halus pada konten selama perpindahan, dan skeleton fallback global agar perpindahan tidak terasa “kedip”/blank.
 - Homepage final kini tetap clean namun tidak kosong: toggle dua mode, headline/CTA/search dinamis, visual context cards di sisi kanan hero, search penuh (keyword+lokkasi+kategori+chips), value strip 3 poin, dan CTA bawah—tanpa list job/freelancer atau panel data-heavy.
 - Micro-pass terbaru menyelaraskan proporsi dan ritme landing agar lebih “plek ketiplek” dengan referensi final: skala headline, shape visual kanan, quick chips bar, serta band CTA.

@@ -1,5 +1,5 @@
 import type { SearchFreelancersQueryDto, SearchJobsQueryDto } from "@acme/validators";
-import { AvailabilityStatus, JobStatus, JobVisibility, WorkMode } from "@acme/types";
+import { AvailabilityStatus, JobStatus, JobVisibility, VerificationStatus, WorkMode } from "@acme/types";
 import { db, Prisma } from "@acme/database";
 import { clampLimit, clampPage, offsetFromPage } from "@acme/utils";
 import { isFreelancerBoostActiveAt, isJobFeaturedActiveAt } from "../lib/promotion-expiry";
@@ -154,7 +154,24 @@ const JOB_LIST_SELECT = {
   bidDeadline: true,
   createdAt: true,
   isFeatured: true,
-  featuredUntil: true
+  featuredUntil: true,
+  clientProfile: {
+    select: {
+      displayName: true,
+      companyName: true,
+      verificationStatus: true
+    }
+  },
+  _count: {
+    select: { bids: true }
+  },
+  skills: {
+    take: 5,
+    orderBy: { createdAt: "asc" },
+    select: {
+      skill: { select: { name: true } }
+    }
+  }
 } satisfies Prisma.JobSelect;
 
 export type JobSearchItem = {
@@ -178,6 +195,13 @@ export type JobSearchItem = {
   featuredUntil: string | null;
   /** True only when featured promotion is still within `featuredUntil` (if set). Matches ranking. */
   isFeaturedActive: boolean;
+  /** Display label from client profile (company name preferred). */
+  clientDisplayName: string;
+  clientVerified: boolean;
+  /** Open proposals on this job (real count). */
+  bidCount: number;
+  /** Skill names attached to the job listing (limited). */
+  skillNames: string[];
 };
 
 export type FreelancerSearchItem = {
@@ -234,29 +258,7 @@ function num(v: { toString(): string } | null | undefined): number | null {
 }
 
 function mapJob(
-  row: {
-    id: string;
-    title: string;
-    titleEn: string | null;
-    titleId: string | null;
-    slug: string;
-    description: string;
-    descriptionEn: string | null;
-    descriptionId: string | null;
-    language: string;
-    budgetType: string;
-    budgetMin: { toString(): string } | null;
-    budgetMax: { toString(): string } | null;
-    currency: string;
-    workMode: string;
-    city: string | null;
-    categoryId: string;
-    subcategoryId: string | null;
-    bidDeadline: Date | null;
-    createdAt: Date;
-    isFeatured: boolean;
-    featuredUntil: Date | null;
-  },
+  row: Prisma.JobGetPayload<{ select: typeof JOB_LIST_SELECT }>,
   now: Date,
   locale: AppLocale
 ): JobSearchItem {
@@ -264,6 +266,11 @@ function mapJob(
   const source = row.language === "id" ? "id" : "en";
   const preferredTitle = locale === "id" ? row.titleId : row.titleEn;
   const preferredDescription = locale === "id" ? row.descriptionId : row.descriptionEn;
+  const company = row.clientProfile.companyName?.trim();
+  const display = row.clientProfile.displayName.trim();
+  const clientDisplayName = (company && company.length > 0 ? company : display) || display;
+  const clientVerified = row.clientProfile.verificationStatus === VerificationStatus.VERIFIED;
+  const skillNames = row.skills.map((s) => s.skill.name).filter((n) => n && n.trim().length > 0);
   return {
     id: row.id,
     title: preferredTitle ?? row.title,
@@ -283,7 +290,11 @@ function mapJob(
     createdAt: row.createdAt.toISOString(),
     isFeatured: row.isFeatured,
     featuredUntil: featuredUntilIso,
-    isFeaturedActive: isJobFeaturedActiveAt(now, row.isFeatured, row.featuredUntil)
+    isFeaturedActive: isJobFeaturedActiveAt(now, row.isFeatured, row.featuredUntil),
+    clientDisplayName,
+    clientVerified,
+    bidCount: row._count.bids,
+    skillNames
   };
 }
 

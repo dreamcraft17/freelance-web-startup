@@ -1,5 +1,5 @@
 import { db } from "@acme/database";
-import { AvailabilityStatus, JobStatus, JobVisibility } from "@acme/types";
+import { AvailabilityStatus, BidStatus, JobStatus, JobVisibility } from "@acme/types";
 
 /** Lightweight, read-only aggregates for public “marketplace pulse” copy (no PII). */
 export class PublicStatsService {
@@ -15,6 +15,13 @@ export class PublicStatsService {
       title: string;
       location: string | null;
       workMode: string;
+      createdAt: string;
+    }>;
+    /** Recent proposal events (real bids only). */
+    proposalRows: Array<{
+      freelancerName: string;
+      jobTitle: string;
+      createdAt: string;
     }>;
   }> {
     return db.$transaction(async (tx) => {
@@ -47,7 +54,27 @@ export class PublicStatsService {
         select: {
           title: true,
           city: true,
-          workMode: true
+          workMode: true,
+          createdAt: true
+        }
+      });
+
+      const recentBids = await tx.bid.findMany({
+        where: {
+          status: { not: BidStatus.WITHDRAWN },
+          job: {
+            deletedAt: null,
+            status: JobStatus.OPEN,
+            visibility: JobVisibility.PUBLIC,
+            moderationHiddenAt: null
+          }
+        },
+        orderBy: { createdAt: "desc" },
+        take: 3,
+        select: {
+          createdAt: true,
+          freelancer: { select: { fullName: true } },
+          job: { select: { title: true } }
         }
       });
 
@@ -62,7 +89,13 @@ export class PublicStatsService {
         jobRows: jobs.map((item) => ({
           title: item.title,
           location: item.city,
-          workMode: item.workMode
+          workMode: item.workMode,
+          createdAt: item.createdAt.toISOString()
+        })),
+        proposalRows: recentBids.map((b) => ({
+          freelancerName: b.freelancer.fullName,
+          jobTitle: b.job.title,
+          createdAt: b.createdAt.toISOString()
         }))
       };
     });

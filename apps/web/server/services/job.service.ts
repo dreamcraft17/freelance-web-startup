@@ -31,6 +31,10 @@ export type OpenJobListItem = {
   featuredUntil: Date | null;
   /** Matches search ranking: true only while `featuredUntil` is unset or in the future. */
   isFeaturedActive: boolean;
+  clientDisplayName: string;
+  clientVerified: boolean;
+  bidCount: number;
+  skillNames: string[];
 };
 
 function decShim(n: number | null): { toString(): string } | null {
@@ -55,7 +59,11 @@ function jobSearchItemToOpenListItem(j: JobSearchItem): OpenJobListItem {
     createdAt: j.createdAt,
     isFeatured: j.isFeatured,
     featuredUntil: j.featuredUntil ? new Date(j.featuredUntil) : null,
-    isFeaturedActive: j.isFeaturedActive
+    isFeaturedActive: j.isFeaturedActive,
+    clientDisplayName: j.clientDisplayName,
+    clientVerified: j.clientVerified,
+    bidCount: j.bidCount,
+    skillNames: j.skillNames
   };
 }
 

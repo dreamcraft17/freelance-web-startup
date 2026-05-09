@@ -1,7 +1,7 @@
 # Documentation maintenance (NearWork)
 
-> **Doc revision:** v9  
-> Last synchronized: 2026-05-09 (catatan freelancer shell/dashboard premium + dokumentasi aplikasi/UI).
+> **Doc revision:** v10  
+> Last synchronized: 2026-05-09 (sinkron dokumentasi untuk premium pass halaman publik `/jobs`).
 
 ## AUTO — wajib untuk AI & kontributor
 
