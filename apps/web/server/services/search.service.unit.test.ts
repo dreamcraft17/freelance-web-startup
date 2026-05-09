@@ -5,12 +5,12 @@ const hasDb = Boolean(process.env.DATABASE_URL?.trim());
 const httpBase = process.env.E2E_BASE_URL?.replace(/\/$/, "").trim();
 
 /**
- * DB integration guards raw SQL composition (filters + join) against P2010 / invalid placeholders.
- * Skips without DATABASE_URL (typical CI). Set E2E_BASE_URL (e.g. http://127.0.0.1:3000) for an extra
- * HTTP smoke on GET /api/jobs while a Next server is running. Full create→list regression: `pnpm test:e2e`.
+ * DB integration: job listing uses Prisma `findMany`/`count` (no raw SQL on that path). Skips without
+ * DATABASE_URL (typical CI). Set `E2E_BASE_URL` for GET /api/jobs smoke with a running server.
+ * Full create→list regression: `pnpm test:e2e`.
  */
 describe.runIf(hasDb)("SearchService job listing (integration)", () => {
-  it("listPublicOpenJobsPaginated returns 200-shaped data without raw WHERE/jsonb failure", async () => {
+  it("listPublicOpenJobsPaginated returns paginated results (Prisma findMany + count)", async () => {
     const svc = new SearchService();
     const emptyKeyword = await svc.listPublicOpenJobsPaginated({ page: 1, limit: 5 });
     expect(emptyKeyword.total).toBeGreaterThanOrEqual(0);
