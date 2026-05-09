@@ -103,12 +103,12 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
   const query = parsed.success ? parsed.data : { page: 1, limit: 24 as const };
 
   const jobService = new JobService();
+  const statsSvc = new PublicStatsService();
   const { t, locale } = await getServerTranslator();
-  const [{ items, total }, categories, pulse, heroPanelActivity, session] = await Promise.all([
+  const [{ items, total }, categories, { pulse, heroPanelActivity }, session] = await Promise.all([
     jobService.listOpenJobs(query, locale),
     loadCategories(),
-    new PublicStatsService().getMarketplacePulse(),
-    new PublicStatsService().getHeroPanelActivity(),
+    statsSvc.getPulseAndHeroForPublicBrowse(),
     getSessionFromCookies()
   ]);
   const categoryMap = new Map(categories.map((c) => [c.id, c.name]));

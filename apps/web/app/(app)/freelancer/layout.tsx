@@ -13,12 +13,9 @@ export default async function FreelancerDashboardLayout({ children }: { children
   let unreadNotifications: number | undefined;
   let unreadMessages: number | undefined;
   if (session?.accountStatus === AccountStatus.ACTIVE) {
-    const [notifUnread, inboxUnread] = await Promise.all([
-      new NotificationService().countUnreadForUser(session.userId),
-      new MessageService().countAwaitingReplyThreadsForUser(session.userId)
-    ]);
-    unreadNotifications = notifUnread;
-    unreadMessages = inboxUnread;
+    // Sequential (not Promise.all): avoids paired connection checkouts against small session pools.
+    unreadNotifications = await new NotificationService().countUnreadForUser(session.userId);
+    unreadMessages = await new MessageService().countAwaitingReplyThreadsForUser(session.userId);
   }
 
   return (

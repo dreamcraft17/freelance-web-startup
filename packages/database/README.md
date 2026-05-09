@@ -1,7 +1,7 @@
 # @acme/database
 
-> **Doc revision:** v5  
-> Last synchronized: 2026-05-09 (seed loads root `.env` + taxonomy for E2E categories/skills).
+> **Doc revision:** v6  
+> Last synchronized: 2026-05-09 (connection-pool guidance for session-mode poolers; app serializes hot-path queries).
 
 PostgreSQL access via **Prisma**: schema, migrations, and generated client.
 
@@ -15,6 +15,20 @@ export DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/freelance_dev"
 ```
 
 For local setup, copy `env.example.txt` to `.env` in this package (or set `DATABASE_URL` in the monorepo root `.env` when your tooling loads it). Files matching `.env*` are gitignored by the monorepo.
+
+### Session poolers & `EMAXCONNSESSION`
+
+Hosted Postgres often fronts the DB with a **session-mode pooler** (e.g. capped `pool_size` such as **15**). Each Prisma query holds a session while it runs; **`Promise.all` across multiple queries** (or multiple overlapping serverless invocations) can exhaust the pool and yield:
+
+`FATAL: (EMAXCONNSESSION) max clients reached in session mode`
+
+Mitigations used in this repo:
+
+- Prefer **one interactive `$transaction`** when a page needs several reads (see `PublicStatsService.getPulseAndHeroForPublicBrowse`).
+- Prefer **sequential** `count` → `findMany` instead of parallel `Promise.all` on the same route unless you have headroom.
+- For **serverless**, point Prisma at a pooler URL that matches your deployment model (or add a conservative `connection_limit` query param only when your provider documents it).
+
+The API layer maps pool exhaustion to **`503`** with `DB_POOL_EXHAUSTED` where applicable (`withApiHandler`).
 
 ## Bootstrap (reproducible)
 

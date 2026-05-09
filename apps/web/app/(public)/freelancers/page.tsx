@@ -145,13 +145,13 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
   const radiusKm = clampRadius(Number(raw.radiusKm ?? 50));
 
   const search = new SearchService();
+  const statsSvc = new PublicStatsService();
   const geoQuery = hasGeoCenter ? { ...query, page: 1 as const, limit: 120 as const } : query;
   const { t, locale } = await getServerTranslator();
-  const [{ items, total }, categories, pulse, heroPanelActivity, latestJobs] = await Promise.all([
+  const [{ items, total }, categories, { pulse, heroPanelActivity }, latestJobs] = await Promise.all([
     search.searchFreelancers(geoQuery),
     loadCategories(),
-    new PublicStatsService().getMarketplacePulse(),
-    new PublicStatsService().getHeroPanelActivity(),
+    statsSvc.getPulseAndHeroForPublicBrowse(),
     search.listPublicOpenJobsPaginated({ page: 1, limit: 5 }, locale)
   ]);
 
