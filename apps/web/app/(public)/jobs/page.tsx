@@ -484,7 +484,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                 <div className="mt-3 space-y-1 text-sm">
                   <Link
                     href={`/jobs${jobsBrowseQueryString({ ...filterBase, categoryId: "", page: 1 })}` as Route}
-                    className={`block rounded-xl px-2 py-1.5 ${categoryId === "" ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
+                    className={`block rounded-lg px-2 py-1.5 ${categoryId === "" ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
                   >
                     {t("public.filters.allCategories")}
                   </Link>
@@ -492,7 +492,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                     <Link
                       key={c.id}
                       href={`/jobs${jobsBrowseQueryString({ ...filterBase, categoryId: c.id, page: 1 })}` as Route}
-                      className={`block rounded-xl px-2 py-1.5 ${categoryId === c.id ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
+                      className={`block rounded-lg px-2 py-1.5 ${categoryId === c.id ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
                     >
                       {c.name}
                     </Link>
@@ -512,7 +512,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                     <Link
                       key={item.value}
                       href={`/jobs${jobsBrowseQueryString({ ...filterBase, minBudget: item.value, page: 1 })}` as Route}
-                      className={`block rounded-xl px-2 py-1.5 ${minBudget === item.value ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
+                      className={`block rounded-lg px-2 py-1.5 ${minBudget === item.value ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
                     >
                       {item.label}
                     </Link>
@@ -532,7 +532,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                     <Link
                       key={item.value}
                       href={`/jobs${jobsBrowseQueryString({ ...filterBase, postedWithinDays: item.value, page: 1 })}` as Route}
-                      className={`block rounded-xl px-2 py-1.5 ${postedWithinDays === item.value ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
+                      className={`block rounded-lg px-2 py-1.5 ${postedWithinDays === item.value ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
                     >
                       {item.label}
                     </Link>
@@ -546,19 +546,19 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                 <div className="mt-3 space-y-1 text-sm">
                   <Link
                     href={`/jobs${jobsBrowseQueryString({ ...filterBase, workMode: "REMOTE", page: 1 })}` as Route}
-                    className={`block rounded-xl px-2 py-1.5 ${workMode === "REMOTE" ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
+                    className={`block rounded-lg px-2 py-1.5 ${workMode === "REMOTE" ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
                   >
                     {t("public.filters.workModeRemote")}
                   </Link>
                   <Link
                     href={`/jobs${jobsBrowseQueryString({ ...filterBase, workMode: "ONSITE", page: 1 })}` as Route}
-                    className={`block rounded-xl px-2 py-1.5 ${workMode === "ONSITE" ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
+                    className={`block rounded-lg px-2 py-1.5 ${workMode === "ONSITE" ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
                   >
                     {t("public.filters.workModeOnSite")}
                   </Link>
                   <Link
                     href={`/jobs${jobsBrowseQueryString({ ...filterBase, workMode: "HYBRID", page: 1 })}` as Route}
-                    className={`block rounded-xl px-2 py-1.5 ${workMode === "HYBRID" ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
+                    className={`block rounded-lg px-2 py-1.5 ${workMode === "HYBRID" ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
                   >
                     {t("public.filters.workModeHybrid")}
                   </Link>
@@ -687,7 +687,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                 </p>
                 <ul className="space-y-2 text-sm">
                   {heroPanelActivity.jobRows.length === 0 ? (
-                    <li className="rounded-xl border border-dashed border-slate-200 px-3 py-2 text-slate-500">
+                    <li className="rounded-lg border border-dashed border-slate-200 px-3 py-2 text-slate-500">
                       {t("public.jobs.pulseEmptyJobs")}
                     </li>
                   ) : (
@@ -712,7 +712,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                 </p>
                 <ul className="space-y-2 text-sm">
                   {heroPanelActivity.proposalRows.length === 0 ? (
-                    <li className="rounded-xl border border-dashed border-slate-200 px-3 py-2 text-slate-500">
+                    <li className="rounded-lg border border-dashed border-slate-200 px-3 py-2 text-slate-500">
                       {t("public.jobs.pulseEmptyProposals")}
                     </li>
                   ) : (
