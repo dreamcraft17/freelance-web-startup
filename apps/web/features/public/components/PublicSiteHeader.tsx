@@ -5,14 +5,16 @@ import { AuthUserMenu } from "@/features/dashboard/components/AuthUserMenu";
 import { LocaleSwitcher } from "@/features/i18n/LocaleSwitcher";
 import { primaryActionForRole, secondaryActionForRole } from "@/features/public/lib/auth-nav";
 import { BrandLogo } from "@/features/shared/components/BrandLogo";
+import { getAppLocale } from "@/lib/i18n/server-locale";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
 
 /** Lightweight header for browse/search surfaces (jobs, freelancers, nearby). */
 export async function PublicSiteHeader() {
   const { t } = await getServerTranslator();
+  const locale = await getAppLocale();
   const session = await getSessionFromCookies();
-  const primary = session ? primaryActionForRole(session.role) : null;
-  const secondary = session ? secondaryActionForRole(session.role) : null;
+  const primary = session ? primaryActionForRole(session.role, locale) : null;
+  const secondary = session ? secondaryActionForRole(session.role, locale) : null;
 
   return (
     <header className="border-b border-slate-200 bg-white">
