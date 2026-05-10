@@ -8,6 +8,7 @@ import { ChevronDown, Loader2, LogOut, Settings, User } from "lucide-react";
 import { getSessionSnapshot, signOutCurrentSession } from "@/features/auth/lib/client-auth-actions";
 import { useI18n } from "@/features/i18n/I18nProvider";
 import { cn } from "@/lib/utils";
+import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
 
 type SessionDto = {
   userId: string;
@@ -22,20 +23,20 @@ function initialsFromSession(session: SessionDto | null): string {
   return session.userId.slice(0, 2).toUpperCase();
 }
 
-function profileHrefForRole(role: SessionDto["role"] | null): string {
-  if (role === "FREELANCER") return "/freelancer/profile";
-  if (role === "CLIENT") return "/client";
+function profileHrefForRole(role: SessionDto["role"] | null, locale: "en" | "id"): string {
+  if (role === "FREELANCER") return withWorkspaceLocale(locale, "/freelancer/profile");
+  if (role === "CLIENT") return withWorkspaceLocale(locale, "/client");
   if (role === "ADMIN" || role === "SUPPORT_ADMIN" || role === "MODERATOR" || role === "FINANCE_ADMIN") {
     return "/admin";
   }
-  return "/settings";
+  return withWorkspaceLocale(locale, "/settings");
 }
 
-function settingsHrefForRole(role: SessionDto["role"] | null): string {
+function settingsHrefForRole(role: SessionDto["role"] | null, locale: "en" | "id"): string {
   if (role === "ADMIN" || role === "SUPPORT_ADMIN" || role === "MODERATOR" || role === "FINANCE_ADMIN") {
     return "/admin/settings";
   }
-  return "/settings";
+  return withWorkspaceLocale(locale, "/settings");
 }
 
 type AuthUserMenuProps = {
@@ -45,7 +46,7 @@ type AuthUserMenuProps = {
 };
 
 export function AuthUserMenu({ compact = false, variant = "default" }: AuthUserMenuProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -87,8 +88,8 @@ export function AuthUserMenu({ compact = false, variant = "default" }: AuthUserM
       : session?.role === "CLIENT"
         ? t("authMenu.client")
         : t("authMenu.user");
-  const profileHref = profileHrefForRole(session?.role ?? null);
-  const settingsHref = settingsHrefForRole(session?.role ?? null);
+  const profileHref = profileHrefForRole(session?.role ?? null, locale);
+  const settingsHref = settingsHrefForRole(session?.role ?? null, locale);
 
   const onLogout = () => {
     if (isPending) return;
