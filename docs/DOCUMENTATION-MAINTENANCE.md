@@ -1,7 +1,7 @@
 # Documentation maintenance (NearWork)
 
-> **Doc revision:** v14  
-> Last synchronized: 2026-05-10 (sinkron docs untuk lokalisasi notifikasi in-app + payload `_nwCopy`).
+> **Doc revision:** v15  
+> Last synchronized: 2026-05-10 (sinkron docs untuk URL workspace ber-prefix locale + hero demo cards `landing.hero.demoRows`).
 
 ## AUTO — wajib untuk AI & kontributor
 
