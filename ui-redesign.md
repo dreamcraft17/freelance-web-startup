@@ -1,13 +1,18 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v84  
-> Last synchronized: 2026-05-09 (money display: shared `format-money` helpers align job/contract currency with EN/IDR locale; optional compact IDR copy for Indonesian UI).
+> **Doc revision:** v85  
+> Last synchronized: 2026-05-10 (alamat workspace per locale + kartu demo hero landing dari kamus `landing.hero.demoRows`).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-10 — Workspace URLs mirror marketing locale
+
+- **Canonical bars:** bilah alamat untuk shell klien/freelancer/inbox mengikuti pola `/en/…` atau `/id/…`, selaras dengan halaman pemasaran berbahasa tunggal.
+- **Hero demo strip:** nama/peran pada kartu contoh kanan hero membaca `landing.hero.demoRows.*` (EN memakai label Inggris; ID mempertahankan contoh lokal).
 
 ### 2026-05-09 — Locale + currency presentation (marketplace-wide)
 
