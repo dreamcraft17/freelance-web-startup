@@ -3,7 +3,9 @@ import type { NextRequest } from "next/server";
 import { AccountStatus } from "@acme/types";
 import { canAccessAdminPage, isStaffRole } from "@/features/admin/lib/access";
 import { LOCALE_COOKIE } from "@/lib/i18n/constants";
+import { resolveNavigationLocale } from "@/lib/i18n/navigation-locale";
 import { resolveLocale } from "@/lib/i18n/resolve-locale";
+import type { AppLocale } from "@/lib/i18n/types";
 import { isUnprefixedWorkspacePath, matchPrefixedWorkspacePath } from "@/lib/i18n/workspace-path";
 import {
   getSessionFromRequest,
@@ -29,7 +31,7 @@ function localeCookieOptions() {
   };
 }
 
-function preferredLocale(request: NextRequest): "en" | "id" {
+function preferredLocale(request: NextRequest): AppLocale {
   const cookieLocale = request.cookies.get(LOCALE_COOKIE)?.value;
   const acceptLanguage = request.headers.get("accept-language");
   const resolved = resolveLocale(cookieLocale, null);
@@ -48,6 +50,16 @@ function preferredLocale(request: NextRequest): "en" | "id" {
   }
 
   return resolved;
+}
+
+/** Cookie preference, overridden by same-origin Referer `/en|id/` when navigating to unprefixed paths. */
+function navigationLocale(request: NextRequest): AppLocale {
+  return resolveNavigationLocale(
+    request.cookies.get(LOCALE_COOKIE)?.value,
+    request.headers.get("referer"),
+    request.headers.get("sec-fetch-site"),
+    request.nextUrl.origin
+  );
 }
 
 function isAuthPublicPath(pathname: string): boolean {
@@ -131,7 +143,7 @@ export default async function middleware(request: NextRequest) {
   }
 
   if (isUnprefixedWorkspacePath(pathname)) {
-    const locale = preferredLocale(request);
+    const locale = navigationLocale(request);
     const url = request.nextUrl.clone();
     url.pathname = `/${locale}${pathname}`;
     const redirectLocale = NextResponse.redirect(url);
@@ -154,14 +166,16 @@ export default async function middleware(request: NextRequest) {
   }
 
   if (SEO_PREFIX_PATH.test(pathname)) {
-    const locale = preferredLocale(request);
+    const locale = navigationLocale(request);
     const url = request.nextUrl.clone();
     url.pathname = `/${locale}${pathname}`;
-    return NextResponse.redirect(url);
+    const seoRedirect = NextResponse.redirect(url);
+    seoRedirect.cookies.set(LOCALE_COOKIE, locale, localeCookieOptions());
+    return seoRedirect;
   }
 
   const session = await getSessionFromRequest(request);
-  const navLocale = preferredLocale(request);
+  const navLocale = navigationLocale(request);
 
   if (isAuthPublicPath(pathname)) {
     const authPath = pathname.toLowerCase();

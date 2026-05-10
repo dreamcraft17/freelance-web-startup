@@ -13,6 +13,7 @@ import { AuthUserMenu } from "./AuthUserMenu";
 import { SidebarAccountActions } from "./SidebarAccountActions";
 import { WorkspaceCommunitySidebarCard } from "./WorkspaceCommunitySidebarCard";
 import type { DashboardNavItem } from "../nav-types";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
 
 export type { DashboardNavItem };
@@ -128,7 +129,7 @@ export function DashboardShell({
             >
               {workspaceSearch ? (
                 <form
-                  action="/jobs"
+                  action={withPublicLocale(locale, "/jobs")}
                   method="get"
                   className="relative min-w-[220px] max-w-xl flex-1"
                   role="search"

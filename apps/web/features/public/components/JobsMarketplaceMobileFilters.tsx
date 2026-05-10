@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useId, useState } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
 import { useI18n } from "@/features/i18n/I18nProvider";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 import { jobsBrowseQueryString } from "@/features/public/lib/jobs-browse-query";
 import { Button } from "@/components/ui/button";
 
@@ -19,7 +20,8 @@ export function JobsMarketplaceMobileFilters(props: {
   postedWithinDays: string;
   categories: CategoryOption[];
 }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const jobsBase = withPublicLocale(locale, "/jobs");
   const [open, setOpen] = useState(false);
   const titleId = useId();
   const q = {
@@ -86,7 +88,7 @@ export function JobsMarketplaceMobileFilters(props: {
                 <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{t("public.filters.category")}</p>
                 <div className="mt-2 space-y-1.5">
                   <Link
-                    href={`/jobs${jobsBrowseQueryString({ ...q, categoryId: "" })}` as Route}
+                    href={`${jobsBase}${jobsBrowseQueryString({ ...q, categoryId: "" })}` as Route}
                     onClick={() => setOpen(false)}
                     className={`block rounded-lg px-3 py-2 text-sm font-medium ${
                       props.categoryId === "" ? "bg-[#f4f2ff] text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"
@@ -97,7 +99,7 @@ export function JobsMarketplaceMobileFilters(props: {
                   {props.categories.map((c) => (
                     <Link
                       key={c.id}
-                      href={`/jobs${jobsBrowseQueryString({ ...q, categoryId: c.id })}` as Route}
+                      href={`${jobsBase}${jobsBrowseQueryString({ ...q, categoryId: c.id })}` as Route}
                       onClick={() => setOpen(false)}
                       className={`block rounded-lg px-3 py-2 text-sm font-medium ${
                         props.categoryId === c.id ? "bg-[#f4f2ff] text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"
@@ -119,7 +121,7 @@ export function JobsMarketplaceMobileFilters(props: {
                   ].map((item) => (
                     <Link
                       key={item.value}
-                      href={`/jobs${jobsBrowseQueryString({ ...q, minBudget: item.value })}` as Route}
+                      href={`${jobsBase}${jobsBrowseQueryString({ ...q, minBudget: item.value })}` as Route}
                       onClick={() => setOpen(false)}
                       className={`block rounded-lg px-3 py-2 text-sm font-medium ${
                         props.minBudget === item.value ? "bg-[#f4f2ff] text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"
@@ -141,7 +143,7 @@ export function JobsMarketplaceMobileFilters(props: {
                   ].map((item) => (
                     <Link
                       key={item.value}
-                      href={`/jobs${jobsBrowseQueryString({ ...q, postedWithinDays: item.value })}` as Route}
+                      href={`${jobsBase}${jobsBrowseQueryString({ ...q, postedWithinDays: item.value })}` as Route}
                       onClick={() => setOpen(false)}
                       className={`block rounded-lg px-3 py-2 text-sm font-medium ${
                         props.postedWithinDays === item.value ? "bg-[#f4f2ff] text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"
@@ -157,7 +159,7 @@ export function JobsMarketplaceMobileFilters(props: {
                 <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{t("public.jobs.workTypeFilterLabel")}</p>
                 <div className="mt-2 flex flex-wrap gap-2">
                   <Link
-                    href={`/jobs${jobsBrowseQueryString({ ...q, workMode: "REMOTE" })}` as Route}
+                    href={`${jobsBase}${jobsBrowseQueryString({ ...q, workMode: "REMOTE" })}` as Route}
                     onClick={() => setOpen(false)}
                     className={`rounded-full px-3 py-1.5 text-xs font-semibold ${
                       props.workMode === "REMOTE"
@@ -168,7 +170,7 @@ export function JobsMarketplaceMobileFilters(props: {
                     {t("public.filters.workModeRemote")}
                   </Link>
                   <Link
-                    href={`/jobs${jobsBrowseQueryString({ ...q, workMode: "ONSITE" })}` as Route}
+                    href={`${jobsBase}${jobsBrowseQueryString({ ...q, workMode: "ONSITE" })}` as Route}
                     onClick={() => setOpen(false)}
                     className={`rounded-full px-3 py-1.5 text-xs font-semibold ${
                       props.workMode === "ONSITE"
@@ -179,7 +181,7 @@ export function JobsMarketplaceMobileFilters(props: {
                     {t("public.filters.workModeOnSite")}
                   </Link>
                   <Link
-                    href={`/jobs${jobsBrowseQueryString({ ...q, workMode: "HYBRID" })}` as Route}
+                    href={`${jobsBase}${jobsBrowseQueryString({ ...q, workMode: "HYBRID" })}` as Route}
                     onClick={() => setOpen(false)}
                     className={`rounded-full px-3 py-1.5 text-xs font-semibold ${
                       props.workMode === "HYBRID"
@@ -193,7 +195,7 @@ export function JobsMarketplaceMobileFilters(props: {
               </div>
 
               <Link
-                href="/jobs"
+                href={jobsBase as Route}
                 onClick={() => setOpen(false)}
                 className="block w-full rounded-lg border border-slate-200 py-2.5 text-center text-sm font-semibold text-slate-700 hover:bg-slate-50"
               >

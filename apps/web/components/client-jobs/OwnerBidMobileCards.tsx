@@ -6,6 +6,8 @@ import { BidDecisionAction } from "@/components/client-jobs/BidDecisionAction";
 import { BidConversationAction } from "@/components/client-jobs/BidConversationAction";
 import { ModerationReportButton } from "@/features/moderation/components/ModerationReportButton";
 import type { BidStatus } from "@acme/types";
+import type { AppLocale } from "@/lib/i18n/types";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 import { cn } from "@/lib/utils";
 
 export type OwnerBidMobileVm = {
@@ -55,14 +57,19 @@ type CopyBag = {
 };
 
 export function OwnerBidMobileCards({
+  locale,
   bids,
   copy,
   freelancerProfileAriaName
 }: {
+  locale: AppLocale;
   bids: OwnerBidMobileVm[];
   copy: CopyBag;
   freelancerProfileAriaName: string;
 }) {
+  const jobsRoot = withPublicLocale(locale, "/jobs");
+  const flRoot = withPublicLocale(locale, "/freelancers");
+
   return (
     <div className="space-y-3 md:hidden">
       <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{copy.compareKicker}</p>
@@ -87,7 +94,7 @@ export function OwnerBidMobileCards({
             <div className="flex flex-wrap items-start justify-between gap-2 border-b border-slate-100 pb-3">
               <div className="min-w-0">
                 <Link
-                  href={`/freelancers/${bid.freelancerUsername}` as Route}
+                  href={`${flRoot}/${bid.freelancerUsername}` as Route}
                   className="block truncate text-base font-semibold text-slate-900 hover:text-[#3525cd]"
                   aria-label={`${freelancerProfileAriaName} @${bid.freelancerUsername}`}
                 >
@@ -177,13 +184,13 @@ export function OwnerBidMobileCards({
                 className="touch-manipulation min-h-[44px] shrink-0"
               />
               <Link
-                href={`/freelancers/${bid.freelancerUsername}` as Route}
+                href={`${flRoot}/${bid.freelancerUsername}` as Route}
                 className="touch-manipulation text-[11px] font-semibold text-[#433C93]"
               >
                 {copy.browseFreelancerLabel}
               </Link>
               <Link
-                href={`/jobs/${bid.jobId}` as Route}
+                href={`${jobsRoot}/${bid.jobId}` as Route}
                 className="touch-manipulation text-[11px] font-semibold text-slate-600"
               >
                 {copy.navigateJobLabel}

@@ -20,6 +20,8 @@ import {
   Sparkles
 } from "lucide-react";
 import { useI18n } from "@/features/i18n/I18nProvider";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
+import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
 
 export type ThreadListItem = {
   threadId: string;
@@ -118,7 +120,10 @@ export function MessagesWorkspace({
   currentUserId,
   selectedContext
 }: MessagesWorkspaceProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const jobsBrowseRoot = withPublicLocale(locale, "/jobs");
+  const freelancersBrowseRoot = withPublicLocale(locale, "/freelancers");
+  const wp = (path: string) => withWorkspaceLocale(locale, path) as Route;
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [body, setBody] = useState("");
@@ -204,8 +209,8 @@ export function MessagesWorkspace({
                 icon={MessageCircle}
                 title={t("messages.emptyThreadsTitle")}
                 description={t("messages.emptyThreadsDescription")}
-                action={{ label: t("messages.emptyThreadsBrowseJobs"), href: "/jobs" }}
-                secondaryAction={{ label: t("messages.emptyThreadsFreelancers"), href: "/freelancers" }}
+                action={{ label: t("messages.emptyThreadsBrowseJobs"), href: jobsBrowseRoot as Route }}
+                secondaryAction={{ label: t("messages.emptyThreadsFreelancers"), href: freelancersBrowseRoot as Route }}
               />
             </div>
           ) : (
@@ -226,7 +231,7 @@ export function MessagesWorkspace({
                 return (
                   <li key={thread.threadId}>
                     <Link
-                      href={`/messages?thread=${thread.threadId}` as Route}
+                      href={wp(`/messages?thread=${thread.threadId}`)}
                       scroll={false}
                       className={cn(
                         "flex gap-3 px-4 py-3.5 transition hover:bg-slate-50/90",
@@ -316,8 +321,8 @@ export function MessagesWorkspace({
                 icon={MessageSquare}
                 title={t("messages.pickThreadTitle")}
                 description={t("messages.pickThreadDescription")}
-                action={{ label: t("messages.pickBrowseJobs"), href: "/jobs" }}
-                secondaryAction={{ label: t("messages.pickNotifications"), href: "/notifications" }}
+                action={{ label: t("messages.pickBrowseJobs"), href: jobsBrowseRoot as Route }}
+                secondaryAction={{ label: t("messages.pickNotifications"), href: wp("/notifications") }}
               />
             </div>
           </div>
@@ -325,7 +330,7 @@ export function MessagesWorkspace({
           <>
             <header className="shrink-0 border-b border-slate-200/90 bg-white px-4 py-3 md:px-5">
               <Link
-                href={"/messages" as Route}
+                href={wp("/messages")}
                 className="mb-3 inline-flex items-center gap-1.5 text-sm font-semibold text-[#3525cd] hover:underline md:hidden"
                 scroll={false}
               >
@@ -352,7 +357,7 @@ export function MessagesWorkspace({
                       {selectedThread?.jobId ? (
                         <div className="flex flex-wrap items-center gap-2">
                           <Link
-                            href={`/jobs/${selectedThread.jobId}` as Route}
+                            href={`${jobsBrowseRoot}/${selectedThread.jobId}` as Route}
                             className="inline-flex items-center gap-1 text-xs font-semibold text-[#3525cd] hover:underline"
                           >
                             <Briefcase className="h-3.5 w-3.5" aria-hidden />
@@ -412,7 +417,7 @@ export function MessagesWorkspace({
                     <span className="text-slate-500">{t("messages.contextProposalPending")}</span>
                   )}
                   <Link
-                    href={`/jobs/${selectedContext.jobId}` as Route}
+                    href={`${jobsBrowseRoot}/${selectedContext.jobId}` as Route}
                     className="font-semibold text-[#3525cd] hover:underline"
                   >
                     {t("messages.backToJob")}

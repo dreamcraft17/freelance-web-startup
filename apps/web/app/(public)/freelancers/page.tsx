@@ -5,8 +5,10 @@ import { WorkMode } from "@acme/types";
 import { FreelancersBrowseList, type PublicFreelancerCard } from "@/features/public/components/FreelancersBrowseList";
 import { FreelancersPublicEmpty } from "@/features/public/components/FreelancersPublicEmpty";
 import { formatMoneyAmount, formatMoneyRange, normalizeCurrencyCode } from "@/lib/format-money";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
 import type { AppLocale } from "@/lib/i18n/types";
+import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
 import { CategoryService } from "@/server/services/category.service";
 import { GeoService } from "@/server/services/geo.service";
 import type { FreelancerSearchItem, JobSearchItem } from "@/server/services/search.service";
@@ -159,6 +161,8 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
   const statsSvc = new PublicStatsService();
   const geoQuery = hasGeoCenter ? { ...query, page: 1 as const, limit: 120 as const } : query;
   const { t, locale } = await getServerTranslator();
+  const flBase = withPublicLocale(locale, "/freelancers");
+  const jobsBase = withPublicLocale(locale, "/jobs");
   const [{ items, total }, categories, { pulse, heroPanelActivity }, latestJobs] = await Promise.all([
     search.searchFreelancers(geoQuery),
     loadCategories(),
@@ -242,7 +246,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
           <p className="mt-2 max-w-3xl text-sm text-slate-600">{t("public.freelancers.pageDescription")}</p>
         </div>
         <div className="sticky top-[4.75rem] z-30 rounded-2xl border border-[#e5e7eb] bg-white p-4 shadow-[0_1px_2px_rgba(2,6,23,0.04)] md:p-5">
-          <form method="get" action="/freelancers" className="grid gap-3 lg:grid-cols-[minmax(0,1.9fr),minmax(0,1fr),minmax(0,1fr),auto] lg:items-center">
+          <form method="get" action={flBase} className="grid gap-3 lg:grid-cols-[minmax(0,1.9fr),minmax(0,1fr),minmax(0,1fr),auto] lg:items-center">
             <input type="hidden" name="availability" value={availability} />
             <input type="hidden" name="budget" value={budget} />
             <input type="hidden" name="minRating" value={minRating} />
@@ -282,7 +286,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
               return (
                 <Link
                   key={key}
-                  href={`/freelancers${freelancersQueryString({ keyword: term, city, workMode, categoryId, availability, budget, minRating, responseTime, page: 1 })}` as Route}
+                  href={`${flBase}${freelancersQueryString({ keyword: term, city, workMode, categoryId, availability, budget, minRating, responseTime, page: 1 })}` as Route}
                   className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 font-medium text-slate-700 hover:border-slate-300"
                 >
                   {term}
@@ -298,18 +302,18 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
           <div className="space-y-4 rounded-2xl border border-[#e5e7eb] bg-white p-4">
             <div className="flex items-center justify-between">
               <h2 className="text-base font-semibold text-slate-900">{t("public.filters.title")}</h2>
-              <Link href="/freelancers" className="text-xs font-semibold text-[#4f35e8] hover:underline">
+              <Link href={flBase as Route} className="text-xs font-semibold text-[#4f35e8] hover:underline">
                 {t("public.filters.reset")}
               </Link>
             </div>
             <details open className="group border-t border-slate-100 pt-3">
               <summary className="cursor-pointer text-sm font-semibold text-slate-800">{t("public.filters.category")}</summary>
               <div className="mt-2 space-y-1 text-sm">
-                <Link href={`/freelancers${freelancersQueryString({ keyword, city, workMode, categoryId: "", availability, budget, minRating, responseTime, page: 1 })}` as Route} className="block text-slate-700 hover:text-[#4f35e8]">
+                <Link href={`${flBase}${freelancersQueryString({ keyword, city, workMode, categoryId: "", availability, budget, minRating, responseTime, page: 1 })}` as Route} className="block text-slate-700 hover:text-[#4f35e8]">
                   {t("public.filters.allCategories")}
                 </Link>
                 {categories.slice(0, 8).map((c) => (
-                  <Link key={c.id} href={`/freelancers${freelancersQueryString({ keyword, city, workMode, categoryId: c.id, availability, budget, minRating, responseTime, page: 1 })}` as Route} className={`block ${categoryId === c.id ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>
+                  <Link key={c.id} href={`${flBase}${freelancersQueryString({ keyword, city, workMode, categoryId: c.id, availability, budget, minRating, responseTime, page: 1 })}` as Route} className={`block ${categoryId === c.id ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>
                     {c.name}
                   </Link>
                 ))}
@@ -318,10 +322,10 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
             <details open className="group border-t border-slate-100 pt-3">
               <summary className="cursor-pointer text-sm font-semibold text-slate-800">{t("public.freelancers.filterBudgetLabel")}</summary>
               <div className="mt-2 space-y-1 text-sm">
-                <Link href={`/freelancers${freelancersQueryString({ keyword, city, workMode, categoryId, availability, budget: "fit", minRating, responseTime, page: 1 })}` as Route} className={`block ${budget === "fit" ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>
+                <Link href={`${flBase}${freelancersQueryString({ keyword, city, workMode, categoryId, availability, budget: "fit", minRating, responseTime, page: 1 })}` as Route} className={`block ${budget === "fit" ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>
                   {t("public.freelancers.quickChipBudget")}
                 </Link>
-                <Link href={`/freelancers${freelancersQueryString({ keyword, city, workMode, categoryId, availability, budget: "", minRating, responseTime, page: 1 })}` as Route} className={`block ${budget === "" ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>
+                <Link href={`${flBase}${freelancersQueryString({ keyword, city, workMode, categoryId, availability, budget: "", minRating, responseTime, page: 1 })}` as Route} className={`block ${budget === "" ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>
                   {t("public.freelancers.filterAnyBudget")}
                 </Link>
               </div>
@@ -330,7 +334,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
               <summary className="cursor-pointer text-sm font-semibold text-slate-800">{t("public.freelancers.filterRatingLabel")}</summary>
               <div className="mt-2 space-y-1 text-sm">
                 {["4.8", "4.5", "4.0"].map((ratingValue) => (
-                  <Link key={ratingValue} href={`/freelancers${freelancersQueryString({ keyword, city, workMode, categoryId, availability, budget, minRating: ratingValue, responseTime, page: 1 })}` as Route} className={`block ${minRating === ratingValue ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>
+                  <Link key={ratingValue} href={`${flBase}${freelancersQueryString({ keyword, city, workMode, categoryId, availability, budget, minRating: ratingValue, responseTime, page: 1 })}` as Route} className={`block ${minRating === ratingValue ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>
                     {t("public.freelancers.filterRatingAtLeast", { rating: ratingValue })}
                   </Link>
                 ))}
@@ -339,13 +343,13 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
             <details open className="group border-t border-slate-100 pt-3">
               <summary className="cursor-pointer text-sm font-semibold text-slate-800">{t("public.filters.city")}</summary>
               <div className="mt-2 space-y-1 text-sm">
-                <Link href={`/freelancers${freelancersQueryString({ keyword, city, workMode: "ONSITE", categoryId, availability, budget, minRating, responseTime, page: 1 })}` as Route} className={`block ${workMode === "ONSITE" ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>
+                <Link href={`${flBase}${freelancersQueryString({ keyword, city, workMode: "ONSITE", categoryId, availability, budget, minRating, responseTime, page: 1 })}` as Route} className={`block ${workMode === "ONSITE" ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>
                   {t("public.freelancers.quickChipNearby")}
                 </Link>
-                <Link href={`/freelancers${freelancersQueryString({ keyword, city: "", workMode: "REMOTE", categoryId, availability, budget, minRating, responseTime, page: 1 })}` as Route} className={`block ${workMode === "REMOTE" ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>
+                <Link href={`${flBase}${freelancersQueryString({ keyword, city: "", workMode: "REMOTE", categoryId, availability, budget, minRating, responseTime, page: 1 })}` as Route} className={`block ${workMode === "REMOTE" ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>
                   {t("public.freelancers.quickChipRemote")}
                 </Link>
-                <Link href={`/freelancers${freelancersQueryString({ keyword, city, workMode: "", categoryId, availability, budget, minRating, responseTime, page: 1 })}` as Route} className={`block ${workMode === "" ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>
+                <Link href={`${flBase}${freelancersQueryString({ keyword, city, workMode: "", categoryId, availability, budget, minRating, responseTime, page: 1 })}` as Route} className={`block ${workMode === "" ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>
                   {t("public.filters.workModeAny")}
                 </Link>
               </div>
@@ -353,10 +357,10 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
             <details open className="group border-t border-slate-100 pt-3">
               <summary className="cursor-pointer text-sm font-semibold text-slate-800">{t("public.freelancers.filterAvailabilityLabel")}</summary>
               <div className="mt-2 space-y-1 text-sm">
-                <Link href={`/freelancers${freelancersQueryString({ keyword, city, workMode, categoryId, availability: "AVAILABLE", budget, minRating, responseTime, page: 1 })}` as Route} className={`block ${availability === "AVAILABLE" ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>
+                <Link href={`${flBase}${freelancersQueryString({ keyword, city, workMode, categoryId, availability: "AVAILABLE", budget, minRating, responseTime, page: 1 })}` as Route} className={`block ${availability === "AVAILABLE" ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>
                   {t("public.freelancers.quickChipAvailable")}
                 </Link>
-                <Link href={`/freelancers${freelancersQueryString({ keyword, city, workMode, categoryId, availability: "", budget, minRating, responseTime, page: 1 })}` as Route} className={`block ${availability === "" ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>
+                <Link href={`${flBase}${freelancersQueryString({ keyword, city, workMode, categoryId, availability: "", budget, minRating, responseTime, page: 1 })}` as Route} className={`block ${availability === "" ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>
                   {t("public.freelancers.filterAnyAvailability")}
                 </Link>
               </div>
@@ -369,7 +373,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
                   { value: "60", label: "< 1 jam" },
                   { value: "180", label: "< 3 jam" }
                 ].map((item) => (
-                  <Link key={item.value} href={`/freelancers${freelancersQueryString({ keyword, city, workMode, categoryId, availability, budget, minRating, responseTime: item.value, page: 1 })}` as Route} className={`block ${responseTime === item.value ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>
+                  <Link key={item.value} href={`${flBase}${freelancersQueryString({ keyword, city, workMode, categoryId, availability, budget, minRating, responseTime: item.value, page: 1 })}` as Route} className={`block ${responseTime === item.value ? "font-semibold text-[#4f35e8]" : "text-slate-700 hover:text-[#4f35e8]"}`}>
                     {item.label}
                   </Link>
                 ))}
@@ -383,10 +387,10 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
             <details className="rounded-xl border border-[#e5e7eb] bg-white p-3">
               <summary className="cursor-pointer text-sm font-semibold text-slate-900">{t("public.freelancers.mobileFilterSummary")}</summary>
               <div className="mt-2 flex flex-wrap gap-2 text-xs">
-                <Link href={`/freelancers${freelancersQueryString({ keyword, city, workMode: "ONSITE", categoryId, availability, budget, minRating, responseTime, page: 1 })}` as Route} className="rounded border border-slate-200 px-2 py-1">{t("public.freelancers.quickChipNearby")}</Link>
-                <Link href={`/freelancers${freelancersQueryString({ keyword, city: "", workMode: "REMOTE", categoryId, availability, budget, minRating, responseTime, page: 1 })}` as Route} className="rounded border border-slate-200 px-2 py-1">{t("public.freelancers.quickChipRemote")}</Link>
-                <Link href={`/freelancers${freelancersQueryString({ keyword, city, workMode, categoryId, availability: "AVAILABLE", budget, minRating, responseTime, page: 1 })}` as Route} className="rounded border border-slate-200 px-2 py-1">{t("public.freelancers.quickChipAvailable")}</Link>
-                <Link href={`/freelancers${freelancersQueryString({ keyword, city, workMode, categoryId, availability, budget: "fit", minRating, responseTime, page: 1 })}` as Route} className="rounded border border-slate-200 px-2 py-1">{t("public.freelancers.quickChipBudget")}</Link>
+                <Link href={`${flBase}${freelancersQueryString({ keyword, city, workMode: "ONSITE", categoryId, availability, budget, minRating, responseTime, page: 1 })}` as Route} className="rounded border border-slate-200 px-2 py-1">{t("public.freelancers.quickChipNearby")}</Link>
+                <Link href={`${flBase}${freelancersQueryString({ keyword, city: "", workMode: "REMOTE", categoryId, availability, budget, minRating, responseTime, page: 1 })}` as Route} className="rounded border border-slate-200 px-2 py-1">{t("public.freelancers.quickChipRemote")}</Link>
+                <Link href={`${flBase}${freelancersQueryString({ keyword, city, workMode, categoryId, availability: "AVAILABLE", budget, minRating, responseTime, page: 1 })}` as Route} className="rounded border border-slate-200 px-2 py-1">{t("public.freelancers.quickChipAvailable")}</Link>
+                <Link href={`${flBase}${freelancersQueryString({ keyword, city, workMode, categoryId, availability, budget: "fit", minRating, responseTime, page: 1 })}` as Route} className="rounded border border-slate-200 px-2 py-1">{t("public.freelancers.quickChipBudget")}</Link>
               </div>
             </details>
           </div>
@@ -440,13 +444,13 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
           <section className="rounded-xl border border-[#e5e7eb] bg-white p-4">
             <div className="mb-3 flex items-center justify-between gap-2">
               <h2 className="text-base font-semibold text-slate-900">{t("public.freelancers.latestJobsTitle")}</h2>
-              <Link href="/jobs" className="text-xs font-semibold text-[#4f35e8] hover:underline">
+              <Link href={jobsBase as Route} className="text-xs font-semibold text-[#4f35e8] hover:underline">
                 {t("public.freelancers.latestJobsMore")}
               </Link>
             </div>
             <div className="space-y-2.5">
               {latestJobs.items.slice(0, 4).map((job) => (
-                <Link key={job.id} href={`/jobs/${job.id}` as Route} className="block rounded-lg border border-slate-200 px-3 py-2.5 hover:border-slate-300">
+                <Link key={job.id} href={`${jobsBase}/${job.id}` as Route} className="block rounded-lg border border-slate-200 px-3 py-2.5 hover:border-slate-300">
                   <p className="line-clamp-1 text-sm font-semibold text-slate-900">{job.title}</p>
                   <p className="mt-1 text-xs text-slate-600">
                     {formatBudget(job, t, locale)} · {job.city || workModeLabel(job.workMode, t)} · {relativeTime(job.createdAt, locale)}
@@ -464,7 +468,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
               {page > 1 ? (
                 <Link
                   href={
-                    `/freelancers${freelancersQueryString({ keyword, city, workMode, categoryId, availability, budget, minRating, responseTime, page: page - 1 })}` as Route
+                    `${flBase}${freelancersQueryString({ keyword, city, workMode, categoryId, availability, budget, minRating, responseTime, page: page - 1 })}` as Route
                   }
                   className="font-bold text-[#3525cd] hover:underline"
                 >
@@ -479,7 +483,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
               {page < totalPages ? (
                 <Link
                   href={
-                    `/freelancers${freelancersQueryString({ keyword, city, workMode, categoryId, availability, budget, minRating, responseTime, page: page + 1 })}` as Route
+                    `${flBase}${freelancersQueryString({ keyword, city, workMode, categoryId, availability, budget, minRating, responseTime, page: page + 1 })}` as Route
                   }
                   className="font-bold text-[#3525cd] hover:underline"
                 >
@@ -542,15 +546,15 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
           <section className="rounded-2xl border border-[#e5e7eb] bg-white p-4">
             <h2 className="text-base font-semibold text-slate-900">{t("public.freelancers.workModeTitle")}</h2>
             <div className="mt-3 grid grid-cols-3 gap-2 text-xs font-semibold">
-              <Link href={`/freelancers${freelancersQueryString({ keyword, city: "", workMode: "REMOTE", categoryId, availability, budget, minRating, responseTime, page: 1 })}` as Route} className={`rounded-md border px-2 py-2 text-center ${workMode === "REMOTE" ? "border-[#4f35e8] text-[#4f35e8]" : "border-slate-200 text-slate-700"}`}>{t("public.filters.workModeRemote")}</Link>
-              <Link href={`/freelancers${freelancersQueryString({ keyword, city, workMode: "ONSITE", categoryId, availability, budget, minRating, responseTime, page: 1 })}` as Route} className={`rounded-md border px-2 py-2 text-center ${workMode === "ONSITE" ? "border-[#4f35e8] text-[#4f35e8]" : "border-slate-200 text-slate-700"}`}>{t("public.filters.workModeOnSite")}</Link>
-              <Link href={`/freelancers${freelancersQueryString({ keyword, city, workMode: "HYBRID", categoryId, availability, budget, minRating, responseTime, page: 1 })}` as Route} className={`rounded-md border px-2 py-2 text-center ${workMode === "HYBRID" ? "border-[#4f35e8] text-[#4f35e8]" : "border-slate-200 text-slate-700"}`}>{t("public.filters.workModeHybrid")}</Link>
+              <Link href={`${flBase}${freelancersQueryString({ keyword, city: "", workMode: "REMOTE", categoryId, availability, budget, minRating, responseTime, page: 1 })}` as Route} className={`rounded-md border px-2 py-2 text-center ${workMode === "REMOTE" ? "border-[#4f35e8] text-[#4f35e8]" : "border-slate-200 text-slate-700"}`}>{t("public.filters.workModeRemote")}</Link>
+              <Link href={`${flBase}${freelancersQueryString({ keyword, city, workMode: "ONSITE", categoryId, availability, budget, minRating, responseTime, page: 1 })}` as Route} className={`rounded-md border px-2 py-2 text-center ${workMode === "ONSITE" ? "border-[#4f35e8] text-[#4f35e8]" : "border-slate-200 text-slate-700"}`}>{t("public.filters.workModeOnSite")}</Link>
+              <Link href={`${flBase}${freelancersQueryString({ keyword, city, workMode: "HYBRID", categoryId, availability, budget, minRating, responseTime, page: 1 })}` as Route} className={`rounded-md border px-2 py-2 text-center ${workMode === "HYBRID" ? "border-[#4f35e8] text-[#4f35e8]" : "border-slate-200 text-slate-700"}`}>{t("public.filters.workModeHybrid")}</Link>
             </div>
           </section>
 
           <section className="rounded-2xl border border-[#e5e7eb] bg-white p-4">
             <p className="text-sm font-semibold text-slate-900">{t("public.freelancers.smallCtaTitle")}</p>
-            <Link href={"/client/jobs/new" as Route} className="mt-3 inline-flex w-full items-center justify-center rounded-lg bg-[#4f35e8] px-3 py-2.5 text-sm font-semibold text-white hover:bg-[#4326d9]">
+            <Link href={withWorkspaceLocale(locale, "/client/jobs/new") as Route} className="mt-3 inline-flex w-full items-center justify-center rounded-lg bg-[#4f35e8] px-3 py-2.5 text-sm font-semibold text-white hover:bg-[#4326d9]">
               {t("public.freelancers.smallCtaAction")}
             </Link>
           </section>

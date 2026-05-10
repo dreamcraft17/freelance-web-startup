@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Briefcase, Grid2X2, MapPin, Search, ShieldCheck, Sparkles, Zap } from "lucide-react";
 import type { LandingIntent } from "@/components/marketing/LandingPage";
 import { useI18n } from "@/features/i18n/I18nProvider";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
 
 type ModeContent = {
@@ -45,10 +46,10 @@ export function LandingHero({
         headline: `${t("landing.hero.hire.headlineLine1")}\n${t("landing.hero.hire.headlineBeforeEmphasis")}${t("landing.hero.hire.headlineEmphasis")}${t("landing.hero.hire.headlineAfterEmphasis")}`,
         subHeadline: t("landing.hero.hire.subHeadline"),
         primaryCtaLabel: t("landing.hero.hire.primaryCta"),
-        primaryCtaHref: "/freelancers" as Route,
+        primaryCtaHref: withPublicLocale(locale, "/freelancers") as Route,
         secondaryCtaLabel: t("landing.hero.hire.secondaryCta"),
         secondaryCtaHref: withWorkspaceLocale(locale, "/client/jobs/new") as Route,
-        searchAction: "/freelancers" as Route,
+        searchAction: withPublicLocale(locale, "/freelancers") as Route,
         searchPlaceholder: t("landing.hero.hire.searchPlaceholder"),
         ctaBandLabel: t("landing.hero.hire.ctaBand")
       };
@@ -58,10 +59,10 @@ export function LandingHero({
         headline: t("landing.hero.work.headline"),
         subHeadline: t("landing.hero.work.subHeadline"),
         primaryCtaLabel: t("landing.hero.work.primaryCta"),
-        primaryCtaHref: "/jobs" as Route,
+        primaryCtaHref: withPublicLocale(locale, "/jobs") as Route,
         secondaryCtaLabel: t("landing.hero.work.secondaryCta"),
         secondaryCtaHref: withWorkspaceLocale(locale, "/freelancer/profile") as Route,
-        searchAction: "/jobs" as Route,
+        searchAction: withPublicLocale(locale, "/jobs") as Route,
         searchPlaceholder: t("landing.hero.work.searchPlaceholder"),
         ctaBandLabel: t("landing.hero.work.ctaBand")
       };
@@ -70,10 +71,10 @@ export function LandingHero({
       headline: t("landing.hero.neutral.headline"),
       subHeadline: t("landing.hero.neutral.subHeadline"),
       primaryCtaLabel: t("landing.hero.neutral.primaryCta"),
-      primaryCtaHref: "/freelancers" as Route,
+      primaryCtaHref: withPublicLocale(locale, "/freelancers") as Route,
       secondaryCtaLabel: t("landing.hero.neutral.secondaryCta"),
-      secondaryCtaHref: "/jobs" as Route,
-      searchAction: "/freelancers" as Route,
+      secondaryCtaHref: withPublicLocale(locale, "/jobs") as Route,
+      searchAction: withPublicLocale(locale, "/freelancers") as Route,
       searchPlaceholder: t("landing.hero.neutral.searchPlaceholder"),
       ctaBandLabel: t("landing.hero.neutral.ctaBand")
     };

@@ -1,8 +1,14 @@
+import type { Route } from "next";
 import Link from "next/link";
 import { MapPin } from "lucide-react";
 import type { Translator } from "@/lib/i18n/create-translator";
+import type { AppLocale } from "@/lib/i18n/types";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 
-export function LandingUseCases({ t }: { t: Translator }) {
+export function LandingUseCases({ t, locale }: { t: Translator; locale: AppLocale }) {
+  const freelancersPath = withPublicLocale(locale, "/freelancers");
+  const jobsPath = withPublicLocale(locale, "/jobs");
+  const howPath = withPublicLocale(locale, "/how-it-works");
   return (
     <section className="nw-section-mist mt-2">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-14">
@@ -43,13 +49,13 @@ export function LandingUseCases({ t }: { t: Translator }) {
       </div>
 
       <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-[#3525cd]/15 pt-6 text-sm font-bold">
-        <Link href="/freelancers" className="text-[#3525cd] transition hover:underline">
+        <Link href={freelancersPath as Route} className="text-[#3525cd] transition hover:underline">
           {t("landing.useCases.ctaFreelancers")}
         </Link>
-        <Link href="/jobs" className="text-[#3525cd] transition hover:underline">
+        <Link href={jobsPath as Route} className="text-[#3525cd] transition hover:underline">
           {t("landing.useCases.ctaJobs")}
         </Link>
-        <Link href="/how-it-works" className="text-slate-700 transition hover:text-[#3525cd] hover:underline">
+        <Link href={howPath as Route} className="text-slate-700 transition hover:text-[#3525cd] hover:underline">
           {t("landing.useCases.ctaHow")}
         </Link>
       </div>

@@ -6,6 +6,7 @@ import { BrandLogo } from "@/features/shared/components/BrandLogo";
 import { LocaleSwitcher } from "@/features/i18n/LocaleSwitcher";
 import { parseAuthIntent } from "@/features/auth/lib/auth-intent";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 
 type PageProps = {
   searchParams: Promise<{ returnUrl?: string; next?: string; intent?: string }>;
@@ -17,7 +18,8 @@ export default async function LoginPage({ searchParams }: PageProps) {
   const returnUrl = sp.returnUrl ?? sp.next;
   const intent = parseAuthIntent(sp.intent);
   const year = new Date().getFullYear();
-  const { t } = await getServerTranslator();
+  const { t, locale } = await getServerTranslator();
+  const helpPath = withPublicLocale(locale, "/help");
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 px-4 py-8 sm:py-12">
@@ -50,7 +52,7 @@ export default async function LoginPage({ searchParams }: PageProps) {
               {t("footer.terms")}
             </Link>
             <Link
-              href={"/help" as Route}
+              href={helpPath as Route}
               className="truncate font-medium text-slate-600 underline-offset-4 hover:text-[#3525cd] hover:underline sm:whitespace-normal"
             >
               {t("footer.help")}

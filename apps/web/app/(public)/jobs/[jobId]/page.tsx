@@ -18,6 +18,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator";
 import { formatMoneyAmount } from "@/lib/format-money";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 import type { AppLocale } from "@/lib/i18n/types";
 import type { Translator } from "@/lib/i18n/create-translator";
 import { localizedBidStatusLabel } from "@/lib/i18n/marketplace-status-labels";
@@ -289,7 +290,8 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
       ? new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(job.bidDeadline)
       : null;
 
-  const returnToThisJob = `/jobs/${job.id}`;
+  const jobBrowseRoot = withPublicLocale(locale, "/jobs");
+  const returnToThisJob = `${jobBrowseRoot}/${job.id}`;
   const postedAtLabel = formatRelativeTime(job.createdAt, t);
   const showFreelancerApplyPanel = !isClientOwner;
   const isFreelancerViewer = Boolean(session && session.role === UserRole.FREELANCER && !isClientOwner);
@@ -368,7 +370,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
   return (
     <div className={NW_PAGE_WRAP}>
       <nav className="mb-8 text-sm text-slate-500">
-        <Link href="/jobs" className="font-medium text-[#3525cd] underline-offset-4 hover:underline">
+        <Link href={jobBrowseRoot as Route} className="font-medium text-[#3525cd] underline-offset-4 hover:underline">
           {t("public.jobs.pageTitle")}
         </Link>
         <span className="mx-2 text-slate-300">/</span>
@@ -535,7 +537,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
                   </p>
                 ) : null}
                 <Link
-                  href={registerFreelancerReturnToJob(job.id) as Route}
+                  href={registerFreelancerReturnToJob(job.id, locale) as Route}
                   className="inline-flex w-full justify-center rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
                 >
                   {t("public.jobDetail.registerAsFreelancer")}
@@ -555,11 +557,11 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
               : t("public.jobDetail.originalLanguageOnly")}
           </span>
           <div className="flex items-center gap-2 font-semibold">
-            <Link href={`/jobs/${job.id}?view=translated` as Route} className="text-[#3525cd] hover:underline">
+            <Link href={`${returnToThisJob}?view=translated` as Route} className="text-[#3525cd] hover:underline">
               {t("public.jobDetail.showTranslated")}
             </Link>
             <span>·</span>
-            <Link href={`/jobs/${job.id}?view=original` as Route} className="text-[#3525cd] hover:underline">
+            <Link href={`${returnToThisJob}?view=original` as Route} className="text-[#3525cd] hover:underline">
               {t("public.jobDetail.showOriginal")}
             </Link>
           </div>
@@ -744,6 +746,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
               ) : (
                 <>
                   <OwnerBidMobileCards
+                    locale={locale}
                     bids={ownerBidMobileVms}
                     copy={{
                       compareKicker: t("public.jobDetail.ownerReviewMobileKicker"),
@@ -945,7 +948,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
                 {t("public.jobDetail.signInToSend")}
               </Link>
               <Link
-                href={registerFreelancerReturnToJob(job.id) as Route}
+                href={registerFreelancerReturnToJob(job.id, locale) as Route}
                 className="inline-flex justify-center rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-center text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
               >
                 {t("public.jobDetail.registerAsFreelancer")}

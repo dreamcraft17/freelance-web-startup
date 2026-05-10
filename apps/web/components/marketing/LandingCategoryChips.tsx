@@ -3,6 +3,8 @@ import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import { ArrowUpRight, Camera, GraduationCap, Megaphone, Palette, Video, Wrench } from "lucide-react";
 import type { Translator } from "@/lib/i18n/create-translator";
+import type { AppLocale } from "@/lib/i18n/types";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 
 type CategoryChip = {
   labelKey: string;
@@ -64,7 +66,9 @@ const toneIconWrap: Record<CategoryChip["tone"], string> = {
   amber: "border-amber-200/90 bg-amber-50 text-amber-950"
 };
 
-export function LandingCategoryChips({ t }: { t: Translator }) {
+export function LandingCategoryChips({ t, locale }: { t: Translator; locale: AppLocale }) {
+  const jobsBrowse = withPublicLocale(locale, "/jobs");
+
   return (
     <section className="bg-white">
       <div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6 sm:py-10">
@@ -76,7 +80,7 @@ export function LandingCategoryChips({ t }: { t: Translator }) {
               {t("landing.categories.subtitle")}
             </p>
           </div>
-          <Link href="/jobs" className="text-sm font-bold text-[#3525cd] hover:underline sm:shrink-0">
+          <Link href={jobsBrowse as Route} className="text-sm font-bold text-[#3525cd] hover:underline sm:shrink-0">
             {t("landing.categories.viewAllCategories")}
           </Link>
         </div>
@@ -85,7 +89,7 @@ export function LandingCategoryChips({ t }: { t: Translator }) {
           {categories.map(({ labelKey, useCaseKey, href, icon: Icon, tone }) => (
             <Link
               key={labelKey}
-              href={href}
+              href={withPublicLocale(locale, href as string) as Route}
               className="group flex min-h-[9.8rem] flex-col items-start justify-between rounded-2xl border border-[#e5e7eb] bg-white px-4 py-4 text-left transition hover:border-[#4f35e8]/45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4f35e8]/25"
             >
               <div>

@@ -7,6 +7,7 @@ import { SettingsSectionCard } from "@/components/settings/SettingsSectionCard";
 import { formatMoneyAmount } from "@/lib/format-money";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
 import type { AppLocale } from "@/lib/i18n/types";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 import { Briefcase, Users } from "lucide-react";
 
 function budgetLine(
@@ -34,6 +35,8 @@ export async function SavedListsSection() {
   if (!session) return null;
 
   const { locale } = await getServerTranslator();
+  const jobsBrowseRoot = withPublicLocale(locale, "/jobs");
+  const freelancersBrowseRoot = withPublicLocale(locale, "/freelancers");
 
   const actor = sessionToActor(session);
   const savedItems = new SavedItemsService();
@@ -63,7 +66,7 @@ export async function SavedListsSection() {
                   <div className="flex flex-wrap items-start justify-between gap-2 gap-y-1">
                     <div className="min-w-0">
                       <p className="text-sm font-medium leading-snug text-slate-900">
-                        <Link href={`/freelancers/${freelancer.username}` as Route} className="hover:underline">
+                        <Link href={`${freelancersBrowseRoot}/${freelancer.username}` as Route} className="hover:underline">
                           @{freelancer.username}
                         </Link>
                       </p>
@@ -98,7 +101,7 @@ export async function SavedListsSection() {
             <p className="text-sm leading-relaxed text-slate-600">
               No saved jobs yet.{" "}
               <Link
-                href={"/jobs" as Route}
+                href={jobsBrowseRoot as Route}
                 className="font-medium text-[#3525cd] underline-offset-4 hover:underline"
               >
                 Browse jobs
@@ -111,7 +114,7 @@ export async function SavedListsSection() {
                   <div className="flex flex-wrap items-start justify-between gap-2 gap-y-1">
                     <div className="min-w-0">
                       <p className="text-sm font-medium leading-snug text-slate-900">
-                        <Link href={`/jobs/${job.id}` as Route} className="hover:underline">
+                        <Link href={`${jobsBrowseRoot}/${job.id}` as Route} className="hover:underline">
                           {job.title}
                         </Link>
                       </p>

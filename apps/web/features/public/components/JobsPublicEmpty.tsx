@@ -5,6 +5,8 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
 import { useI18n } from "@/features/i18n/I18nProvider";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
+import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
 
 type JobsPublicEmptyProps = {
   /** True when user narrowed by category */
@@ -40,7 +42,9 @@ function EmptyContext({ what, why, next }: { what: string; why: string; next: st
 }
 
 export function JobsPublicEmpty({ categorySelected, hasFilters, viewerRole = null }: JobsPublicEmptyProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const jobsBase = withPublicLocale(locale, "/jobs");
+  const flBase = withPublicLocale(locale, "/freelancers");
 
   if (categorySelected) {
     return (
@@ -60,11 +64,11 @@ export function JobsPublicEmpty({ categorySelected, hasFilters, viewerRole = nul
           <li>{t("public.jobs.emptyCategoryStep3")}</li>
         </SuggestedSteps>
         <div className="mt-6 flex flex-wrap gap-3">
-          <Link href="/jobs" className="nw-cta-primary px-5 py-2.5">
+          <Link href={jobsBase as Route} className="nw-cta-primary px-5 py-2.5">
             {t("public.jobs.emptyCategoryPrimary")}
           </Link>
           <AuthAwareCtaLink
-            href={"/client/jobs/new" as Route}
+            href={withWorkspaceLocale(locale, "/client/jobs/new") as Route}
             intent="post-job"
             unauthenticatedTo="register"
             registerRoleHint="client"
@@ -95,14 +99,17 @@ export function JobsPublicEmpty({ categorySelected, hasFilters, viewerRole = nul
           <li>{t("public.jobs.emptyFiltersStep3")}</li>
         </SuggestedSteps>
         <div className="mt-6 flex flex-wrap gap-3">
-          <Link href="/jobs" className="nw-cta-primary px-5 py-2.5">
+          <Link href={jobsBase as Route} className="nw-cta-primary px-5 py-2.5">
             {t("public.jobs.emptyFiltersPrimary")}
           </Link>
-          <Link href="/jobs?workMode=REMOTE" className="text-sm font-semibold text-[#433C93] hover:underline">
+          <Link
+            href={withPublicLocale(locale, "/jobs?workMode=REMOTE") as Route}
+            className="text-sm font-semibold text-[#433C93] hover:underline"
+          >
             {t("public.jobs.emptyFiltersSecondary")}
           </Link>
           <AuthAwareCtaLink
-            href={"/freelancer/profile" as Route}
+            href={withWorkspaceLocale(locale, "/freelancer/profile") as Route}
             intent="protected"
             unauthenticatedTo="register"
             registerRoleHint="freelancer"
@@ -146,7 +153,7 @@ export function JobsPublicEmpty({ categorySelected, hasFilters, viewerRole = nul
 
       <div className="mt-6 flex flex-wrap gap-3">
         <AuthAwareCtaLink
-          href={"/client/jobs/new" as Route}
+          href={withWorkspaceLocale(locale, "/client/jobs/new") as Route}
           intent="post-job"
           unauthenticatedTo="register"
           registerRoleHint="client"
@@ -154,7 +161,7 @@ export function JobsPublicEmpty({ categorySelected, hasFilters, viewerRole = nul
         >
           {t("public.jobs.emptyActionPrimary")}
         </AuthAwareCtaLink>
-        <Link href="/freelancers" className="text-sm font-semibold text-[#433C93] hover:underline">
+        <Link href={flBase as Route} className="text-sm font-semibold text-[#433C93] hover:underline">
           {t("public.jobs.emptyActionSecondary")}
         </Link>
       </div>

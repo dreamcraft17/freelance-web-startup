@@ -3,6 +3,8 @@ import Link from "next/link";
 import { Camera, PenSquare } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { Translator } from "@/lib/i18n/create-translator";
+import type { AppLocale } from "@/lib/i18n/types";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 
 type MarketplaceRow = {
   titleKey: string;
@@ -140,7 +142,10 @@ function PreviewList({
   );
 }
 
-export function LandingProductPreview({ t }: { t: Translator }) {
+export function LandingProductPreview({ t, locale }: { t: Translator; locale: AppLocale }) {
+  const jobsBrowse = withPublicLocale(locale, "/jobs");
+  const freelancersBrowse = withPublicLocale(locale, "/freelancers");
+
   return (
     <section className="mx-auto max-w-[1280px] px-4 pb-8 pt-2 sm:px-6 sm:pb-10 sm:pt-4">
       <div className="flex flex-col gap-2 border-b border-slate-200 pb-4 sm:flex-row sm:items-end sm:justify-between">
@@ -148,7 +153,7 @@ export function LandingProductPreview({ t }: { t: Translator }) {
           <p className="nw-section-title">{t("landing.preview.kicker")}</p>
           <h2 className="mt-1 text-xl font-bold tracking-tight text-[#071027] sm:text-2xl">{t("landing.preview.marketTitle")}</h2>
         </div>
-        <Link href={"/jobs" as Route} className="text-xs font-semibold text-[#4f35e8] hover:underline">
+        <Link href={jobsBrowse as Route} className="text-xs font-semibold text-[#4f35e8] hover:underline">
           {t("landing.preview.seeAllArrow")}
         </Link>
       </div>
@@ -156,19 +161,19 @@ export function LandingProductPreview({ t }: { t: Translator }) {
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
         <PreviewList
           title={t("landing.preview.activeFreelancersTitle")}
-          rows={activeFreelancers}
+          rows={activeFreelancers.map((r) => ({ ...r, href: withPublicLocale(locale, r.href as string) as Route }))}
           icon={Camera}
           ctaLabel={t("landing.preview.ctaFreelancers")}
-          ctaHref={"/freelancers" as Route}
+          ctaHref={freelancersBrowse as Route}
           rowActionLabel={t("landing.preview.rowActionOpen")}
           t={t}
         />
         <PreviewList
           title={t("landing.preview.recentJobsTitle")}
-          rows={recentJobs}
+          rows={recentJobs.map((r) => ({ ...r, href: withPublicLocale(locale, r.href as string) as Route }))}
           icon={PenSquare}
           ctaLabel={t("landing.preview.ctaJobs")}
-          ctaHref={"/jobs" as Route}
+          ctaHref={jobsBrowse as Route}
           rowActionLabel={t("landing.preview.rowActionOpen")}
           t={t}
         />

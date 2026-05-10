@@ -1,8 +1,13 @@
+import type { Route } from "next";
 import Link from "next/link";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 
 export default async function HelpPage() {
-  const { t } = await getServerTranslator();
+  const { t, locale } = await getServerTranslator();
+  const howPath = withPublicLocale(locale, "/how-it-works");
+  const earlyAccessPath = withPublicLocale(locale, "/early-access");
+  const pricingPath = withPublicLocale(locale, "/pricing");
   const helpTopics = [
     { title: t("marketing.help.topic1Title"), blurb: t("marketing.help.topic1Body") },
     { title: t("marketing.help.topic2Title"), blurb: t("marketing.help.topic2Body") },
@@ -56,19 +61,19 @@ export default async function HelpPage() {
         <h2 className="text-base font-semibold text-slate-900">{t("marketing.help.selfServeTitle")}</h2>
         <ul className="mt-3 list-inside list-disc space-y-1.5">
           <li>
-            <Link href="/how-it-works" className="font-medium text-[#3525cd] hover:underline">
+            <Link href={howPath as Route} className="font-medium text-[#3525cd] hover:underline">
               {t("nav.howItWorks")}
             </Link>{" "}
             — {t("marketing.help.selfServeItem1Suffix")}
           </li>
           <li>
-            <Link href="/early-access" className="font-medium text-[#3525cd] hover:underline">
+            <Link href={earlyAccessPath as Route} className="font-medium text-[#3525cd] hover:underline">
               {t("marketing.help.earlyAccess")}
             </Link>{" "}
             — {t("marketing.help.selfServeItem2Suffix")}
           </li>
           <li>
-            <Link href="/pricing" className="font-medium text-[#3525cd] hover:underline">
+            <Link href={pricingPath as Route} className="font-medium text-[#3525cd] hover:underline">
               {t("nav.pricing")}
             </Link>{" "}
             — {t("marketing.help.selfServeItem3Suffix")}

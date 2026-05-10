@@ -19,6 +19,7 @@ import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
 import { ModerationReportButton } from "@/features/moderation/components/ModerationReportButton";
 import { defaultFreelancerRateCurrency, formatMoneyAmount } from "@/lib/format-money";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 import {
   NW_BADGE_NEUTRAL,
   NW_BADGE_PRIMARY,
@@ -37,6 +38,7 @@ type PageProps = {
 
 export default async function FreelancerPublicProfilePage({ params }: PageProps) {
   const { t, locale } = await getServerTranslator();
+  const freelancersBrowseRoot = withPublicLocale(locale, "/freelancers");
   const { username: raw } = await params;
   const username = raw?.trim() ?? "";
   if (!username) notFound();
@@ -186,7 +188,7 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
         </AuthAwareCtaLink>
         <p className="text-xs leading-relaxed text-slate-600">{t("public.freelancerProfile.ctaPreview")}</p>
         <Link
-          href={"/freelancers" as Route}
+          href={freelancersBrowseRoot as Route}
           className="inline-flex w-full items-center justify-center rounded-xl border border-slate-200/90 bg-white px-3 py-2.5 text-xs font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
         >
           {t("public.freelancerProfile.secondaryBackToDirectory")}

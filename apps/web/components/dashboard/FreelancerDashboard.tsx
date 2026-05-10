@@ -19,6 +19,8 @@ import { FreelancerProposalPlaybook } from "@/components/onboarding/FreelancerPr
 import { ActivationChecklistCard, type ActivationChecklistStepVm } from "@/components/onboarding/ActivationChecklistCard";
 import { formatMoneyAmount } from "@/lib/format-money";
 import type { AppLocale } from "@/lib/i18n/types";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
+import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
 import { cn } from "@/lib/utils";
 import { MarketplaceLiquidityHints } from "@/components/onboarding/MarketplaceLiquidityHints";
 import { DashboardEmptyState } from "./DashboardEmptyState";
@@ -244,12 +246,14 @@ export function FreelancerDashboard({
   liquidityTips
 }: FreelancerDashboardProps) {
   const activity = buildActivity(recentBids, recentContracts);
+  const jobsBrowseRoot = withPublicLocale(locale, "/jobs");
+  const wp = (path: string) => withWorkspaceLocale(locale, path) as Route;
 
   const quickLinks = [
-    { label: copy.quickCompleteProfile, href: "/freelancer/profile" as Route, icon: UserRound, primary: true as const },
-    { label: copy.quickFindJobs, href: "/jobs" as Route, icon: Compass, primary: true as const },
-    { label: copy.quickTrackProposals, href: "/freelancer/proposals" as Route, icon: FileText, primary: false as const },
-    { label: copy.quickAvailability, href: "/freelancer/profile" as Route, icon: CalendarClock, primary: false as const }
+    { label: copy.quickCompleteProfile, href: wp("/freelancer/profile"), icon: UserRound, primary: true as const },
+    { label: copy.quickFindJobs, href: jobsBrowseRoot as Route, icon: Compass, primary: true as const },
+    { label: copy.quickTrackProposals, href: wp("/freelancer/proposals"), icon: FileText, primary: false as const },
+    { label: copy.quickAvailability, href: wp("/freelancer/profile"), icon: CalendarClock, primary: false as const }
   ];
 
   return (
@@ -259,6 +263,7 @@ export function FreelancerDashboard({
         subtitle={subtitle}
         motivation={copy.heroMotivation}
         browseJobsCta={copy.browseJobsCta}
+        browseJobsHref={jobsBrowseRoot as Route}
         stats={heroStats}
         trustLine={copy.heroTrustCaption}
         trustPills={heroTrustPills}
@@ -273,7 +278,7 @@ export function FreelancerDashboard({
             <p className="text-sm leading-relaxed text-amber-950/90">{copy.nextActionAwaitingBanner}</p>
           </div>
           <Link
-            href={"/messages" as Route}
+            href={wp("/messages")}
             className="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-[#3525cd] px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-[#3525cd]/25 transition hover:bg-[#2d1fb0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/40 focus-visible:ring-offset-2"
           >
             {copy.openMessagesCta}
@@ -309,7 +314,7 @@ export function FreelancerDashboard({
                 </div>
               </div>
               <Link
-                href={"/freelancer/profile" as Route}
+                href={wp("/freelancer/profile")}
                 className="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-[#3525cd] px-5 py-2.5 text-sm font-semibold text-white shadow-md transition hover:bg-[#2d1fb0]"
               >
                 {copy.profileCardCta}
@@ -410,7 +415,7 @@ export function FreelancerDashboard({
                 <h2 className="text-lg font-semibold tracking-tight text-slate-900">{copy.activityTitle}</h2>
                 <p className="mt-1 text-sm text-slate-600">{copy.activitySubtitle}</p>
               </div>
-              <Link href={"/freelancer/proposals" as Route} className={linkClass}>
+              <Link href={wp("/freelancer/proposals")} className={linkClass}>
                 {copy.activityViewAll}
               </Link>
             </div>
@@ -423,7 +428,7 @@ export function FreelancerDashboard({
                   icon={FileText}
                   title={copy.activityEmptyNoProfileTitle}
                   description={copy.activityEmptyNoProfileBody}
-                  action={{ label: copy.profileCardCta, href: "/freelancer/profile" }}
+                  action={{ label: copy.profileCardCta, href: wp("/freelancer/profile") }}
                 />
               </div>
             ) : hasProfile && activity.length === 0 ? (
@@ -434,8 +439,8 @@ export function FreelancerDashboard({
                   icon={Inbox}
                   title={copy.activityEmptyNoActivityTitle}
                   description={copy.activityEmptyNoActivityBody}
-                  action={{ label: copy.activityEmptyPrimary, href: "/jobs" }}
-                  secondaryAction={{ label: copy.activityEmptySecondary, href: "/freelancer/proposals" }}
+                  action={{ label: copy.activityEmptyPrimary, href: jobsBrowseRoot as Route }}
+                  secondaryAction={{ label: copy.activityEmptySecondary, href: wp("/freelancer/proposals") as Route }}
                 />
               </div>
             ) : (
@@ -454,7 +459,7 @@ export function FreelancerDashboard({
                       <div className="min-w-0">
                         <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{copy.activityKindProposal}</p>
                         <Link
-                          href={`/jobs/${item.bid.job.id}` as Route}
+                          href={`${jobsBrowseRoot}/${item.bid.job.id}` as Route}
                           className="mt-0.5 block text-sm font-semibold text-slate-900 hover:text-[#3525cd]"
                         >
                           {item.bid.job.title}
@@ -476,7 +481,7 @@ export function FreelancerDashboard({
                       <div className="min-w-0">
                         <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{copy.activityKindContract}</p>
                         <Link
-                          href={`/jobs/${item.contract.bid.job.id}` as Route}
+                          href={`${jobsBrowseRoot}/${item.contract.bid.job.id}` as Route}
                           className="mt-0.5 block text-sm font-semibold text-slate-900 hover:text-[#3525cd]"
                         >
                           {item.contract.bid.job.title}
@@ -548,7 +553,7 @@ export function FreelancerDashboard({
                 <h2 className="text-lg font-semibold tracking-tight text-slate-900">{copy.conversationsTitle}</h2>
                 <p className="mt-0.5 text-sm text-slate-600">{copy.conversationsSubtitle}</p>
               </div>
-              <Link href={"/messages" as Route} className={linkClass}>
+              <Link href={wp("/messages")} className={linkClass}>
                 {copy.conversationsSeeAll}
               </Link>
             </div>
@@ -562,7 +567,7 @@ export function FreelancerDashboard({
                 {conversations.map((c) => (
                   <li key={c.threadId}>
                     <Link
-                      href={`/messages?thread=${encodeURIComponent(c.threadId)}` as Route}
+                      href={wp(`/messages?thread=${encodeURIComponent(c.threadId)}`)}
                       className="block rounded-2xl border border-slate-100 bg-slate-50/55 px-3.5 py-3 shadow-sm transition hover:border-slate-200 hover:bg-white"
                     >
                       <p className="text-sm font-semibold text-slate-900">{c.title}</p>
@@ -614,7 +619,7 @@ export function FreelancerDashboard({
                 <h2 className="text-lg font-semibold tracking-tight text-slate-900">{copy.openJobsTitle}</h2>
                 <p className="mt-1 text-sm text-slate-600">{copy.openJobsSubtitle.split("{{count}}").join(String(openTotal))}</p>
               </div>
-              <Link href={"/jobs" as Route} className={linkClass}>
+              <Link href={jobsBrowseRoot as Route} className={linkClass}>
                 {copy.openJobsSeeAll}
               </Link>
             </div>
@@ -626,7 +631,7 @@ export function FreelancerDashboard({
                   icon={Briefcase}
                   title={copy.openJobsEmptyTitle}
                   description={copy.openJobsEmptyBody}
-                  action={{ label: copy.openJobsEmptyCta, href: "/jobs" }}
+                  action={{ label: copy.openJobsEmptyCta, href: jobsBrowseRoot as Route }}
                 />
               </div>
             ) : (
@@ -634,7 +639,7 @@ export function FreelancerDashboard({
                 {openJobs.map((job) => (
                   <li key={job.id}>
                     <Link
-                      href={`/jobs/${job.id}` as Route}
+                      href={`${jobsBrowseRoot}/${job.id}` as Route}
                       className="block rounded-2xl border border-slate-100 bg-slate-50/55 px-3.5 py-3 shadow-sm transition hover:border-slate-200 hover:bg-white"
                     >
                       <p className="text-sm font-semibold leading-snug text-slate-900">{job.title}</p>

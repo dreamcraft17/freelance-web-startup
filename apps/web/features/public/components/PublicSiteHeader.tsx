@@ -5,6 +5,7 @@ import { AuthUserMenu } from "@/features/dashboard/components/AuthUserMenu";
 import { LocaleSwitcher } from "@/features/i18n/LocaleSwitcher";
 import { primaryActionForRole, secondaryActionForRole } from "@/features/public/lib/auth-nav";
 import { BrandLogo } from "@/features/shared/components/BrandLogo";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 import { getAppLocale } from "@/lib/i18n/server-locale";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
 
@@ -19,18 +20,18 @@ export async function PublicSiteHeader() {
   return (
     <header className="border-b border-slate-200 bg-white">
       <div className="mx-auto flex h-[3.25rem] max-w-6xl items-center justify-between gap-3 px-4 md:px-6">
-        <Link href={"/" as Route} className="shrink-0" aria-label={t("publicHeader.homeAria")}>
+        <Link href={`/${locale}` as Route} className="shrink-0" aria-label={t("publicHeader.homeAria")}>
           <BrandLogo imageClassName="h-8 w-auto" alt="NearWork logo" />
         </Link>
         <div className="flex min-w-0 items-center gap-1 sm:gap-2">
           <Link
-            href="/jobs"
+            href={withPublicLocale(locale, "/jobs") as Route}
             className="rounded-md px-2.5 py-1.5 text-sm font-semibold text-slate-800 hover:bg-slate-100 hover:text-slate-900"
           >
             {t("nav.jobs")}
           </Link>
           <Link
-            href="/freelancers"
+            href={withPublicLocale(locale, "/freelancers") as Route}
             className="rounded-md px-2.5 py-1.5 text-sm font-semibold text-slate-800 hover:bg-slate-100 hover:text-slate-900"
           >
             {t("nav.freelancers")}

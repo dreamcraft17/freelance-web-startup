@@ -1,7 +1,7 @@
 # Documentation maintenance (NearWork)
 
-> **Doc revision:** v15  
-> Last synchronized: 2026-05-10 (sinkron docs untuk URL workspace ber-prefix locale + hero demo cards `landing.hero.demoRows`).
+> **Doc revision:** v16  
+> Last synchronized: 2026-05-09 (catatan navigasi locale-aware marketplace/workspace untuk stabilitas `/en` vs `/id`).
 
 ## AUTO — wajib untuk AI & kontributor
 

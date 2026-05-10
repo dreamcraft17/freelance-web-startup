@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { REGISTER_FREELANCER_PROFILE } from "@/features/auth/lib/register-intents";
 import { useI18n } from "@/features/i18n/I18nProvider";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 
 type FreelancersPublicEmptyProps = {
   categorySelected: boolean;
@@ -36,7 +37,9 @@ function EmptyContext({ what, why, next }: { what: string; why: string; next: st
 }
 
 export function FreelancersPublicEmpty({ categorySelected, hasFilters }: FreelancersPublicEmptyProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const flBase = withPublicLocale(locale, "/freelancers");
+  const jobsBase = withPublicLocale(locale, "/jobs");
 
   if (categorySelected) {
     return (
@@ -56,10 +59,10 @@ export function FreelancersPublicEmpty({ categorySelected, hasFilters }: Freelan
           <li>{t("public.freelancers.emptyCategoryStep3")}</li>
         </SuggestedSteps>
         <div className="mt-4 flex flex-wrap gap-3">
-          <Link href="/freelancers" className="nw-cta-primary px-5 py-2.5">
+          <Link href={flBase as Route} className="nw-cta-primary px-5 py-2.5">
             {t("public.freelancers.emptyCategoryPrimary")}
           </Link>
-          <Link href="/jobs" className="text-sm font-semibold text-[#433C93] hover:underline">
+          <Link href={jobsBase as Route} className="text-sm font-semibold text-[#433C93] hover:underline">
             {t("public.freelancers.emptyCategorySecondary")}
           </Link>
         </div>
@@ -85,10 +88,10 @@ export function FreelancersPublicEmpty({ categorySelected, hasFilters }: Freelan
           <li>{t("public.freelancers.emptyFiltersStep3")}</li>
         </SuggestedSteps>
         <div className="mt-4 flex flex-wrap gap-3">
-          <Link href="/freelancers" className="nw-cta-primary px-5 py-2.5">
+          <Link href={flBase as Route} className="nw-cta-primary px-5 py-2.5">
             {t("public.freelancers.emptyFiltersPrimary")}
           </Link>
-          <Link href="/jobs" className="text-sm font-semibold text-[#433C93] hover:underline">
+          <Link href={jobsBase as Route} className="text-sm font-semibold text-[#433C93] hover:underline">
             {t("public.freelancers.emptyFiltersSecondary")}
           </Link>
         </div>
@@ -116,7 +119,7 @@ export function FreelancersPublicEmpty({ categorySelected, hasFilters }: Freelan
         <Link href={REGISTER_FREELANCER_PROFILE as Route} className="nw-cta-primary px-5 py-2.5">
           {t("public.freelancers.emptyDefaultPrimary")}
         </Link>
-        <Link href="/jobs" className="text-sm font-semibold text-[#433C93] hover:underline">
+        <Link href={jobsBase as Route} className="text-sm font-semibold text-[#433C93] hover:underline">
           {t("public.freelancers.emptyDefaultSecondary")}
         </Link>
       </div>

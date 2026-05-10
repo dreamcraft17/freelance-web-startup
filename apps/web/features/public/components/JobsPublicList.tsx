@@ -6,6 +6,7 @@ import { Building2, Clock3, MapPin, Users } from "lucide-react";
 import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
 import { useI18n } from "@/features/i18n/I18nProvider";
 import { formatMoneyAmount, normalizeCurrencyCode } from "@/lib/format-money";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 import { SaveJobButton } from "@/features/saved/components/SaveJobButton";
 
 /** Public job card shape for `/jobs` marketplace listing. */
@@ -38,6 +39,7 @@ type ListProps = {
 
 export function JobsPublicList({ jobs, savedJobIds }: ListProps) {
   const { t, locale } = useI18n();
+  const jobsBase = withPublicLocale(locale, "/jobs");
 
   const workModeLabel = (wm: string) => {
     if (wm === "REMOTE") return t("public.filters.workModeRemote");
@@ -259,7 +261,7 @@ export function JobsPublicList({ jobs, savedJobIds }: ListProps) {
                     className="h-9 w-9 shrink-0 rounded-lg text-slate-500 hover:bg-slate-50 hover:text-slate-900"
                   />
                   <AuthAwareCtaLink
-                    href={`/jobs/${job.id}` as Route}
+                    href={`${jobsBase}/${job.id}` as Route}
                     intent="submit-bid"
                     unauthenticatedTo="register"
                     registerRoleHint="freelancer"
@@ -268,7 +270,7 @@ export function JobsPublicList({ jobs, savedJobIds }: ListProps) {
                     {t("public.jobs.primaryActionApply")}
                   </AuthAwareCtaLink>
                   <Link
-                    href={`/jobs/${job.id}` as Route}
+                    href={`${jobsBase}/${job.id}` as Route}
                     className="inline-flex min-h-10 min-w-[8.5rem] flex-1 items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 transition hover:border-slate-300 hover:bg-slate-50 sm:w-full sm:flex-none"
                   >
                     {t("public.jobs.primaryActionViewJob")}
