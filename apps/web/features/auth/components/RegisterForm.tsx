@@ -7,6 +7,7 @@ import { Suspense, useCallback, useEffect, useId, useMemo, useState } from "reac
 import { Briefcase, Eye, EyeOff, UserRound } from "lucide-react";
 import type { UserRole } from "@acme/types";
 import { resolvePostLoginRedirect, sanitizeReturnUrl } from "@src/lib/return-url";
+import { stripLeadingLocaleFromWorkspacePath } from "@/lib/i18n/workspace-path";
 import { parseAuthIntent, registerIntentMessageKey, roleHintFromIntent, type AuthIntent } from "@/features/auth/lib/auth-intent";
 import { useI18n } from "@/features/i18n/I18nProvider";
 import { clearPasswordFieldsInForm } from "@/features/auth/lib/clear-form-password-fields";
@@ -33,8 +34,13 @@ type RegisterFormInnerProps = {
   initialIntent?: AuthIntent;
 };
 
+function pathOnly(raw: string): string {
+  const q = raw.indexOf("?");
+  return q === -1 ? raw : raw.slice(0, q);
+}
+
 function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "continue" }: RegisterFormInnerProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const searchParams = useSearchParams();
   const id = useId();
   const nameId = `${id}-name`;
@@ -70,11 +76,12 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
   const returnDestinationLabel = useMemo(() => {
     if (!nextDest) return null;
     const safe = sanitizeReturnUrl(nextDest, "/");
-    if (safe.startsWith("/freelancer/profile")) return t("auth.registerForm.returnDestinationProfile");
-    if (safe.startsWith("/messages")) return t("auth.registerForm.returnDestinationMessages");
-    if (safe.startsWith("/notifications")) return t("auth.registerForm.returnDestinationNotifications");
-    if (safe.startsWith("/settings")) return t("auth.registerForm.returnDestinationSettings");
-    if (safe.startsWith("/client") || safe.startsWith("/freelancer")) return t("auth.registerForm.returnDestinationDashboard");
+    const p = stripLeadingLocaleFromWorkspacePath(pathOnly(safe));
+    if (p.startsWith("/freelancer/profile")) return t("auth.registerForm.returnDestinationProfile");
+    if (p.startsWith("/messages")) return t("auth.registerForm.returnDestinationMessages");
+    if (p.startsWith("/notifications")) return t("auth.registerForm.returnDestinationNotifications");
+    if (p.startsWith("/settings")) return t("auth.registerForm.returnDestinationSettings");
+    if (p.startsWith("/client") || p.startsWith("/freelancer")) return t("auth.registerForm.returnDestinationDashboard");
     return t("auth.registerForm.returnDestinationGeneric");
   }, [nextDest, t]);
 
@@ -134,7 +141,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
 
         const rawNext = searchParams.get("next");
         form.reset();
-        window.location.assign(resolvePostLoginRedirect(body.data.session.role, rawNext));
+        window.location.assign(resolvePostLoginRedirect(body.data.session.role, rawNext, locale));
       } catch (err) {
         const msg = err instanceof Error && err.message ? err.message : t("auth.registerForm.errorRequestFailed");
         setError(
@@ -146,7 +153,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
         setLoading(false);
       }
     },
-    [loading, role, searchParams, t]
+    [loading, locale, role, searchParams, t]
   );
 
   const signUpContext =
