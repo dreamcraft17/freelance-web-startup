@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v82  
-> Last synchronized: 2026-05-09 — Homepage marketing: marketplace-first hero + below-fold “how it works”, split benefits, trust & early-access; search memakai kategori DB + work mode.
+> **Doc revision:** v83  
+> Last synchronized: 2026-05-09 — `pnpm test:e2e` memakai harness prod (`run-e2e-server.mjs`): build `@acme/web`, `next start` pada port 3041, `BASE_URL` otomatis; menghindari chunk webpack rusak dari `next dev` saat smoke PATCH `/api/freelancer-profiles`.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -316,16 +316,16 @@ pnpm exec tsc --noEmit -p apps/web
 | `pnpm db:studio` | Prisma Studio |
 | `pnpm test` | Alias to unit tests |
 | `pnpm test:unit` | Vitest unit tests for policies/services/helpers/validators |
-| `pnpm test:e2e` | HTTP smoke (CSRF-aware: `GET /api/auth/csrf` + jar) auth→job→bid→messages→report |
+| `pnpm test:e2e` | Build web + `next start` (port **3041** default), lalu HTTP smoke CSRF auth→job→bid→messages→report (`SKIP_E2E_BUILD=1`/`E2E_PORT`) |
 | `pnpm test:all` | Run unit then e2e |
 
 ### Testing quickstart
 
 - Unit: `pnpm test:unit`
 - E2E:
-  1) run app (`pnpm --filter @acme/web dev`)
-  2) ensure test DB has categories (`pnpm db:seed` from repo root reads root `.env` and upserts taxonomy + admin; use the same `DATABASE_URL` as the app)
-  3) run smoke (`pnpm test:e2e`)
+  1) sama seperti dev: `DATABASE_URL`, `SESSION_SECRET` (≥16 karakter), migrasi (`pnpm db:migrate`), seed kategori/admin (`pnpm db:seed`)
+  2) jalankan `pnpm test:e2e` — harness akan **`pnpm --filter @acme/web build`** lalu **`next start`** di **`127.0.0.1:3041`** (atur `E2E_PORT`). Untuk lewati rebuild: **`SKIP_E2E_BUILD=1 pnpm test:e2e`**
+  3) Smoke manual terhadap dev yang sedang jalan: **`BASE_URL=http://127.0.0.1:3000 node --test scripts/e2e-marketplace-flow.mjs`** — setelah ragu pada `.next`, pakai **`pnpm --filter @acme/web clean`** atau lebih baik pakai harness di langkah (2)
 - Keep test traffic off production DB:
   - set `TEST_DATABASE_URL=<isolated_db>`
   - run tests with `DATABASE_URL=$TEST_DATABASE_URL`

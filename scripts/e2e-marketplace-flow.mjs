@@ -5,12 +5,14 @@
  *   - `DATABASE_URL`, `SESSION_SECRET` (>=16 chars) set for the web app
  *   - Migrations applied: `pnpm db:migrate`
  *   - Seeded admin (`pnpm db:seed`): defaults `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` for `/api/admin/reports` assertion
- *   - Web dev or prod server: `pnpm --filter @acme/web dev` (default base http://127.0.0.1:3000)
+ *   - Server: `pnpm test:e2e` builds `@acme/web`, starts `next start` on **3041**, and sets `BASE_URL`.
+ *     Manual runs still default to `BASE_URL=http://127.0.0.1:3000` — point at **production** `next start`
+ *     or a clean dev server (`pnpm --filter @acme/web clean && pnpm --filter @acme/web dev`) so webpack chunks are consistent.
  *
  * Covers a second path — pre-hire discussion: client creates job, freelancer bids, client opens JOB thread (`POST /api/messages` with CSRF) and sends a message before hiring.
  * After each `mutateWithCsrf`, reuse `cookieHeader` from the result for the same actor so rotated session cookies stay in sync with the server.
  *
- * Run: `pnpm test:e2e` or `node --test scripts/e2e-marketplace-flow.mjs`
+ * Run: `pnpm test:e2e` (recommended) or `BASE_URL=http://127.0.0.1:3000 node --test scripts/e2e-marketplace-flow.mjs`
  * Regression: POST `/api/jobs` then GET `/api/jobs?page=1&limit=10` must be 200 and include the created id (full-marketplace test). Job listing uses Prisma client queries (not `$queryRaw`); restart dev after large server changes if you see stale bundles.
  *
  * Optional manual smoke after trust changes: authenticated user POST `/api/reports`
