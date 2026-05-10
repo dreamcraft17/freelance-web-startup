@@ -8,14 +8,14 @@ import { getServerTranslator } from "@/lib/i18n/server-translator";
 import { NotificationService } from "@/server/services/notification.service";
 
 export default async function NotificationsPage() {
-  const { t } = await getServerTranslator();
+  const { t, locale } = await getServerTranslator();
   const session = await getSessionFromCookies();
   if (!session) {
     redirect("/login?returnUrl=/notifications");
   }
 
   const actor = sessionToActor(session);
-  const { items } = await new NotificationService().listForActor(actor);
+  const { items } = await new NotificationService().listForActor(actor, locale);
 
   const list: NotificationListItem[] = items.map((n) => ({
     id: n.id,

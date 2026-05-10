@@ -1,7 +1,7 @@
 # Documentation maintenance (NearWork)
 
-> **Doc revision:** v13  
-> Last synchronized: 2026-05-10 (sinkron `features.md` + `application-overview.md` untuk pemisahan EN/ID di landing/marketing).
+> **Doc revision:** v14  
+> Last synchronized: 2026-05-10 (sinkron docs untuk lokalisasi notifikasi in-app + payload `_nwCopy`).
 
 ## AUTO — wajib untuk AI & kontributor
 

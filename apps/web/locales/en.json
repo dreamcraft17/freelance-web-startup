@@ -119,7 +119,47 @@
     "unreadLabel": "Unread",
     "readLabel": "Read",
     "unreadCaption": "Tap to mark read and jump to related job or conversation when linked.",
-    "readCaption": "Opened or dismissed—still here for reference."
+    "readCaption": "Opened or dismissed—still here for reference.",
+    "openRelated": "Open related page →",
+    "time": {
+      "justNow": "Just now",
+      "minutesAgo": "{{count}}m ago",
+      "hoursAgo": "{{count}}h ago",
+      "daysAgo": "{{count}}d ago"
+    },
+    "activity": {
+      "bidProposal": "Proposal",
+      "bidAccepted": "Bid accepted",
+      "newMessage": "New message",
+      "contractUpdate": "Contract update",
+      "reviewReceived": "Review",
+      "verificationUpdated": "Verification",
+      "billingUpdated": "Billing",
+      "adminModeration": "Moderation",
+      "default": "Update"
+    },
+    "copy": {
+      "bidSubmitted": {
+        "title": "New bid on your job",
+        "body": "{{freelancerLabel}} submitted a bid on “{{jobTitle}}”."
+      },
+      "bidAccepted": {
+        "title": "Your bid was accepted",
+        "body": "Your bid on “{{jobTitle}}” was accepted. A contract has been created."
+      },
+      "newMessage": {
+        "title": "New message"
+      },
+      "verificationApproved": {
+        "title": "Verification approved",
+        "body": "Your {{requestType}} verification was approved."
+      },
+      "verificationRejected": {
+        "title": "Verification decision",
+        "body": "Your {{requestType}} verification was rejected.",
+        "bodyWithNote": "Your {{requestType}} verification was rejected. {{staffNote}}"
+      }
+    }
   },
   "messages": {
     "pageSubtitle": "Inbox + chat tied to hiring—threads stay anchored to roles or contracts when relevant.",

@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v89  
-> Last synchronized: 2026-05-10 (landing/marketing UI tidak lagi hardcoded bahasa Indonesia pada locale EN — kamus `landing.hero`, footer newsletter, navbar).
+> **Doc revision:** v90  
+> Last synchronized: 2026-05-10 (notifikasi: judul/bodi mengikuti locale pengguna lewat payload `_nwCopy` + template API/halaman notifications).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,7 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Notifications i18n (2026-05-10):** baris notifikasi yang dibuat oleh layanan (proposal, pesan, verifikasi) dapat dirender ulang sesuai bahasa UI (`en`/`id`) tanpa migrasi skema; baris lama tanpa `_nwCopy` tetap memakai teks tersimpan.
 - **Localized marketing chrome (2026-05-10):** halaman beranda bertitel `/en`/`/id` merender hero pemasaran dari kamus aktif (`RootLayout` + header `x-nearwork-locale`); tidak ada lagi string tetap Bahasa Indonesia di navbar/footer/chips cepat untuk pengguna bahasa Inggris.
 - **Marketplace currency & locale (2026-05-09):** penampilan nominal (budget job, proposal, ringkasan kontrak, admin finance read-only, harga paket langganan) memakai utilitas bersama `apps/web/lib/format-money.ts` agar **mata uang mengikuti data** (`Job.currency`, kontrak/donasi) dan pola angka mengikuti **locale app** (`id`/`en`), termasuk bentuk ringkas IDR untuk UI Indonesia.
 - **Public jobs browse (2026-05-09):** `/jobs` memusatkan sinyal nyata (klien, verifikasi, skill, proposal count, pulse) dengan UI **editorial dan padat**: kolom hero + aktivitas agregat, panel snapshot hiring, kartu job flatter; badge listing mengikuti ambang proposal. Filter **desktop + mobile** memakai **`rounded-lg`** pada opsi kategori/budget/posting/work mode agar selaras dengan bar pencarian.
