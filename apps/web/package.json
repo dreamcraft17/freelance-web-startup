@@ -5,6 +5,7 @@
   "description": "Marketplace application: App Router UI + API",
   "scripts": {
     "dev": "next dev",
+    "dev:fresh": "rimraf .next && next dev",
     "build": "pnpm --filter @acme/database exec prisma generate && next build",
     "start": "next start",
     "lint": "next lint",

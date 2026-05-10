@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v83  
-> Last synchronized: 2026-05-09 — `pnpm test:e2e` memakai harness prod (`run-e2e-server.mjs`): build `@acme/web`, `next start` pada port 3041, `BASE_URL` otomatis; menghindari chunk webpack rusak dari `next dev` saat smoke PATCH `/api/freelancer-profiles`.
+> **Doc revision:** v84  
+> Last synchronized: 2026-05-09 — `@acme/web` script **`dev:fresh`** (`rimraf .next && next dev`); README menjelaskan `MODULE_NOT_FOUND` pada PATCH `/api/freelancer-profiles` sebagai artefak `.next` dev stale.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -295,7 +295,7 @@ pnpm --filter @acme/web dev
 |--------|------------------------|
 | `DATABASE_URL` / Prisma errors in **`@acme/worker`** | Root env missing or worker not needed — use root `.env` with `DATABASE_URL`, or run web-only (above). Without DB, the worker idles after a clear warning. |
 | `EMAXCONNSESSION` / `max clients reached` (pool ~15) | Hosted Postgres pooler session limit; reduce concurrent dev tabs/processes, or use a connection string / tier with a higher pool, or a **direct** (non-pooler) URL for local dev. |
-| `Cannot find module './…js'` / `vendor-chunks/jose` / **`vendor-chunks/tailwind-merge`** under **`apps/web/.next`** | Stale or partial Next build after hot reload — stop dev, run **`rm -rf apps/web/.next`**, start again. The app also lists `clsx` + `tailwind-merge` in `serverExternalPackages` (`apps/web/next.config.ts`) to reduce flaky webpack vendor chunks in dev. |
+| `Cannot find module './…js'` / **`MODULE_NOT_FOUND`** on **`PATCH /api/freelancer-profiles`** (500 HTML) | Stale webpack chunks under **`apps/web/.next`** after incremental compile — stop dev, then **`pnpm --filter @acme/web dev:fresh`** (alias: **`pnpm --filter @acme/web clean`**, lalu **`pnpm --filter @acme/web dev`**). Smoke **`pnpm test:e2e`** memakai **`next start`** setelah build penuh agar tidak kena pola ini. |
 
 ### Type checking
 
