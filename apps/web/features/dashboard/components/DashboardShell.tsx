@@ -13,6 +13,7 @@ import { AuthUserMenu } from "./AuthUserMenu";
 import { SidebarAccountActions } from "./SidebarAccountActions";
 import { WorkspaceCommunitySidebarCard } from "./WorkspaceCommunitySidebarCard";
 import type { DashboardNavItem } from "../nav-types";
+import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
 
 export type { DashboardNavItem };
 
@@ -50,7 +51,7 @@ export function DashboardShell({
   unreadMessages,
   unreadNotifications
 }: DashboardShellProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const showMessageBadge =
     unreadMessages !== undefined && typeof unreadMessages === "number" && unreadMessages > 0;
   const showNotifBadge =
@@ -149,7 +150,7 @@ export function DashboardShell({
               <div className={cn("flex flex-wrap items-center justify-end gap-2", workspaceSearch ? "sm:justify-end" : "")}>
                 {unreadMessages !== undefined ? (
                   <Link
-                    href={"/messages" as Route}
+                    href={withWorkspaceLocale(locale, "/messages") as Route}
                     prefetch
                     className="relative flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200/80 bg-white text-slate-700 shadow-[0_2px_8px_-4px_rgba(15,23,42,0.12)] transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/35 focus-visible:ring-offset-2"
                     aria-label={t("workspace.inboxAria")}
@@ -165,7 +166,7 @@ export function DashboardShell({
 
                 {unreadNotifications !== undefined ? (
                   <Link
-                    href={"/notifications" as Route}
+                    href={withWorkspaceLocale(locale, "/notifications") as Route}
                     prefetch
                     className="relative flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200/80 bg-white text-slate-700 shadow-[0_2px_8px_-4px_rgba(15,23,42,0.12)] transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/35 focus-visible:ring-offset-2"
                     aria-label={t("workspace.notificationsAria")}
