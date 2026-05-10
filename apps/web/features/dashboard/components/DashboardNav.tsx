@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useI18n } from "@/features/i18n/I18nProvider";
 import { cn } from "@/lib/utils";
+import { pathnameForWorkspaceNavMatch, withWorkspaceLocale } from "@/lib/i18n/workspace-path";
 import { BrandLogo } from "@/features/shared/components/BrandLogo";
 import { getActiveNavHref } from "../lib/dashboard-nav-active";
 import type { DashboardNavIconKey, DashboardNavItem } from "../nav-types";
@@ -41,7 +42,7 @@ type DashboardNavProps = {
 };
 
 export function DashboardNav({ items, variant, appearance = "default" }: DashboardNavProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const pathname = usePathname() ?? "";
   const [hash, setHash] = useState("");
 
@@ -52,7 +53,8 @@ export function DashboardNav({ items, variant, appearance = "default" }: Dashboa
     return () => window.removeEventListener("hashchange", onHash);
   }, [pathname]);
 
-  const activeHref = getActiveNavHref(pathname, hash, items);
+  const navMatchPath = pathnameForWorkspaceNavMatch(pathname);
+  const activeHref = getActiveNavHref(navMatchPath, hash, items);
 
   if (variant === "mobile") {
     return (
@@ -63,7 +65,7 @@ export function DashboardNav({ items, variant, appearance = "default" }: Dashboa
           return (
             <Link
               key={`${item.href}-${item.labelKey}`}
-              href={item.href as Route}
+              href={withWorkspaceLocale(locale, item.href) as Route}
               prefetch
               className={cn(
                 "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-[13px] font-medium transition-colors",
@@ -114,7 +116,7 @@ export function DashboardNav({ items, variant, appearance = "default" }: Dashboa
               </p>
             ) : null}
             <Link
-              href={item.href as Route}
+              href={withWorkspaceLocale(locale, item.href) as Route}
               prefetch
               className={cn(
                 "flex items-center gap-3 rounded-xl py-2.5 pl-3 pr-2.5 text-[13px] font-medium leading-snug transition-colors",
