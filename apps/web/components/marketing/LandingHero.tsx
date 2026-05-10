@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Briefcase, Grid2X2, MapPin, Search, ShieldCheck, Sparkles, Zap } from "lucide-react";
 import type { LandingIntent } from "@/components/marketing/LandingPage";
 import { useI18n } from "@/features/i18n/I18nProvider";
+import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
 
 type ModeContent = {
   headline: string;
@@ -20,10 +21,10 @@ type ModeContent = {
   ctaBandLabel: string;
 };
 
-const DEMO_ROWS = [
-  { name: "Siska Putri", role: "UI/UX Designer", rating: "4.9", hue: "bg-[#fed7d7]" },
-  { name: "Rama Wijaya", role: "Video Editor", rating: "4.8", hue: "bg-[#bfdbfe]" },
-  { name: "Daffa Pratama", role: "Web Developer", rating: "4.9", hue: "bg-[#fde68a]" }
+const DEMO_ROW_META = [
+  { key: "one" as const, hue: "bg-[#fed7d7]" },
+  { key: "two" as const, hue: "bg-[#bfdbfe]" },
+  { key: "three" as const, hue: "bg-[#fde68a]" }
 ] as const;
 
 export function LandingHero({
@@ -33,7 +34,7 @@ export function LandingHero({
   intent: LandingIntent;
   homePath: string;
 }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [currentIntent, setCurrentIntent] = useState<LandingIntent>(intent);
@@ -46,7 +47,7 @@ export function LandingHero({
         primaryCtaLabel: t("landing.hero.hire.primaryCta"),
         primaryCtaHref: "/freelancers" as Route,
         secondaryCtaLabel: t("landing.hero.hire.secondaryCta"),
-        secondaryCtaHref: "/client/jobs/new" as Route,
+        secondaryCtaHref: withWorkspaceLocale(locale, "/client/jobs/new") as Route,
         searchAction: "/freelancers" as Route,
         searchPlaceholder: t("landing.hero.hire.searchPlaceholder"),
         ctaBandLabel: t("landing.hero.hire.ctaBand")
@@ -59,7 +60,7 @@ export function LandingHero({
         primaryCtaLabel: t("landing.hero.work.primaryCta"),
         primaryCtaHref: "/jobs" as Route,
         secondaryCtaLabel: t("landing.hero.work.secondaryCta"),
-        secondaryCtaHref: "/freelancer/profile" as Route,
+        secondaryCtaHref: withWorkspaceLocale(locale, "/freelancer/profile") as Route,
         searchAction: "/jobs" as Route,
         searchPlaceholder: t("landing.hero.work.searchPlaceholder"),
         ctaBandLabel: t("landing.hero.work.ctaBand")
@@ -76,7 +77,7 @@ export function LandingHero({
       searchPlaceholder: t("landing.hero.neutral.searchPlaceholder"),
       ctaBandLabel: t("landing.hero.neutral.ctaBand")
     };
-  }, [currentIntent, t]);
+  }, [currentIntent, locale, t]);
 
   const toggleIntent = currentIntent === "neutral" ? "hire" : currentIntent;
   const onIntentChange = (next: Exclude<LandingIntent, "neutral">) => {
@@ -155,31 +156,36 @@ export function LandingHero({
             <aside className="hidden lg:col-span-3 lg:block">
               <div className="relative mt-4 min-h-[260px] rounded-[2rem] bg-[#e8e4fb] p-4 before:absolute before:inset-4 before:-z-0 before:rounded-[1.5rem] before:bg-[#ddd7fb] before:content-['']">
                 <div className="space-y-2.5">
-                  {DEMO_ROWS.map((row) => (
-                    <div
-                      key={row.name}
-                      className="relative z-10 rounded-xl border border-slate-200 bg-white px-3 py-2.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <div
-                          className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold text-slate-700 ${row.hue}`}
-                        >
-                          {row.name
-                            .split(" ")
-                            .slice(0, 2)
-                            .map((n) => n[0])
-                            .join("")}
-                        </div>
-                        <div className="min-w-0">
-                          <p className="line-clamp-1 text-sm font-semibold text-slate-900">{row.name}</p>
-                          <p className="line-clamp-1 text-xs text-slate-600">{row.role}</p>
-                          <p className="mt-0.5 text-[11px] font-semibold text-emerald-700">
-                            {t("landing.hero.demoRatingLine", { rating: row.rating })}
-                          </p>
+                  {DEMO_ROW_META.map((row) => {
+                    const name = t(`landing.hero.demoRows.${row.key}.name`);
+                    const role = t(`landing.hero.demoRows.${row.key}.role`);
+                    const rating = t(`landing.hero.demoRows.${row.key}.rating`);
+                    return (
+                      <div
+                        key={row.key}
+                        className="relative z-10 rounded-xl border border-slate-200 bg-white px-3 py-2.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <div
+                            className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold text-slate-700 ${row.hue}`}
+                          >
+                            {name
+                              .split(" ")
+                              .slice(0, 2)
+                              .map((n) => n[0])
+                              .join("")}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="line-clamp-1 text-sm font-semibold text-slate-900">{name}</p>
+                            <p className="line-clamp-1 text-xs text-slate-600">{role}</p>
+                            <p className="mt-0.5 text-[11px] font-semibold text-emerald-700">
+                              {t("landing.hero.demoRatingLine", { rating })}
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </aside>
