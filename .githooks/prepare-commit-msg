@@ -1,0 +1,9 @@
+#!/bin/sh
+# Drop Cursor automation trailer lines from commit messages (IDE-injected).
+# Enable once per clone: git config core.hooksPath .githooks
+MSG_FILE="${1:?}"
+[ -f "$MSG_FILE" ] || exit 0
+TMP=$(mktemp)
+trap 'rm -f "$TMP"' EXIT
+grep -v '^Co-authored-by: Cursor <cursoragent@cursor.com>$' "$MSG_FILE" >"$TMP" || true
+cat "$TMP" >"$MSG_FILE"
