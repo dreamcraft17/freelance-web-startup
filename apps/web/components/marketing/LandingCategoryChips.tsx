@@ -71,13 +71,13 @@ export function LandingCategoryChips({ t }: { t: Translator }) {
         <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="nw-section-title">{t("landing.categories.kicker")}</p>
-            <h2 className="text-xl font-bold tracking-tight text-[#071027] sm:text-2xl">Cari freelancer sesuai kebutuhan</h2>
+            <h2 className="text-xl font-bold tracking-tight text-[#071027] sm:text-2xl">{t("landing.categories.title")}</h2>
             <p className="mt-1 max-w-xl text-sm font-semibold text-slate-600">
               {t("landing.categories.subtitle")}
             </p>
           </div>
           <Link href="/jobs" className="text-sm font-bold text-[#3525cd] hover:underline sm:shrink-0">
-            Lihat semua kategori →
+            {t("landing.categories.viewAllCategories")}
           </Link>
         </div>
 

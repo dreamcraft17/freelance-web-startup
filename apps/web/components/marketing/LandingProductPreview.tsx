@@ -146,10 +146,10 @@ export function LandingProductPreview({ t }: { t: Translator }) {
       <div className="flex flex-col gap-2 border-b border-slate-200 pb-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="nw-section-title">{t("landing.preview.kicker")}</p>
-          <h2 className="mt-1 text-xl font-bold tracking-tight text-[#071027] sm:text-2xl">Pratinjau marketplace live</h2>
+          <h2 className="mt-1 text-xl font-bold tracking-tight text-[#071027] sm:text-2xl">{t("landing.preview.marketTitle")}</h2>
         </div>
         <Link href={"/jobs" as Route} className="text-xs font-semibold text-[#4f35e8] hover:underline">
-          Lihat semua →
+          {t("landing.preview.seeAllArrow")}
         </Link>
       </div>
 

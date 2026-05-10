@@ -377,7 +377,10 @@
     "help": "Bantuan",
     "contact": "Kontak",
     "tagline": "Marketplace freelance untuk pekerjaan lokal dan jarak jauh.",
-    "copyright": "© {{year}} NearWork"
+    "copyright": "© {{year}} NearWork",
+    "newsletterTitle": "Dapatkan tips dan update terbaru",
+    "newsletterEmailPlaceholder": "Email Anda",
+    "newsletterSubscribe": "Berlangganan"
   },
   "hero": {
     "liveDirectory": "Direktori freelancer aktif",
@@ -462,9 +465,64 @@
     }
   },
   "landing": {
+    "hero": {
+      "intentHire": "Saya ingin rekrut",
+      "intentWork": "Saya ingin kerja",
+      "hire": {
+        "headlineLine1": "Temukan freelancer terbaik",
+        "headlineBeforeEmphasis": "dan ",
+        "headlineEmphasis": "selesaikan proyek",
+        "headlineAfterEmphasis": " dengan mudah",
+        "subHeadline": "Cari, diskusi, dan rekrut freelancer terpercaya. Kelola proyek dan pembayaran aman dalam satu platform.",
+        "primaryCta": "Cari freelancer",
+        "secondaryCta": "Pasang lowongan",
+        "searchPlaceholder": "Cari skill, freelancer, atau layanan",
+        "ctaBand": "Pasang lowongan sekarang"
+      },
+      "work": {
+        "headline": "Temukan proyek freelance yang tepat dan mulai kerja lebih cepat",
+        "subHeadline": "Cari pekerjaan yang sesuai skill Anda, kirim proposal, dan mulai kolaborasi dalam alur kerja yang jelas.",
+        "primaryCta": "Cari pekerjaan",
+        "secondaryCta": "Buat profil",
+        "searchPlaceholder": "Cari pekerjaan atau proyek",
+        "ctaBand": "Mulai kerja sekarang"
+      },
+      "neutral": {
+        "headline": "Temukan pekerjaan atau freelancer dengan cepat",
+        "subHeadline": "Cari kerja, temukan klien, atau rekrut dalam satu platform.",
+        "primaryCta": "Cari freelancer",
+        "secondaryCta": "Cari pekerjaan",
+        "searchPlaceholder": "Cari freelancer atau skill",
+        "ctaBand": "Mulai sekarang"
+      },
+      "cityPlaceholder": "Lokasi (opsional)",
+      "categoryAll": "Semua kategori",
+      "categoryDesign": "Desain",
+      "categoryVideo": "Video",
+      "categoryWeb": "Website",
+      "searchSubmit": "Cari",
+      "popularLabel": "Populer:",
+      "popularLogoDesign": "Desain logo",
+      "popularVideoEditing": "Video editing",
+      "popularWebsite": "Website",
+      "popularCopywriting": "Copywriting",
+      "popularSeo": "SEO",
+      "popularUiUx": "UI/UX",
+      "seeAll": "Lihat semua",
+      "valueFastTitle": "Cepat",
+      "valueFastBody": "Temukan freelancer atau pekerjaan dalam hitungan menit.",
+      "valueSafeTitle": "Aman",
+      "valueSafeBody": "Pembayaran aman dengan sistem escrow dan transparan.",
+      "valueFlexTitle": "Fleksibel",
+      "valueFlexBody": "Kerja remote, on-site, atau hybrid sesuai kebutuhan Anda.",
+      "bottomStripTitle": "Siap memulai proyek Anda?",
+      "bottomStripBody": "Pasang lowongan gratis dan dapatkan freelancer terbaik.",
+      "demoRatingLine": "★ {{rating}} · Siap bekerja"
+    },
     "categories": {
       "kicker": "Mulai dari kategori",
       "title": "Cari freelancer sesuai kebutuhan",
+      "viewAllCategories": "Lihat semua kategori →",
       "subtitle": "Pilih layanan, lalu sempitkan dengan kota atau mode kerja untuk mulai lebih cepat.",
       "secondaryCta": "Butuh lowongan aktif? Buka job board ->",
       "entryLabel": "Jalur pencarian",
@@ -519,7 +577,8 @@
         "recentlyUpdated": "Baru diperbarui"
       },
       "ctaFreelancers": "Buka direktori ->",
-      "ctaJobs": "Buka job board ->"
+      "ctaJobs": "Buka job board ->",
+      "seeAllArrow": "Lihat semua →"
     },
     "useCases": {
       "kicker": "Alur hiring",
@@ -928,6 +987,11 @@
       "searchLocationPlaceholder": "Lokasi (opsional)",
       "searchAction": "Cari",
       "quickSearchLabel": "Pencarian populer:",
+      "quickTermLogoDesign": "Desain logo",
+      "quickTermVideoEditing": "Video editing",
+      "quickTermWebsite": "Website",
+      "quickTermCopywriting": "Copywriting",
+      "quickTermSeo": "SEO",
       "quickChipsLabel": "Akses cepat",
       "quickChipNearby": "Nearby",
       "quickChipRemote": "Remote",
