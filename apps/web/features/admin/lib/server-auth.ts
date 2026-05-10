@@ -2,6 +2,7 @@ import type { Route } from "next";
 import { redirect } from "next/navigation";
 import { AccountStatus, type UserRole } from "@acme/types";
 import { getSessionFromCookies, homePathForSessionRole } from "@src/lib/auth";
+import { getAppLocale } from "@/lib/i18n/server-locale";
 import {
   canAccessAdminPageKey,
   STAFF_ROLES,
@@ -21,7 +22,7 @@ export async function requireStaffSession() {
     redirect("/forbidden");
   }
   if (!(STAFF_ROLES as readonly UserRole[]).includes(session.role)) {
-    redirect(homePathForSessionRole(session.role) as Route);
+    redirect(homePathForSessionRole(session.role, await getAppLocale()) as Route);
   }
   return session;
 }
