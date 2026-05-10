@@ -5,6 +5,8 @@ alwaysApply: true
 
 # Commit And Push Workflow
 
+**Wajib bagi agent:** jangan pernah menambahkan baris trailer **`Co-authored-by: Cursor …`** ke pesan commit (tidak lewat `git commit -m` berbilah baris, tidak lewat `--trailer`, tidak mengedit pesan agar berisi Co-authored-by Cursor). Biarkan hook `.githooks/prepare-commit-msg` yang menghapusnya jika IDE menyuntikkan otomatis.
+
 Gunakan workflow ini setiap selesai melakukan perubahan kode:
 
 1. **Jangan menumpuk perubahan terlalu banyak** dalam satu commit.
