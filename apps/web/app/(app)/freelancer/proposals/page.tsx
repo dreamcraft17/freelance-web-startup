@@ -1,3 +1,4 @@
+import type { Route } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { db } from "@acme/database";
@@ -7,6 +8,7 @@ import {
   type FreelancerProposalRow
 } from "@/components/freelancer/FreelancerProposalsWorkspace";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 
 export default async function FreelancerProposalsPage() {
   const session = await getSessionFromCookies();
@@ -15,6 +17,7 @@ export default async function FreelancerProposalsPage() {
   }
 
   const { t, locale } = await getServerTranslator();
+  const jobsBrowseRoot = withPublicLocale(locale, "/jobs");
   const emptyOnboarding = {
     step1: t("public.moderation.onboardingProposalStep1"),
     step2: t("public.moderation.onboardingProposalStep2"),
@@ -64,7 +67,7 @@ export default async function FreelancerProposalsPage() {
           <p className="max-w-xl text-sm leading-relaxed text-slate-600">
             Track every bid you have sent and focus on responses that need action.
           </p>
-          <Link href="/jobs" className="text-sm font-semibold text-[#433C93] hover:underline">
+          <Link href={jobsBrowseRoot as Route} className="text-sm font-semibold text-[#433C93] hover:underline">
             Find more jobs
           </Link>
           <Link href="/freelancer/profile" className="text-sm font-semibold text-slate-600 hover:underline">

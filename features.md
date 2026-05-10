@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v93  
-> Last synchronized: 2026-05-10 (URL workspace klien/freelancer/inbox: canonical `/<locale>/(client|freelancer|messages|notifications|settings)` via middleware rewrite; kartu demo hero dari `landing.hero.demoRows.*`).
+> **Doc revision:** v94  
+> Last synchronized: 2026-05-09 (link marketplace/marketing/dashboard memakai `withPublicLocale` / `withWorkspaceLocale`; middleware tetap referer-aware untuk redirect tanpa prefix).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,6 +9,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
+- **2026-05-09 — Locale-stable discovery links:** CTA dan tautan internal ke board (`/jobs`, `/freelancers`), halaman marketing berSEO (`how-it-works`, `pricing`, `early-access`, `help`), serta banyak jalur dashboard/workspace tidak lagi memakai path tanpa prefix mentah yang memicu redirect middleware berbasis cookie lawas—prefiks **`/en/`** atau **`/id/`** eksplisit memakai util **`apps/web/lib/i18n/locale-path.ts`** + **`workspace-path.ts`**; alur auth/register-return-to job menyimpan **`/<locale>/jobs/:id`**.
 - **2026-05-10 — Locale-prefixed workspace URLs:** permukaan produk `/client`, `/freelancer`, `/messages`, `/notifications`, dan `/settings` memakai URL peramban `/<lang>/…` (sesuai cookie/route EN/ID). Middleware menulis ulang ke rute App Router internal yang sama, menyetel `x-nearwork-locale`, dan mengarahkan URL tanpa prefix ke preferensi bahasa. Shell dashboard + auth nav membangun link dengan `withWorkspaceLocale`; default home role (`homePathForSessionRole`) mengikuti locale aktif.
 - **2026-05-10 — In-app notifications localized:** `NotificationService` menyimpan `_nwCopy` (bid diterima/disetujui, pesan baru, hasil verifikasi); `listForActor(actor, locale)` dan `GET /api/notifications` mem-format judul/bodi dengan kamus aktif. UI `/notifications` memakai `notifications.activity.*`, `notifications.time.*`, dan `notifications.openRelated`.
 - **2026-05-10 — Marketing/localized-home EN-ID parity:** komponen `LandingHero` memakai `useI18n()` dan blok baru `landing.hero.*`; navbar pemasaran (guest/signed-in) memakai `nav.*`; footer newsletter `footer.newsletter*`; quick-search freelancer mengikuti `public.freelancers.quickTerm*`; cetakan landing lain (`LandingCategoryChips`, `LandingProductPreview`, `LandingFinalCta`) menyambung ke kunci kamus yang sudah ada.

@@ -17,6 +17,8 @@ import {
 } from "lucide-react";
 import { formatMoneyAmount } from "@/lib/format-money";
 import type { AppLocale } from "@/lib/i18n/types";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
+import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
 import { cn } from "@/lib/utils";
 import { ActivationChecklistCard, type ActivationChecklistStepVm } from "@/components/onboarding/ActivationChecklistCard";
 import { MarketplaceLiquidityHints } from "@/components/onboarding/MarketplaceLiquidityHints";
@@ -178,31 +180,34 @@ export function ClientDashboard({
 }: ClientDashboardProps) {
   const listJobs = recentJobs.slice(0, 10);
   const hasJobs = recentJobs.length > 0;
+  const jobsBrowseRoot = withPublicLocale(locale, "/jobs");
+  const freelancersBrowseRoot = withPublicLocale(locale, "/freelancers");
+  const wp = (path: string) => withWorkspaceLocale(locale, path) as Route;
 
   const quickActions: QuickAction[] = [
     {
       label: "Post a job",
       hint: "Publish a new role",
-      href: "/client/jobs/new" as Route,
+      href: wp("/client/jobs/new"),
       icon: Plus,
       emphasize: true
     },
     {
       label: "Manage jobs",
       hint: "Edit listings & status",
-      href: "/client/jobs" as Route,
+      href: wp("/client/jobs"),
       icon: Briefcase
     },
     {
       label: "Review bids",
       hint: "Open proposals inbox",
-      href: "/client/jobs" as Route,
+      href: wp("/client/jobs"),
       icon: ClipboardList
     },
     {
       label: "Hire from directory",
       hint: "Discover freelancers",
-      href: "/freelancers" as Route,
+      href: freelancersBrowseRoot as Route,
       icon: Search
     }
   ];
@@ -220,7 +225,7 @@ export function ClientDashboard({
             <p className="text-sm leading-relaxed text-slate-600 md:text-[15px]">{subline}</p>
           </div>
           <div className="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center">
-            <Link href={"/client/jobs/new" as Route} className={primaryCtaClass}>
+            <Link href={wp("/client/jobs/new")} className={primaryCtaClass}>
               <Plus className="h-5 w-5 shrink-0 opacity-95" aria-hidden />
               Post a job
             </Link>
@@ -372,7 +377,7 @@ export function ClientDashboard({
               <p className="mt-0.5 text-sm text-slate-500">{copy.recentJobsSub}</p>
             </div>
             {hasProfile && hasJobs ? (
-              <Link href={"/client/jobs" as Route} className={linkClass}>
+              <Link href={wp("/client/jobs")} className={linkClass}>
                 {copy.viewAllJobs}
                 <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
               </Link>
@@ -396,8 +401,8 @@ export function ClientDashboard({
                 icon={Briefcase}
                 title={copy.jobsEmptyFirstTitle}
                 description={copy.jobsEmptyFirstBody}
-                action={{ label: copy.jobsEmptyFirstPrimary, href: "/client/jobs/new" }}
-                secondaryAction={{ label: copy.jobsEmptyFirstSecondary, href: "/freelancers" }}
+                action={{ label: copy.jobsEmptyFirstPrimary, href: wp("/client/jobs/new") }}
+                secondaryAction={{ label: copy.jobsEmptyFirstSecondary, href: freelancersBrowseRoot as Route }}
               />
             ) : (
               <ul className="divide-y divide-slate-100">
@@ -405,7 +410,7 @@ export function ClientDashboard({
                   <li key={job.id} className="flex flex-wrap items-start justify-between gap-2 py-3.5 first:pt-0 last:pb-0">
                     <div className="min-w-0">
                       <Link
-                        href={`/jobs/${job.id}` as Route}
+                        href={`${jobsBrowseRoot}/${job.id}` as Route}
                         className="text-sm font-semibold text-slate-900 transition hover:text-[#3525cd]"
                       >
                         {job.title}
@@ -454,7 +459,7 @@ export function ClientDashboard({
               <p className="mt-0.5 text-sm text-slate-500">{copy.incomingBidsSub}</p>
             </div>
             {hasProfile ? (
-              <Link href={"/client/jobs" as Route} className={linkClass}>
+              <Link href={wp("/client/jobs")} className={linkClass}>
                 {copy.incomingBidsManageLink}
                 <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
               </Link>
@@ -478,8 +483,8 @@ export function ClientDashboard({
                 icon={Users}
                 title={copy.bidsEmptyNoBidsTitle}
                 description={copy.bidsEmptyNoBidsBody}
-                action={{ label: copy.bidsEmptyNoBidsPrimary, href: "/client/jobs/new" }}
-                secondaryAction={{ label: copy.bidsEmptyNoBidsSecondary, href: "/client/jobs" }}
+                action={{ label: copy.bidsEmptyNoBidsPrimary, href: wp("/client/jobs/new") }}
+                secondaryAction={{ label: copy.bidsEmptyNoBidsSecondary, href: wp("/client/jobs") }}
               />
             ) : (
               <ul className="space-y-3">
@@ -489,7 +494,7 @@ export function ClientDashboard({
                     className="rounded-lg border border-slate-100 bg-slate-50/40 p-3.5 transition hover:border-slate-200 hover:bg-slate-50/80"
                   >
                     <Link
-                      href={`/jobs/${bid.job.id}` as Route}
+                      href={`${jobsBrowseRoot}/${bid.job.id}` as Route}
                       className="text-sm font-semibold text-slate-900 hover:text-[#3525cd]"
                     >
                       {bid.job.title}
@@ -521,7 +526,7 @@ export function ClientDashboard({
             </h2>
             <p className="mt-0.5 text-sm text-slate-500">{copy.contractsSub}</p>
           </div>
-          <Link href={"/messages" as Route} className={linkClass}>
+          <Link href={wp("/messages")} className={linkClass}>
             {copy.contractsMessagesLink}
             <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
           </Link>
@@ -535,15 +540,15 @@ export function ClientDashboard({
               icon={FileSignature}
               title={copy.contractsEmptyTitle}
               description={copy.contractsEmptyBody}
-              action={{ label: copy.contractsEmptyPrimary, href: "/client/jobs" }}
-              secondaryAction={{ label: copy.contractsEmptySecondary, href: "/freelancers" }}
+              action={{ label: copy.contractsEmptyPrimary, href: wp("/client/jobs") }}
+              secondaryAction={{ label: copy.contractsEmptySecondary, href: freelancersBrowseRoot as Route }}
             />
           ) : (
             <ul className="grid gap-3 sm:grid-cols-2">
               {recentContracts.map((c) => (
                 <li key={c.id} className="rounded-lg border border-slate-100 bg-slate-50/70 p-4 transition hover:border-slate-200 hover:shadow-sm">
                   <Link
-                    href={`/jobs/${c.bid.job.id}` as Route}
+                    href={`${jobsBrowseRoot}/${c.bid.job.id}` as Route}
                     className="text-sm font-semibold text-slate-900 hover:text-[#3525cd]"
                   >
                     {c.bid.job.title}

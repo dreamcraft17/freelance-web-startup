@@ -11,8 +11,10 @@ import { JobsPublicEmpty } from "@/features/public/components/JobsPublicEmpty";
 import { JobsPublicList, type JobsPublicCard } from "@/features/public/components/JobsPublicList";
 import { jobsBrowseQueryString } from "@/features/public/lib/jobs-browse-query";
 import { formatMoneyAmount } from "@/lib/format-money";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
 import type { AppLocale } from "@/lib/i18n/types";
+import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
 import { CategoryService } from "@/server/services/category.service";
 import { JobService } from "@/server/services/job.service";
 import { PublicStatsService } from "@/server/services/public-stats.service";
@@ -124,6 +126,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
   const jobService = new JobService();
   const statsSvc = new PublicStatsService();
   const { t, locale } = await getServerTranslator();
+  const jobsBase = withPublicLocale(locale, "/jobs");
   const [{ items, total }, categories, { pulse, heroPanelActivity }, session] = await Promise.all([
     jobService.listOpenJobs(query, locale),
     loadCategories(),
@@ -263,7 +266,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                     {categories.slice(0, 8).map((c) => (
                       <Link
                         key={c.id}
-                        href={`/jobs${jobsBrowseQueryString({ ...qArgs, categoryId: c.id })}` as Route}
+                        href={`${jobsBase}${jobsBrowseQueryString({ ...qArgs, categoryId: c.id })}` as Route}
                         className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-800 transition hover:border-slate-300 hover:bg-slate-50"
                       >
                         {c.name}
@@ -279,7 +282,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
 
               {featuredJob ? (
                 <Link
-                  href={`/jobs/${featuredJob.id}` as Route}
+                  href={`${jobsBase}/${featuredJob.id}` as Route}
                   className="mt-3 block border-l-2 border-[#3525cd] pl-3 transition hover:bg-slate-50/80"
                 >
                   <p className="text-[10px] font-semibold uppercase tracking-wide text-[#3525cd]">{t("public.jobs.heroFeaturedLabel")}</p>
@@ -360,7 +363,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
 
           <div className="mx-auto mt-6 max-w-[1200px] lg:mt-8">
             <div className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm sm:p-4">
-              <form method="get" action="/jobs" className="grid gap-2 sm:gap-3 lg:grid-cols-[minmax(0,2fr),minmax(0,1fr),minmax(0,1fr),auto] lg:items-end">
+              <form method="get" action={jobsBase} className="grid gap-2 sm:gap-3 lg:grid-cols-[minmax(0,2fr),minmax(0,1fr),minmax(0,1fr),auto] lg:items-end">
                 <div className="relative">
                   <label className="sr-only" htmlFor="nw-jobs-q">
                     {t("public.jobs.searchKeywordPlaceholder")}
@@ -419,7 +422,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                 {quickTags.map((tag) => (
                   <Link
                     key={tag.label}
-                    href={`/jobs${tag.href}` as Route}
+                    href={`${jobsBase}${tag.href}` as Route}
                     className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px] font-medium text-slate-700 hover:border-slate-300 hover:bg-white"
                   >
                     {tag.label}
@@ -428,25 +431,25 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
               </div>
               <div className="mt-2 flex flex-wrap gap-1.5">
                 <Link
-                  href={`/jobs${jobsBrowseQueryString({ ...qArgs, workMode: "" })}` as Route}
+                  href={`${jobsBase}${jobsBrowseQueryString({ ...qArgs, workMode: "" })}` as Route}
                   className={workModeChipClass(workMode === "")}
                 >
                   {t("public.filters.workModeAny")}
                 </Link>
                 <Link
-                  href={`/jobs${jobsBrowseQueryString({ ...qArgs, workMode: "REMOTE" })}` as Route}
+                  href={`${jobsBase}${jobsBrowseQueryString({ ...qArgs, workMode: "REMOTE" })}` as Route}
                   className={workModeChipClass(workMode === "REMOTE")}
                 >
                   {t("public.filters.workModeRemote")}
                 </Link>
                 <Link
-                  href={`/jobs${jobsBrowseQueryString({ ...qArgs, workMode: "ONSITE" })}` as Route}
+                  href={`${jobsBase}${jobsBrowseQueryString({ ...qArgs, workMode: "ONSITE" })}` as Route}
                   className={workModeChipClass(workMode === "ONSITE")}
                 >
                   {t("public.filters.workModeOnSite")}
                 </Link>
                 <Link
-                  href={`/jobs${jobsBrowseQueryString({ ...qArgs, workMode: "HYBRID" })}` as Route}
+                  href={`${jobsBase}${jobsBrowseQueryString({ ...qArgs, workMode: "HYBRID" })}` as Route}
                   className={workModeChipClass(workMode === "HYBRID")}
                 >
                   {t("public.filters.workModeHybrid")}
@@ -463,7 +466,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
             <div className="space-y-1 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
               <div className="mb-3 flex items-center justify-between">
                 <h2 className="text-sm font-semibold text-slate-900">{t("public.filters.title")}</h2>
-                <Link href="/jobs" className="text-xs font-semibold text-[#3525cd] hover:underline">
+                <Link href={jobsBase as Route} className="text-xs font-semibold text-[#3525cd] hover:underline">
                   {t("public.filters.reset")}
                 </Link>
               </div>
@@ -473,7 +476,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                 </summary>
                 <div className="mt-3 space-y-1 text-sm">
                   <Link
-                    href={`/jobs${jobsBrowseQueryString({ ...filterBase, categoryId: "", page: 1 })}` as Route}
+                    href={`${jobsBase}${jobsBrowseQueryString({ ...filterBase, categoryId: "", page: 1 })}` as Route}
                     className={`block rounded-lg px-2 py-1.5 ${categoryId === "" ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
                   >
                     {t("public.filters.allCategories")}
@@ -481,7 +484,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                   {categories.slice(0, 12).map((c) => (
                     <Link
                       key={c.id}
-                      href={`/jobs${jobsBrowseQueryString({ ...filterBase, categoryId: c.id, page: 1 })}` as Route}
+                      href={`${jobsBase}${jobsBrowseQueryString({ ...filterBase, categoryId: c.id, page: 1 })}` as Route}
                       className={`block rounded-lg px-2 py-1.5 ${categoryId === c.id ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
                     >
                       {c.name}
@@ -501,7 +504,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                   ].map((item) => (
                     <Link
                       key={item.value}
-                      href={`/jobs${jobsBrowseQueryString({ ...filterBase, minBudget: item.value, page: 1 })}` as Route}
+                      href={`${jobsBase}${jobsBrowseQueryString({ ...filterBase, minBudget: item.value, page: 1 })}` as Route}
                       className={`block rounded-lg px-2 py-1.5 ${minBudget === item.value ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
                     >
                       {item.label}
@@ -521,7 +524,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                   ].map((item) => (
                     <Link
                       key={item.value}
-                      href={`/jobs${jobsBrowseQueryString({ ...filterBase, postedWithinDays: item.value, page: 1 })}` as Route}
+                      href={`${jobsBase}${jobsBrowseQueryString({ ...filterBase, postedWithinDays: item.value, page: 1 })}` as Route}
                       className={`block rounded-lg px-2 py-1.5 ${postedWithinDays === item.value ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
                     >
                       {item.label}
@@ -535,19 +538,19 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                 </summary>
                 <div className="mt-3 space-y-1 text-sm">
                   <Link
-                    href={`/jobs${jobsBrowseQueryString({ ...filterBase, workMode: "REMOTE", page: 1 })}` as Route}
+                    href={`${jobsBase}${jobsBrowseQueryString({ ...filterBase, workMode: "REMOTE", page: 1 })}` as Route}
                     className={`block rounded-lg px-2 py-1.5 ${workMode === "REMOTE" ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
                   >
                     {t("public.filters.workModeRemote")}
                   </Link>
                   <Link
-                    href={`/jobs${jobsBrowseQueryString({ ...filterBase, workMode: "ONSITE", page: 1 })}` as Route}
+                    href={`${jobsBase}${jobsBrowseQueryString({ ...filterBase, workMode: "ONSITE", page: 1 })}` as Route}
                     className={`block rounded-lg px-2 py-1.5 ${workMode === "ONSITE" ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
                   >
                     {t("public.filters.workModeOnSite")}
                   </Link>
                   <Link
-                    href={`/jobs${jobsBrowseQueryString({ ...filterBase, workMode: "HYBRID", page: 1 })}` as Route}
+                    href={`${jobsBase}${jobsBrowseQueryString({ ...filterBase, workMode: "HYBRID", page: 1 })}` as Route}
                     className={`block rounded-lg px-2 py-1.5 ${workMode === "HYBRID" ? "bg-[#f4f2ff] font-semibold text-[#3525cd]" : "text-slate-700 hover:bg-slate-50"}`}
                   >
                     {t("public.filters.workModeHybrid")}
@@ -598,7 +601,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
             <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
               <div className="mb-3 flex items-center justify-between gap-2">
                 <h2 className="text-sm font-semibold text-slate-900">{t("public.jobs.demandTrendTitle")}</h2>
-                <Link href="/jobs" className="text-xs font-semibold text-[#3525cd] hover:underline">
+                <Link href={jobsBase as Route} className="text-xs font-semibold text-[#3525cd] hover:underline">
                   {t("public.jobs.viewAllSmall")}
                 </Link>
               </div>
@@ -629,7 +632,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                 {page > 1 ? (
                   <Link
                     href={
-                      `/jobs${jobsBrowseQueryString({ ...filterBase, page: page - 1 })}` as Route
+                      `${jobsBase}${jobsBrowseQueryString({ ...filterBase, page: page - 1 })}` as Route
                     }
                     className="font-bold text-[#3525cd] hover:underline"
                   >
@@ -644,7 +647,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                 {page < totalPages ? (
                   <Link
                     href={
-                      `/jobs${jobsBrowseQueryString({ ...filterBase, page: page + 1 })}` as Route
+                      `${jobsBase}${jobsBrowseQueryString({ ...filterBase, page: page + 1 })}` as Route
                     }
                     className="font-bold text-[#3525cd] hover:underline"
                   >
@@ -758,7 +761,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
             <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
               <p className="text-sm font-semibold text-slate-900">{t("public.jobs.smallCtaTitle")}</p>
               <AuthAwareCtaLink
-                href={"/client/jobs/new" as Route}
+                href={withWorkspaceLocale(locale, "/client/jobs/new") as Route}
                 intent="post-job"
                 unauthenticatedTo="register"
                 registerRoleHint="client"

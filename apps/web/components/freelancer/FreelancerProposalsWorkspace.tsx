@@ -7,6 +7,8 @@ import { BidStatus } from "@acme/types";
 import { ModerationReportButton } from "@/features/moderation/components/ModerationReportButton";
 import { DashboardEmptyState } from "@/components/dashboard/DashboardEmptyState";
 import type { AppLocale } from "@/lib/i18n/types";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
+import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
 import { formatMoneyAmount } from "@/lib/format-money";
 import { cn } from "@/lib/utils";
 import { FileText, Inbox } from "lucide-react";
@@ -94,6 +96,9 @@ export function FreelancerProposalsWorkspace({
   proposals: FreelancerProposalRow[];
   emptyOnboarding?: { step1: string; step2: string; step3: string };
 }) {
+  const jobsBrowseRoot = withPublicLocale(locale, "/jobs");
+  const wp = (path: string) => withWorkspaceLocale(locale, path) as Route;
+
   const [filter, setFilter] = useState<FilterKey>("all");
 
   const counts = useMemo(() => {
@@ -131,8 +136,8 @@ export function FreelancerProposalsWorkspace({
         icon={FileText}
         title="Proposals live on your freelancer profile"
         description="Create your profile and send bids on open jobs—every proposal you submit will show up here with status and amounts."
-        action={{ label: "Complete profile", href: "/freelancer/profile" }}
-        secondaryAction={{ label: "Browse jobs", href: "/jobs" }}
+        action={{ label: "Complete profile", href: wp("/freelancer/profile") }}
+        secondaryAction={{ label: "Browse jobs", href: jobsBrowseRoot as Route }}
       />
     );
   }
@@ -158,7 +163,7 @@ export function FreelancerProposalsWorkspace({
             ) : null}
           </>
         }
-        action={{ label: "Browse open jobs", href: "/jobs" }}
+        action={{ label: "Browse open jobs", href: jobsBrowseRoot as Route }}
       />
     );
   }
@@ -203,7 +208,7 @@ export function FreelancerProposalsWorkspace({
             No proposals match “{FILTERS.find((x) => x.key === filter)?.label}”. Try another tab or browse new roles.
           </p>
           <Link
-            href={"/jobs" as Route}
+            href={jobsBrowseRoot as Route}
             className="mt-4 inline-flex text-sm font-semibold text-[#3525cd] underline-offset-4 hover:underline"
           >
             Browse jobs
@@ -216,7 +221,7 @@ export function FreelancerProposalsWorkspace({
               <div className={cn("rounded-lg border p-4 md:p-5", rowVisual(p.status))}>
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <Link
-                    href={`/jobs/${p.job.id}` as Route}
+                    href={`${jobsBrowseRoot}/${p.job.id}` as Route}
                     className="min-w-0 flex-1 transition hover:opacity-90"
                   >
                     <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Job</p>

@@ -1,11 +1,13 @@
 "use client";
 
+import type { Route } from "next";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useI18n } from "@/features/i18n/I18nProvider";
 import { formatMoneyAmount } from "@/lib/format-money";
 import type { AppLocale } from "@/lib/i18n/types";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 import { SaveJobButton } from "./SaveJobButton";
 
 export type SerializableJobCard = {
@@ -39,6 +41,7 @@ type JobsBrowseGridProps = {
 
 export function JobsBrowseGrid({ jobs }: JobsBrowseGridProps) {
   const { locale } = useI18n();
+  const jobsBrowseRoot = withPublicLocale(locale, "/jobs");
   const [savedIds, setSavedIds] = useState<Set<string> | null>(null);
 
   useEffect(() => {
@@ -83,7 +86,7 @@ export function JobsBrowseGrid({ jobs }: JobsBrowseGridProps) {
                 <CardHeader className="pb-2">
                   <div className="flex items-start justify-between gap-2">
                     <CardTitle className="text-lg leading-snug">
-                      <Link href={`/jobs/${job.id}`} className="hover:underline">
+                      <Link href={`${jobsBrowseRoot}/${job.id}` as Route} className="hover:underline">
                         {job.title}
                       </Link>
                     </CardTitle>

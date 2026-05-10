@@ -1,8 +1,11 @@
+import type { Route } from "next";
 import Link from "next/link";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 
 export default async function TermsPage() {
-  const { t } = await getServerTranslator();
+  const { t, locale } = await getServerTranslator();
+  const helpPath = withPublicLocale(locale, "/help");
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 md:px-6 md:py-14">
@@ -19,7 +22,7 @@ export default async function TermsPage() {
         <p className="mt-4">{t("marketing.terms.body2")}</p>
         <p className="mt-4">
           {t("marketing.terms.questions")}{" "}
-          <Link href="/help" className="font-semibold text-[#3525cd] hover:underline">
+          <Link href={helpPath as Route} className="font-semibold text-[#3525cd] hover:underline">
             {t("marketing.terms.helpLink")}
           </Link>
           .

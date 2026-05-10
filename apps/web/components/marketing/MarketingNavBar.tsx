@@ -4,7 +4,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Bell, Menu, MessageSquare, X } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { UserRole } from "@acme/types";
 import type { SessionPayload } from "@/lib/session";
 import { AuthUserMenu } from "@/features/dashboard/components/AuthUserMenu";
@@ -17,6 +17,7 @@ import {
 } from "@/features/public/lib/auth-nav";
 import { BrandLogo } from "@/features/shared/components/BrandLogo";
 import { cn } from "@/lib/utils";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
 
 const navDiscovery = [
@@ -31,8 +32,9 @@ const navProduct = [
 ] as const;
 
 function isActive(pathname: string, href: string): boolean {
-  if (href === "/help") return pathname === "/help" || pathname.startsWith("/help/");
-  return pathname === href || pathname.startsWith(`${href}/`);
+  const p = pathname.toLowerCase();
+  const h = href.toLowerCase();
+  return p === h || p.startsWith(`${h}/`);
 }
 
 function contextualSignedInCta(
@@ -46,7 +48,9 @@ function contextualSignedInCta(
   if (role === UserRole.CLIENT) {
     return { labelKey: "nav.postAJob", href: withWorkspaceLocale(locale, "/client/jobs/new") };
   }
-  if (role === UserRole.FREELANCER) return { labelKey: "nav.findJobs", href: "/jobs" };
+  if (role === UserRole.FREELANCER) {
+    return { labelKey: "nav.findJobs", href: withPublicLocale(locale, "/jobs") };
+  }
   return fallback;
 }
 
@@ -98,7 +102,7 @@ export function MarketingNavBar({
   const signedInCta =
     authSession && primary
       ? contextualSignedInCta(authSession.role, locale, { labelKey: primary.labelKey, href: primary.href })
-      : { labelKey: "nav.dashboard", href: "/" };
+      : { labelKey: "nav.dashboard", href: `/${locale}` };
 
   const unreadBadgeLabel = (count: number): string => {
     if (count <= 0) return t("nav.notifications");
@@ -114,12 +118,25 @@ export function MarketingNavBar({
     return t("nav.aria.messagesSome", { count });
   };
 
+  const navDiscoveryLocalized = useMemo(
+    () => navDiscovery.map((item) => ({ ...item, href: withPublicLocale(locale, item.href) })),
+    [locale]
+  );
+  const navProductLocalized = useMemo(
+    () => navProduct.map((item) => ({ ...item, href: withPublicLocale(locale, item.href) })),
+    [locale]
+  );
+  const combinedNav = useMemo(
+    () => [...navDiscoveryLocalized, ...navProductLocalized],
+    [navDiscoveryLocalized, navProductLocalized]
+  );
+
   return (
     <header className="fixed top-0 z-50 w-full border-b border-slate-200 bg-white">
       <nav className="mx-auto flex min-h-[4.5rem] max-w-[1280px] items-center px-4 sm:px-6">
         <div className="flex shrink-0 items-center py-1 pr-3 sm:pr-4 lg:pr-5">
           <BrandLogo
-            href={"/" as Route}
+            href={`/${locale}` as Route}
             className="inline-flex max-w-[min(86vw,280px)] items-center outline-none transition duration-200 hover:opacity-[0.88] motion-reduce:transition-none sm:max-w-[min(64vw,330px)] lg:max-w-[350px] xl:max-w-[400px]"
             imageClassName="h-10 w-auto object-contain object-left sm:h-10 lg:h-12 lg:max-h-[3rem]"
             alt="NearWork"
@@ -129,8 +146,8 @@ export function MarketingNavBar({
         <div className="hidden min-w-0 flex-1 items-center justify-center lg:flex">
           <div className="flex min-w-0 max-w-full items-center gap-x-1">
             <div className="flex min-w-0 items-center gap-x-0.5">
-              {[...navDiscovery, ...navProduct].map(({ href, labelKey }) => (
-                <CenterNavLink key={href} href={href} label={t(labelKey)} pathname={pathname} />
+              {combinedNav.map(({ href, labelKey }) => (
+                <CenterNavLink key={`${labelKey}-${href}`} href={href} label={t(labelKey)} pathname={pathname} />
               ))}
             </div>
           </div>
@@ -170,7 +187,7 @@ export function MarketingNavBar({
               ) : null}
             </Link>
             <Link
-              href={"/jobs" as Route}
+              href={withPublicLocale(locale, "/jobs") as Route}
               className="nw-cta-primary whitespace-nowrap rounded-lg bg-[#4f35e8] px-3.5 py-2 text-[13px] font-semibold text-white shadow-none hover:bg-[#4326d9]"
             >
               {t("nav.findJobs")}
@@ -215,13 +232,13 @@ export function MarketingNavBar({
             <p className="px-3 pt-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">
               {t("nav.explore")}
             </p>
-            {[...navDiscovery, ...navProduct].map((item) => (
+            {combinedNav.map((item) => (
               <Link
-                key={item.href}
-                href={item.href}
+                key={`${item.labelKey}-${item.href}`}
+                href={item.href as Route}
                 className={cn(
                   "rounded-lg px-3 py-2.5 text-sm transition hover:bg-slate-50",
-                  item.href === "/jobs" || item.href === "/freelancers"
+                  item.labelKey === "nav.jobs" || item.labelKey === "nav.freelancers"
                     ? "font-semibold text-slate-900"
                     : "font-medium text-slate-600"
                 )}
@@ -285,7 +302,7 @@ export function MarketingNavBar({
                   {t("nav.account")}
                 </p>
                 <Link
-                  href="/jobs"
+                  href={withPublicLocale(locale, "/jobs") as Route}
                   className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
                   onClick={() => setOpen(false)}
                 >

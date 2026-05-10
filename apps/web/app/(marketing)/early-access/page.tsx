@@ -1,8 +1,13 @@
+import type { Route } from "next";
 import Link from "next/link";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 
 export default async function EarlyAccessPage() {
-  const { t } = await getServerTranslator();
+  const { t, locale } = await getServerTranslator();
+  const jobsPath = withPublicLocale(locale, "/jobs");
+  const freelancersPath = withPublicLocale(locale, "/freelancers");
+  const helpPath = withPublicLocale(locale, "/help");
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 md:px-6 md:py-10">
@@ -29,7 +34,7 @@ export default async function EarlyAccessPage() {
           <h2 className="text-base font-semibold text-slate-900">{t("marketing.earlyAccess.evolvingTitle")}</h2>
           <p className="mt-2">
             {t("marketing.earlyAccess.evolvingPrefix")}{" "}
-            <Link href="/help" className="font-semibold text-[#3525cd] hover:underline">
+            <Link href={helpPath as Route} className="font-semibold text-[#3525cd] hover:underline">
               {t("nav.help")}
             </Link>{" "}
             {t("marketing.earlyAccess.evolvingSuffix")}
@@ -45,13 +50,13 @@ export default async function EarlyAccessPage() {
           {t("marketing.earlyAccess.ctaJoin")}
         </Link>
         <Link
-          href="/freelancers"
+          href={freelancersPath as Route}
           className="inline-flex justify-center rounded-md border border-slate-200 bg-white px-6 py-3 text-center text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
         >
           {t("marketing.earlyAccess.ctaFreelancers")}
         </Link>
         <Link
-          href="/jobs"
+          href={jobsPath as Route}
           className="inline-flex justify-center rounded-lg border border-transparent px-6 py-3 text-center text-sm font-semibold text-[#3525cd] hover:underline"
         >
           {t("marketing.earlyAccess.ctaJobs")}

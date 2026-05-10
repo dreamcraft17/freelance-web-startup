@@ -14,6 +14,8 @@ type FreelancerDashboardHeroProps = {
   subtitle: string;
   motivation: string;
   browseJobsCta: string;
+  /** Locale-prefixed public jobs listing (e.g. `/en/jobs`). */
+  browseJobsHref: Route;
   stats: FreelancerHeroStatVm[];
   trustLine: string;
   trustPills: string[];
@@ -24,6 +26,7 @@ export function FreelancerDashboardHero({
   subtitle,
   motivation,
   browseJobsCta,
+  browseJobsHref,
   stats,
   trustLine,
   trustPills
@@ -50,7 +53,7 @@ export function FreelancerDashboardHero({
           </div>
           <div className="pt-3">
             <Link
-              href={"/jobs" as Route}
+              href={browseJobsHref}
               className="group inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-6 py-3.5 text-sm font-semibold text-[#2a1daa] shadow-lg shadow-black/20 transition hover:bg-indigo-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#3220a3]"
             >
               <Compass className="h-5 w-5 transition group-hover:rotate-6" aria-hidden />

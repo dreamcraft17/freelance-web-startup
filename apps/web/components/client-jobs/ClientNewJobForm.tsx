@@ -8,6 +8,9 @@ import Link from "next/link";
 import { createJobSchema } from "@acme/validators";
 import { BudgetType, WorkMode } from "@acme/types";
 import { fetchWithCsrf } from "@/features/auth/lib/fetch-with-csrf";
+import { useI18n } from "@/features/i18n/I18nProvider";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
+import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -64,6 +67,8 @@ function sectionCard(
 }
 
 export function ClientNewJobForm({ categories }: ClientNewJobFormProps) {
+  const { locale } = useI18n();
+  const jobsBrowseRoot = withPublicLocale(locale, "/jobs");
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -158,7 +163,7 @@ export function ClientNewJobForm({ categories }: ClientNewJobFormProps) {
       }
 
       await new Promise((resolve) => window.setTimeout(resolve, REDIRECT_DELAY_MS));
-      router.push((`/jobs/${json.data.id}?from=job-posted` as Route));
+      router.push(`${jobsBrowseRoot}/${json.data.id}?from=job-posted` as Route);
       router.refresh();
     } catch {
       setError("Network error. Check your connection and try again.");
@@ -173,7 +178,7 @@ export function ClientNewJobForm({ categories }: ClientNewJobFormProps) {
         <div className="flex flex-col gap-4 border-b border-slate-200/80 pb-6 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <Link
-              href={"/client/jobs" as Route}
+              href={withWorkspaceLocale(locale, "/client/jobs") as Route}
               className="mb-3 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition hover:text-[#3525cd]"
             >
               <ArrowLeft className="h-4 w-4" aria-hidden />

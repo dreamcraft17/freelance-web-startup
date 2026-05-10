@@ -1,6 +1,9 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { JobStatus } from "@acme/types";
+import type { AppLocale } from "@/lib/i18n/types";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
+import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
 import { cn } from "@/lib/utils";
 import { Briefcase, Plus } from "lucide-react";
 import { DashboardEmptyState } from "@/components/dashboard/DashboardEmptyState";
@@ -117,12 +120,13 @@ function jobPrimaryActionLabel(job: ClientJobListRow): string {
   return "View job";
 }
 
-function filterHref(status: StatusFilter, review: ReviewFocus): Route {
+function filterHref(status: StatusFilter, review: ReviewFocus, locale: AppLocale): Route {
   const q = new URLSearchParams();
   if (status !== FILTER_ALL) q.set("status", status);
   if (review !== "all") q.set("review", review);
-  if (q.size === 0) return "/client/jobs" as Route;
-  return `/client/jobs?${q.toString()}` as Route;
+  const base = withWorkspaceLocale(locale, "/client/jobs");
+  if (q.size === 0) return base as Route;
+  return `${base}?${q.toString()}` as Route;
 }
 
 type ClientJobsManagerProps = {
@@ -130,6 +134,7 @@ type ClientJobsManagerProps = {
   statusParam: string | undefined;
   reviewParam?: string | undefined;
   hasProfile: boolean;
+  locale: AppLocale;
   /** Guided first-time client path (localized from server). */
   emptyOnboarding?: { step1: string; step2: string; step3: string };
 };
@@ -139,8 +144,11 @@ export function ClientJobsManager({
   statusParam,
   reviewParam,
   hasProfile,
+  locale,
   emptyOnboarding
 }: ClientJobsManagerProps) {
+  const jobsBrowseRoot = withPublicLocale(locale, "/jobs");
+  const wp = (path: string) => withWorkspaceLocale(locale, path) as Route;
   const activeFilter = parseStatusFilter(statusParam);
   const reviewFocus = parseReviewFocus(reviewParam);
   const scopedJobs = jobs.filter((job) => {
@@ -171,7 +179,7 @@ export function ClientJobsManager({
           </p>
         </div>
         <Link
-          href={"/client/jobs/new" as Route}
+          href={wp("/client/jobs/new")}
           className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-[#433C93] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#4d45a5] sm:px-6"
         >
           <Plus className="h-4 w-4 shrink-0" aria-hidden />
@@ -187,7 +195,7 @@ export function ClientJobsManager({
           title="Set up your client profile first"
           description="Once your workspace is configured, your jobs appear here with status, proposals, and dates—ready to manage from one list."
           action={{ label: "Complete setup", href: "/settings" }}
-          secondaryAction={{ label: "Back to overview", href: "/client" }}
+          secondaryAction={{ label: "Back to overview", href: wp("/client") }}
         />
       ) : jobs.length === 0 && activeFilter === FILTER_ALL ? (
         <DashboardEmptyState
@@ -210,7 +218,7 @@ export function ClientJobsManager({
               ) : null}
             </>
           }
-          action={{ label: "Post your first job", href: "/client/jobs/new" }}
+          action={{ label: "Post your first job", href: wp("/client/jobs/new") }}
           secondaryAction={{ label: "Browse freelancers", href: "/freelancers" }}
         />
       ) : (
@@ -225,25 +233,25 @@ export function ClientJobsManager({
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm font-medium text-slate-700">Quick review</p>
             <nav className="flex flex-wrap gap-2" aria-label="Quick review filters">
-              <FilterPill href={filterHref(activeFilter, "all")} active={reviewFocus === "all"} label="All jobs" />
+              <FilterPill href={filterHref(activeFilter, "all", locale)} active={reviewFocus === "all"} label="All jobs" />
               <FilterPill
-                href={filterHref(activeFilter, "needs-review")}
+                href={filterHref(activeFilter, "needs-review", locale)}
                 active={reviewFocus === "needs-review"}
                 label="Needs review"
               />
-              <FilterPill href={filterHref(activeFilter, "open")} active={reviewFocus === "open"} label="Open" />
-              <FilterPill href={filterHref(activeFilter, "closed")} active={reviewFocus === "closed"} label="Closed" />
+              <FilterPill href={filterHref(activeFilter, "open", locale)} active={reviewFocus === "open"} label="Open" />
+              <FilterPill href={filterHref(activeFilter, "closed", locale)} active={reviewFocus === "closed"} label="Closed" />
             </nav>
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm font-medium text-slate-700">Filter by status</p>
             <nav className="flex flex-wrap gap-2" aria-label="Job status filters">
-              <FilterPill href={filterHref(FILTER_ALL, reviewFocus)} active={activeFilter === FILTER_ALL} label="All" />
+              <FilterPill href={filterHref(FILTER_ALL, reviewFocus, locale)} active={activeFilter === FILTER_ALL} label="All" />
               {STATUS_ORDER.map((s) => (
                 <FilterPill
                   key={s}
-                  href={filterHref(s, reviewFocus)}
+                  href={filterHref(s, reviewFocus, locale)}
                   active={activeFilter === s}
                   label={humanizeStatus(s)}
                 />
@@ -263,13 +271,13 @@ export function ClientJobsManager({
               </p>
               <div className="mt-5 flex flex-wrap justify-center gap-2">
                 <Link
-                  href={filterHref(FILTER_ALL, "all")}
+                  href={filterHref(FILTER_ALL, "all", locale)}
                   className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-800 shadow-sm hover:bg-slate-50"
                 >
                   Show all jobs
                 </Link>
                 <Link
-                  href={"/client/jobs/new" as Route}
+                  href={wp("/client/jobs/new")}
                   className="inline-flex items-center rounded-lg bg-[#433C93] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#4d45a5]"
                 >
                   Post a new job
@@ -306,7 +314,7 @@ export function ClientJobsManager({
                         <td className="px-5 py-4">
                           <div className="space-y-1">
                             <Link
-                              href={`/jobs/${job.id}` as Route}
+                              href={`${jobsBrowseRoot}/${job.id}` as Route}
                               className="font-semibold text-slate-900 hover:text-[#3525cd]"
                             >
                               {job.title}
@@ -370,7 +378,7 @@ export function ClientJobsManager({
                         </td>
                         <td className="px-5 py-4 text-right">
                           <Link
-                            href={`/jobs/${job.id}` as Route}
+                            href={`${jobsBrowseRoot}/${job.id}` as Route}
                             className={cn(
                               "inline-flex items-center rounded-md px-3 py-1.5 text-xs font-semibold",
                               isNeedsAttention(job)
@@ -400,7 +408,7 @@ export function ClientJobsManager({
                   >
                     <div className="flex flex-wrap items-start justify-between gap-2">
                       <Link
-                        href={`/jobs/${job.id}` as Route}
+                        href={`${jobsBrowseRoot}/${job.id}` as Route}
                         className="min-w-0 text-base font-semibold text-slate-900 hover:text-[#433C93]"
                       >
                         {job.title}
@@ -449,7 +457,7 @@ export function ClientJobsManager({
                     </div>
                     <div className="mt-3">
                       <Link
-                        href={`/jobs/${job.id}` as Route}
+                        href={`${jobsBrowseRoot}/${job.id}` as Route}
                         className={cn(
                           "inline-flex w-full items-center justify-center rounded-lg px-3 py-2 text-xs font-semibold",
                           isNeedsAttention(job)

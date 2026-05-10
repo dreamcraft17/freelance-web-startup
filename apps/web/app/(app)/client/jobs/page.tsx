@@ -36,7 +36,9 @@ export default async function ClientJobsPage({
   });
 
   if (!clientProfile) {
-    return <ClientJobsManager jobs={[]} statusParam={sp.status} reviewParam={sp.review} hasProfile={false} />;
+    return (
+      <ClientJobsManager jobs={[]} statusParam={sp.status} reviewParam={sp.review} hasProfile={false} locale={locale} />
+    );
   }
 
   const emptyOnboarding = {
@@ -161,6 +163,7 @@ export default async function ClientJobsPage({
       statusParam={sp.status}
       reviewParam={sp.review}
       hasProfile
+      locale={locale}
       emptyOnboarding={emptyOnboarding}
     />
   );

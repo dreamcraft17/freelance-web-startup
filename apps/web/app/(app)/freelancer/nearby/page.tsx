@@ -9,6 +9,7 @@ import {
 } from "@/components/freelancer/FreelancerNearbyView";
 import { GeoService } from "@/server/services/geo.service";
 import { SearchService } from "@/server/services/search.service";
+import { getAppLocale } from "@/lib/i18n/server-locale";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -42,7 +43,7 @@ export default async function FreelancerNearbyPage({
     redirect("/login?returnUrl=/freelancer/nearby");
   }
 
-  const [sp, profile] = await Promise.all([
+  const [sp, profile, locale] = await Promise.all([
     searchParams.then(pick),
     db.freelancerProfile.findFirst({
       where: { userId: session.userId, deletedAt: null },
@@ -54,7 +55,8 @@ export default async function FreelancerNearbyPage({
         lng: true,
         serviceRadiusKm: true
       }
-    })
+    }),
+    getAppLocale()
   ]);
   const q = (sp.q ?? "").trim();
   const workModeRaw = sp.workMode ?? "";
@@ -154,6 +156,7 @@ export default async function FreelancerNearbyPage({
       </header>
 
       <FreelancerNearbyView
+        locale={locale}
         discovery={discovery}
         hasProfile={Boolean(profile)}
         areaLabel={areaLabel}

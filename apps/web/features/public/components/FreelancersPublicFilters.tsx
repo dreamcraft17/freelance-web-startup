@@ -1,10 +1,12 @@
 "use client";
 
+import type { Route } from "next";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Loader2, MapPin, Navigation, X } from "lucide-react";
 import { useI18n } from "@/features/i18n/I18nProvider";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 import { useBrowserLocation } from "@/features/public/hooks/useBrowserLocation";
 import { popularFreelancerSearchSuggestions } from "@/features/public/lib/popular-search-suggestions";
 
@@ -33,7 +35,8 @@ export function FreelancersPublicFilters({
   lng = null,
   radiusKm = 50
 }: FreelancersPublicFiltersProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const flBase = withPublicLocale(locale, "/freelancers");
   const router = useRouter();
   const [radius, setRadius] = useState<number>(radiusKm);
   const { state, coords, errorCode, request, clear, setCoords, setState } = useBrowserLocation();
@@ -90,7 +93,7 @@ export function FreelancersPublicFilters({
     setCoords(null);
     setState("idle");
     const query = buildQuery({ keyword, city, workMode, categoryId, lat: null, lng: null });
-    router.push(query ? `/freelancers?${query}` : "/freelancers");
+    router.push((query ? `${flBase}?${query}` : flBase) as Route);
   };
 
   const onApplyLocation = () => {
@@ -104,7 +107,7 @@ export function FreelancersPublicFilters({
       lng: activeCoords.lng,
       radiusKm: radius
     });
-    router.push(`/freelancers?${query}`);
+    router.push(`${flBase}?${query}` as Route);
   };
 
   useEffect(() => {
@@ -118,7 +121,7 @@ export function FreelancersPublicFilters({
       lng: coords.lng,
       radiusKm: radius
     });
-    router.push(`/freelancers?${query}`);
+    router.push(`${flBase}?${query}` as Route);
     // only react when browser-granted coordinates arrive
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [coords]);
@@ -135,7 +138,7 @@ export function FreelancersPublicFilters({
             {t("public.filters.apply")}
           </button>
           <Link
-            href="/freelancers"
+            href={flBase as Route}
             className="inline-flex items-center rounded-md border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
           >
             {t("public.filters.reset")}
@@ -155,7 +158,7 @@ export function FreelancersPublicFilters({
         </span>
       </div>
 
-      <form id="freelancers-filter-form" method="get" action="/freelancers" className="flex flex-col gap-4 xl:flex-row xl:flex-wrap xl:items-end">
+      <form id="freelancers-filter-form" method="get" action={flBase as Route} className="flex flex-col gap-4 xl:flex-row xl:flex-wrap xl:items-end">
         {activeCoords ? (
           <>
             <input type="hidden" name="lat" value={String(activeCoords.lat)} />
@@ -186,7 +189,7 @@ export function FreelancersPublicFilters({
             {popularFreelancerSearchSuggestions.map((term) => (
               <Link
                 key={term}
-                href={`/freelancers?keyword=${encodeURIComponent(term)}`}
+                href={`${flBase}?keyword=${encodeURIComponent(term)}` as Route}
                 className="text-[11px] font-semibold text-[#3525cd] hover:underline"
               >
                 {term}

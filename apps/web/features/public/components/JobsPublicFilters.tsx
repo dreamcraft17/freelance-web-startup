@@ -1,7 +1,9 @@
 "use client";
 
+import type { Route } from "next";
 import Link from "next/link";
 import { useI18n } from "@/features/i18n/I18nProvider";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 import { popularJobSearchSuggestions } from "@/features/public/lib/popular-search-suggestions";
 
 type WorkMode = "" | "REMOTE" | "ONSITE" | "HYBRID";
@@ -27,7 +29,8 @@ export function JobsPublicFilters({
   postedWithinDays,
   categories
 }: JobsPublicFiltersProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const jobsBase = withPublicLocale(locale, "/jobs");
   const workModes: { value: WorkMode; label: string }[] = [
     { value: "", label: t("public.filters.workModeAny") },
     { value: "REMOTE", label: t("public.filters.workModeRemote") },
@@ -47,7 +50,7 @@ export function JobsPublicFilters({
             {t("public.filters.apply")}
           </button>
           <Link
-            href="/jobs"
+            href={jobsBase as Route}
             className="inline-flex items-center rounded-md border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
           >
             {t("public.filters.reset")}
@@ -67,7 +70,7 @@ export function JobsPublicFilters({
         </span>
       </div>
 
-      <form id="jobs-filter-form" method="get" action="/jobs" className="flex flex-col gap-4 xl:flex-row xl:flex-wrap xl:items-end">
+      <form id="jobs-filter-form" method="get" action={jobsBase as Route} className="flex flex-col gap-4 xl:flex-row xl:flex-wrap xl:items-end">
         <div className="min-w-0 flex-1 xl:max-w-[220px]">
           <label htmlFor="jobs-kw" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
             {t("public.filters.keyword")}
@@ -91,7 +94,7 @@ export function JobsPublicFilters({
             {popularJobSearchSuggestions.map((term) => (
               <Link
                 key={term}
-                href={`/jobs?keyword=${encodeURIComponent(term)}`}
+                href={`${jobsBase}?keyword=${encodeURIComponent(term)}` as Route}
                 className="text-[11px] font-semibold text-[#3525cd] hover:underline"
               >
                 {term}

@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v91  
-> Last synchronized: 2026-05-10 (workspace marketplace: URL kanonis `/<locale>/client|freelancer|messages|notifications|settings` + rewrite middleware; admin tetap `/admin`).
+> **Doc revision:** v92  
+> Last synchronized: 2026-05-09 (locale-aware marketplace/workspace links: `withPublicLocale` / `withWorkspaceLocale` mencegah navigasi `/en/…` terjatuh ke `/id/…` lewat redirect middleware + cookie lawas).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,7 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Locale persistence navigation (2026-05-09):** tautan internal ke marketplace SEO roots (`jobs`, `freelancers`, `how-it-works`, `pricing`, `early-access`, `help`) dan banyak dashboard/workspace surfaces memakai **`withPublicLocale`** / **`withWorkspaceLocale`** (plus middleware **`resolveNavigationLocale`** untuk path tidak ber-prefix) sehingga sesi di **`/en/…`** tidak “meloncat” ke **`/id/…`** hanya karena cookie **`lang`** tidak sama dengan locale aktif di pathname atau referer.
 - **Workspace locale URLs (2026-05-10):** pengguna melihat path berbahasa konsisten di bilah alamat: segment workspace memakai awalan `en` atau `id`, disinkronkan dengan cookie `lang` dan header `x-nearwork-locale`. Implementasi memakai `NextResponse.rewrite` ke handler route yang sudah ada; link di nav dashboard/marketing memakai helper `apps/web/lib/i18n/workspace-path.ts`.
 - **Notifications i18n (2026-05-10):** baris notifikasi yang dibuat oleh layanan (proposal, pesan, verifikasi) dapat dirender ulang sesuai bahasa UI (`en`/`id`) tanpa migrasi skema; baris lama tanpa `_nwCopy` tetap memakai teks tersimpan.
 - **Localized marketing chrome (2026-05-10):** halaman beranda bertitel `/en`/`/id` merender hero pemasaran dari kamus aktif (`RootLayout` + header `x-nearwork-locale`); tidak ada lagi string tetap Bahasa Indonesia di navbar/footer/chips cepat untuk pengguna bahasa Inggris.
