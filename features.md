@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v91  
-> Last synchronized: 2026-05-10 (landing & marketing chrome i18n: `LandingHero` + navbar/footer/quick-search memakai `en.json`/`id.json`; regresi kamus `locale-dictionary-marketing.unit.test.ts`).
+> **Doc revision:** v92  
+> Last synchronized: 2026-05-10 (notifikasi in-app: payload `_nwCopy` + template `notifications.copy.*`; daftar/API memakai `getAppLocale`; chip aktivitas & waktu relatif dilokalisasi di `NotificationsCenter`).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,6 +9,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
+- **2026-05-10 — In-app notifications localized:** `NotificationService` menyimpan `_nwCopy` (bid diterima/disetujui, pesan baru, hasil verifikasi); `listForActor(actor, locale)` dan `GET /api/notifications` mem-format judul/bodi dengan kamus aktif. UI `/notifications` memakai `notifications.activity.*`, `notifications.time.*`, dan `notifications.openRelated`.
 - **2026-05-10 — Marketing/localized-home EN-ID parity:** komponen `LandingHero` memakai `useI18n()` dan blok baru `landing.hero.*`; navbar pemasaran (guest/signed-in) memakai `nav.*`; footer newsletter `footer.newsletter*`; quick-search freelancer mengikuti `public.freelancers.quickTerm*`; cetakan landing lain (`LandingCategoryChips`, `LandingProductPreview`, `LandingFinalCta`) menyambung ke kunci kamus yang sudah ada.
 - **2026-05-09 — Locale-aware & job-currency money display:** helper `apps/web/lib/format-money.ts` (unit test `format-money.unit.test.ts`) menjadi sumber utama `formatMoneyAmount` / `formatMoneyRange` / format IDR ringkas untuk UI `id`. Angka proposal/kontrak/budget mengikuti **mata uang tersimpan** (fallback model lama USD bila kosong); rate jam freelancer tanpa kolom mata uang tetap ditampilkan dengan default tampilan **IDR**. Permukaan tambahan: admin bids/contracts/donations, catalog subscription admin, blok job terbaru di `/freelancers`.
 - **2026-05-09 — Public jobs filter chrome:** link filter di sidebar desktop `/jobs` memakai **`rounded-lg`** konsisten dengan bar pencarian dan lembar filter mobile (tanpa ubah query/param).

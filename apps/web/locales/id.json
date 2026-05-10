@@ -119,7 +119,47 @@
     "unreadLabel": "Belum dibaca",
     "readLabel": "Sudah dibaca",
     "unreadCaption": "Ketuk untuk menandai sudah dibaca dan ke halaman job atau percakapan jika ada tautan.",
-    "readCaption": "Sudah dibuka atau dibersihkan—tetap tersimpan untuk referensi."
+    "readCaption": "Sudah dibuka atau dibersihkan—tetap tersimpan untuk referensi.",
+    "openRelated": "Buka halaman terkait →",
+    "time": {
+      "justNow": "Baru saja",
+      "minutesAgo": "{{count}} mnt lalu",
+      "hoursAgo": "{{count}} jam lalu",
+      "daysAgo": "{{count}} hari lalu"
+    },
+    "activity": {
+      "bidProposal": "Proposal",
+      "bidAccepted": "Proposal diterima",
+      "newMessage": "Pesan baru",
+      "contractUpdate": "Kontrak",
+      "reviewReceived": "Ulasan",
+      "verificationUpdated": "Verifikasi",
+      "billingUpdated": "Billing",
+      "adminModeration": "Moderasi",
+      "default": "Pembaruan"
+    },
+    "copy": {
+      "bidSubmitted": {
+        "title": "Proposal baru di lowongan Anda",
+        "body": "{{freelancerLabel}} mengirim proposal untuk “{{jobTitle}}”."
+      },
+      "bidAccepted": {
+        "title": "Proposal Anda diterima",
+        "body": "Proposal Anda untuk “{{jobTitle}}” diterima. Kontrak telah dibuat."
+      },
+      "newMessage": {
+        "title": "Pesan baru"
+      },
+      "verificationApproved": {
+        "title": "Verifikasi disetujui",
+        "body": "Verifikasi {{requestType}} Anda disetujui."
+      },
+      "verificationRejected": {
+        "title": "Keputusan verifikasi",
+        "body": "Verifikasi {{requestType}} Anda ditolak.",
+        "bodyWithNote": "Verifikasi {{requestType}} Anda ditolak. {{staffNote}}"
+      }
+    }
   },
   "messages": {
     "pageSubtitle": "Inbox + chat terikat pada hiring—percakapan mengikuti role atau kontrak ketika relevan.",

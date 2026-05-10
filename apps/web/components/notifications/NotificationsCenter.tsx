@@ -8,6 +8,8 @@ import { useI18n } from "@/features/i18n/I18nProvider";
 import { fetchWithCsrf } from "@/features/auth/lib/fetch-with-csrf";
 import { DashboardEmptyState } from "@/components/dashboard/DashboardEmptyState";
 import { cn } from "@/lib/utils";
+import type { AppLocale } from "@/lib/i18n/types";
+import type { Translator } from "@/lib/i18n/create-translator";
 import {
   AlertCircle,
   Bell,
@@ -32,18 +34,22 @@ export type NotificationListItem = {
   createdAt: string;
 };
 
-function formatWhen(iso: string): string {
+function formatNotificationWhen(iso: string, locale: AppLocale, t: Translator): string {
   const d = new Date(iso);
-  const now = new Date();
-  const diffMs = now.getTime() - d.getTime();
+  const now = Date.now();
+  const diffMs = now - d.getTime();
   const mins = Math.floor(diffMs / 60000);
-  if (mins < 1) return "Just now";
-  if (mins < 60) return `${mins}m ago`;
+  if (mins < 1) return t("notifications.time.justNow");
+  if (mins < 60) return t("notifications.time.minutesAgo", { count: mins });
   const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs}h ago`;
+  if (hrs < 24) return t("notifications.time.hoursAgo", { count: hrs });
   const days = Math.floor(hrs / 24);
-  if (days < 7) return `${days}d ago`;
-  return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", year: "numeric" }).format(d);
+  if (days < 7) return t("notifications.time.daysAgo", { count: days });
+  return new Intl.DateTimeFormat(locale === "id" ? "id-ID" : "en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric"
+  }).format(d);
 }
 
 function linkForNotification(item: NotificationListItem): string | null {
@@ -56,19 +62,27 @@ function linkForNotification(item: NotificationListItem): string | null {
   return null;
 }
 
-function activityLabel(type: string): string {
+function notificationActivityLabel(type: string, t: Translator): string {
   switch (type) {
     case NotificationType.BID_SUBMITTED:
     case NotificationType.BID_SHORTLISTED:
-      return "Proposal received";
+      return t("notifications.activity.bidProposal");
     case NotificationType.BID_ACCEPTED:
-      return "Bid accepted";
+      return t("notifications.activity.bidAccepted");
     case NotificationType.NEW_MESSAGE:
-      return "New message";
+      return t("notifications.activity.newMessage");
     case NotificationType.CONTRACT_STARTED:
-      return "Contract update";
+      return t("notifications.activity.contractUpdate");
+    case NotificationType.REVIEW_RECEIVED:
+      return t("notifications.activity.reviewReceived");
+    case NotificationType.VERIFICATION_UPDATED:
+      return t("notifications.activity.verificationUpdated");
+    case NotificationType.BILLING_UPDATED:
+      return t("notifications.activity.billingUpdated");
+    case NotificationType.ADMIN_MODERATION_EVENT:
+      return t("notifications.activity.adminModeration");
     default:
-      return "Update";
+      return t("notifications.activity.default");
   }
 }
 
@@ -117,7 +131,7 @@ function categoryForType(type: string): NotificationCategory {
 }
 
 export function NotificationsCenter({ items }: NotificationsCenterProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const router = useRouter();
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [category, setCategory] = useState<NotificationCategory>("all");
@@ -255,6 +269,7 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
                 isUnread
                 busy={loadingId === n.id}
                 onActivate={() => handleActivate(n)}
+                locale={locale}
               />
             ))}
           </ul>
@@ -283,6 +298,7 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
                 isUnread={false}
                 busy={loadingId === n.id}
                 onActivate={() => handleActivate(n)}
+                locale={locale}
               />
             ))}
           </ul>
@@ -297,13 +313,16 @@ function NotificationRow({
   item,
   isUnread,
   busy,
-  onActivate
+  onActivate,
+  locale
 }: {
   item: NotificationListItem;
   isUnread: boolean;
   busy: boolean;
   onActivate: () => void;
+  locale: AppLocale;
 }) {
+  const { t } = useI18n();
   const href = linkForNotification(item);
 
   return (
@@ -344,7 +363,7 @@ function NotificationRow({
               )}
               dateTime={item.createdAt}
             >
-              {formatWhen(item.createdAt)}
+              {formatNotificationWhen(item.createdAt, locale, t)}
             </time>
           </div>
           <p
@@ -364,9 +383,9 @@ function NotificationRow({
                   : "bg-slate-100 text-slate-600 ring-slate-200/70"
               )}
             >
-              {activityLabel(item.type)}
+              {notificationActivityLabel(item.type, t)}
             </span>
-            {href ? <p className="text-xs font-semibold text-[#3525cd]">Open related page →</p> : null}
+            {href ? <p className="text-xs font-semibold text-[#3525cd]">{t("notifications.openRelated")}</p> : null}
           </div>
         </div>
       </button>
