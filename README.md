@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v80  
-> Last synchronized: 2026-05-09 — Next `serverExternalPackages` for `clsx`/`tailwind-merge`; dev troubleshooting for vendor-chunk + `.next` cache.
+> **Doc revision:** v81  
+> Last synchronized: 2026-05-10 — Locale-prefixed workspace URLs (`/<locale>/client` …) via middleware rewrite; redirect dari path tanpa prefix.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -22,6 +22,7 @@ Platform ini dirancang untuk mendukung **semua jenis freelance**, bukan hanya pr
 
 - Kamus JSON: `apps/web/locales/en.json`, `apps/web/locales/id.json`.
 - Preferensi: cookie **`lang`** (`en` \| `id`); API: `POST /api/locale` dengan body JSON `{ "locale": "en" | "id" }`.
+- **Workspace routes:** permukaan `/client`, `/freelancer`, `/messages`, `/notifications`, `/settings` dialihkan ke **`/<lang>/…`** di URL publik; middleware melakukan rewrite ke file route yang sama dan menyetel header locale. `/admin` tidak di-prefix.
 - Provider: `I18nProvider` di root layout; server helpers: `getAppLocale()`, `getServerTranslator()`.
 - SEO routes: `app/[locale]` untuk halaman publik (`/en/*`, `/id/*`) dengan metadata per-locale + `alternates.languages` (`en`, `id`, `x-default`).
 - Cakupan terbaru: halaman detail job (`/jobs/[jobId]`) termasuk form proposal + review owner, workspace `/messages`, legal (`/terms`, `/privacy`), forbidden, dan nearby search sudah membaca kamus EN/ID; struktur `public.jobDetail` di `id.json` selaras dengan `en.json` (label status job/bid).
