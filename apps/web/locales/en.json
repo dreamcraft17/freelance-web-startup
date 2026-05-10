@@ -557,7 +557,24 @@
       "valueFlexBody": "Remote, on-site, or hybrid—whatever fits the brief.",
       "bottomStripTitle": "Ready to kick off a project?",
       "bottomStripBody": "Post a job for free and reach qualified freelancers.",
-      "demoRatingLine": "★ {{rating}} · Ready to work"
+      "demoRatingLine": "★ {{rating}} · Ready to work",
+      "demoRows": {
+        "one": {
+          "name": "Alex Morgan",
+          "role": "UI/UX Designer",
+          "rating": "4.9"
+        },
+        "two": {
+          "name": "Jordan Lee",
+          "role": "Video Editor",
+          "rating": "4.8"
+        },
+        "three": {
+          "name": "Sam Rivera",
+          "role": "Web Developer",
+          "rating": "4.9"
+        }
+      }
     },
     "categories": {
       "kicker": "Browse lanes",
