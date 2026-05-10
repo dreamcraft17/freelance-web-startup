@@ -6,14 +6,14 @@ import { localizedMetadata, normalizeLocale } from "@/lib/i18n/seo";
 
 const copy = {
   en: {
-    title: "Find Freelancers Near You or Remote | NearWork",
+    title: "NearWork — Structured Freelance Marketplace (Local, Remote, Hybrid)",
     description:
-      "Hire freelancers for real work. Search by skill and city, compare local and remote profiles, and keep bids plus chat in one hiring flow."
+      "Post jobs, collect proposals, and hire through job-thread chat. Browse freelancers or open roles with keyword, category, city, and work mode filters."
   },
   id: {
-    title: "Cari Freelancer Terdekat atau Remote | NearWork",
+    title: "NearWork — Marketplace Freelance Terstruktur (Lokal, Remote, Hybrid)",
     description:
-      "Cari freelancer untuk kerja nyata: jasa freelancer terdekat atau remote, bandingkan profil dan proposal, lalu rekrut dari satu alur."
+      "Pasang lowongan, terima proposal, dan rekrut lewat chat pada utas pekerjaan. Jelajahi freelancer atau role dengan filter kata kunci, kategori, kota, dan mode kerja."
   }
 } as const;
 

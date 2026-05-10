@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v81  
-> Last synchronized: 2026-05-10 — Locale-prefixed workspace URLs (`/<locale>/client` …) via middleware rewrite; redirect dari path tanpa prefix.
+> **Doc revision:** v82  
+> Last synchronized: 2026-05-09 — Homepage marketing: marketplace-first hero + below-fold “how it works”, split benefits, trust & early-access; search memakai kategori DB + work mode.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -28,7 +28,7 @@ Platform ini dirancang untuk mendukung **semua jenis freelance**, bukan hanya pr
 - Cakupan terbaru: halaman detail job (`/jobs/[jobId]`) termasuk form proposal + review owner, workspace `/messages`, legal (`/terms`, `/privacy`), forbidden, dan nearby search sudah membaca kamus EN/ID; struktur `public.jobDetail` di `id.json` selaras dengan `en.json` (label status job/bid).
 - **UGC translation (jobs only):** saat job dibuat, server mendeteksi bahasa (`id`/`en`) lalu menyimpan teks asli + terjemahan cache (`titleId`, `titleEn`, `descriptionId`, `descriptionEn`, `language`) agar render per-locale tidak memanggil API setiap request.
 - Integrasi translate berjalan **server-side only** via `GOOGLE_TRANSLATE_API_KEY` (jangan expose ke frontend).
-- Homepage publik (`/[locale]`) sekarang memakai metadata SEO yang lebih kuat per bahasa (title + description keyword-intent), serta copy produk yang lebih operasional untuk angle local freelancer + remote freelancer.
+- Homepage publik (`/[locale]`) memakai metadata SEO per bahasa untuk marketplace terstruktur (lokal/remote/hybrid + alur job/proposal/chat), hero dengan CTA terpisah klien vs freelancer, kartu alur proses menggantikan persona demo, serta section penjelasan cara kerja, manfaat audiens, trust, dan early-access.
 - Homepage publik menambahkan lapisan marketplace yang lebih aktif: category browse lane horizontal di bawah search, hero trust cues + quick browse link, dan listing preview row-style dengan atribut operasional (harga, lokasi, tags, action links) agar entry ke discovery lebih terasa seperti produk live.
 - Refinement terbaru menambah activity signals ringan di row preview, merapikan alignment data untuk compare cepat, mempertegas category lane sebagai navigasi, dan menambah cue urgensi operasional di hero tanpa elemen dekoratif berlebih.
 - Pass lanjutan memperkuat confidence memilih: tiap row punya alasan pemilihan singkat, top rows diberi penekanan ringan, CTA utama per-row dibuat lebih tegas daripada aksi sekunder, dan harga dilengkapi konteks value.

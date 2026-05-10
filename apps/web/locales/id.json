@@ -509,38 +509,41 @@
       "intentHire": "Saya ingin rekrut",
       "intentWork": "Saya ingin kerja",
       "hire": {
-        "headlineLine1": "Temukan freelancer terbaik",
-        "headlineBeforeEmphasis": "dan ",
-        "headlineEmphasis": "selesaikan proyek",
-        "headlineAfterEmphasis": " dengan mudah",
-        "subHeadline": "Cari, diskusi, dan rekrut freelancer terpercaya. Kelola proyek dan pembayaran aman dalam satu platform.",
-        "primaryCta": "Cari freelancer",
-        "secondaryCta": "Pasang lowongan",
-        "searchPlaceholder": "Cari skill, freelancer, atau layanan",
-        "ctaBand": "Pasang lowongan sekarang"
+        "headlineLine1": "Marketplace freelancer terstruktur",
+        "headlineLine2": "untuk kerja lokal, remote, dan hybrid",
+        "subHeadline": "Publikasikan brief, bandingkan proposal, chat dengan kandidat akhir, dan rekrut—tanpa konteks terpecah di banyak tab.",
+        "flowLine": "Lowongan → proposal → chat → hire · satu utas per listing",
+        "primaryCta": "Pasang lowongan",
+        "secondaryCta": "Jelajahi freelancer",
+        "searchPlaceholder": "Skill, layanan, atau nama freelancer",
+        "ctaBand": "Pasang lowongan—gratis di fase early access"
       },
       "work": {
-        "headline": "Temukan proyek freelance yang tepat dan mulai kerja lebih cepat",
-        "subHeadline": "Cari pekerjaan yang sesuai skill Anda, kirim proposal, dan mulai kolaborasi dalam alur kerja yang jelas.",
+        "headlineLine1": "Temukan proyek freelance yang cocok",
+        "headlineLine2": "Dekat rumah, full remote, atau hybrid",
+        "subHeadline": "Temukan role terbuka, kirim proposal per brief, dan diskusi tetap menempel pada lowongannya.",
+        "flowLine": "Lamar dengan proposal · bahas ruang lingkup di chat · rekrut dengan kejelasan",
         "primaryCta": "Cari pekerjaan",
-        "secondaryCta": "Buat profil",
-        "searchPlaceholder": "Cari pekerjaan atau proyek",
-        "ctaBand": "Mulai kerja sekarang"
+        "secondaryCta": "Lengkapi profil",
+        "searchPlaceholder": "Role, stack skill, atau jenis proyek",
+        "ctaBand": "Buka lowongan aktif"
       },
       "neutral": {
-        "headline": "Temukan pekerjaan atau freelancer dengan cepat",
-        "subHeadline": "Cari kerja, temukan klien, atau rekrut dalam satu platform.",
-        "primaryCta": "Cari freelancer",
+        "headlineLine1": "Rekrut talenta atau cari kerja",
+        "headlineLine2": "Dalam satu marketplace freelance terstruktur",
+        "subHeadline": "Klien memasang lowongan; freelancer membalas dengan proposal; semua diskusi pada utas pekerjaan.",
+        "flowLine": "Rekrutmen transparan · discovery jelas · siap EN/ID",
+        "primaryCta": "Pasang lowongan",
         "secondaryCta": "Cari pekerjaan",
-        "searchPlaceholder": "Cari freelancer atau skill",
-        "ctaBand": "Mulai sekarang"
+        "searchPlaceholder": "Cari di marketplace",
+        "ctaBand": "Mulai dengan pasang lowongan gratis"
       },
-      "cityPlaceholder": "Lokasi (opsional)",
+      "cityPlaceholder": "Kota atau wilayah (opsional)",
       "categoryAll": "Semua kategori",
-      "categoryDesign": "Desain",
-      "categoryVideo": "Video",
-      "categoryWeb": "Website",
-      "searchSubmit": "Cari",
+      "workModeAny": "Semua mode kerja",
+      "workModeAria": "Filter mode kerja",
+      "searchHint": "Hasil mengambil direktori live—filter langsung berlaku setelah Anda mencari.",
+      "searchSubmit": "Cari di marketplace",
       "popularLabel": "Populer:",
       "popularLogoDesign": "Desain logo",
       "popularVideoEditing": "Video editing",
@@ -548,32 +551,94 @@
       "popularCopywriting": "Copywriting",
       "popularSeo": "SEO",
       "popularUiUx": "UI/UX",
-      "seeAll": "Lihat semua",
-      "valueFastTitle": "Cepat",
-      "valueFastBody": "Temukan freelancer atau pekerjaan dalam hitungan menit.",
-      "valueSafeTitle": "Aman",
-      "valueSafeBody": "Pembayaran aman dengan sistem escrow dan transparan.",
-      "valueFlexTitle": "Fleksibel",
-      "valueFlexBody": "Kerja remote, on-site, atau hybrid sesuai kebutuhan Anda.",
-      "bottomStripTitle": "Siap memulai proyek Anda?",
-      "bottomStripBody": "Pasang lowongan gratis dan dapatkan freelancer terbaik.",
-      "demoRatingLine": "★ {{rating}} · Siap bekerja",
-      "demoRows": {
-        "one": {
-          "name": "Siska Putri",
-          "role": "UI/UX Designer",
-          "rating": "4.9"
-        },
-        "two": {
-          "name": "Rama Wijaya",
-          "role": "Video Editor",
-          "rating": "4.8"
-        },
-        "three": {
-          "name": "Daffa Pratama",
-          "role": "Web Developer",
-          "rating": "4.9"
+      "seeAll": "Buka direktori",
+      "bottomStripTitle": "Lebih suka brief-in freelancer dulu?",
+      "bottomStripBody": "Posting hanya beberapa menit. Anda menerima proposal untuk dibandingkan—lalu pindahkan finalis ke chat.",
+      "process": {
+        "kicker": "Alur marketplace",
+        "title": "Bagaimana proses rekrut di NearWork",
+        "subtitle": "Tanpa persona demo—ini urutan yang memang didukung produk.",
+        "steps": {
+          "post": {
+            "title": "Pasang lowongan",
+            "body": "Tentukan ruang lingkup, budget, lokasi, serta kerja lokal, remote, atau hybrid."
+          },
+          "proposals": {
+            "title": "Terima proposal",
+            "body": "Freelancer merespons dengan penawaran yang menempel pada listing Anda."
+          },
+          "chat": {
+            "title": "Diskusi di chat",
+            "body": "Pesan berthread pada lowongan sehingga konteks tidak hilang."
+          },
+          "hire": {
+            "title": "Pilih & rekrut",
+            "body": "Tunjuk mitra yang tepat dan lanjutkan eksekusi di workspace Anda."
+          }
         }
+      }
+    },
+    "home": {
+      "how": {
+        "kicker": "Cara NearWork bekerja",
+        "title": "Ritme marketplace untuk proyek nyata",
+        "subtitle": "Langkah yang sama baik Anda di sekitar lokasi maupun full remote—proposal dan chat tetap terikat pada lowongan.",
+        "steps": {
+          "post": {
+            "title": "Pasang brief yang jelas",
+            "body": "Jelaskan deliverable, timeline, rentang budget, dan gaya kerja yang diinginkan."
+          },
+          "proposals": {
+            "title": "Terima proposal terstruktur",
+            "body": "Bandingkan freelancer yang opt-in—setiap ajukan tetap terikat ID lowongan Anda."
+          },
+          "chat": {
+            "title": "Selaras di utas khusus",
+            "body": "Tanya lanjutan, kirim file, dan shortlist tanpa pindah aplikasi."
+          },
+          "hire": {
+            "title": "Melangkah dengan percaya diri",
+            "body": "Berikan pekerjaan saat siap dan lanjutkan kolaborasi di dalam NearWork."
+          }
+        }
+      },
+      "split": {
+        "title": "Dibuat untuk kedua sisi marketplace",
+        "subtitle": "Pilih jalur Anda—NearWork mencerminkan cara marketplace freelance serius beroperasi."
+      },
+      "clients": {
+        "kicker": "Klien",
+        "title": "Isi role tanpa kaos spreadsheet",
+        "lead": "Anda mengontrol discovery sementara freelancer datang dengan penawaran terstruktur.",
+        "bullets": {
+          "scope": "Sentralisasikan ruang lingkup, lampiran, dan negosiasi per lowongan—bukan DM berantakan.",
+          "thread": "Setiap proposal dan pesan merujuk listing yang sama untuk keputusan lebih bersih.",
+          "modes": "Sinyalkan butuh talenta terdekat, remote-first, atau hybrid sejak hari pertama."
+        },
+        "cta": "Pasang lowongan"
+      },
+      "freelancers": {
+        "kicker": "Freelancer",
+        "title": "Pitch dengan konteks—bukan DM dingin",
+        "lead": "Menanggapi posting nyata, dokumentasikan revisi, dan lanjut ke kerja terkontrak saat dua pihak setuju.",
+        "bullets": {
+          "discovery": "Filter kata kunci + kategori + kota/mode mengikuti cara klien benar-benar mencari.",
+          "proposals": "Lampirkan estimasi dan narasi bukti dalam alur proposal formal.",
+          "clarity": "Chat tetap terhubung ke lowongan sehingga ekspektasi bisa dilacak."
+        },
+        "cta": "Cari pekerjaan"
+      },
+      "trust": {
+        "title": "Kepercayaan & keamanan dari desain",
+        "body": "NearWork menyertakan jalur moderasi dan workspace terautentikasi agar tim bisa menyelesaikan isu lewat kanal resmi.",
+        "body2": "Kami tidak membuat statistik atau testimoni palsu di halaman ini—yang Anda lihat di listing mencerminkan aktivitas nyata seiring orang bergabung.",
+        "helpLink": "Kunjungi pusat bantuan →"
+      },
+      "early": {
+        "kicker": "Peluncuran awal",
+        "title": "Gratis memasang lowongan sambil likuiditas tumbuh",
+        "body": "Buat lowongan, jelajahi talenta, dan kirim proposal tanpa biaya listing selama early access. Bantu kami membentuk marketplace.",
+        "cta": "Baca catatan early access"
       }
     },
     "categories": {

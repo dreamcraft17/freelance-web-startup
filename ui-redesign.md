@@ -1,7 +1,7 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v85  
-> Last synchronized: 2026-05-10 (alamat workspace per locale + kartu demo hero landing dari kamus `landing.hero.demoRows`).
+> **Doc revision:** v86  
+> Last synchronized: 2026-05-09 (homepage hero: kartu alur proses `landing.hero.process.*` menggantikan strip persona demo; aksen brand `#3525cd`).
 
 ## Goal
 
@@ -9,10 +9,14 @@ Build a grounded, practical, product-first UI across public and authenticated su
 
 ## Progress update (April 2026)
 
+### 2026-05-09 — Homepage marketplace-first hero
+
+- **Process rail:** panel kanan hero (dan blok ringkas di mobile) menampilkan empat langkah alur produk nyata (`post → proposals → chat → hire`) dari kamus `landing.hero.process.*`, bukan kartu freelancer contoh.
+- **Search affordances:** bar pencarian memuat keyword + kota + `categoryId` dari data kategori + `workMode` (REMOTE/HYBRID/ONSITE) selaras dengan direktori publik.
+
 ### 2026-05-10 — Workspace URLs mirror marketing locale
 
 - **Canonical bars:** bilah alamat untuk shell klien/freelancer/inbox mengikuti pola `/en/…` atau `/id/…`, selaras dengan halaman pemasaran berbahasa tunggal.
-- **Hero demo strip:** nama/peran pada kartu contoh kanan hero membaca `landing.hero.demoRows.*` (EN memakai label Inggris; ID mempertahankan contoh lokal).
 
 ### 2026-05-09 — Locale + currency presentation (marketplace-wide)
 

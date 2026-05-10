@@ -509,38 +509,41 @@
       "intentHire": "I want to hire",
       "intentWork": "I want to work",
       "hire": {
-        "headlineLine1": "Find great freelancers",
-        "headlineBeforeEmphasis": "and ",
-        "headlineEmphasis": "ship the project",
-        "headlineAfterEmphasis": " with confidence",
-        "subHeadline": "Search, discuss, and hire trusted freelancers. Keep projects and secure payments in one workspace.",
-        "primaryCta": "Find freelancers",
-        "secondaryCta": "Post a job",
-        "searchPlaceholder": "Skills, freelancers, or services",
-        "ctaBand": "Post a job now"
+        "headlineLine1": "A structured freelance marketplace",
+        "headlineLine2": "for local, remote, and hybrid work",
+        "subHeadline": "Publish a brief, compare proposals, message finalists, and hire—without losing context across tabs.",
+        "flowLine": "Job → proposals → chat → hire · one thread per listing",
+        "primaryCta": "Post a job",
+        "secondaryCta": "Browse freelancers",
+        "searchPlaceholder": "Skill, service, or freelancer name",
+        "ctaBand": "Post a job—it's free during early access"
       },
       "work": {
-        "headline": "Find freelance work that fits—and start faster",
-        "subHeadline": "Match roles to your skills, send proposals, and collaborate with a clear workflow.",
+        "headlineLine1": "Find freelance work that fits",
+        "headlineLine2": "Near home, fully remote, or hybrid",
+        "subHeadline": "Discover open roles, tailor proposals to each brief, and keep negotiation tied to the job.",
+        "flowLine": "Apply with a proposal · discuss scope in chat · get hired with clarity",
         "primaryCta": "Browse jobs",
         "secondaryCta": "Complete profile",
-        "searchPlaceholder": "Search roles or projects",
-        "ctaBand": "Start earning now"
+        "searchPlaceholder": "Role, skill stack, or project type",
+        "ctaBand": "Browse open jobs"
       },
       "neutral": {
-        "headline": "Find jobs or freelancers quickly",
-        "subHeadline": "Job seekers, clients, and hiring—all in one marketplace.",
-        "primaryCta": "Find freelancers",
+        "headlineLine1": "Hire talent or find work",
+        "headlineLine2": "In one structured freelance marketplace",
+        "subHeadline": "Clients post jobs; freelancers respond with proposals; everyone chats on the job thread.",
+        "flowLine": "Transparent hiring · clear discovery · EN/ID ready",
+        "primaryCta": "Post a job",
         "secondaryCta": "Browse jobs",
-        "searchPlaceholder": "Freelancers or skills",
-        "ctaBand": "Get started"
+        "searchPlaceholder": "Search the marketplace",
+        "ctaBand": "Start with a free job post"
       },
-      "cityPlaceholder": "City (optional)",
+      "cityPlaceholder": "City or region (optional)",
       "categoryAll": "All categories",
-      "categoryDesign": "Design",
-      "categoryVideo": "Video",
-      "categoryWeb": "Websites",
-      "searchSubmit": "Search",
+      "workModeAny": "Any work mode",
+      "workModeAria": "Work mode filter",
+      "searchHint": "Results pull from the live directory—filters apply instantly after you search.",
+      "searchSubmit": "Search marketplace",
       "popularLabel": "Popular:",
       "popularLogoDesign": "Logo design",
       "popularVideoEditing": "Video editing",
@@ -548,32 +551,94 @@
       "popularCopywriting": "Copywriting",
       "popularSeo": "SEO",
       "popularUiUx": "UI/UX",
-      "seeAll": "See all",
-      "valueFastTitle": "Fast",
-      "valueFastBody": "Find freelancers or roles in minutes.",
-      "valueSafeTitle": "Secure",
-      "valueSafeBody": "Structured workflows keep scope and payouts transparent.",
-      "valueFlexTitle": "Flexible",
-      "valueFlexBody": "Remote, on-site, or hybrid—whatever fits the brief.",
-      "bottomStripTitle": "Ready to kick off a project?",
-      "bottomStripBody": "Post a job for free and reach qualified freelancers.",
-      "demoRatingLine": "★ {{rating}} · Ready to work",
-      "demoRows": {
-        "one": {
-          "name": "Alex Morgan",
-          "role": "UI/UX Designer",
-          "rating": "4.9"
-        },
-        "two": {
-          "name": "Jordan Lee",
-          "role": "Video Editor",
-          "rating": "4.8"
-        },
-        "three": {
-          "name": "Sam Rivera",
-          "role": "Web Developer",
-          "rating": "4.9"
+      "seeAll": "Open directory",
+      "bottomStripTitle": "Prefer to brief freelancers first?",
+      "bottomStripBody": "Posting takes minutes. You'll receive proposals you can compare side by side—then move finalists into chat.",
+      "process": {
+        "kicker": "Marketplace flow",
+        "title": "How a hire moves on NearWork",
+        "subtitle": "No demo personas—this is the actual sequence the product supports.",
+        "steps": {
+          "post": {
+            "title": "Post the job",
+            "body": "Set scope, budget, location, and whether work is local, remote, or hybrid."
+          },
+          "proposals": {
+            "title": "Collect proposals",
+            "body": "Freelancers respond with tailored bids attached to your listing."
+          },
+          "chat": {
+            "title": "Discuss in chat",
+            "body": "Threaded messages stay on the job so context never drifts."
+          },
+          "hire": {
+            "title": "Award & hire",
+            "body": "Pick the right partner and continue execution inside your workspace."
+          }
         }
+      }
+    },
+    "home": {
+      "how": {
+        "kicker": "How NearWork works",
+        "title": "Marketplace rhythm built for real projects",
+        "subtitle": "Same stages whether you're around the corner or fully remote—NearWork keeps proposals and chat anchored to the job.",
+        "steps": {
+          "post": {
+            "title": "Post a clear brief",
+            "body": "Describe deliverables, timeline, budget band, and preferred working style."
+          },
+          "proposals": {
+            "title": "Receive structured proposals",
+            "body": "Compare freelancers who opted in—each submission stays tied to your job ID."
+          },
+          "chat": {
+            "title": "Align in dedicated threads",
+            "body": "Ask follow-ups, share files, and shortlist without bouncing between apps."
+          },
+          "hire": {
+            "title": "Move forward with confidence",
+            "body": "Award work when you're ready and keep collaboration inside NearWork."
+          }
+        }
+      },
+      "split": {
+        "title": "Built for both sides of the marketplace",
+        "subtitle": "Pick your lane—NearWork mirrors how serious freelance marketplaces operate."
+      },
+      "clients": {
+        "kicker": "Clients",
+        "title": "Fill roles without spreadsheet chaos",
+        "lead": "You stay in control of discovery while freelancers come to you with structured offers.",
+        "bullets": {
+          "scope": "Centralize scope, attachments, and negotiation per job—not scattered DMs.",
+          "thread": "Every proposal and message references the same listing for cleaner decisions.",
+          "modes": "Signal whether you need someone nearby, remote-first, or hybrid from day one."
+        },
+        "cta": "Post a job"
+      },
+      "freelancers": {
+        "kicker": "Freelancers",
+        "title": "Pitch with context—not cold outreach",
+        "lead": "Respond to real postings, keep revisions documented, and graduate into hired work when both sides agree.",
+        "bullets": {
+          "discovery": "Keyword + category + city/work-mode filters mirror how buyers actually search.",
+          "proposals": "Attach estimates and narrative proof inside the formal proposal flow.",
+          "clarity": "Chat stays linked to the job so expectations remain traceable."
+        },
+        "cta": "Browse jobs"
+      },
+      "trust": {
+        "title": "Trust & safety by design",
+        "body": "NearWork includes moderation tooling and authenticated workspaces so teams can resolve issues through official channels.",
+        "body2": "We don't fabricate marketplace stats or testimonials on this page—what you see in listings reflects real activity as people join.",
+        "helpLink": "Visit the help center →"
+      },
+      "early": {
+        "kicker": "Early launch",
+        "title": "Free to post while we scale liquidity",
+        "body": "Create jobs, browse talent, and send proposals without listing fees during early access. Help us shape the marketplace.",
+        "cta": "Read early-access notes"
       }
     },
     "categories": {
