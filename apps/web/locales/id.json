@@ -557,7 +557,24 @@
       "valueFlexBody": "Kerja remote, on-site, atau hybrid sesuai kebutuhan Anda.",
       "bottomStripTitle": "Siap memulai proyek Anda?",
       "bottomStripBody": "Pasang lowongan gratis dan dapatkan freelancer terbaik.",
-      "demoRatingLine": "★ {{rating}} · Siap bekerja"
+      "demoRatingLine": "★ {{rating}} · Siap bekerja",
+      "demoRows": {
+        "one": {
+          "name": "Siska Putri",
+          "role": "UI/UX Designer",
+          "rating": "4.9"
+        },
+        "two": {
+          "name": "Rama Wijaya",
+          "role": "Video Editor",
+          "rating": "4.8"
+        },
+        "three": {
+          "name": "Daffa Pratama",
+          "role": "Web Developer",
+          "rating": "4.9"
+        }
+      }
     },
     "categories": {
       "kicker": "Mulai dari kategori",
