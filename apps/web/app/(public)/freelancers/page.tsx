@@ -225,7 +225,13 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
     Boolean(minRating) ||
     Boolean(responseTime);
   const categorySelected = Boolean(categoryId.trim());
-  const quickTerms = ["Desain logo", "Video editing", "Website", "Copywriting", "SEO"];
+  const quickTermKeys = [
+    "public.freelancers.quickTermLogoDesign",
+    "public.freelancers.quickTermVideoEditing",
+    "public.freelancers.quickTermWebsite",
+    "public.freelancers.quickTermCopywriting",
+    "public.freelancers.quickTermSeo"
+  ] as const;
 
   return (
     <div className="mx-auto max-w-[1280px] px-4 pb-10 pt-6 md:px-6 md:pt-8">
@@ -271,15 +277,18 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
           </form>
           <div className="mt-3 flex flex-wrap items-center gap-1.5 text-xs">
             <span className="font-semibold text-slate-500">{t("public.freelancers.quickSearchLabel")}</span>
-            {quickTerms.map((term) => (
-              <Link
-                key={term}
-                href={`/freelancers${freelancersQueryString({ keyword: term, city, workMode, categoryId, availability, budget, minRating, responseTime, page: 1 })}` as Route}
-                className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 font-medium text-slate-700 hover:border-slate-300"
-              >
-                {term}
-              </Link>
-            ))}
+            {quickTermKeys.map((key) => {
+              const term = t(key);
+              return (
+                <Link
+                  key={key}
+                  href={`/freelancers${freelancersQueryString({ keyword: term, city, workMode, categoryId, availability, budget, minRating, responseTime, page: 1 })}` as Route}
+                  className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 font-medium text-slate-700 hover:border-slate-300"
+                >
+                  {term}
+                </Link>
+              );
+            })}
           </div>
         </div>
       </header>

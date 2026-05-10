@@ -1,7 +1,7 @@
 # Documentation maintenance (NearWork)
 
-> **Doc revision:** v12  
-> Last synchronized: 2026-05-09 (tambahan `docs/deploy-checklist.md` — troubleshooting `.next`/vendor-chunks untuk e2e/API 500).
+> **Doc revision:** v13  
+> Last synchronized: 2026-05-10 (sinkron `features.md` + `application-overview.md` untuk pemisahan EN/ID di landing/marketing).
 
 ## AUTO — wajib untuk AI & kontributor
 

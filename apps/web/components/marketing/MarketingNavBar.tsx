@@ -163,7 +163,7 @@ export function MarketingNavBar({
               href={"/jobs" as Route}
               className="nw-cta-primary whitespace-nowrap rounded-lg bg-[#4f35e8] px-3.5 py-2 text-[13px] font-semibold text-white shadow-none hover:bg-[#4326d9]"
             >
-              Cari lowongan
+              {t("nav.findJobs")}
             </Link>
             <MockLanguagePills />
             <LocaleSwitcher />
@@ -172,13 +172,13 @@ export function MarketingNavBar({
         ) : (
           <div className="ml-auto hidden shrink-0 items-center gap-2 border-l border-slate-100 pl-4 lg:flex">
             <Link href={"/login" as Route} className="px-3 py-2 text-[13px] font-semibold text-slate-700 hover:text-slate-900">
-              Masuk
+              {t("nav.logIn")}
             </Link>
             <Link
               href={"/register" as Route}
               className="rounded-lg bg-[#4f35e8] px-5 py-2 text-[13px] font-semibold text-white hover:bg-[#4326d9]"
             >
-              Daftar
+              {t("nav.register")}
             </Link>
             <LocaleSwitcher />
           </div>

@@ -377,7 +377,10 @@
     "help": "Help",
     "contact": "Contact",
     "tagline": "Freelance marketplace for local and remote work.",
-    "copyright": "© {{year}} NearWork"
+    "copyright": "© {{year}} NearWork",
+    "newsletterTitle": "Get tips and product updates",
+    "newsletterEmailPlaceholder": "Your email",
+    "newsletterSubscribe": "Subscribe"
   },
   "hero": {
     "liveDirectory": "Live freelancer directory",
@@ -462,9 +465,64 @@
     }
   },
   "landing": {
+    "hero": {
+      "intentHire": "I want to hire",
+      "intentWork": "I want to work",
+      "hire": {
+        "headlineLine1": "Find great freelancers",
+        "headlineBeforeEmphasis": "and ",
+        "headlineEmphasis": "ship the project",
+        "headlineAfterEmphasis": " with confidence",
+        "subHeadline": "Search, discuss, and hire trusted freelancers. Keep projects and secure payments in one workspace.",
+        "primaryCta": "Find freelancers",
+        "secondaryCta": "Post a job",
+        "searchPlaceholder": "Skills, freelancers, or services",
+        "ctaBand": "Post a job now"
+      },
+      "work": {
+        "headline": "Find freelance work that fits—and start faster",
+        "subHeadline": "Match roles to your skills, send proposals, and collaborate with a clear workflow.",
+        "primaryCta": "Browse jobs",
+        "secondaryCta": "Complete profile",
+        "searchPlaceholder": "Search roles or projects",
+        "ctaBand": "Start earning now"
+      },
+      "neutral": {
+        "headline": "Find jobs or freelancers quickly",
+        "subHeadline": "Job seekers, clients, and hiring—all in one marketplace.",
+        "primaryCta": "Find freelancers",
+        "secondaryCta": "Browse jobs",
+        "searchPlaceholder": "Freelancers or skills",
+        "ctaBand": "Get started"
+      },
+      "cityPlaceholder": "City (optional)",
+      "categoryAll": "All categories",
+      "categoryDesign": "Design",
+      "categoryVideo": "Video",
+      "categoryWeb": "Websites",
+      "searchSubmit": "Search",
+      "popularLabel": "Popular:",
+      "popularLogoDesign": "Logo design",
+      "popularVideoEditing": "Video editing",
+      "popularWebsite": "Website",
+      "popularCopywriting": "Copywriting",
+      "popularSeo": "SEO",
+      "popularUiUx": "UI/UX",
+      "seeAll": "See all",
+      "valueFastTitle": "Fast",
+      "valueFastBody": "Find freelancers or roles in minutes.",
+      "valueSafeTitle": "Secure",
+      "valueSafeBody": "Structured workflows keep scope and payouts transparent.",
+      "valueFlexTitle": "Flexible",
+      "valueFlexBody": "Remote, on-site, or hybrid—whatever fits the brief.",
+      "bottomStripTitle": "Ready to kick off a project?",
+      "bottomStripBody": "Post a job for free and reach qualified freelancers.",
+      "demoRatingLine": "★ {{rating}} · Ready to work"
+    },
     "categories": {
       "kicker": "Browse lanes",
       "title": "Hire freelancers by category",
+      "viewAllCategories": "View all categories →",
       "subtitle": "Pick a service lane, then narrow by city or mode to start faster.",
       "secondaryCta": "Need active briefs? Open job board ->",
       "entryLabel": "Browse lane",
@@ -519,7 +577,8 @@
         "recentlyUpdated": "Recently updated"
       },
       "ctaFreelancers": "Browse directory ->",
-      "ctaJobs": "Open job board ->"
+      "ctaJobs": "Open job board ->",
+      "seeAllArrow": "See all →"
     },
     "useCases": {
       "kicker": "Hiring flow",
@@ -928,6 +987,11 @@
       "searchLocationPlaceholder": "Location (optional)",
       "searchAction": "Search",
       "quickSearchLabel": "Popular searches:",
+      "quickTermLogoDesign": "Logo design",
+      "quickTermVideoEditing": "Video editing",
+      "quickTermWebsite": "Website",
+      "quickTermCopywriting": "Copywriting",
+      "quickTermSeo": "SEO",
       "quickChipsLabel": "Quick view",
       "quickChipNearby": "Nearby",
       "quickChipRemote": "Remote",
