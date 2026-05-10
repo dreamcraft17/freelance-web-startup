@@ -4,6 +4,7 @@ import { AccountStatus } from "@acme/types";
 import { canAccessAdminPage, isStaffRole } from "@/features/admin/lib/access";
 import { LOCALE_COOKIE } from "@/lib/i18n/constants";
 import { resolveLocale } from "@/lib/i18n/resolve-locale";
+import { isUnprefixedWorkspacePath, matchPrefixedWorkspacePath } from "@/lib/i18n/workspace-path";
 import {
   getSessionFromRequest,
   homePathForSessionRole,
@@ -17,6 +18,15 @@ const SEO_PREFIX_PATH = /^\/(jobs|freelancers|how-it-works|pricing|early-access|
 function localeDebugEnabled(): boolean {
   if (process.env.NODE_ENV === "production") return false;
   return process.env.NEARWORK_DEBUG_LOCALE === "1";
+}
+
+function localeCookieOptions() {
+  return {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 365,
+    sameSite: "lax" as const,
+    secure: process.env.NODE_ENV === "production"
+  };
 }
 
 function preferredLocale(request: NextRequest): "en" | "id" {
@@ -88,13 +98,45 @@ export default async function middleware(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = `/${locale}`;
     const response = NextResponse.redirect(url);
-    response.cookies.set(LOCALE_COOKIE, locale, {
-      path: "/",
-      maxAge: 60 * 60 * 24 * 365,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production"
-    });
+    response.cookies.set(LOCALE_COOKIE, locale, localeCookieOptions());
     return response;
+  }
+
+  const prefixedWorkspace = matchPrefixedWorkspacePath(pathname);
+  if (prefixedWorkspace) {
+    const { locale: wsLocale, internalPath } = prefixedWorkspace;
+    const sessionWs = await getSessionFromRequest(request);
+    if (!sessionWs) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/login";
+      url.searchParams.delete("returnUrl");
+      const candidate = pathname + request.nextUrl.search;
+      const safe = sanitizeReturnUrl(candidate, "/");
+      if (safe !== "/") {
+        url.searchParams.set("returnUrl", safe);
+      }
+      url.searchParams.set("intent", "protected");
+      return NextResponse.redirect(url);
+    }
+
+    const rewriteUrl = request.nextUrl.clone();
+    rewriteUrl.pathname = internalPath;
+    const wsHeaders = new Headers(request.headers);
+    wsHeaders.set("x-nearwork-locale", wsLocale);
+    const rewriteResponse = NextResponse.rewrite(rewriteUrl, {
+      request: { headers: wsHeaders }
+    });
+    rewriteResponse.cookies.set(LOCALE_COOKIE, wsLocale, localeCookieOptions());
+    return rewriteResponse;
+  }
+
+  if (isUnprefixedWorkspacePath(pathname)) {
+    const locale = preferredLocale(request);
+    const url = request.nextUrl.clone();
+    url.pathname = `/${locale}${pathname}`;
+    const redirectLocale = NextResponse.redirect(url);
+    redirectLocale.cookies.set(LOCALE_COOKIE, locale, localeCookieOptions());
+    return redirectLocale;
   }
 
   const localeMatch = pathname.match(LOCALE_PREFIX);
@@ -107,12 +149,7 @@ export default async function middleware(request: NextRequest) {
         headers: requestHeaders
       }
     });
-    response.cookies.set(LOCALE_COOKIE, locale, {
-      path: "/",
-      maxAge: 60 * 60 * 24 * 365,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production"
-    });
+    response.cookies.set(LOCALE_COOKIE, locale, localeCookieOptions());
     return response;
   }
 
@@ -124,13 +161,14 @@ export default async function middleware(request: NextRequest) {
   }
 
   const session = await getSessionFromRequest(request);
+  const navLocale = preferredLocale(request);
 
   if (isAuthPublicPath(pathname)) {
     const authPath = pathname.toLowerCase();
     if ((authPath === "/login" || authPath === "/register") && session) {
       const rawReturn =
         request.nextUrl.searchParams.get("returnUrl") ?? request.nextUrl.searchParams.get("next");
-      const target = resolvePostLoginRedirect(session.role, rawReturn);
+      const target = resolvePostLoginRedirect(session.role, rawReturn, navLocale);
       return NextResponse.redirect(new URL(target, request.url));
     }
     return NextResponse.next();
@@ -158,7 +196,7 @@ export default async function middleware(request: NextRequest) {
       }
       if (!isStaffRole(session.role)) {
         // Logged-in marketplace user: send them to their workspace instead of a dead-end forbidden page.
-        const dest = homePathForSessionRole(session.role);
+        const dest = homePathForSessionRole(session.role, navLocale);
         return NextResponse.redirect(new URL(dest, request.url));
       }
       if (!canAccessAdminPage(session.role, pathname)) {
