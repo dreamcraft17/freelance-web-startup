@@ -10,6 +10,7 @@ import { DashboardEmptyState } from "@/components/dashboard/DashboardEmptyState"
 import { cn } from "@/lib/utils";
 import type { AppLocale } from "@/lib/i18n/types";
 import type { Translator } from "@/lib/i18n/create-translator";
+import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
 import {
   AlertCircle,
   Bell,
@@ -52,13 +53,15 @@ function formatNotificationWhen(iso: string, locale: AppLocale, t: Translator): 
   }).format(d);
 }
 
-function linkForNotification(item: NotificationListItem): string | null {
+function linkForNotification(item: NotificationListItem, locale: AppLocale): string | null {
   const p = item.payload;
   if (!p || typeof p !== "object") return null;
   const o = p as Record<string, unknown>;
-  if (typeof o.threadId === "string") return `/messages?thread=${encodeURIComponent(o.threadId)}`;
+  if (typeof o.threadId === "string") {
+    return withWorkspaceLocale(locale, `/messages?thread=${encodeURIComponent(o.threadId)}`);
+  }
   if (typeof o.contractId === "string") return `/api/contracts/${encodeURIComponent(o.contractId)}`;
-  if (typeof o.jobId === "string") return `/jobs/${encodeURIComponent(o.jobId)}`;
+  if (typeof o.jobId === "string") return `/${locale}/jobs/${encodeURIComponent(o.jobId)}`;
   return null;
 }
 
@@ -166,7 +169,7 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
   }, [filteredItems]);
 
   async function handleActivate(n: NotificationListItem) {
-    const href = linkForNotification(n);
+    const href = linkForNotification(n, locale);
     setLoadingId(n.id);
     try {
       if (n.readAt == null) {
@@ -193,8 +196,8 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
           icon={Inbox}
           title={t("notifications.emptyTitle")}
           description={t("notifications.emptyDescription")}
-          action={{ label: t("notifications.emptyPrimary"), href: "/messages" }}
-          secondaryAction={{ label: t("notifications.emptySecondary"), href: "/jobs" }}
+          action={{ label: t("notifications.emptyPrimary"), href: withWorkspaceLocale(locale, "/messages") as Route }}
+          secondaryAction={{ label: t("notifications.emptySecondary"), href: `/${locale}/jobs` as Route }}
         />
       </div>
     );
@@ -240,8 +243,8 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
             icon={Inbox}
             title={t("notifications.filterEmptyTitle")}
             description={t("notifications.filterEmptyDescription")}
-            action={{ label: t("notifications.emptyPrimary"), href: "/messages" }}
-            secondaryAction={{ label: t("notifications.emptySecondary"), href: "/jobs" }}
+            action={{ label: t("notifications.emptyPrimary"), href: withWorkspaceLocale(locale, "/messages") as Route }}
+            secondaryAction={{ label: t("notifications.emptySecondary"), href: `/${locale}/jobs` as Route }}
           />
         </div>
       ) : null}
@@ -323,7 +326,7 @@ function NotificationRow({
   locale: AppLocale;
 }) {
   const { t } = useI18n();
-  const href = linkForNotification(item);
+  const href = linkForNotification(item, locale);
 
   return (
     <li>
