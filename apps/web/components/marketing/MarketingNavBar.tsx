@@ -17,6 +17,7 @@ import {
 } from "@/features/public/lib/auth-nav";
 import { BrandLogo } from "@/features/shared/components/BrandLogo";
 import { cn } from "@/lib/utils";
+import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
 
 const navDiscovery = [
   { href: "/jobs", labelKey: "nav.jobs" },
@@ -34,11 +35,17 @@ function isActive(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-function contextualSignedInCta(role: UserRole, fallback: { labelKey: string; href: string }): {
+function contextualSignedInCta(
+  role: UserRole,
+  locale: "en" | "id",
+  fallback: { labelKey: string; href: string }
+): {
   labelKey: string;
   href: string;
 } {
-  if (role === UserRole.CLIENT) return { labelKey: "nav.postAJob", href: "/client/jobs/new" };
+  if (role === UserRole.CLIENT) {
+    return { labelKey: "nav.postAJob", href: withWorkspaceLocale(locale, "/client/jobs/new") };
+  }
   if (role === UserRole.FREELANCER) return { labelKey: "nav.findJobs", href: "/jobs" };
   return fallback;
 }
@@ -80,17 +87,17 @@ export function MarketingNavBar({
   unreadNotifications?: number;
   unreadMessages?: number;
 }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const authSession: PublicSessionLite | null = session
     ? { userId: session.userId, role: session.role, accountStatus: session.accountStatus }
     : null;
-  const primary = authSession ? primaryActionForRole(authSession.role) : null;
-  const secondary = authSession ? secondaryActionForRole(authSession.role) : null;
+  const primary = authSession ? primaryActionForRole(authSession.role, locale) : null;
+  const secondary = authSession ? secondaryActionForRole(authSession.role, locale) : null;
   const signedInCta =
     authSession && primary
-      ? contextualSignedInCta(authSession.role, { labelKey: primary.labelKey, href: primary.href })
+      ? contextualSignedInCta(authSession.role, locale, { labelKey: primary.labelKey, href: primary.href })
       : { labelKey: "nav.dashboard", href: "/" };
 
   const unreadBadgeLabel = (count: number): string => {
@@ -132,11 +139,14 @@ export function MarketingNavBar({
         {authSession && primary ? (
           <div className="ml-auto hidden shrink-0 items-center gap-2 border-l border-slate-100 pl-4 lg:flex">
             <span className="text-[13px] font-medium text-slate-700">{t("nav.signedIn")}</span>
-            <Link href={"/messages" as Route} className="text-[13px] font-medium text-slate-700 hover:text-slate-900">
+            <Link
+              href={withWorkspaceLocale(locale, "/messages") as Route}
+              className="text-[13px] font-medium text-slate-700 hover:text-slate-900"
+            >
               {t("nav.messages")}
             </Link>
             <Link
-              href={"/notifications" as Route}
+              href={withWorkspaceLocale(locale, "/notifications") as Route}
               aria-label={unreadBadgeLabel(unreadNotifications)}
               className="relative inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-slate-200 text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
             >
@@ -148,7 +158,7 @@ export function MarketingNavBar({
               ) : null}
             </Link>
             <Link
-              href={"/messages" as Route}
+              href={withWorkspaceLocale(locale, "/messages") as Route}
               aria-label={unreadMessagesLabel(unreadMessages)}
               className="relative inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-slate-200 text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
             >
@@ -236,7 +246,7 @@ export function MarketingNavBar({
                   </Link>
                 ) : null}
                 <Link
-                  href={"/notifications" as Route}
+                  href={withWorkspaceLocale(locale, "/notifications") as Route}
                   className="flex items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
                   onClick={() => setOpen(false)}
                 >
@@ -248,7 +258,7 @@ export function MarketingNavBar({
                   ) : null}
                 </Link>
                 <Link
-                  href={"/messages" as Route}
+                  href={withWorkspaceLocale(locale, "/messages") as Route}
                   className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
                   onClick={() => setOpen(false)}
                 >
