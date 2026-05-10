@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v92  
-> Last synchronized: 2026-05-10 (notifikasi in-app: payload `_nwCopy` + template `notifications.copy.*`; daftar/API memakai `getAppLocale`; chip aktivitas & waktu relatif dilokalisasi di `NotificationsCenter`).
+> **Doc revision:** v93  
+> Last synchronized: 2026-05-10 (URL workspace klien/freelancer/inbox: canonical `/<locale>/(client|freelancer|messages|notifications|settings)` via middleware rewrite; kartu demo hero dari `landing.hero.demoRows.*`).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,6 +9,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
+- **2026-05-10 — Locale-prefixed workspace URLs:** permukaan produk `/client`, `/freelancer`, `/messages`, `/notifications`, dan `/settings` memakai URL peramban `/<lang>/…` (sesuai cookie/route EN/ID). Middleware menulis ulang ke rute App Router internal yang sama, menyetel `x-nearwork-locale`, dan mengarahkan URL tanpa prefix ke preferensi bahasa. Shell dashboard + auth nav membangun link dengan `withWorkspaceLocale`; default home role (`homePathForSessionRole`) mengikuti locale aktif.
 - **2026-05-10 — In-app notifications localized:** `NotificationService` menyimpan `_nwCopy` (bid diterima/disetujui, pesan baru, hasil verifikasi); `listForActor(actor, locale)` dan `GET /api/notifications` mem-format judul/bodi dengan kamus aktif. UI `/notifications` memakai `notifications.activity.*`, `notifications.time.*`, dan `notifications.openRelated`.
 - **2026-05-10 — Marketing/localized-home EN-ID parity:** komponen `LandingHero` memakai `useI18n()` dan blok baru `landing.hero.*`; navbar pemasaran (guest/signed-in) memakai `nav.*`; footer newsletter `footer.newsletter*`; quick-search freelancer mengikuti `public.freelancers.quickTerm*`; cetakan landing lain (`LandingCategoryChips`, `LandingProductPreview`, `LandingFinalCta`) menyambung ke kunci kamus yang sudah ada.
 - **2026-05-09 — Locale-aware & job-currency money display:** helper `apps/web/lib/format-money.ts` (unit test `format-money.unit.test.ts`) menjadi sumber utama `formatMoneyAmount` / `formatMoneyRange` / format IDR ringkas untuk UI `id`. Angka proposal/kontrak/budget mengikuti **mata uang tersimpan** (fallback model lama USD bila kosong); rate jam freelancer tanpa kolom mata uang tetap ditampilkan dengan default tampilan **IDR**. Permukaan tambahan: admin bids/contracts/donations, catalog subscription admin, blok job terbaru di `/freelancers`.
