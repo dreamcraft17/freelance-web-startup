@@ -56,9 +56,9 @@ export async function LandingHomeSections() {
   ] as const;
 
   return (
-    <div className="border-t border-slate-200/80 bg-gradient-to-b from-[#faf9fc] via-white to-[#f6f5fb]">
+    <div className="border-t border-slate-200 bg-slate-50">
       <div className="mx-auto max-w-[1180px] px-4 py-14 sm:px-6 sm:py-16">
-        <section aria-labelledby="landing-how-heading" className="rounded-3xl border border-slate-200/70 bg-white/80 px-5 py-10 shadow-[0_24px_80px_-48px_rgba(53,37,205,0.35)] backdrop-blur-sm sm:px-10">
+        <section aria-labelledby="landing-how-heading" className="rounded-2xl border border-slate-200 bg-white px-5 py-10 shadow-sm sm:px-10">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#3525cd]">{t("landing.home.how.kicker")}</p>
           <h2 id="landing-how-heading" className="mt-2 max-w-3xl text-2xl font-bold tracking-tight text-[#071027] sm:text-3xl">
             {t("landing.home.how.title")}
@@ -71,7 +71,7 @@ export async function LandingHomeSections() {
               return (
                 <li
                   key={step.titleKey}
-                  className="relative rounded-2xl border border-slate-200/80 bg-gradient-to-br from-white to-[#f8f7fd] p-5 pt-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
+                  className="relative rounded-2xl border border-slate-200 bg-slate-50 p-5 pt-8"
                 >
                   <span className="absolute left-5 top-4 inline-flex h-7 min-w-[1.75rem] items-center justify-center rounded-full bg-[#3525cd]/10 px-2 text-xs font-bold text-[#3525cd]">
                     {idx + 1}
@@ -96,7 +96,7 @@ export async function LandingHomeSections() {
           </div>
 
           <div className="mt-8 grid gap-5 lg:grid-cols-2">
-            <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-[0_18px_60px_-40px_rgba(15,23,42,0.25)] sm:p-8">
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
               <div className="inline-flex items-center gap-2 rounded-full bg-[#3525cd]/10 px-3 py-1 text-xs font-semibold text-[#3525cd]">
                 <Users className="h-3.5 w-3.5" aria-hidden />
                 {t("landing.home.clients.kicker")}
@@ -119,8 +119,8 @@ export async function LandingHomeSections() {
               </Link>
             </div>
 
-            <div className="rounded-3xl border border-slate-200/80 bg-[#0f172a] p-6 text-white shadow-[0_18px_60px_-40px_rgba(53,37,205,0.45)] sm:p-8">
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/90">
+            <div className="rounded-2xl border border-slate-800 bg-[#0f172a] p-6 text-white shadow-sm sm:p-8">
+              <div className="inline-flex items-center gap-2 rounded-full border border-slate-600 bg-slate-800 px-3 py-1 text-xs font-semibold text-slate-100">
                 <Sparkles className="h-3.5 w-3.5" aria-hidden />
                 {t("landing.home.freelancers.kicker")}
               </div>
@@ -146,7 +146,7 @@ export async function LandingHomeSections() {
 
         <section className="mt-12 sm:mt-16" aria-labelledby="landing-trust-heading">
           <div className="grid gap-5 lg:grid-cols-12 lg:items-stretch">
-            <div className="rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 lg:col-span-7">
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 lg:col-span-7">
               <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-700">
                 <Shield className="h-5 w-5" aria-hidden />
               </div>
@@ -160,9 +160,9 @@ export async function LandingHomeSections() {
               </Link>
             </div>
 
-            <div className="flex flex-col justify-between rounded-3xl border border-[#3525cd]/25 bg-gradient-to-br from-[#3525cd] to-[#4f35e8] p-6 text-white sm:p-8 lg:col-span-5">
+            <div className="flex flex-col justify-between rounded-2xl border border-[#2b1da8] bg-[#3525cd] p-6 text-white shadow-sm sm:p-8 lg:col-span-5">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/70">{t("landing.home.early.kicker")}</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-indigo-100">{t("landing.home.early.kicker")}</p>
                 <h3 className="mt-2 text-xl font-bold sm:text-2xl">{t("landing.home.early.title")}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-white/85">{t("landing.home.early.body")}</p>
               </div>

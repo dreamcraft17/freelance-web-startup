@@ -1,13 +1,17 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v86  
-> Last synchronized: 2026-05-09 (homepage hero: kartu alur proses `landing.hero.process.*` menggantikan strip persona demo; aksen brand `#3525cd`).
+> **Doc revision:** v87  
+> Last synchronized: 2026-05-09 (homepage marketing: hilangkan glassmorphism — permukaan solid `bg-white` / `bg-slate-50`, tanpa `backdrop-blur` atau overlay semi-transparan di `LandingHero` + `LandingHomeSections`).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-09 — Homepage tanpa glass (anti-template)
+
+- **Solid surfaces:** hero dan section bawah memakai **`bg-slate-50` / `bg-white`** + border `slate-200`; kartu proses **`bg-slate-50`**; tidak ada **`backdrop-blur`** atau **`bg-white/80`** pada landing.
 
 ### 2026-05-09 — Homepage marketplace-first hero
 

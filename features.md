@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v96  
-> Last synchronized: 2026-05-09 (harness `scripts/run-e2e-server.mjs`: `pnpm test:e2e` build `@acme/web` + `next start` + `BASE_URL` untuk menghindari MODULE_NOT_FOUND chunk webpack dari incremental dev).
+> **Doc revision:** v97  
+> Last synchronized: 2026-05-09 (homepage landing: `LandingHero` / `LandingHomeSections` solid surfaces, tidak memakai backdrop-blur atau kartu semi-transparan).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,6 +9,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
+- **2026-05-09 — Landing visual (non-glass):** permukaan hero/bawah-fold memakai **`bg-slate-50`**, **`bg-white`**, **`bg-slate-50`** pada sub-kartu; bayangan **`shadow-sm` / `shadow-md`**; menghapus **`backdrop-blur`** dan overlay **`bg-white/…`** agar tidak menyerupai template AI glassmorphism.
 - **2026-05-09 — E2E smoke harness:** skrip root `pnpm test:e2e` memanggil `scripts/run-e2e-server.mjs` yang menjalankan `pnpm --filter @acme/web build`, menyalakan **`next start`** pada **`127.0.0.1:${E2E_PORT:-3041}`**, menunggu `GET /api/auth/csrf` merespons JSON, lalu menjalankan `scripts/e2e-marketplace-flow.mjs`. Ini menghindari kegagalan palsu (`Cannot find module './….js'`) ketika smoke diarahkan ke proses **`next dev`** dengan artefak `.next` inkremental yang tidak konsisten; pengembangan tetap bisa menjalankan tes mentah dengan **`BASE_URL`** manual.
 - **2026-05-09 — Homepage marketplace positioning:** `LandingPage` memuat kategori nyata untuk `<select name="categoryId">`, menambah filter GET `workMode`, menyelaraskan CTA klien (“Pasang lowongan” / EN “Post a job”) vs freelancer (“Browse jobs”), mengganti sidebar/mobile strip persona dengan kartu alur `landing.hero.process.*`, dan menambah blok server `LandingHomeSections` (`landing.home.*`) untuk “How NearWork works”, benefit cards, trust tanpa metrik palsu, serta early-access gratis.
 - **2026-05-09 — Locale-stable discovery links:** CTA dan tautan internal ke board (`/jobs`, `/freelancers`), halaman marketing berSEO (`how-it-works`, `pricing`, `early-access`, `help`), serta banyak jalur dashboard/workspace tidak lagi memakai path tanpa prefix mentah yang memicu redirect middleware berbasis cookie lawas—prefiks **`/en/`** atau **`/id/`** eksplisit memakai util **`apps/web/lib/i18n/locale-path.ts`** + **`workspace-path.ts`**; alur auth/register-return-to job menyimpan **`/<locale>/jobs/:id`**.

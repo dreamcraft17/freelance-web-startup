@@ -124,14 +124,13 @@ export function LandingHero({
   const processIcons = [ClipboardList, Inbox, MessageSquare, Handshake];
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-[#f4f2fb] via-[#faf9fc] to-[#f0eef9]">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(ellipse_90%_60%_at_50%_-10%,rgba(53,37,205,0.14),transparent)]" aria-hidden />
+    <section className="relative overflow-hidden border-b border-slate-200 bg-slate-50">
       <div className="relative mx-auto max-w-[1180px] px-4 pb-12 pt-10 sm:px-6 sm:pb-16 sm:pt-14">
         <div className="px-1 sm:px-3">
           <div className="grid items-start gap-10 lg:grid-cols-12 lg:gap-8">
             <div className="lg:col-span-8">
               <div className="flex justify-center lg:justify-start">
-                <div className="inline-flex rounded-xl border border-slate-200/90 bg-white/90 p-1 shadow-sm backdrop-blur-sm">
+                <div className="inline-flex rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
                   <button
                     type="button"
                     onClick={() => onIntentChange("hire")}
@@ -164,7 +163,7 @@ export function LandingHero({
                   </Link>
                   <Link
                     href={modeContent.secondaryCtaHref}
-                    className="inline-flex min-h-11 min-w-[10rem] items-center justify-center rounded-xl border border-slate-300/90 bg-white/90 px-6 py-2.5 text-sm font-semibold text-slate-800 shadow-sm backdrop-blur-sm transition hover:bg-white"
+                    className="inline-flex min-h-11 min-w-[10rem] items-center justify-center rounded-xl border border-slate-300 bg-white px-6 py-2.5 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50"
                   >
                     {modeContent.secondaryCtaLabel}
                   </Link>
@@ -173,7 +172,7 @@ export function LandingHero({
             </div>
 
             <aside className="hidden lg:col-span-4 lg:block">
-              <div className="sticky top-24 rounded-[1.75rem] border border-slate-200/80 bg-white/85 p-5 shadow-[0_28px_90px_-48px_rgba(53,37,205,0.55)] backdrop-blur-md">
+              <div className="sticky top-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-md">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#3525cd]">{t("landing.hero.process.kicker")}</p>
                 <p className="mt-2 text-base font-bold text-[#071027]">{t("landing.hero.process.title")}</p>
                 <p className="mt-1 text-xs leading-relaxed text-slate-500">{t("landing.hero.process.subtitle")}</p>
@@ -183,7 +182,7 @@ export function LandingHero({
                     return (
                       <li
                         key={key}
-                        className="flex gap-3 rounded-xl border border-slate-200/70 bg-gradient-to-br from-white to-[#f8f7fd] px-3 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]"
+                        className="flex gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-3"
                       >
                         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#3525cd]/10 text-[#3525cd]">
                           <Icon className="h-4 w-4" aria-hidden />
@@ -201,14 +200,14 @@ export function LandingHero({
           </div>
 
           <div className="mt-8 lg:hidden">
-            <div className="rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-sm backdrop-blur-sm">
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
               <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#3525cd]">{t("landing.hero.process.kicker")}</p>
               <p className="mt-1 text-sm font-bold text-[#071027]">{t("landing.hero.process.title")}</p>
               <ul className="mt-4 grid gap-2.5 sm:grid-cols-2">
                 {PROCESS_KEYS.map((key, i) => {
                   const Icon = processIcons[i]!;
                   return (
-                    <li key={key} className="flex gap-2.5 rounded-xl border border-slate-100 bg-[#f8f7fd]/80 px-3 py-2.5">
+                    <li key={key} className="flex gap-2.5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5">
                       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#3525cd]/10 text-[#3525cd]">
                         <Icon className="h-3.5 w-3.5" aria-hidden />
                       </span>
@@ -223,7 +222,7 @@ export function LandingHero({
             </div>
           </div>
 
-          <div className="mt-10 rounded-[1.35rem] border border-slate-200/80 bg-white/90 p-4 shadow-[0_20px_70px_-50px_rgba(15,23,42,0.35)] backdrop-blur-sm sm:p-5">
+          <div className="mt-10 rounded-2xl border border-slate-200 bg-white p-4 shadow-md sm:p-5">
             <form action={modeContent.searchAction} method="get" className="flex flex-col gap-3">
               <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-12 lg:gap-3 lg:[&>*]:min-h-[3.15rem]">
                 <label className="flex min-h-[3.15rem] items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 lg:col-span-4">
@@ -283,7 +282,7 @@ export function LandingHero({
               {popularTags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-md border border-slate-200/90 bg-slate-50/90 px-2 py-1 text-[11px] font-medium text-slate-700"
+                  className="rounded-md border border-slate-200 bg-slate-100 px-2 py-1 text-[11px] font-medium text-slate-700"
                 >
                   {tag}
                 </span>
@@ -298,7 +297,7 @@ export function LandingHero({
             </div>
           </div>
 
-          <div className="mt-8 rounded-[1.35rem] border border-[#3525cd]/20 bg-gradient-to-br from-[#ebe8fb] via-white to-[#f5f3fc] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] sm:flex sm:items-center sm:justify-between sm:gap-6 sm:p-6">
+          <div className="mt-8 rounded-2xl border border-[#3525cd]/25 bg-[#f4f2fb] p-5 sm:flex sm:items-center sm:justify-between sm:gap-6 sm:p-6">
             <div>
               <p className="text-xl font-bold tracking-tight text-[#071027] sm:text-2xl">{t("landing.hero.bottomStripTitle")}</p>
               <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-600">{t("landing.hero.bottomStripBody")}</p>

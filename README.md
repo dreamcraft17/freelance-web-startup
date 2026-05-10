@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v84  
-> Last synchronized: 2026-05-09 — `@acme/web` script **`dev:fresh`** (`rimraf .next && next dev`); README menjelaskan `MODULE_NOT_FOUND` pada PATCH `/api/freelancer-profiles` sebagai artefak `.next` dev stale.
+> **Doc revision:** v85  
+> Last synchronized: 2026-05-09 — Landing publik tanpa glassmorphism (solid neutrals); tetap **`dev:fresh`** untuk chunk Next dev stale.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
