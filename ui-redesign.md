@@ -1,13 +1,21 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v89  
-> Last synchronized: 2026-05-09 (public job detail `/jobs/[id]`: hero premium, panel trust klien data nyata, sidebar proposal sticky, related jobs, mobile CTA tanpa blur).
+> **Doc revision:** v90  
+> Last synchronized: 2026-05-09 (public freelancer profile `/freelancers/[username]`: storefront hero, sticky trust sidebar, reviews/portfolio, `SaveFreelancerButton` i18n).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-09 — Public freelancer profile marketplace pass (`/freelancers/[username]`)
+
+- **Layout:** breadcrumb ke direktori publik; grid desktop **konten utama + sidebar sticky** (rating, ulasan, kontrak selesai, member since, update profil relatif, tarif, completeness hint, mode, ketersediaan, lokasi); CTA pesan + simpan profil + kembali.
+- **Hero:** `NW_HERO_WRAP`, avatar URL atau inisial, verifikasi/pending, headline, chip mode + ketersediaan + hire count, lokasi, skill chips, **Great fit for** (heuristik nyata seperti sebelumnya), CTA primer `AuthAwareCtaLink` ke `withWorkspaceLocale(…, /messages)`.
+- **Konten:** section About / Services / Work preferences / Languages (placeholder jujur—belum ada kolom bahasa di schema) / Portofolio grid atau **owner-only** empty CTA ke `/freelancer/profile` / Reviews premium + konteks job dari relasi review.
+- **Mobile:** strip ringkas rating+tarif di hero; sticky bawah **kontak + save** tanpa blur.
+- **Tombol simpan:** `SaveFreelancerButton` memakai kamus `public.freelancerProfile.saveFreelancerCta*` (EN/ID).
 
 ### 2026-05-09 — Public job detail marketplace pass (`/jobs/[jobId]`)
 

@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v99  
-> Last synchronized: 2026-05-09 (public job detail: halaman `/jobs/[jobId]` hero + trust + sidebar proposal + related jobs; `JobRepository.findByIdPublic` memperluas field profil klien untuk UI).
+> **Doc revision:** v100  
+> Last synchronized: 2026-05-09 (public freelancer profile `/freelancers/[username]` storefront + `SaveFreelancerButton` terlokalisasi).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,6 +9,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
+- **2026-05-09 — Public freelancer profile UX:** halaman profil publik freelancer (`/freelancers/[username]`) memakai hero storefront (avatar/inisial, verifikasi, skill, heuristik “great fit”), sidebar desktop berisi sinyal kepercayaan nyata (rating, jumlah ulasan, kontrak selesai, member since, aktivitas update profil, tarif, completeness), CTA Messages dengan path workspace ber-locale, simpan profil (`SaveFreelancerButton` + state awal dari `SavedFreelancer`), section layanan/preferensi/bahasa (placeholder jujur bila schema belum menyimpan bahasa), portofolio grid atau prompt owner-only jika kosong, ulasan dengan konteks job; mobile sticky contact + save tanpa backdrop blur. Label tombol simpan memakai i18n.
 - **2026-05-09 — Public job detail UX & trust data:** halaman detail lowongan publik memuat hero opportunity, panel klien (verifikasi, ulasan agregat, member since, aktivitas update profil, kontrak selesai, jumlah lowongan terbuka publik), bagian brief terstruktur, lowongan terkait per kategori, serta kolom kanan sticky untuk form proposal / CTA `AuthAwareCtaLink` (tanpa duplikasi kartu sign-in). Query agregat paralel di server; tidak ada skor AI atau metrik respons palsu.
 - **2026-05-09 — Public jobs card & mobile filter sheet:** komponen `JobsPublicList` menata ulang kartu lowongan publik agar lebih scanable (badge status dari data nyata, baris klien + verifikasi, anggaran + jumlah proposal + waktu posting, skill + sinyal heuristik dengan tooltip jujur); CTA ganda “kirim proposal” (auth-aware) vs “lihat brief”. `JobsMarketplaceMobileFilters`: overlay gelap opaque tanpa blur, opsi aktif solid indigo, kontrol lebih thumb-friendly.
 - **2026-05-09 — Landing visual (non-glass):** permukaan hero/bawah-fold memakai **`bg-slate-50`**, **`bg-white`**, **`bg-slate-50`** pada sub-kartu; bayangan **`shadow-sm` / `shadow-md`**; menghapus **`backdrop-blur`** dan overlay **`bg-white/…`** agar tidak menyerupai template AI glassmorphism.

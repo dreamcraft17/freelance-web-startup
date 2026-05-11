@@ -4,6 +4,7 @@ import { fetchWithCsrf } from "@/features/auth/lib/fetch-with-csrf";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/features/i18n/I18nProvider";
 
 type ApiOk<T> = { success: true; data: T };
 type ApiErr = { success: false; error?: string };
@@ -29,6 +30,7 @@ export function SaveFreelancerButton({
   variant = "outline",
   className
 }: SaveFreelancerButtonProps) {
+  const { t } = useI18n();
   const pathname = usePathname();
   const controlled = initialSaved !== undefined && onSavedChange !== undefined;
   const [saved, setSaved] = useState<boolean | null>(controlled ? initialSaved : null);
@@ -105,7 +107,7 @@ export function SaveFreelancerButton({
   if (saved === null) {
     return (
       <Button type="button" size={size} variant={variant} className={className} disabled>
-        …
+        {t("public.freelancerProfile.saveFreelancerBusy")}
       </Button>
     );
   }
@@ -119,7 +121,7 @@ export function SaveFreelancerButton({
       disabled={busy}
       onClick={() => void toggle()}
     >
-      {busy ? "…" : saved ? "Saved" : "Save freelancer"}
+      {busy ? t("public.freelancerProfile.saveFreelancerBusy") : saved ? t("public.freelancerProfile.savedFreelancerCta") : t("public.freelancerProfile.saveFreelancerCta")}
     </Button>
   );
 }

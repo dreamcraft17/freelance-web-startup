@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v87  
-> Last synchronized: 2026-05-09 — Public job detail page (`/jobs/[jobId]`) redesigned for trust + proposal conversion; `JobRepository.findByIdPublic` exposes client verification/review aggregates for that UI.
+> **Doc revision:** v88  
+> Last synchronized: 2026-05-09 — Public freelancer profile (`/freelancers/[username]`) redesigned as trust-heavy talent storefront; save button labels use `public.freelancerProfile.*` i18n.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
