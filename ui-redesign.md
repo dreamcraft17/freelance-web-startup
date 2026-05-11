@@ -1,13 +1,21 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v91  
-> Last synchronized: 2026-05-09 (global marketplace design system: shared tokens di `globals.css` + Tailwind; `Button`/`Card`/`EmptyStateCard`; client dashboard surfaces + EN/ID status copy; jobs board chip utilities; `DashboardShell` header).
+> **Doc revision:** v92  
+> Last synchronized: 2026-05-09 (freelancer dashboard + proposals + messages + notifications: `nw-*` surfaces; proposal workspace i18n; locale-aware dates; `withPublicLocale` untuk link job di notifikasi).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-09 — Freelancer workspace + inbox + notifications (`nw-*`)
+
+- **Freelancer dashboard:** `nw-page-stack`, `nw-card-elevated` / `nw-card-trust`, pulse & quick actions memakai **`nw-chip`** / **`nw-card-inset`**; aktivitas proposal/kontrak memakai **`statusLabel`** / **`workModeLabel`** dari server (reuse `dashboard.client.bidStatus` / `contractStatus` + `public.filters.workMode*`); tanggal memakai locale; **`activityBidEta`** di kamus.
+- **Hero freelancer:** gradien merek pekat tanpa **`backdrop-blur`**; pill trust solid; stat grid border **`border-white/18`**.
+- **Halaman `/freelancer/proposals`:** header terlokalisasi + link `withPublicLocale` / `withWorkspaceLocale`; **`FreelancerProposalsWorkspace`** memakai **`useI18n()`** untuk filter, empty states, baris proposal (**`nw-card`**, **`nw-chip`** status), tanpa string EN keras.
+- **Messages:** shell **`nw-card`** + **`shadow-nw-elevated`**; inbox/context chips **`nw-*`**; **`nw-empty-state`** untuk thread kosong; **`nw-card-trust`** ringkas untuk “next suggested”; composer **`sticky bottom-0`**; format waktu inbox/pesan memakai **`en-US` / `id-ID`**.
+- **Notifications:** kategori + daftar unread/read memakai **`nw-card`** / **`nw-stack-loose`**; tautan sekunder & payload job memakai **`withPublicLocale`**; **`notifications.categoriesAria`**.
 
 ### 2026-05-09 — Global design system pass (tokens + primitives + client dashboard)
 

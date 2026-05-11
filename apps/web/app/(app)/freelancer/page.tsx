@@ -73,10 +73,25 @@ export default async function FreelancerDashboardPage() {
   const openJobsResult = await new JobService().listOpenJobs({ page: 1, limit: 9 });
 
   let quota: Awaited<ReturnType<QuotaService["getUsageForFreelancerUser"]>> | null = null;
-  let recentBids: FreelancerDashboardBid[] = [];
+  let recentBidsRaw: {
+    id: string;
+    status: string;
+    bidAmount: unknown;
+    estimatedDays: number | null;
+    createdAt: Date;
+    updatedAt: Date;
+    job: {
+      id: string;
+      title: string;
+      slug: string;
+      status: string;
+      workMode: string;
+      currency: string;
+    };
+  }[] = [];
   if (profile) {
     quota = await new QuotaService().getUsageForFreelancerUser(session.userId);
-    recentBids = await db.bid.findMany({
+    recentBidsRaw = await db.bid.findMany({
       where: { freelancerId: profile.id },
       orderBy: { updatedAt: "desc" },
       take: 5,
@@ -146,10 +161,29 @@ export default async function FreelancerDashboardPage() {
 
   const recentContracts: FreelancerDashboardContract[] = recentContractsRaw.map((c) => ({
     id: c.id,
-    status: c.status,
+    statusLabel: t(`dashboard.client.contractStatus.${c.status}`),
     createdAt: c.createdAt,
     updatedAt: c.updatedAt,
     bid: { job: c.bid.job }
+  }));
+
+  const workModeLabel = (wm: string) =>
+    wm === "REMOTE"
+      ? t("public.filters.workModeRemote")
+      : wm === "ONSITE"
+        ? t("public.filters.workModeOnSite")
+        : wm === "HYBRID"
+          ? t("public.filters.workModeHybrid")
+          : wm;
+
+  const recentBids: FreelancerDashboardBid[] = recentBidsRaw.map((b) => ({
+    id: b.id,
+    statusLabel: t(`dashboard.client.bidStatus.${b.status}`),
+    bidAmount: b.bidAmount,
+    estimatedDays: b.estimatedDays,
+    createdAt: b.createdAt,
+    updatedAt: b.updatedAt,
+    job: b.job
   }));
 
   const { items: openJobItems, total: openTotal } = openJobsResult;
@@ -157,7 +191,7 @@ export default async function FreelancerDashboardPage() {
   const openJobs: FreelancerOpenJob[] = openJobItems.map((j) => ({
     id: j.id,
     title: j.title,
-    workMode: j.workMode,
+    workModeLabel: workModeLabel(j.workMode),
     city: j.city
   }));
 
@@ -435,7 +469,8 @@ export default async function FreelancerDashboardPage() {
         skillsEmptyBody: t("dashboard.freelancer.skillsEmptyBody"),
         skillsYearsShort: t("dashboard.freelancer.skillsYearsShort"),
         heroMotivation: t("dashboard.freelancer.heroMotivation"),
-        heroTrustCaption: t("dashboard.freelancer.heroTrustCaption")
+        heroTrustCaption: t("dashboard.freelancer.heroTrustCaption"),
+        activityBidEta: t("dashboard.freelancer.activityBidEta")
       }}
       activationChecklist={{
         title: t("activation.freelancer.checklistTitle"),

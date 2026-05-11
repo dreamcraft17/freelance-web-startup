@@ -10,6 +10,7 @@ import { DashboardEmptyState } from "@/components/dashboard/DashboardEmptyState"
 import { cn } from "@/lib/utils";
 import type { AppLocale } from "@/lib/i18n/types";
 import type { Translator } from "@/lib/i18n/create-translator";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
 import {
   AlertCircle,
@@ -61,7 +62,7 @@ function linkForNotification(item: NotificationListItem, locale: AppLocale): str
     return withWorkspaceLocale(locale, `/messages?thread=${encodeURIComponent(o.threadId)}`);
   }
   if (typeof o.contractId === "string") return `/api/contracts/${encodeURIComponent(o.contractId)}`;
-  if (typeof o.jobId === "string") return `/${locale}/jobs/${encodeURIComponent(o.jobId)}`;
+  if (typeof o.jobId === "string") return `${withPublicLocale(locale, "/jobs")}/${encodeURIComponent(o.jobId)}`;
   return null;
 }
 
@@ -189,7 +190,7 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
 
   if (items.length === 0) {
     return (
-      <div className="rounded-2xl border border-slate-200/70 bg-white/80 p-1 shadow-sm ring-1 ring-slate-900/[0.02]">
+      <div className="nw-card-elevated overflow-hidden p-1">
         <DashboardEmptyState
           tone="elevated"
           kicker={t("nav.notifications")}
@@ -197,15 +198,18 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
           title={t("notifications.emptyTitle")}
           description={t("notifications.emptyDescription")}
           action={{ label: t("notifications.emptyPrimary"), href: withWorkspaceLocale(locale, "/messages") as Route }}
-          secondaryAction={{ label: t("notifications.emptySecondary"), href: `/${locale}/jobs` as Route }}
+          secondaryAction={{
+            label: t("notifications.emptySecondary"),
+            href: withPublicLocale(locale, "/jobs") as Route
+          }}
         />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <section aria-label="Notification categories" className="flex flex-wrap gap-2">
+    <div className="nw-stack-loose">
+      <section aria-label={t("notifications.categoriesAria")} className="flex flex-wrap gap-2">
         {[
           { id: "all", label: t("notifications.categoryAll") },
           { id: "proposals", label: t("notifications.categoryProposals") },
@@ -220,10 +224,10 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
               type="button"
               onClick={() => setCategory(chip.id as NotificationCategory)}
               className={cn(
-                "rounded-full px-3.5 py-1.5 text-xs font-semibold transition ring-1",
+                "rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors duration-200 ring-1",
                 active
                   ? "bg-[#3525cd] text-white ring-[#3525cd] shadow-sm"
-                  : "bg-white text-slate-600 ring-slate-200/90 hover:bg-slate-50 hover:text-slate-900"
+                  : "nw-chip nw-chip-muted rounded-full normal-case tracking-normal ring-slate-200/90 hover:bg-white"
               )}
             >
               <span>{chip.label}</span>
@@ -236,7 +240,7 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
       </section>
 
       {filteredItems.length === 0 ? (
-        <div className="rounded-2xl border border-slate-200/70 bg-white/80 p-1 shadow-sm ring-1 ring-slate-900/[0.02]">
+        <div className="nw-card-elevated overflow-hidden p-1">
           <DashboardEmptyState
             tone="elevated"
             kicker={t("nav.notifications")}
@@ -244,7 +248,10 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
             title={t("notifications.filterEmptyTitle")}
             description={t("notifications.filterEmptyDescription")}
             action={{ label: t("notifications.emptyPrimary"), href: withWorkspaceLocale(locale, "/messages") as Route }}
-            secondaryAction={{ label: t("notifications.emptySecondary"), href: `/${locale}/jobs` as Route }}
+            secondaryAction={{
+              label: t("notifications.emptySecondary"),
+              href: withPublicLocale(locale, "/jobs") as Route
+            }}
           />
         </div>
       ) : null}
@@ -255,16 +262,16 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-[#3525cd] shadow-sm shadow-[#3525cd]/30" aria-hidden />
-              <h2 id="notif-unread-heading" className="text-sm font-semibold text-slate-900">
+              <h2 id="notif-unread-heading" className="nw-type-section text-base">
                 {t("notifications.unreadLabel")}
               </h2>
               <span className="rounded-full bg-[#3525cd]/10 px-2 py-0.5 text-xs font-semibold tabular-nums text-[#3525cd] ring-1 ring-[#3525cd]/10">
                 {unread.length}
               </span>
             </div>
-            <p className="mt-1 text-xs text-slate-500">{t("notifications.unreadCaption")}</p>
+            <p className="nw-type-meta mt-1 font-medium normal-case tracking-normal">{t("notifications.unreadCaption")}</p>
           </div>
-          <ul className="divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200/75 bg-white shadow-sm ring-1 ring-slate-900/[0.02]">
+          <ul className="nw-card divide-y divide-slate-100 overflow-hidden rounded-xl">
             {unread.map((n) => (
               <NotificationRow
                 key={n.id}
@@ -284,16 +291,16 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-slate-300" aria-hidden />
-              <h2 id="notif-read-heading" className="text-sm font-semibold text-slate-600">
+              <h2 id="notif-read-heading" className="nw-type-section text-base text-slate-600">
                 {t("notifications.readLabel")}
               </h2>
               <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium tabular-nums text-slate-500 ring-1 ring-slate-200/80">
                 {read.length}
               </span>
             </div>
-            <p className="mt-1 text-xs text-slate-500">{t("notifications.readCaption")}</p>
+            <p className="nw-type-meta mt-1 font-medium normal-case tracking-normal">{t("notifications.readCaption")}</p>
           </div>
-          <ul className="divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200/50 bg-slate-50/70 shadow-sm ring-1 ring-slate-900/[0.02]">
+          <ul className="nw-card divide-y divide-slate-100 overflow-hidden rounded-xl bg-slate-50/60">
             {read.map((n) => (
               <NotificationRow
                 key={n.id}
@@ -380,15 +387,13 @@ function NotificationRow({
           <div className="mt-2 flex flex-wrap items-center gap-2">
             <span
               className={cn(
-                "rounded-md px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ring-1",
-                isUnread
-                  ? "bg-white text-slate-700 ring-slate-200/90"
-                  : "bg-slate-100 text-slate-600 ring-slate-200/70"
+                "nw-chip px-1.5 py-0.5 text-[10px] normal-case tracking-normal ring-1",
+                isUnread ? "nw-chip-muted ring-slate-200/90" : "bg-slate-100 text-slate-600 ring-slate-200/70"
               )}
             >
               {notificationActivityLabel(item.type, t)}
             </span>
-            {href ? <p className="text-xs font-semibold text-[#3525cd]">{t("notifications.openRelated")}</p> : null}
+            {href ? <p className="nw-link-action text-xs font-semibold">{t("notifications.openRelated")}</p> : null}
           </div>
         </div>
       </button>

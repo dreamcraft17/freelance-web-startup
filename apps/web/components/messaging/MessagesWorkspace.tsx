@@ -60,23 +60,25 @@ export type ThreadContextSummary = {
   nextSuggested: string;
 };
 
-function formatThreadTime(iso: string): string {
+function formatThreadTime(iso: string, appLocale: "en" | "id"): string {
+  const tag = appLocale === "id" ? "id-ID" : "en-US";
   const d = new Date(iso);
   const now = new Date();
   const sameDay =
     d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && d.getDate() === now.getDate();
   if (sameDay) {
-    return new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit" }).format(d);
+    return new Intl.DateTimeFormat(tag, { hour: "numeric", minute: "2-digit" }).format(d);
   }
   const diffDays = Math.floor((now.getTime() - d.getTime()) / 86400000);
   if (diffDays < 7) {
-    return new Intl.DateTimeFormat(undefined, { weekday: "short" }).format(d);
+    return new Intl.DateTimeFormat(tag, { weekday: "short" }).format(d);
   }
-  return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric" }).format(d);
+  return new Intl.DateTimeFormat(tag, { month: "short", day: "numeric" }).format(d);
 }
 
-function formatMessageTime(iso: string): string {
-  return new Intl.DateTimeFormat(undefined, {
+function formatMessageTime(iso: string, appLocale: "en" | "id"): string {
+  const tag = appLocale === "id" ? "id-ID" : "en-US";
+  return new Intl.DateTimeFormat(tag, {
     month: "short",
     day: "numeric",
     hour: "numeric",
@@ -170,7 +172,7 @@ export function MessagesWorkspace({
   return (
     <div
       className={cn(
-        "flex overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-md shadow-slate-900/[0.06] ring-1 ring-slate-900/[0.03]",
+        "nw-card flex overflow-hidden rounded-xl shadow-nw-elevated",
         "min-h-[min(82dvh,860px)] max-h-[calc(100dvh-9.5rem)] md:max-h-[min(82dvh,860px)]"
       )}
     >
@@ -182,15 +184,13 @@ export function MessagesWorkspace({
         )}
         aria-label={t("messages.inboxAria")}
       >
-        <div className="border-b border-slate-100 bg-gradient-to-b from-slate-50/95 to-white px-4 py-4">
+        <div className="border-b border-slate-100 bg-slate-50/80 px-4 py-4">
           <div className="flex items-center gap-2">
             <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#3525cd]/10 text-[#3525cd] ring-1 ring-[#3525cd]/15">
               <Inbox className="h-4 w-4" strokeWidth={2} aria-hidden />
             </span>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                {t("messages.inboxHeading")}
-              </p>
+              <p className="nw-type-micro">{t("messages.inboxHeading")}</p>
               <p className="text-sm font-medium text-slate-800">
                 {threads.length === 1
                   ? t("messages.inboxOneConversation")
@@ -270,7 +270,7 @@ export function MessagesWorkspace({
                             className="shrink-0 text-[11px] font-medium tabular-nums text-slate-400"
                             dateTime={thread.updatedAt}
                           >
-                            {formatThreadTime(thread.updatedAt)}
+                            {formatThreadTime(thread.updatedAt, locale)}
                           </time>
                         </div>
                         <p
@@ -283,7 +283,7 @@ export function MessagesWorkspace({
                           {preview}
                         </p>
                         <div className="mt-2 flex flex-wrap items-center gap-2">
-                          <span className="rounded-md bg-slate-100/90 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+                          <span className="nw-chip nw-chip-muted px-1.5 py-0.5 text-[10px] normal-case tracking-normal text-slate-600">
                             {threadTypeLabel(thread.type)}
                           </span>
                           {unread ? (
@@ -328,10 +328,10 @@ export function MessagesWorkspace({
           </div>
         ) : (
           <>
-            <header className="shrink-0 border-b border-slate-200/90 bg-white px-4 py-3 md:px-5">
+            <header className="shrink-0 border-b border-slate-200/90 bg-white px-4 py-3 md:px-5 md:py-4">
               <Link
                 href={wp("/messages")}
-                className="mb-3 inline-flex items-center gap-1.5 text-sm font-semibold text-[#3525cd] hover:underline md:hidden"
+                className="nw-link-action mb-3 inline-flex items-center gap-1.5 text-sm font-semibold md:hidden"
                 scroll={false}
               >
                 <ArrowLeft className="h-4 w-4" aria-hidden />
@@ -350,7 +350,7 @@ export function MessagesWorkspace({
                     </h2>
                     <div className="mt-1 flex flex-wrap items-center gap-2">
                       {selectedThread ? (
-                        <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-slate-600">
+                        <span className="nw-chip nw-chip-muted rounded-full px-2 py-0.5 text-[11px] normal-case tracking-normal">
                           {threadTypeLabel(selectedThread.type)}
                         </span>
                       ) : null}
@@ -358,13 +358,13 @@ export function MessagesWorkspace({
                         <div className="flex flex-wrap items-center gap-2">
                           <Link
                             href={`${jobsBrowseRoot}/${selectedThread.jobId}` as Route}
-                            className="inline-flex items-center gap-1 text-xs font-semibold text-[#3525cd] hover:underline"
+                            className="nw-link-action inline-flex items-center gap-1 text-xs font-semibold"
                           >
                             <Briefcase className="h-3.5 w-3.5" aria-hidden />
                             {t("messages.viewJob")}
                           </Link>
                           {selectedContext ? (
-                            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
+                            <span className="nw-chip nw-chip-muted rounded-full px-2 py-0.5 text-[10px] normal-case tracking-normal">
                               {selectedContext.jobStatusLabel}
                             </span>
                           ) : null}
@@ -373,7 +373,7 @@ export function MessagesWorkspace({
                       {selectedThread?.lastMessage ? (
                         <span className="text-xs text-slate-500">
                           {t("messages.lastActivityPrefix")}{" "}
-                          {formatThreadTime(selectedThread.lastMessage.createdAt)}
+                          {formatThreadTime(selectedThread.lastMessage.createdAt, locale)}
                         </span>
                       ) : null}
                     </div>
@@ -391,10 +391,8 @@ export function MessagesWorkspace({
               </div>
             </header>
             {selectedContext ? (
-              <div className="border-b border-slate-200/80 bg-slate-50 px-4 py-3 md:px-5">
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-                  {t("messages.hiringContextKicker")}
-                </p>
+              <div className="border-b border-slate-200/80 bg-slate-50/90 px-4 py-3 md:px-5">
+                <p className="nw-type-micro">{t("messages.hiringContextKicker")}</p>
                 <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-700">
                   <span className="font-semibold">{selectedContext.jobTitle}</span>
                   <span className="text-slate-500">·</span>
@@ -424,11 +422,9 @@ export function MessagesWorkspace({
                   </Link>
                 </div>
                 <p className="mt-2 text-[11px] text-slate-500">{t("messages.threadTiedHint")}</p>
-                <div className="mt-3 rounded-lg border border-[#3525cd]/15 bg-white/90 px-3 py-2.5">
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-[#433C93]">
-                    {t("messages.nextSuggestedKicker")}
-                  </p>
-                  <p className="mt-1 text-sm leading-relaxed text-slate-800">{selectedContext.nextSuggested}</p>
+                <div className="nw-card-trust mt-3 border-[#3525cd]/18 px-3 py-2.5">
+                  <p className="nw-section-title text-[10px]">{t("messages.nextSuggestedKicker")}</p>
+                  <p className="nw-type-body mt-1 text-slate-800">{selectedContext.nextSuggested}</p>
                 </div>
               </div>
             ) : null}
@@ -436,12 +432,12 @@ export function MessagesWorkspace({
             <div className="flex min-h-0 flex-1 flex-col">
               {messages.length === 0 ? (
                 <div className="flex flex-1 flex-col justify-center px-4 py-8 md:px-8">
-                  <div className="mx-auto w-full max-w-lg rounded-2xl border border-dashed border-slate-200/90 bg-white/80 px-6 py-8 text-center shadow-sm ring-1 ring-slate-100/80">
+                  <div className="nw-empty-state mx-auto w-full max-w-lg text-center">
                     <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#3525cd]/10 text-[#3525cd] ring-1 ring-[#3525cd]/15">
                       <Sparkles className="h-6 w-6" aria-hidden />
                     </span>
                     <h3 className="mt-4 text-base font-semibold text-slate-900">{t("messages.startThreadTitle")}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-slate-600">{t("messages.startThreadBody")}</p>
+                    <p className="nw-type-body mt-2">{t("messages.startThreadBody")}</p>
                     <ul className="mt-5 space-y-2 text-left text-xs text-slate-500">
                       <li className="flex gap-2">
                         <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#3525cd]/50" aria-hidden />
@@ -478,7 +474,7 @@ export function MessagesWorkspace({
                             )}
                             dateTime={m.createdAt}
                           >
-                            {formatMessageTime(m.createdAt)}
+                            {formatMessageTime(m.createdAt, locale)}
                           </time>
                           {!m.isSystem && !mine ? (
                             <div className="mt-1.5 flex justify-end">
@@ -498,7 +494,7 @@ export function MessagesWorkspace({
                 </ul>
               )}
 
-              <div className="shrink-0 border-t border-slate-200/90 bg-white p-4 shadow-[0_-6px_24px_rgba(15,23,42,0.04)] md:px-6">
+              <div className="sticky bottom-0 z-10 shrink-0 border-t border-slate-200/90 bg-white p-4 shadow-[0_-8px_28px_rgba(15,23,42,0.06)] md:px-6">
                 {sendError ? <p className="mb-2 text-sm font-medium text-red-600">{sendError}</p> : null}
                 {selectedContext ? (
                   <p className="mb-2 text-[11px] leading-relaxed text-slate-500">{t("messages.composeWorkplaceReminder")}</p>
