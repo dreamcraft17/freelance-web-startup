@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v102  
-> Last synchronized: 2026-05-09 (editorial typography/density on shared `nw-*` utilities + key marketplace/dashboard surfaces).
+> **Doc revision:** v103  
+> Last synchronized: 2026-05-09 (convergence pass for job detail/profile pages, onboarding cards, and admin surface pills).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,7 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Convergence pass 2 (2026-05-09):** halaman detail job publik, profil freelancer publik, editor profil freelancer, dan komponen onboarding utama mengikuti ladder tipografi `nw-type-*` + ritme card/chip yang sama; tabel admin reports/jobs/users/verification menerima pass visual ringan agar lebih cepat dipindai tanpa mengubah workflow RBAC.
 - **Editorial typography & density (2026-05-09):** utilitas CSS bersama (`nw-type-*`, stacks, chips, beberapa panel) dan skala font Tailwind (`nw-lead`/`nw-body`/`nw-caption`) disempurnakan untuk pesan visual lebih matang; landing, board job publik, dashboard role, inbox/thread Messages, pusat notifikasi, serta header halaman workspace pesan/pengaturan mengikuti spacing hierarchy baru tanpa mengubah API atau alur data.
 - **Marketplace pulse & momentum (2026-05-09):** `PublicStatsService` mengembalikan agregat tambahan (posting baru 24 jam, kontrak selesai 7 hari, kategori dengan listing terbanyak) dalam transaksi yang sama dengan pulse hero untuk `/jobs`/`/freelancers`; snapshot ringkas (`getMarketplaceMomentumSnapshot`) memuat landing dan dashboard role; pencarian job publik melampirkan `shortlistedCount` untuk chip wawancara di kartu hasil.
 - **Freelancer workspace surfaces (2026-05-09):** dashboard dan halaman proposal freelancer memakai pola kartu/chip bersama (`nw-*`); status proposal/kontrak pada feed diserahkan sebagai string terlokalisasi dari server; pesan dan pusat notifikasi memakai kartu/list yang konsisten serta tautan discovery job memakai path publik ber-locale.

@@ -227,7 +227,7 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
         : t("public.freelancerProfile.completenessSparse");
 
   return (
-    <div className={NW_PAGE_WRAP}>
+    <div className={`${NW_PAGE_WRAP} nw-page-stack`}>
       <nav className="mb-5 text-sm text-slate-500">
         <Link href={freelancersBrowseRoot as Route} className="font-medium text-[#3525cd] underline-offset-4 hover:underline">
           {t("public.freelancers.pageTitle")}
@@ -237,8 +237,8 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
       </nav>
 
       <div className="lg:grid lg:grid-cols-[minmax(0,1fr),minmax(280px,320px)] lg:items-start lg:gap-8">
-        <div className="min-w-0 space-y-6">
-          <header className={`${NW_HERO_WRAP} relative overflow-hidden p-6 sm:p-8`}>
+        <div className="min-w-0 space-y-5">
+          <header className={`${NW_HERO_WRAP} relative overflow-hidden p-5 sm:p-6`}>
             <div
               className="pointer-events-none absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-[#3525cd]/30 to-transparent"
               aria-hidden
@@ -295,17 +295,17 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
                   ) : null}
                 </div>
 
-                <h1 className="mt-2 text-balance text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl sm:leading-tight">
+                <h1 className="nw-type-display mt-2 text-balance text-slate-950 sm:text-[2rem]">
                   {profile.fullName}
                 </h1>
-                <p className="mt-2 max-w-3xl text-base font-semibold leading-relaxed text-slate-700 sm:text-lg">
+                <p className="nw-type-body-strong mt-2 max-w-3xl text-slate-700 sm:text-[15px]">
                   {profile.headline?.trim() || t("public.freelancers.profileFallback")}
                 </p>
 
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <span className={`${NW_BADGE_NEUTRAL} font-semibold`}>{workModeLabel}</span>
-                  <span className={`${NW_BADGE_NEUTRAL} bg-emerald-50/90 font-semibold text-emerald-900`}>{availabilityLabel}</span>
-                  <span className={`${NW_BADGE_NEUTRAL} inline-flex items-center gap-1 font-semibold`}>
+                  <span className="nw-chip nw-chip-muted normal-case tracking-normal">{workModeLabel}</span>
+                  <span className="nw-chip nw-chip-success normal-case tracking-normal">{availabilityLabel}</span>
+                  <span className="nw-chip nw-chip-muted inline-flex items-center gap-1 normal-case tracking-normal">
                     <Briefcase className="h-3 w-3 text-slate-500" aria-hidden />
                     {completedHiresViaMarketplace}{" "}
                     {completedHiresViaMarketplace === 1
@@ -315,7 +315,7 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
                 </div>
 
                 {locationLine ? (
-                  <p className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-slate-600">
+                  <p className="mt-2 inline-flex items-center gap-1.5 text-[13px] font-medium text-slate-600">
                     <MapPin className="h-4 w-4 shrink-0 text-slate-400" aria-hidden />
                     {locationLine}
                   </p>
@@ -339,10 +339,7 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
                     <p className={NW_SECTION_KICKER}>{t("public.freelancerProfile.greatForTitle")}</p>
                     <ul className="mt-2 flex flex-wrap gap-2">
                       {reasons.slice(0, 4).map((reason) => (
-                        <li
-                          key={reason}
-                          className="rounded-lg border border-slate-200/90 bg-white px-2.5 py-1 text-xs font-semibold text-slate-800 shadow-sm"
-                        >
+                        <li key={reason} className="nw-chip nw-chip-quiet max-w-full break-words">
                           {reason}
                         </li>
                       ))}
@@ -412,27 +409,27 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
             </div>
           </header>
 
-          <section className={`${NW_CARD} overflow-hidden p-5 sm:p-6`}>
+          <section className={`${NW_CARD} overflow-hidden p-4 sm:p-5`}>
             <div className="border-b border-slate-100 pb-3">
               <p className={NW_SECTION_KICKER}>{t("public.freelancerProfile.aboutSectionTitle")}</p>
-              <h2 className="mt-1 text-lg font-bold text-slate-950">{t("public.freelancerProfile.aboutTitle")}</h2>
+              <h2 className="nw-type-title mt-1 text-slate-950">{t("public.freelancerProfile.aboutTitle")}</h2>
             </div>
-            <p className="mt-4 text-[15px] leading-[1.65] text-slate-800 sm:text-base">
+            <p className="nw-type-body mt-3 text-slate-800 sm:text-[15px]">
               {profile.bio?.trim() || t("public.freelancerProfile.aboutFallback")}
             </p>
           </section>
 
-          <section className={`${NW_CARD} overflow-hidden p-5 sm:p-6`}>
+          <section className={`${NW_CARD} overflow-hidden p-4 sm:p-5`}>
             <div className="border-b border-slate-100 pb-3">
               <p className={NW_SECTION_KICKER}>{t("public.freelancerProfile.servicesSectionTitle")}</p>
-              <h2 className="mt-1 text-lg font-bold text-slate-950">{t("public.freelancerProfile.servicesTitle")}</h2>
-              <p className="mt-1 text-xs font-medium text-slate-500">{t("public.freelancerProfile.servicesSubtitle")}</p>
+              <h2 className="nw-type-title mt-1 text-slate-950">{t("public.freelancerProfile.servicesTitle")}</h2>
+              <p className="nw-type-meta mt-1 font-medium normal-case tracking-normal">{t("public.freelancerProfile.servicesSubtitle")}</p>
             </div>
             {servicesByCategory.size > 0 ? (
               <ul className="mt-5 space-y-5">
                 {[...servicesByCategory.entries()].map(([category, names]) => (
                   <li key={category}>
-                    <p className="text-xs font-bold uppercase tracking-wide text-[#3525cd]/90">{category}</p>
+                    <p className="nw-type-micro text-[#3525cd]/90">{category}</p>
                     <div className="mt-2 flex flex-wrap gap-2">
                       {names.map((name) => (
                         <span key={name} className={NW_CHIP_SKILL}>
@@ -458,11 +455,11 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
             )}
           </section>
 
-          <section className={`${NW_CARD} p-5 sm:p-6`}>
+          <section className={`${NW_CARD} p-4 sm:p-5`}>
             <div className="flex flex-wrap items-end justify-between gap-2 border-b border-slate-100 pb-3">
               <div>
                 <p className={NW_SECTION_KICKER}>{t("public.freelancerProfile.workPreferencesTitle")}</p>
-                <h2 className="mt-1 text-lg font-bold text-slate-950">{t("public.freelancerProfile.workPreferencesHeading")}</h2>
+                <h2 className="nw-type-title mt-1 text-slate-950">{t("public.freelancerProfile.workPreferencesHeading")}</h2>
               </div>
               <Sparkles className="h-6 w-6 text-slate-200" aria-hidden />
             </div>
@@ -490,7 +487,7 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
             </dl>
           </section>
 
-          <section className={`${NW_CARD} p-5 sm:p-6`}>
+          <section className={`${NW_CARD} p-4 sm:p-5`}>
             <div className="border-b border-slate-100 pb-3">
               <p className={NW_SECTION_KICKER}>{t("public.freelancerProfile.languagesTitle")}</p>
               <p className="mt-1 text-sm font-medium text-slate-600">{t("public.freelancerProfile.languagesLead")}</p>
@@ -501,11 +498,11 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
           </section>
 
           {profile.portfolioItems.length > 0 ? (
-            <section className={`${NW_CARD} p-5 sm:p-6`}>
+            <section className={`${NW_CARD} p-4 sm:p-5`}>
               <div className="border-b border-slate-100 pb-3">
                 <p className={NW_SECTION_KICKER}>{t("public.freelancerProfile.portfolioSectionTitle")}</p>
-                <h2 className="mt-1 text-lg font-bold text-slate-950">{t("public.freelancerProfile.portfolioTitle")}</h2>
-                <p className="mt-1 text-xs font-medium text-slate-500">{t("public.freelancerProfile.portfolioSubtitle")}</p>
+                <h2 className="nw-type-title mt-1 text-slate-950">{t("public.freelancerProfile.portfolioTitle")}</h2>
+                <p className="nw-type-meta mt-1 font-medium normal-case tracking-normal">{t("public.freelancerProfile.portfolioSubtitle")}</p>
               </div>
               <ul className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 {profile.portfolioItems.map((item) => {
@@ -557,12 +554,12 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
             </section>
           ) : null}
 
-          <section className={`${NW_CARD} overflow-hidden p-5 sm:p-6`}>
+          <section className={`${NW_CARD} overflow-hidden p-4 sm:p-5`}>
             <div className="flex flex-wrap items-end justify-between gap-3 border-b border-slate-100 pb-3">
               <div>
                 <p className={NW_SECTION_KICKER}>{t("public.freelancerProfile.reviewsSectionKicker")}</p>
-                <h2 className="mt-1 text-lg font-bold text-slate-950">{t("public.freelancerProfile.reviewsTitle")}</h2>
-                <p className="mt-1 max-w-2xl text-xs font-medium text-slate-500">{t("public.freelancerProfile.reviewsSectionLead")}</p>
+                <h2 className="nw-type-title mt-1 text-slate-950">{t("public.freelancerProfile.reviewsTitle")}</h2>
+                <p className="nw-type-meta mt-1 max-w-2xl font-medium normal-case tracking-normal">{t("public.freelancerProfile.reviewsSectionLead")}</p>
               </div>
               {ratingText != null ? (
                 <div className="flex items-center gap-2 rounded-xl border border-amber-100 bg-amber-50/80 px-3 py-2">
@@ -598,7 +595,7 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
                           )}
                         </div>
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-extrabold text-amber-950 ring-1 ring-amber-200/80">
+                            <span className="nw-chip inline-flex items-center gap-1 border-amber-200 bg-amber-50 text-amber-950 normal-case tracking-normal">
                             <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" aria-hidden />
                             {review.rating}/5
                           </span>
@@ -637,9 +634,9 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
           </section>
 
           {!isProfileOwner ? (
-            <section className={`${NW_CARD} border-[#3525cd]/15 bg-gradient-to-br from-[#faf9ff] to-white p-5 sm:p-6`}>
-              <p className="text-sm font-bold text-slate-900">{t("public.freelancerProfile.finalCtaTitle")}</p>
-              <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-600">{t("public.freelancerProfile.finalCtaBody")}</p>
+            <section className={`${NW_CARD} border-[#3525cd]/15 bg-gradient-to-br from-[#faf9ff] to-white p-4 sm:p-5`}>
+              <p className="nw-type-section text-slate-900">{t("public.freelancerProfile.finalCtaTitle")}</p>
+              <p className="nw-type-body mt-2 max-w-xl">{t("public.freelancerProfile.finalCtaBody")}</p>
               <AuthAwareCtaLink
                 href={workspaceMessages}
                 intent="send-message"
@@ -653,7 +650,7 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
           ) : null}
         </div>
 
-        <aside className={`${NW_CARD_INSET} ${NW_SIDEBAR_STICKY} mt-8 hidden space-y-5 border-slate-200/90 p-5 shadow-sm lg:mt-0 lg:block`}>
+        <aside className={`${NW_CARD_INSET} ${NW_SIDEBAR_STICKY} mt-8 hidden space-y-4 border-slate-200/90 p-4 shadow-sm lg:mt-0 lg:block`}>
           <div>
             <p className={NW_SECTION_KICKER}>{t("public.freelancerProfile.trustPanelTitle")}</p>
             <p className="mt-1 text-xs font-medium text-slate-500">{t("public.freelancerProfile.trustPanelLead")}</p>

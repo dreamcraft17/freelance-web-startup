@@ -1,13 +1,20 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v94  
-> Last synchronized: 2026-05-09 (editorial typography & density: tighter `nw-type-*` ladder, compact chips/stacks/panels; landing, jobs list, dashboards, messages + notifications).
+> **Doc revision:** v95  
+> Last synchronized: 2026-05-09 (second convergence pass: `/jobs/[jobId]`, `/freelancers/[username]`, onboarding cards, admin table pills, and badge normalization).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-09 — Convergence pass 2 (detail pages + onboarding + admin)
+
+- **Public job detail (`/jobs/[jobId]`):** hero/trust/brief/related/sidebar memakai ritme `nw-type-*` + padding lebih rapat; chip status/signal/skill digeser ke pola `nw-chip*`; CTA sticky proposal dipertahankan.
+- **Public freelancer profile (`/freelancers/[username]`):** hero, service/review/portfolio sections, final CTA, dan trust sidebar menyamakan tipografi editorial; badges availability/work-mode/reasons lebih konsisten.
+- **Onboarding surfaces:** `ActivationChecklistCard`, `FreelancerProposalPlaybook`, `MarketplaceLiquidityHints` memakai `nw-card*`, skala teks lebih terstruktur, dan spacing lebih efisien tanpa mengubah milestone logic.
+- **Admin light pass:** `AdminUi` dan pill status di tabel jobs/reports/users/verification dipadatkan dengan gaya chip konsisten untuk scanability operasional.
 
 ### 2026-05-09 — Editorial typography & marketplace density
 

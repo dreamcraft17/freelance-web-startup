@@ -36,12 +36,12 @@ export function ActivationChecklistCard({
     return (
       <div
         className={cn(
-          "flex items-start gap-3 border border-emerald-200/80 bg-emerald-50/55 px-4 py-3 md:px-5",
+          "flex items-start gap-3 border border-emerald-200/80 bg-emerald-50/55 px-3.5 py-2.5 md:px-4",
           variant === "journey" ? "rounded-3xl shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]" : "rounded-xl"
         )}
       >
         <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-700" aria-hidden />
-        <p className="text-sm font-medium leading-relaxed text-emerald-900">{allCompleteBanner}</p>
+        <p className="nw-type-body-strong text-emerald-900">{allCompleteBanner}</p>
       </div>
     );
   }
@@ -53,20 +53,20 @@ export function ActivationChecklistCard({
       aria-labelledby="nw-activation-checklist"
       className={cn(
         variant === "journey"
-          ? "rounded-3xl border border-slate-200/70 bg-gradient-to-b from-white to-slate-50/40 p-6 shadow-[0_12px_40px_-28px_rgba(53,37,205,0.35)] md:p-7"
-          : "rounded-xl border border-slate-200 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-6"
+          ? "nw-card-elevated rounded-3xl border-slate-200/70 bg-gradient-to-b from-white to-slate-50/40 p-5 md:p-6"
+          : "nw-card p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5"
       )}
     >
       <div className={cn("pb-4", variant === "journey" ? "border-b border-slate-200/60" : "border-b border-slate-100")}>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
-            <h2 id="nw-activation-checklist" className={cn(variant === "journey" ? "text-lg font-semibold" : "text-base font-semibold", "tracking-tight text-slate-900")}>
+            <h2 id="nw-activation-checklist" className={cn("nw-type-title text-slate-900", variant === "journey" ? "text-[1.0625rem]" : "")}>
               {title}
             </h2>
-            <p className="mt-1 text-sm leading-relaxed text-slate-600">{intro}</p>
+            <p className="nw-type-body mt-1">{intro}</p>
           </div>
           {variant === "journey" ? (
-            <p className="shrink-0 rounded-full bg-[#3525cd]/12 px-3 py-1 text-xs font-semibold text-[#3525cd] shadow-sm shadow-[#3525cd]/14">
+            <p className="nw-chip nw-chip-brand shrink-0 normal-case tracking-normal">
               {doneCount}/{steps.length}
             </p>
           ) : null}
@@ -100,7 +100,7 @@ export function ActivationChecklistCard({
               className={cn(
                 "flex gap-3 transition",
                 variant === "journey" ? "min-h-[52px]" : "",
-                variant === "journey" ? "rounded-2xl border px-3 py-4 md:px-4 md:py-3.5" : "min-h-[52px] rounded-lg border px-3 py-3.5 md:min-h-0 md:px-4 md:py-3",
+                variant === "journey" ? "rounded-2xl border px-3 py-3.5 md:px-4 md:py-3" : "min-h-[52px] rounded-lg border px-3 py-3 md:min-h-0 md:px-4 md:py-2.5",
                 step.done
                   ? "border-emerald-200/80 bg-emerald-50/[0.42] shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]"
                   : variant === "journey"
@@ -116,10 +116,10 @@ export function ActivationChecklistCard({
                 )}
               </span>
               <span className="min-w-0 flex-1">
-                <span className={cn(variant === "journey" ? "text-[15px] font-semibold" : "font-semibold", "block text-slate-900")}>
+                <span className={cn(variant === "journey" ? "text-[14px]" : "text-[13px]", "block font-semibold text-slate-900")}>
                   {step.label}
                 </span>
-                <span className={cn(variant === "journey" ? "mt-1 text-[13px] leading-snug" : "mt-0.5 text-xs leading-relaxed", "block text-slate-600")}>
+                <span className={cn(variant === "journey" ? "mt-1 text-[12px] leading-snug" : "mt-0.5 text-[11px] leading-snug", "block text-slate-600")}>
                   {step.hint}
                 </span>
               </span>

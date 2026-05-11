@@ -53,13 +53,11 @@ export default async function FreelancerProfilePage() {
     : null;
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6 pb-24">
-      <header className="border-b border-slate-200/80 pb-5">
-        <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Freelancer</p>
-        <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900 md:text-[1.65rem]">
-          Profile & availability
-        </h1>
-        <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-600">
+    <div className="mx-auto max-w-3xl nw-page-stack pb-24">
+      <header className="border-b border-slate-200/80 pb-4">
+        <p className="nw-type-micro">Freelancer</p>
+        <h1 className="nw-type-display mt-1 text-slate-900">Profile & availability</h1>
+        <p className="nw-type-body mt-2 max-w-xl">
           Update how you show up to clients. Changes here sync to your public profile and proposals.
         </p>
       </header>

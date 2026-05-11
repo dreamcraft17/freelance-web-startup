@@ -492,8 +492,8 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
   const clientRating = job.clientProfile.averageReviewRating;
 
   return (
-    <div className={NW_PAGE_WRAP}>
-      <nav className="mb-5 text-sm text-slate-500">
+    <div className={`${NW_PAGE_WRAP} nw-page-stack`}>
+      <nav className="mb-4 text-sm text-slate-500">
         <Link href={jobBrowseRoot as Route} className="font-medium text-[#3525cd] underline-offset-4 hover:underline">
           {t("public.jobs.pageTitle")}
         </Link>
@@ -501,7 +501,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
         <span className="font-medium text-slate-900">{t("public.jobDetail.details")}</span>
       </nav>
 
-      <header className={`${NW_HERO_WRAP} relative mb-6 p-6 sm:p-8`}>
+      <header className={`${NW_HERO_WRAP} relative mb-5 p-5 sm:p-6`}>
         <div
           className="pointer-events-none absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-[#3525cd]/35 to-transparent"
           aria-hidden
@@ -554,13 +554,13 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
 
         <div className="mt-5 min-w-0">
           <p className={`${NW_SECTION_KICKER} text-[#3525cd]/90`}>{t("public.jobDetail.heroKicker")}</p>
-          <h1 className="mt-2 text-balance text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl sm:leading-[1.12]">
+          <h1 className="nw-type-display mt-2 text-balance text-slate-950 sm:text-[2rem]">
             {job.title}
           </h1>
-          <p className="mt-4 text-2xl font-bold tabular-nums tracking-tight text-[#3525cd] sm:text-[1.65rem]">
+          <p className="mt-3 text-xl font-semibold tabular-nums tracking-tight text-[#3525cd] sm:text-[1.45rem]">
             {budgetLine(job, t, locale)}
           </p>
-          <p className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold text-slate-600">
+          <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] font-medium text-slate-600">
             <span className="inline-flex items-center gap-1.5">
               <MapPin className="h-4 w-4 shrink-0 text-slate-400" aria-hidden />
               {[workModeLabel, jobLocation || t("public.jobDetail.notSpecified")].join(" · ")}
@@ -569,7 +569,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
             <span>{categoryLabel}</span>
           </p>
           {bidDeadline ? (
-            <p className="mt-2 text-xs font-semibold text-amber-800">{t("public.jobDetail.proposalsClose", { date: bidDeadline })}</p>
+            <p className="nw-type-meta mt-1.5 font-medium text-amber-800">{t("public.jobDetail.proposalsClose", { date: bidDeadline })}</p>
           ) : null}
         </div>
 
@@ -578,10 +578,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
             <p className={NW_SECTION_KICKER}>{t("public.jobDetail.preferredSkillsTitle")}</p>
             <div className="mt-2 flex flex-wrap gap-2">
               {jobSkillNames.map((name) => (
-                <span
-                  key={name}
-                  className="rounded-lg border border-slate-200/90 bg-white px-2.5 py-1 text-xs font-bold text-slate-800 shadow-sm"
-                >
+                <span key={name} className="nw-chip nw-chip-muted normal-case tracking-normal">
                   {name}
                 </span>
               ))}
@@ -591,7 +588,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
 
         <div className="mt-4 flex flex-wrap gap-2">
           {topSignals.slice(0, 5).map((signal) => (
-            <span key={signal} className={`${NW_BADGE_NEUTRAL} text-[10px] font-bold uppercase tracking-wide`}>
+            <span key={signal} className="nw-chip nw-chip-muted normal-case tracking-normal">
               {signal}
             </span>
           ))}
@@ -644,11 +641,11 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
 
       <div className="lg:grid lg:grid-cols-[minmax(0,1fr),minmax(280px,340px)] lg:items-start lg:gap-8">
         <div className="min-w-0 space-y-6">
-          <section className={`${NW_CARD} overflow-hidden p-5 sm:p-6`}>
+          <section className={`${NW_CARD} overflow-hidden p-4 sm:p-5`}>
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
               <div>
                 <p className={NW_SECTION_KICKER}>{t("public.jobDetail.clientTrustTitle")}</p>
-                <p className="mt-1 text-xs font-medium text-slate-500">{t("public.jobDetail.clientTrustLead")}</p>
+                <p className="nw-type-meta mt-1 font-medium normal-case tracking-normal">{t("public.jobDetail.clientTrustLead")}</p>
               </div>
               <Sparkles className="hidden h-8 w-8 text-[#3525cd]/25 sm:block" aria-hidden />
             </div>
@@ -661,15 +658,15 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <p className="text-lg font-bold text-slate-950">{job.clientProfile.displayName}</p>
+                  <p className="nw-type-title text-slate-950">{job.clientProfile.displayName}</p>
                   {clientVerified ? (
-                    <span className="inline-flex items-center gap-1 rounded-md border border-[#3525cd]/25 bg-[#eef2ff] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#3525cd]">
+                    <span className="nw-chip nw-chip-brand inline-flex items-center gap-1 normal-case tracking-normal">
                       <ShieldCheck className="h-3 w-3" aria-hidden />
                       {t("public.jobs.verifiedClient")}
                     </span>
                   ) : null}
                   {clientVerificationPending && !clientVerified ? (
-                    <span className="rounded-md border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-900">
+                    <span className="nw-chip inline-flex border-amber-200 bg-amber-50 text-amber-900 normal-case tracking-normal">
                       {t("public.jobDetail.clientVerificationPending")}
                     </span>
                   ) : null}
@@ -680,7 +677,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
                     {job.clientProfile.companyName}
                   </p>
                 ) : null}
-                <div className="mt-2 space-y-1 text-xs font-medium text-slate-600">
+                <div className="mt-2 space-y-1 text-[13px] font-medium text-slate-600">
                   {job.clientProfile.industry ? <p>{job.clientProfile.industry}</p> : null}
                   {clientLocation ? <p>{clientLocation}</p> : null}
                   {!job.clientProfile.industry && !clientLocation ? (
@@ -688,29 +685,29 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
                   ) : null}
                 </div>
                 <dl className="mt-4 grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-xl border border-slate-100 bg-slate-50/80 px-3 py-2.5">
-                    <dt className="text-[10px] font-bold uppercase tracking-wide text-slate-500">
+                  <div className="nw-card-inset px-3 py-2.5">
+                    <dt className="nw-type-micro">
                       {t("public.jobDetail.clientMemberSince")}
                     </dt>
-                    <dd className="mt-0.5 text-sm font-bold text-slate-900">{memberSinceLabel}</dd>
+                    <dd className="nw-type-body-strong mt-0.5 text-slate-900">{memberSinceLabel}</dd>
                   </div>
-                  <div className="rounded-xl border border-slate-100 bg-slate-50/80 px-3 py-2.5">
-                    <dt className="text-[10px] font-bold uppercase tracking-wide text-slate-500">
+                  <div className="nw-card-inset px-3 py-2.5">
+                    <dt className="nw-type-micro">
                       {t("public.jobDetail.clientProfileActivity")}
                     </dt>
-                    <dd className="mt-0.5 text-sm font-bold text-slate-900">{profileUpdatedLabel}</dd>
+                    <dd className="nw-type-body-strong mt-0.5 text-slate-900">{profileUpdatedLabel}</dd>
                   </div>
-                  <div className="rounded-xl border border-slate-100 bg-slate-50/80 px-3 py-2.5">
-                    <dt className="text-[10px] font-bold uppercase tracking-wide text-slate-500">
+                  <div className="nw-card-inset px-3 py-2.5">
+                    <dt className="nw-type-micro">
                       {t("public.jobDetail.clientCompletedHiresLabel")}
                     </dt>
-                    <dd className="mt-0.5 text-sm font-bold text-slate-900">{completedHiresCount}</dd>
+                    <dd className="nw-type-body-strong mt-0.5 text-slate-900">{completedHiresCount}</dd>
                   </div>
-                  <div className="rounded-xl border border-slate-100 bg-slate-50/80 px-3 py-2.5">
-                    <dt className="text-[10px] font-bold uppercase tracking-wide text-slate-500">
+                  <div className="nw-card-inset px-3 py-2.5">
+                    <dt className="nw-type-micro">
                       {t("public.jobDetail.clientOpenRolesLabel")}
                     </dt>
-                    <dd className="mt-0.5 text-sm font-bold text-slate-900">{clientOpenJobsCount}</dd>
+                    <dd className="nw-type-body-strong mt-0.5 text-slate-900">{clientOpenJobsCount}</dd>
                   </div>
                 </dl>
                 {clientReviews > 0 && clientRating != null ? (
@@ -729,9 +726,9 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
           </section>
 
           {isFreelancerViewer && overlappingSkills.length > 0 ? (
-            <div className="rounded-xl border border-emerald-200/80 bg-emerald-50/50 px-4 py-3">
-              <p className="text-xs font-bold uppercase tracking-wide text-emerald-900">{t("public.jobDetail.skillOverlapTitle")}</p>
-              <p className="mt-1 text-sm font-semibold text-emerald-950">
+            <div className="rounded-xl border border-emerald-200/80 bg-emerald-50/50 px-3.5 py-2.5">
+              <p className="nw-type-micro text-emerald-900">{t("public.jobDetail.skillOverlapTitle")}</p>
+              <p className="nw-type-body-strong mt-1 text-emerald-950">
                 {t("public.jobDetail.skillOverlapLine", {
                   count: overlappingSkills.length,
                   skills: overlappingSkills.slice(0, 6).join(", ")
@@ -1052,25 +1049,25 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
         </Card>
         ) : null}
 
-        <section className={`${NW_CARD} overflow-hidden p-6 sm:p-7`}>
+          <section className={`${NW_CARD} overflow-hidden p-5 sm:p-6`}>
           <div className="border-b border-slate-100 pb-4">
             <p className={NW_SECTION_KICKER}>{t("public.jobDetail.aboutProjectTitle")}</p>
-            <h2 className="mt-1 text-lg font-bold text-slate-950">{t("public.jobDetail.whatClientNeedsTitle")}</h2>
-            <p className="mt-1 text-xs font-medium text-slate-500">{t("public.jobDetail.whatClientNeedsLead")}</p>
+            <h2 className="nw-type-title mt-1 text-slate-950">{t("public.jobDetail.whatClientNeedsTitle")}</h2>
+            <p className="nw-type-meta mt-1 font-medium normal-case tracking-normal">{t("public.jobDetail.whatClientNeedsLead")}</p>
           </div>
           <Separator className="my-5" />
-          <p className="whitespace-pre-wrap text-[15px] leading-[1.65] text-slate-800 sm:text-base">{job.description}</p>
+          <p className="nw-type-body whitespace-pre-wrap text-slate-800 sm:text-[15px]">{job.description}</p>
           {jobSkillNames.length === 0 ? (
             <p className="mt-6 text-xs font-medium text-slate-500">{t("public.jobDetail.skillsEmpty")}</p>
           ) : null}
         </section>
 
         {relatedJobRows.length > 0 ? (
-          <section className={`${NW_CARD} p-5 sm:p-6`}>
+          <section className={`${NW_CARD} p-4 sm:p-5`}>
             <div className="flex flex-wrap items-end justify-between gap-2 border-b border-slate-100 pb-3">
               <div>
                 <p className={NW_SECTION_KICKER}>{t("public.jobDetail.relatedJobsTitle")}</p>
-                <p className="mt-1 text-sm font-semibold text-slate-800">{t("public.jobDetail.relatedJobsSubtitle")}</p>
+                <p className="nw-type-body-strong mt-1 text-slate-800">{t("public.jobDetail.relatedJobsSubtitle")}</p>
               </div>
               <Users className="h-6 w-6 text-slate-300" aria-hidden />
             </div>
@@ -1081,10 +1078,10 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
                     href={`${jobBrowseRoot}/${row.id}` as Route}
                     className="group flex flex-col gap-1 py-3 transition hover:bg-slate-50/80 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:rounded-lg sm:px-2"
                   >
-                    <span className="min-w-0 font-semibold text-slate-900 group-hover:text-[#3525cd]">
+                    <span className="min-w-0 text-[13px] font-semibold text-slate-900 group-hover:text-[#3525cd]">
                       {pickLocalizedJobTitle(row, forceOriginal ? "source" : locale)}
                     </span>
-                    <span className="shrink-0 text-xs font-bold tabular-nums text-slate-600">
+                    <span className="shrink-0 text-[12px] font-semibold tabular-nums text-slate-600">
                       {budgetLine(
                         {
                           budgetMin: row.budgetMin,
@@ -1107,11 +1104,11 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
         {showFreelancerApplyPanel ? (
           <aside
             id="nw-proposal-section"
-            className={`${NW_CARD_INSET} ${NW_SIDEBAR_STICKY} mt-8 w-full space-y-4 border-slate-200/90 p-5 shadow-sm lg:mt-0`}
+            className={`${NW_CARD_INSET} ${NW_SIDEBAR_STICKY} mt-8 w-full space-y-3.5 border-slate-200/90 p-4 shadow-sm lg:mt-0`}
           >
-            <div className="rounded-xl border border-slate-200/80 bg-white px-3 py-3">
+            <div className="rounded-xl border border-slate-200/80 bg-white px-3 py-2.5">
               <p className={NW_SECTION_KICKER}>{t("public.jobDetail.sidebarOpportunityKicker")}</p>
-              <div className="mt-2 space-y-2 text-xs font-semibold text-slate-700">
+              <div className="mt-2 space-y-1.5 text-[12px] font-semibold text-slate-700">
                 <p className="flex items-center justify-between gap-2">
                   <span className="inline-flex items-center gap-1.5 text-slate-500">
                     <Users className="h-3.5 w-3.5 text-[#3525cd]" aria-hidden />
@@ -1129,8 +1126,8 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
               </div>
             </div>
 
-            <p className="text-sm font-bold text-slate-900">{t("public.jobDetail.applyKicker")}</p>
-            <p className="text-xs font-medium leading-relaxed text-slate-600">{t("public.jobDetail.applyDescription")}</p>
+            <p className="nw-type-section text-slate-900">{t("public.jobDetail.applyKicker")}</p>
+            <p className="nw-type-body font-medium">{t("public.jobDetail.applyDescription")}</p>
 
             <div className="flex flex-col gap-2">
               {isFreelancerViewer ? (

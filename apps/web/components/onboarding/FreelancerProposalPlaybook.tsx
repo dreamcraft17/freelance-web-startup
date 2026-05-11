@@ -18,26 +18,26 @@ export function FreelancerProposalPlaybook({ title, intro, sections, footerHint 
   return (
     <section
       aria-label={title}
-      className="rounded-3xl border border-[#3525cd]/14 bg-gradient-to-b from-[#faf9ff] via-white to-slate-50/30 p-6 shadow-[0_12px_40px_-34px_rgba(53,37,205,0.42)] md:p-7"
+      className="nw-card-elevated rounded-3xl border border-[#3525cd]/14 bg-gradient-to-b from-[#faf9ff] via-white to-slate-50/30 p-5 md:p-6"
     >
       <div className="border-b border-slate-200/60 pb-4">
-        <h2 className="text-lg font-semibold tracking-tight text-slate-900">{title}</h2>
-        <p className="mt-1.5 text-sm leading-relaxed text-slate-600">{intro}</p>
+        <h2 className="nw-type-title text-slate-900">{title}</h2>
+        <p className="nw-type-body mt-1.5">{intro}</p>
       </div>
-      <ul className="mt-5 space-y-5">
+      <ul className="mt-4 space-y-4">
         {sections.map(({ Icon, title: st, body }, idx) => (
-          <li key={`${idx}-${st}`} className="flex gap-4">
-            <span className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#3525cd]/14 bg-[#3525cd]/10 text-[#3525cd] shadow-[inset_0_1px_0_rgba(255,255,255,0.75)]">
-              <Icon className="h-[22px] w-[22px]" strokeWidth={1.75} aria-hidden />
+          <li key={`${idx}-${st}`} className="flex gap-3.5">
+            <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#3525cd]/14 bg-[#3525cd]/10 text-[#3525cd] shadow-[inset_0_1px_0_rgba(255,255,255,0.75)]">
+              <Icon className="h-5 w-5" strokeWidth={1.75} aria-hidden />
             </span>
             <div className="min-w-0">
-              <h3 className="text-[15px] font-semibold text-slate-900">{st}</h3>
-              <p className="mt-1 text-sm leading-relaxed text-slate-600">{body}</p>
+              <h3 className="text-[14px] font-semibold text-slate-900">{st}</h3>
+              <p className="mt-1 text-[13px] leading-relaxed text-slate-600">{body}</p>
             </div>
           </li>
         ))}
       </ul>
-      <p className="mt-5 border-t border-slate-100 pt-4 text-xs leading-relaxed text-slate-500">{footerHint}</p>
+      <p className="nw-type-meta mt-4 border-t border-slate-100 pt-3.5 normal-case tracking-normal">{footerHint}</p>
     </section>
   );
 }

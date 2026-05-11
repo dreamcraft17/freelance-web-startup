@@ -53,13 +53,13 @@ export function AdminModerationReportsTable({
                 {formatAdminDateTime(typeof r.createdAt === "string" ? new Date(r.createdAt) : r.createdAt)}
               </AdminTd>
               <AdminTd>
-                <span className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase text-slate-800 ring-1 ring-slate-200/70">
+                <span className="nw-chip nw-chip-muted font-mono normal-case tracking-normal text-slate-800">
                   {r.status.replace(/_/g, " ")}
                 </span>
               </AdminTd>
               <AdminTd>
                 <p className="break-all font-mono text-[11px] text-slate-900">{r.subjectRef}</p>
-                <p className="mt-0.5 font-mono text-[10px] uppercase text-slate-500">{r.subjectType}</p>
+                <p className="mt-0.5 font-mono text-[10px] text-slate-500">{r.subjectType}</p>
               </AdminTd>
               <AdminTd className="max-w-[10rem]">
                 <span className="text-xs font-medium text-slate-900" title={r.reporterEmail}>

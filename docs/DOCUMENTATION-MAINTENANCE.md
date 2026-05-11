@@ -1,7 +1,7 @@
 # Documentation maintenance (NearWork)
 
-> **Doc revision:** v18  
-> Last synchronized: 2026-05-09 (typography/density docs sync: ui-redesign, features, application-overview, README).
+> **Doc revision:** v19  
+> Last synchronized: 2026-05-09 (convergence-pass docs sync: job detail/profile, onboarding cards, admin UI pills).
 
 ## AUTO — wajib untuk AI & kontributor
 

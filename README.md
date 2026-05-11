@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v92  
-> Last synchronized: 2026-05-09 — Editorial typography/density pass on shared `nw-*` CSS + Tailwind text tokens (landing, `/jobs` cards, dashboards, messages/notifications, settings headers); plus marketplace pulse layer from prior sync.
+> **Doc revision:** v93  
+> Last synchronized: 2026-05-09 — Second typography/design-system convergence on `/jobs/[jobId]`, `/freelancers/[username]`, onboarding cards, and admin status pills (while preserving real-data marketplace behavior).
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)

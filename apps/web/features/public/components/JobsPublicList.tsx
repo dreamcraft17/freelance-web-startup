@@ -121,16 +121,16 @@ export function JobsPublicList({ jobs, savedJobIds }: ListProps) {
               <div className="flex flex-col gap-2.5 p-3 sm:p-3.5 lg:flex-row lg:items-stretch lg:justify-between lg:gap-3">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-700">
+                    <span className="nw-chip nw-chip-muted normal-case tracking-normal">
                       {workModeLabel(job.workMode)}
                     </span>
                     {job.categoryName ? (
-                      <span className="rounded-md border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-600">
+                      <span className="nw-chip nw-chip-muted normal-case tracking-normal">
                         {job.categoryName}
                       </span>
                     ) : null}
                     {job.isTranslated ? (
-                      <span className="rounded-md border border-slate-100 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold text-slate-500">
+                      <span className="nw-chip nw-chip-muted normal-case tracking-normal text-slate-500">
                         {t("public.jobs.translatedFrom", {
                           language:
                             job.translationSource === "id"
@@ -140,29 +140,29 @@ export function JobsPublicList({ jobs, savedJobIds }: ListProps) {
                       </span>
                     ) : null}
                     {statusBadge === "new" ? (
-                      <span className="rounded-md bg-emerald-600 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+                      <span className="nw-chip border-emerald-700 bg-emerald-600 text-white normal-case tracking-normal">
                         {t("public.jobs.badgeNew")}
                       </span>
                     ) : null}
                     {statusBadge === "urgent" ? (
-                      <span className="rounded-md bg-amber-500 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-900">
+                      <span className="nw-chip border-amber-300 bg-amber-500 text-slate-900 normal-case tracking-normal">
                         {t("public.jobs.badgeUrgent")}
                       </span>
                     ) : null}
                     {statusBadge === "few" ? (
-                      <span className="rounded-md border border-slate-200 bg-slate-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-800">
+                      <span className="nw-chip nw-chip-muted normal-case tracking-normal text-slate-800">
                         {t("public.jobs.badgeFewApplicants")}
                       </span>
                     ) : null}
                     {statusBadge === "competitive" ? (
-                      <span className="rounded-md bg-slate-800 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+                      <span className="nw-chip border-slate-800 bg-slate-800 text-white normal-case tracking-normal">
                         {t("public.jobs.badgeCompetitive")}
                       </span>
                     ) : null}
                     {job.shortlistedCount > 0 ? (
                       <span
                         title={t("public.jobs.badgeInterviewingHint")}
-                        className="nw-chip nw-chip-brand px-2 py-0.5 text-[10px] normal-case tracking-normal"
+                        className="nw-chip nw-chip-brand normal-case tracking-normal"
                       >
                         {job.shortlistedCount === 1
                           ? t("public.jobs.badgeInterviewingOne")
@@ -172,7 +172,7 @@ export function JobsPublicList({ jobs, savedJobIds }: ListProps) {
                     {showMatchChip(job) ? (
                       <span
                         title={t("public.jobs.matchForYouHint")}
-                        className="rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-900"
+                        className="nw-chip nw-chip-success normal-case tracking-normal"
                       >
                         {t("public.jobs.matchForYou")}
                       </span>
@@ -191,7 +191,7 @@ export function JobsPublicList({ jobs, savedJobIds }: ListProps) {
                         <Building2 className="hidden h-3.5 w-3.5 shrink-0 text-slate-400 sm:block" aria-hidden />
                         <span className="truncate">{job.clientDisplayName}</span>
                         {job.clientVerified ? (
-                          <span className="hidden shrink-0 rounded border border-[#3525cd]/25 bg-[#eef2ff] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-[#3525cd] sm:inline">
+                          <span className="hidden shrink-0 nw-chip nw-chip-brand normal-case tracking-normal sm:inline-flex">
                             {t("public.jobs.verifiedClient")}
                           </span>
                         ) : null}
@@ -205,7 +205,7 @@ export function JobsPublicList({ jobs, savedJobIds }: ListProps) {
                   </div>
                   {job.clientVerified ? (
                     <p className="mt-1 sm:hidden">
-                      <span className="inline-flex rounded-md border border-[#3525cd]/25 bg-[#eef2ff] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-[#3525cd]">
+                      <span className="inline-flex nw-chip nw-chip-brand normal-case tracking-normal">
                         {t("public.jobs.verifiedClient")}
                       </span>
                     </p>
@@ -234,17 +234,17 @@ export function JobsPublicList({ jobs, savedJobIds }: ListProps) {
 
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {job.skillNames.slice(0, 5).map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px] font-semibold text-slate-700"
-                      >
+                      <span key={tag} className="nw-chip nw-chip-muted normal-case tracking-normal">
                         {tag}
                       </span>
                     ))}
                     {job.skillNames.length > 5 ? (
                       <span className="self-center px-1 text-[11px] font-semibold text-slate-400">+{job.skillNames.length - 5}</span>
                     ) : null}
-                    <span title={t("public.jobs.signalHint")} className="self-center text-[11px] font-semibold text-[#3525cd]">
+                    <span
+                      title={t("public.jobs.signalHint")}
+                      className="self-center max-w-full truncate text-[11px] font-semibold text-[#3525cd] sm:max-w-none"
+                    >
                       {whyApplySignal(job)}
                     </span>
                   </div>

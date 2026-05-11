@@ -25,7 +25,7 @@ function Pill({ children, tone }: { children: string; tone: "slate" | "indigo" }
       ? "bg-[#3525cd]/10 text-[#2d1fa8] ring-1 ring-[#3525cd]/15"
       : "bg-slate-100 text-slate-800 ring-1 ring-slate-200/80";
   return (
-    <span className={`inline-flex max-w-full truncate rounded px-1.5 py-0.5 font-mono text-[11px] font-medium ${cls}`}>
+    <span className={`nw-chip inline-flex max-w-full truncate font-mono normal-case tracking-normal ${cls}`}>
       {children}
     </span>
   );

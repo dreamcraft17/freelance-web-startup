@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v104  
-> Last synchronized: 2026-05-09 (editorial typography/density pass pada utilitas `nw-*` + permukaan marketplace/dashboard).
+> **Doc revision:** v105  
+> Last synchronized: 2026-05-09 (second typography/design-system convergence on job detail, freelancer profile, onboarding cards, admin table pills).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,6 +9,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
+- **2026-05-09 — Konvergensi tipografi tahap 2:** detail page `/jobs/[jobId]` dan `/freelancers/[username]` diselaraskan ke `nw-type-*` + ritme card/chip bersama; onboarding cards (`ActivationChecklistCard`, `FreelancerProposalPlaybook`, `MarketplaceLiquidityHints`) dipadatkan dan dipoles editorial; tabel admin inti memakai pill/chip yang lebih konsisten untuk kepadatan operasional.
 - **2026-05-09 — Tipografi & kepadatan editorial:** utilitas `nw-type-*`, `nw-stack*`, chip, dan beberapa panel di `globals.css` dituning untuk hierarki lebih jelas dan kartu marketplace lebih efisien; landing hero, listing `/jobs`, dashboard klien/freelancer, pesan, notifikasi, serta header `/messages` & `/settings` memakai ritme baru tanpa mengubah logika bisnis.
 - **2026-05-09 — Marketplace pulse (data nyata):** agregat ringan di **`PublicStatsService`** (lowongan terbuka publik, proposal 24 jam, freelancer tersedia, posting baru 24 jam, kontrak selesai 7 hari, kategori dengan listing terbanyak); ditampilkan di landing hero, sidebar/board **`/jobs`**, sidebar freelancers, strip **`nw-card-trust`** di dashboard freelancer & klien; empty state board baseline menampilkan kategori yang masih punya listing. **`SearchService`** melampirkan **`shortlistedCount`** per job untuk chip **wawancara** di **`JobsPublicList`** dan cuplikan lowongan di dashboard freelancer.
 - **2026-05-09 — Freelancer workspace UI:** dashboard freelancer memakai utilitas `nw-*` (kartu, chip, typografi, empty state percakapan/skill); data aktivitas menampilkan label status/kontrak dan mode kerja terjemahan; halaman **Proposal** freelancer memakai kamus `dashboard.freelancer.proposals*` + filter status memakai label `dashboard.client.bidStatus`; **Messages** dan **Notifications** diselaraskan ke shell/kartu NW, tanggal memakai locale, link job ke board publik memakai `withPublicLocale`.

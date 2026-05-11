@@ -12,11 +12,11 @@ export function MarketplaceLiquidityHints({ title, intro, bullets, footer }: Pro
   return (
     <section
       aria-label={title}
-      className="rounded-3xl border border-slate-200/82 bg-gradient-to-b from-[#faf9ff] to-white px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] md:px-6 md:py-6"
+      className="nw-card rounded-3xl border-slate-200/82 bg-gradient-to-b from-[#faf9ff] to-white px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] md:px-5 md:py-5"
     >
-      <h2 className="text-sm font-semibold leading-snug text-slate-900">{title}</h2>
-      <p className="mt-2 text-xs leading-relaxed text-slate-600 md:text-[13px]">{intro}</p>
-      <ul className="mt-3 space-y-2 text-xs leading-relaxed text-slate-700 md:text-[13px]">
+      <h2 className="nw-type-section text-slate-900">{title}</h2>
+      <p className="nw-type-body mt-1.5">{intro}</p>
+      <ul className="mt-2.5 space-y-2 text-[12px] leading-relaxed text-slate-700 md:text-[13px]">
         {bullets.map((line, idx) => (
           <li key={idx} className="flex gap-2">
             <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#3525cd]" aria-hidden />
@@ -24,7 +24,7 @@ export function MarketplaceLiquidityHints({ title, intro, bullets, footer }: Pro
           </li>
         ))}
       </ul>
-      {footer ? <div className="mt-3 text-xs leading-relaxed text-slate-500">{footer}</div> : null}
+      {footer ? <div className="nw-type-meta mt-2.5 normal-case tracking-normal">{footer}</div> : null}
     </section>
   );
 }

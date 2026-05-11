@@ -24,7 +24,7 @@ export type AdminJobRow = {
 
 function StatusPill({ children }: { children: string }) {
   return (
-    <span className="inline-flex max-w-full truncate rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[11px] font-medium text-slate-800 ring-1 ring-slate-200/80">
+    <span className="nw-chip nw-chip-muted inline-flex max-w-full truncate font-mono normal-case tracking-normal text-slate-800">
       {children}
     </span>
   );
@@ -67,11 +67,11 @@ export function AdminJobsTable({ jobs }: { jobs: AdminJobRow[] }) {
               <AdminTd className="text-right tabular-nums text-slate-800">{j.bidCount}</AdminTd>
               <AdminTd>
                 {j.moderationHiddenAt ? (
-                  <span className="rounded bg-rose-50 px-1.5 py-0.5 text-[11px] font-semibold uppercase text-rose-900 ring-1 ring-rose-100">
+                  <span className="nw-chip inline-flex border-rose-200 bg-rose-50 normal-case tracking-normal text-rose-900">
                     Hidden
                   </span>
                 ) : (
-                  <span className="rounded bg-emerald-50 px-1.5 py-0.5 text-[11px] font-semibold uppercase text-emerald-900 ring-1 ring-emerald-100">
+                  <span className="nw-chip nw-chip-success inline-flex normal-case tracking-normal">
                     Listed
                   </span>
                 )}
