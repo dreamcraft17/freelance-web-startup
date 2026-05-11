@@ -1,13 +1,22 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v88  
-> Last synchronized: 2026-05-09 (public `/jobs`: kartu listing `JobsPublicList` lebih marketplace—avatar klien, hierarki budget/proposal/waktu, hover; lembar filter mobile tanpa blur, active states full indigo).
+> **Doc revision:** v89  
+> Last synchronized: 2026-05-09 (public job detail `/jobs/[id]`: hero premium, panel trust klien data nyata, sidebar proposal sticky, related jobs, mobile CTA tanpa blur).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-09 — Public job detail marketplace pass (`/jobs/[jobId]`)
+
+- **Hero:** `NW_HERO_WRAP` + gradient hairline, status/proposal/posted/competition chips, budget indigo besar, mode+lokasi+kategori, skills di fold, sinyal heuristik (tanpa metrik palsu).
+- **Trust panel:** inisial klien, `verificationStatus`, ulasan agregat (`reviewCount` / `averageReviewRating`), `createdAt`/`updatedAt` profil, hitungan kontrak `COMPLETED` per `clientUserId`, jumlah lowongan `OPEN` publik per klien—**tanpa** respons palsu.
+- **Freelancer:** overlap skill dari `FreelancerSkill` vs tag job; sidebar sticky (`nw-proposal-section`) berisi pulse mini + `JobProposalForm` atau `AuthAwareCtaLink` + CTA diskusi ke anchor; footer mobile solid (tanpa `backdrop-blur`).
+- **Klien:** kartu `Card` review proposal tetap; snapshot 3-kolom lama dihapus agar tidak redundan.
+- **Related jobs:** query Prisma kategori sama, judul dilokalisasi seperti board.
+- **Repo:** `findByIdPublic` memperluas `clientProfile` dengan field verifikasi/ulasan/timestamp (tanpa `userId` di payload publik—tetap lewat query `owner` internal untuk form).
 
 ### 2026-05-09 — Public jobs listing realism (`JobsPublicList` + mobile filters)
 

@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v98  
-> Last synchronized: 2026-05-09 (public jobs: `JobsPublicList` + `JobsMarketplaceMobileFilters` — kartu listing marketplace + lembar filter mobile refined).
+> **Doc revision:** v99  
+> Last synchronized: 2026-05-09 (public job detail: halaman `/jobs/[jobId]` hero + trust + sidebar proposal + related jobs; `JobRepository.findByIdPublic` memperluas field profil klien untuk UI).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,6 +9,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
+- **2026-05-09 — Public job detail UX & trust data:** halaman detail lowongan publik memuat hero opportunity, panel klien (verifikasi, ulasan agregat, member since, aktivitas update profil, kontrak selesai, jumlah lowongan terbuka publik), bagian brief terstruktur, lowongan terkait per kategori, serta kolom kanan sticky untuk form proposal / CTA `AuthAwareCtaLink` (tanpa duplikasi kartu sign-in). Query agregat paralel di server; tidak ada skor AI atau metrik respons palsu.
 - **2026-05-09 — Public jobs card & mobile filter sheet:** komponen `JobsPublicList` menata ulang kartu lowongan publik agar lebih scanable (badge status dari data nyata, baris klien + verifikasi, anggaran + jumlah proposal + waktu posting, skill + sinyal heuristik dengan tooltip jujur); CTA ganda “kirim proposal” (auth-aware) vs “lihat brief”. `JobsMarketplaceMobileFilters`: overlay gelap opaque tanpa blur, opsi aktif solid indigo, kontrol lebih thumb-friendly.
 - **2026-05-09 — Landing visual (non-glass):** permukaan hero/bawah-fold memakai **`bg-slate-50`**, **`bg-white`**, **`bg-slate-50`** pada sub-kartu; bayangan **`shadow-sm` / `shadow-md`**; menghapus **`backdrop-blur`** dan overlay **`bg-white/…`** agar tidak menyerupai template AI glassmorphism.
 - **2026-05-09 — E2E smoke harness:** skrip root `pnpm test:e2e` memanggil `scripts/run-e2e-server.mjs` yang menjalankan `pnpm --filter @acme/web build`, menyalakan **`next start`** pada **`127.0.0.1:${E2E_PORT:-3041}`**, menunggu `GET /api/auth/csrf` merespons JSON, lalu menjalankan `scripts/e2e-marketplace-flow.mjs`. Ini menghindari kegagalan palsu (`Cannot find module './….js'`) ketika smoke diarahkan ke proses **`next dev`** dengan artefak `.next` inkremental yang tidak konsisten; pengembangan tetap bisa menjalankan tes mentah dengan **`BASE_URL`** manual.

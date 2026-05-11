@@ -193,7 +193,12 @@ export class JobRepository {
             companyName: true,
             industry: true,
             city: true,
-            country: true
+            country: true,
+            verificationStatus: true,
+            reviewCount: true,
+            averageReviewRating: true,
+            createdAt: true,
+            updatedAt: true
           }
         }
       }

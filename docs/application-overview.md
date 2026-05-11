@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v96  
-> Last synchronized: 2026-05-09 (public `/jobs`: kartu `JobsPublicList` + lembar filter mobile refined).
+> **Doc revision:** v97  
+> Last synchronized: 2026-05-09 (public job detail `/jobs/[jobId]`: layout marketplace + agregat trust klien di SSR).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,7 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Public job detail discovery (2026-05-09):** halaman detail job publik menonjolkan brief, sinyal kompetisi proposal nyata, profil klien (verifikasi, ulasan, histori hire via kontrak selesai, jumlah posting terbuka), rekomendasi lowongan sejenis, dan alur apply/proposal di sidebar/mobile—semua dari data Prisma, bukan template metrik palsu.
 - **Public jobs listing UX (2026-05-09):** board `/jobs` memakai kartu hasil client (`JobsPublicList`) dengan hierarki marketplace (klien, verifikasi, anggaran, proposal count, freshness, badge kompetisi berbasis `_count.bids` + `createdAt`, featured) dan CTA terstruktur (apply vs buka brief); lembar filter mobile (`JobsMarketplaceMobileFilters`) refined (tanpa backdrop blur, active state lebih jelas).
 - **Landing polish tanpa glass (2026-05-09):** halaman beranda pemasaran (`LandingHero`, `LandingHomeSections`) memakai latar dan kartu **opaque** (`slate-50` / `white`), border `slate-200`, bayangan ringan; menghindari **`backdrop-blur`** dan panel **`bg-white/…`**.
 - **E2E HTTP harness (2026-05-09):** `pnpm test:e2e` memakai `scripts/run-e2e-server.mjs` untuk build `@acme/web`, menjalankan **`next start`** pada **`127.0.0.1:3041`** (override `E2E_PORT`), meng-set `BASE_URL`, lalu menjalankan `scripts/e2e-marketplace-flow.mjs`; mengurangi kegagalan palsu akibat chunk webpack hilang saat API dipanggil ke `next dev` dengan `.next` inkremental rusak.
