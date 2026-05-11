@@ -3,7 +3,7 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { Loader2, MapPin, Navigation, X } from "lucide-react";
 import { useI18n } from "@/features/i18n/I18nProvider";
 import { withPublicLocale } from "@/lib/i18n/locale-path";
@@ -38,6 +38,7 @@ export function FreelancersPublicFilters({
   const { t, locale } = useI18n();
   const flBase = withPublicLocale(locale, "/freelancers");
   const router = useRouter();
+  const [isNavigating, startNavigation] = useTransition();
   const [radius, setRadius] = useState<number>(radiusKm);
   const { state, coords, errorCode, request, clear, setCoords, setState } = useBrowserLocation();
   const workModes: { value: WorkMode; label: string }[] = [
@@ -93,7 +94,9 @@ export function FreelancersPublicFilters({
     setCoords(null);
     setState("idle");
     const query = buildQuery({ keyword, city, workMode, categoryId, lat: null, lng: null });
-    router.push((query ? `${flBase}?${query}` : flBase) as Route);
+    startNavigation(() => {
+      router.push((query ? `${flBase}?${query}` : flBase) as Route);
+    });
   };
 
   const onApplyLocation = () => {
@@ -107,7 +110,9 @@ export function FreelancersPublicFilters({
       lng: activeCoords.lng,
       radiusKm: radius
     });
-    router.push(`${flBase}?${query}` as Route);
+    startNavigation(() => {
+      router.push(`${flBase}?${query}` as Route);
+    });
   };
 
   useEffect(() => {
@@ -121,20 +126,22 @@ export function FreelancersPublicFilters({
       lng: coords.lng,
       radiusKm: radius
     });
-    router.push(`${flBase}?${query}` as Route);
+    startNavigation(() => {
+      router.push(`${flBase}?${query}` as Route);
+    });
     // only react when browser-granted coordinates arrive
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [coords]);
 
   return (
-    <div className="nw-discovery-panel">
+    <div className={isNavigating ? "nw-discovery-panel opacity-85 transition-opacity duration-150" : "nw-discovery-panel"}>
       <div className="nw-panel-head">
         <div>
           <p className="nw-section-title">{t("public.filters.title")}</p>
           <p className="text-sm font-semibold text-slate-900">{t("public.freelancers.filtersSubtitle")}</p>
         </div>
         <div className="flex shrink-0 gap-2 sm:pb-0">
-          <button type="submit" form="freelancers-filter-form" className="nw-cta-primary px-5 py-2.5">
+          <button type="submit" form="freelancers-filter-form" disabled={isNavigating} className="nw-cta-primary px-5 py-2.5 disabled:cursor-wait disabled:opacity-70">
             {t("public.filters.apply")}
           </button>
           <Link
@@ -147,13 +154,13 @@ export function FreelancersPublicFilters({
       </div>
 
       <div className="mb-3 flex flex-wrap gap-1.5">
-        <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
+        <span className="nw-chip nw-chip-muted normal-case tracking-normal">
           {t("public.freelancers.filterHintRole")}
         </span>
-        <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
+        <span className="nw-chip nw-chip-muted normal-case tracking-normal">
           {t("public.freelancers.filterHintMode")}
         </span>
-        <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
+        <span className="nw-chip nw-chip-muted normal-case tracking-normal">
           {t("public.freelancers.filterHintRate")}
         </span>
       </div>
@@ -275,7 +282,7 @@ export function FreelancersPublicFilters({
             <Navigation className="h-4 w-4 shrink-0 text-[#3525cd]" aria-hidden />
             <p className="text-sm font-bold text-slate-900">{t("public.freelancers.nearbyTitle")}</p>
             {locationState === "granted" ? (
-              <span className="inline-flex items-center rounded border border-[#3525cd]/30 bg-white px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-[#3525cd]">
+              <span className="nw-chip nw-chip-brand inline-flex items-center normal-case tracking-normal">
                 {t("public.freelancers.nearbyLive")}
               </span>
             ) : null}
@@ -283,11 +290,11 @@ export function FreelancersPublicFilters({
           <button
             type="button"
             onClick={onUseLocation}
-            disabled={locationState === "requesting"}
+            disabled={locationState === "requesting" || isNavigating}
             className="inline-flex items-center gap-1.5 rounded-md bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-70"
           >
-            {locationState === "requesting" ? <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden /> : <MapPin className="h-3.5 w-3.5" aria-hidden />}
-            {locationState === "requesting" ? t("public.freelancers.nearbyRequesting") : t("public.freelancers.nearbyUseLocation")}
+            {locationState === "requesting" || isNavigating ? <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden /> : <MapPin className="h-3.5 w-3.5" aria-hidden />}
+            {locationState === "requesting" || isNavigating ? t("public.freelancers.nearbyRequesting") : t("public.freelancers.nearbyUseLocation")}
           </button>
         </div>
 
@@ -308,13 +315,14 @@ export function FreelancersPublicFilters({
                 </option>
               ))}
             </select>
-            <button type="button" onClick={onApplyLocation} className="rounded-md bg-[#3525cd] px-2.5 py-1.5 text-xs font-semibold text-white transition hover:bg-[#4f46e5]">
+            <button type="button" onClick={onApplyLocation} disabled={isNavigating} className="rounded-md bg-[#3525cd] px-2.5 py-1.5 text-xs font-semibold text-white transition hover:bg-[#4f46e5] disabled:cursor-wait disabled:opacity-70">
               {t("public.freelancers.nearbyApply")}
             </button>
             <button
               type="button"
               onClick={onClearLocation}
-              className="inline-flex items-center gap-1 rounded-md px-2 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100"
+              disabled={isNavigating}
+              className="inline-flex items-center gap-1 rounded-md px-2 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100 disabled:cursor-wait disabled:opacity-70"
             >
               <X className="h-3.5 w-3.5" aria-hidden />
               {t("public.freelancers.nearbyClear")}

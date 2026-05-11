@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v103  
-> Last synchronized: 2026-05-09 (convergence pass for job detail/profile pages, onboarding cards, and admin surface pills).
+> **Doc revision:** v104  
+> Last synchronized: 2026-05-11 (loading-state and route-transition polish with shared skeleton primitives).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,7 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Loading/perceived-performance polish (2026-05-11):** App Router loading boundaries diperluas ke permukaan high-traffic; skeleton mengikuti layout final (cards/rows/chips) agar transisi antar route terasa stabil. Pending states lokal ditambahkan pada notifikasi (filter group switch), messages composer, dan filter lokasi freelancer tanpa menambah library animasi berat.
 - **Convergence pass 2 (2026-05-09):** halaman detail job publik, profil freelancer publik, editor profil freelancer, dan komponen onboarding utama mengikuti ladder tipografi `nw-type-*` + ritme card/chip yang sama; tabel admin reports/jobs/users/verification menerima pass visual ringan agar lebih cepat dipindai tanpa mengubah workflow RBAC.
 - **Editorial typography & density (2026-05-09):** utilitas CSS bersama (`nw-type-*`, stacks, chips, beberapa panel) dan skala font Tailwind (`nw-lead`/`nw-body`/`nw-caption`) disempurnakan untuk pesan visual lebih matang; landing, board job publik, dashboard role, inbox/thread Messages, pusat notifikasi, serta header halaman workspace pesan/pengaturan mengikuti spacing hierarchy baru tanpa mengubah API atau alur data.
 - **Marketplace pulse & momentum (2026-05-09):** `PublicStatsService` mengembalikan agregat tambahan (posting baru 24 jam, kontrak selesai 7 hari, kategori dengan listing terbanyak) dalam transaksi yang sama dengan pulse hero untuk `/jobs`/`/freelancers`; snapshot ringkas (`getMarketplaceMomentumSnapshot`) memuat landing dan dashboard role; pencarian job publik melampirkan `shortlistedCount` untuk chip wawancara di kartu hasil.

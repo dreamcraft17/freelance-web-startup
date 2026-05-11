@@ -59,13 +59,13 @@ export function JobsPublicFilters({
       </div>
 
       <div className="mb-3 flex flex-wrap gap-1.5">
-        <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
+        <span className="nw-chip nw-chip-muted normal-case tracking-normal">
           {t("public.jobs.filterHintRelevant")}
         </span>
-        <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
+        <span className="nw-chip nw-chip-muted normal-case tracking-normal">
           {t("public.jobs.filterHintBudget")}
         </span>
-        <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
+        <span className="nw-chip nw-chip-muted normal-case tracking-normal">
           {t("public.jobs.filterHintRecent")}
         </span>
       </div>

@@ -2,7 +2,7 @@
 
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { NotificationType } from "@acme/types";
 import { useI18n } from "@/features/i18n/I18nProvider";
 import { fetchWithCsrf } from "@/features/auth/lib/fetch-with-csrf";
@@ -141,6 +141,7 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
   const router = useRouter();
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [category, setCategory] = useState<NotificationCategory>("all");
+  const [isFiltering, startFilteringTransition] = useTransition();
 
   const counts = useMemo(
     () =>
@@ -240,7 +241,11 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
             <button
               key={chip.id}
               type="button"
-              onClick={() => setCategory(chip.id as NotificationCategory)}
+              onClick={() =>
+                startFilteringTransition(() => {
+                  setCategory(chip.id as NotificationCategory);
+                })
+              }
               className={cn(
                 "rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors duration-200 ring-1",
                 active
@@ -274,7 +279,7 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
         </div>
       ) : null}
 
-      {filteredItems.length > 0 ? <div className="space-y-8">
+      {filteredItems.length > 0 ? <div className={cn("space-y-8 transition-opacity duration-150", isFiltering && "opacity-75")}>
       {unread.length > 0 ? (
         <section aria-labelledby="notif-unread-heading" className="space-y-3">
           <div>
@@ -364,6 +369,19 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
         </section>
       ) : null}
       </div> : null}
+      {isFiltering ? (
+        <div className="nw-card overflow-hidden rounded-xl border-slate-200/80">
+          {Array.from({ length: 3 }).map((_, idx) => (
+            <div key={`notif-filter-skeleton-${idx}`} className="flex gap-2.5 border-b border-slate-100 px-3.5 py-3 last:border-b-0">
+              <div className="nw-skeleton h-10 w-10 rounded-xl" />
+              <div className="min-w-0 flex-1">
+                <div className="nw-skeleton h-3.5 w-2/3" />
+                <div className="nw-skeleton-soft mt-1.5 h-3 w-full" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }

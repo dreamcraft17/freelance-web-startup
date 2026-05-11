@@ -1,7 +1,7 @@
 # Documentation maintenance (NearWork)
 
-> **Doc revision:** v19  
-> Last synchronized: 2026-05-09 (convergence-pass docs sync: job detail/profile, onboarding cards, admin UI pills).
+> **Doc revision:** v20  
+> Last synchronized: 2026-05-11 (loading/skeleton/perceived-performance docs sync).
 
 ## AUTO — wajib untuk AI & kontributor
 

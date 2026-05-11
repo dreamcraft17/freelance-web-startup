@@ -466,7 +466,12 @@ export function MessagesWorkspace({
                   </div>
                 </div>
               ) : (
-                <ul className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-4 md:space-y-4 md:px-6 md:py-5">
+                <ul
+                  className={cn(
+                    "min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-4 transition-opacity duration-150 md:space-y-4 md:px-6 md:py-5",
+                    isPending && "opacity-80"
+                  )}
+                >
                   {messages.map((m) => {
                     const mine = m.senderId === currentUserId && !m.isSystem;
                     return (
@@ -513,6 +518,12 @@ export function MessagesWorkspace({
                 {sendError ? <p className="mb-2 text-sm font-medium text-red-600">{sendError}</p> : null}
                 {selectedContext ? (
                   <p className="mb-2 text-[11px] leading-relaxed text-slate-500">{t("messages.composeWorkplaceReminder")}</p>
+                ) : null}
+                {isPending ? (
+                  <div className="mb-2 flex items-center gap-2 rounded-lg border border-slate-200/80 bg-slate-50/70 px-2.5 py-2">
+                    <div className="nw-skeleton h-2 w-2 rounded-full" />
+                    <div className="nw-skeleton-soft h-3 w-40 max-w-full" />
+                  </div>
                 ) : null}
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
                   <textarea

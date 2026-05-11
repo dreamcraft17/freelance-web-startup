@@ -1,7 +1,7 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v95  
-> Last synchronized: 2026-05-09 (second convergence pass: `/jobs/[jobId]`, `/freelancers/[username]`, onboarding cards, admin table pills, and badge normalization).
+> **Doc revision:** v96  
+> Last synchronized: 2026-05-11 (loading/skeleton convergence: shared `nw-skeleton*`, route `loading.tsx` for key surfaces, calmer pending states in messages/notifications/filters).
 
 ## Goal
 
@@ -15,6 +15,12 @@ Build a grounded, practical, product-first UI across public and authenticated su
 - **Public freelancer profile (`/freelancers/[username]`):** hero, service/review/portfolio sections, final CTA, dan trust sidebar menyamakan tipografi editorial; badges availability/work-mode/reasons lebih konsisten.
 - **Onboarding surfaces:** `ActivationChecklistCard`, `FreelancerProposalPlaybook`, `MarketplaceLiquidityHints` memakai `nw-card*`, skala teks lebih terstruktur, dan spacing lebih efisien tanpa mengubah milestone logic.
 - **Admin light pass:** `AdminUi` dan pill status di tabel jobs/reports/users/verification dipadatkan dengan gaya chip konsisten untuk scanability operasional.
+
+### 2026-05-11 — Perceived performance pass (loading & transitions)
+
+- **Design-system loading primitives:** `globals.css` menambah `nw-skeleton`, `nw-skeleton-soft`, `nw-skeleton-chip`, `nw-skeleton-row`, `nw-skeleton-card`; `LoadingSkeleton` helper dipakai untuk menjaga hierarki placeholder tetap seragam dengan ritme `nw-card`/`nw-type`.
+- **Route loading coverage:** ditambah `loading.tsx` pada surface inti (`/jobs`, `/jobs/[jobId]`, `/freelancers`, `/freelancers/[username]`, dashboard client/freelancer, messages, notifications, settings, freelancer profile/proposals, admin jobs/users/verification/reports) agar transisi tidak blank.
+- **Interactive pending polish:** `FreelancersPublicFilters` memakai `useTransition` untuk nearby actions (apply/clear/use location), `NotificationsCenter` menampilkan placeholder saat pindah kategori, `MessagesWorkspace` memberi feedback composer/list saat kirim pesan.
 
 ### 2026-05-09 — Editorial typography & marketplace density
 
