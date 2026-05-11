@@ -1,7 +1,7 @@
 # @acme/database
 
-> **Doc revision:** v8  
-> Last synchronized: 2026-05-11 (`DATABASE_URL_TEST` for Playwright; pool note unchanged).
+> **Doc revision:** v9  
+> Last synchronized: 2026-05-11 (removed Playwright-only test DB note; pool guidance unchanged).
 
 PostgreSQL access via **Prisma**: schema, migrations, and generated client.
 
@@ -30,10 +30,6 @@ Mitigations used in this repo:
 - For **serverless**, point Prisma at a pooler URL that matches your deployment model (or add a conservative `connection_limit` query param only when your provider documents it).
 
 The API layer maps pool exhaustion to **`503`** with `DB_POOL_EXHAUSTED` where applicable (`withApiHandler`).
-
-### Playwright browser E2E
-
-For **`pnpm test:playwright`**, prefer a dedicated database via **`DATABASE_URL_TEST`**. The Playwright web server maps that value onto **`DATABASE_URL`** for the Next.js process so Prisma continues to read the standard env var while your interactive dev DB stays separate (reduces pool contention and accidental mutation of dev seed data). See **`docs/testing-playwright.md`**.
 
 ## Bootstrap (reproducible)
 

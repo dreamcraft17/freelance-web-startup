@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v108  
-> Last synchronized: 2026-05-11 (Playwright infra: `DATABASE_URL_TEST`, project scripts, storageState setup, artifact dirs; browser E2E coverage unchanged in scope).
+> **Doc revision:** v109  
+> Last synchronized: 2026-05-11 (removed Playwright browser E2E; Vitest + Node HTTP E2E harness unchanged).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,8 +9,6 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
-- **2026-05-11 — Playwright visual/browser E2E:** ditambahkan `@playwright/test` + `playwright.config.ts` dengan project desktop/mobile dan locale EN/ID, artifact `screenshot on failure` + `video on failure` + `trace on retry`, serta spec browser nyata untuk flow auth (register/login/logout/invalid/duplicate), freelancer+client marketplace (profile->browse->proposal->review->message), filter board + locale switch + save actions, mobile filter drawer/sticky CTA, dan design QA (layout stability EN/ID, chip wrapping mobile, composer/no-overlap checks). Script baru: `test:playwright`, `test:playwright:ui`, `test:playwright:headed`, `test:playwright:debug`.
-- **2026-05-11 — Playwright engineering infra:** pemisahan project (`auth`, `marketplace`, `messaging`, `mobile`, `design`, `setup`), skrip `pnpm test:playwright:*`, preferensi **`DATABASE_URL_TEST`** (dipetakan ke `DATABASE_URL` untuk proses tes), storageState fixture (`storage-state.setup.ts` + `tests/playwright/.auth/`), output terstruktur `test-results/playwright` + `playwright-report/nearwork`, dokumentasi `docs/testing-playwright.md`.
 - **2026-05-11 — Loading & skeleton system:** NearWork menambah primitive `nw-skeleton*` + helper komponen loading agar placeholder konsisten dengan hierarki final; route-level `loading.tsx` diperluas ke jobs/detail/freelancers/profile/dashboard/messages/notifications/settings/admin utama; pending feedback lokal diperhalus pada filter nearby freelancer, grouping notifikasi, dan composer messages.
 - **2026-05-09 — Konvergensi tipografi tahap 2:** detail page `/jobs/[jobId]` dan `/freelancers/[username]` diselaraskan ke `nw-type-*` + ritme card/chip bersama; onboarding cards (`ActivationChecklistCard`, `FreelancerProposalPlaybook`, `MarketplaceLiquidityHints`) dipadatkan dan dipoles editorial; tabel admin inti memakai pill/chip yang lebih konsisten untuk kepadatan operasional.
 - **2026-05-09 — Tipografi & kepadatan editorial:** utilitas `nw-type-*`, `nw-stack*`, chip, dan beberapa panel di `globals.css` dituning untuk hierarki lebih jelas dan kartu marketplace lebih efisien; landing hero, listing `/jobs`, dashboard klien/freelancer, pesan, notifikasi, serta header `/messages` & `/settings` memakai ritme baru tanpa mengubah logika bisnis.
