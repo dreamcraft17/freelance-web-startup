@@ -1,5 +1,12 @@
 import type { SearchFreelancersQueryDto, SearchJobsQueryDto } from "@acme/validators";
-import { AvailabilityStatus, JobStatus, JobVisibility, VerificationStatus, WorkMode } from "@acme/types";
+import {
+  AvailabilityStatus,
+  BidStatus,
+  JobStatus,
+  JobVisibility,
+  VerificationStatus,
+  WorkMode
+} from "@acme/types";
 import { db, Prisma } from "@acme/database";
 import { clampLimit, clampPage, offsetFromPage } from "@acme/utils";
 import { isFreelancerBoostActiveAt, isJobFeaturedActiveAt } from "../lib/promotion-expiry";
@@ -200,6 +207,8 @@ export type JobSearchItem = {
   clientVerified: boolean;
   /** Open proposals on this job (real count). */
   bidCount: number;
+  /** Shortlisted proposals on this job (real count). */
+  shortlistedCount: number;
   /** Skill names attached to the job listing (limited). */
   skillNames: string[];
 };
@@ -260,7 +269,8 @@ function num(v: { toString(): string } | null | undefined): number | null {
 function mapJob(
   row: Prisma.JobGetPayload<{ select: typeof JOB_LIST_SELECT }>,
   now: Date,
-  locale: AppLocale
+  locale: AppLocale,
+  shortlistedCount: number
 ): JobSearchItem {
   const featuredUntilIso = row.featuredUntil?.toISOString() ?? null;
   const source = row.language === "id" ? "id" : "en";
@@ -294,6 +304,7 @@ function mapJob(
     clientDisplayName,
     clientVerified,
     bidCount: row._count.bids,
+    shortlistedCount,
     skillNames
   };
 }
@@ -393,8 +404,19 @@ export class SearchService {
       skip
     });
 
+    let shortlistedByJob = new Map<string, number>();
+    if (rows.length > 0) {
+      const jobIds = rows.map((r) => r.id);
+      const shortGrouped = await db.bid.groupBy({
+        by: ["jobId"],
+        where: { jobId: { in: jobIds }, status: BidStatus.SHORTLISTED },
+        _count: { id: true }
+      });
+      shortlistedByJob = new Map(shortGrouped.map((g) => [g.jobId, g._count.id]));
+    }
+
     return {
-      items: rows.map((r) => mapJob(r, now, opts.locale)),
+      items: rows.map((r) => mapJob(r, now, opts.locale, shortlistedByJob.get(r.id) ?? 0)),
       total
     };
   }

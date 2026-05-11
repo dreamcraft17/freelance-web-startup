@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v100  
-> Last synchronized: 2026-05-09 (freelancer dashboard + proposals + messages + notifications nw-* alignment).
+> **Doc revision:** v101  
+> Last synchronized: 2026-05-09 (marketplace pulse/momentum aggregates + shortlisted counts on job search/list UI).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,7 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Marketplace pulse & momentum (2026-05-09):** `PublicStatsService` mengembalikan agregat tambahan (posting baru 24 jam, kontrak selesai 7 hari, kategori dengan listing terbanyak) dalam transaksi yang sama dengan pulse hero untuk `/jobs`/`/freelancers`; snapshot ringkas (`getMarketplaceMomentumSnapshot`) memuat landing dan dashboard role; pencarian job publik melampirkan `shortlistedCount` untuk chip wawancara di kartu hasil.
 - **Freelancer workspace surfaces (2026-05-09):** dashboard dan halaman proposal freelancer memakai pola kartu/chip bersama (`nw-*`); status proposal/kontrak pada feed diserahkan sebagai string terlokalisasi dari server; pesan dan pusat notifikasi memakai kartu/list yang konsisten serta tautan discovery job memakai path publik ber-locale.
 - **Global marketplace UI tokens (2026-05-09):** `globals.css` memperluas utilitas `nw-card*`, `nw-type*`, `nw-chip*`, `nw-cta-*`, `nw-link-action`, `nw-app-header`, dan menyelaraskan variabel shadcn `--primary` ke indigo merek; `tailwind.config.ts` menambah `shadow-nw-*` dan skala font utilitas. Dashboard klien dan beberapa permukaan terkait memakai pola ini; status enumerasi job/bid/kontrak pada ringkasan klien dirender lewat kamus EN/ID.
 - **Public freelancer profile (2026-05-09):** profil publik freelancer memakai hierarki “talent storefront” (hero, layanan, preferensi kerja, portofolio, ulasan) dengan panel kepercayaan sticky di desktop dan CTA kontak/simpan yang konsisten dengan locale workspace (`/en/messages`, `/id/messages`); tidak menambahkan metrik respons atau pendapatan palsu.

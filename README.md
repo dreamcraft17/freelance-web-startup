@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v90  
-> Last synchronized: 2026-05-09 — Freelancer dashboard/proposals/messages/notifications use `nw-*` patterns; proposals workspace and page strings from locales; notification job links use `withPublicLocale`.
+> **Doc revision:** v91  
+> Last synchronized: 2026-05-09 — Marketplace pulse layer (DB aggregates on landing, `/jobs`, dashboards); job cards show shortlisted/interviewing counts from real bid rows; notifications read list splits recent vs older.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)

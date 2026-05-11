@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { BidStatus } from "@acme/types";
 import { ModerationReportButton } from "@/features/moderation/components/ModerationReportButton";
 import { fetchWithCsrf } from "@/features/auth/lib/fetch-with-csrf";
 import { DashboardEmptyState } from "@/components/dashboard/DashboardEmptyState";
@@ -219,6 +220,9 @@ export function MessagesWorkspace({
                 const active = thread.threadId === selectedThreadId;
                 const last = thread.lastMessage;
                 const unread = Boolean(last && last.senderId !== currentUserId);
+                const updatedMs = Date.parse(thread.updatedAt);
+                const discussionWarm =
+                  Number.isFinite(updatedMs) && Date.now() - updatedMs <= 48 * 60 * 60 * 1000;
                 const rowTitle = threadTitle(thread.peers, threadTitleFallback);
                 const previewSource = last?.body ?? "";
                 const preview = previewSource ? previewText(previewSource) : t("messages.previewEmpty");
@@ -287,10 +291,16 @@ export function MessagesWorkspace({
                             {threadTypeLabel(thread.type)}
                           </span>
                           {unread ? (
-                            <span className="text-[10px] font-semibold text-[#3525cd]">
+                            <span className="nw-chip nw-chip-brand px-1.5 py-0.5 text-[10px] font-semibold normal-case tracking-normal">
                               {t("messages.awaitingReply")}
                             </span>
-                          ) : last && last.senderId === currentUserId ? (
+                          ) : null}
+                          {!unread && discussionWarm ? (
+                            <span className="nw-chip nw-chip-success px-1.5 py-0.5 text-[10px] font-semibold normal-case tracking-normal">
+                              {t("messages.threadDiscussionWarm")}
+                            </span>
+                          ) : null}
+                          {!unread && last && last.senderId === currentUserId ? (
                             <span className="text-[10px] font-medium text-slate-400">{t("messages.sent")}</span>
                           ) : null}
                         </div>
@@ -366,6 +376,11 @@ export function MessagesWorkspace({
                           {selectedContext ? (
                             <span className="nw-chip nw-chip-muted rounded-full px-2 py-0.5 text-[10px] normal-case tracking-normal">
                               {selectedContext.jobStatusLabel}
+                            </span>
+                          ) : null}
+                          {selectedContext?.proposalStatusRaw === BidStatus.SHORTLISTED ? (
+                            <span className="nw-chip nw-chip-brand rounded-full px-2 py-0.5 text-[10px] font-semibold normal-case tracking-normal">
+                              {t("messages.proposalChipInterviewing")}
                             </span>
                           ) : null}
                         </div>

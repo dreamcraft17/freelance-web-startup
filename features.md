@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v102  
-> Last synchronized: 2026-05-09 (freelancer dashboard/proposals/messages/notifications nw-* + i18n proposals page).
+> **Doc revision:** v103  
+> Last synchronized: 2026-05-09 (marketplace pulse/momentum layer + shortlisted chips di listing).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,6 +9,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
+- **2026-05-09 — Marketplace pulse (data nyata):** agregat ringan di **`PublicStatsService`** (lowongan terbuka publik, proposal 24 jam, freelancer tersedia, posting baru 24 jam, kontrak selesai 7 hari, kategori dengan listing terbanyak); ditampilkan di landing hero, sidebar/board **`/jobs`**, sidebar freelancers, strip **`nw-card-trust`** di dashboard freelancer & klien; empty state board baseline menampilkan kategori yang masih punya listing. **`SearchService`** melampirkan **`shortlistedCount`** per job untuk chip **wawancara** di **`JobsPublicList`** dan cuplikan lowongan di dashboard freelancer.
 - **2026-05-09 — Freelancer workspace UI:** dashboard freelancer memakai utilitas `nw-*` (kartu, chip, typografi, empty state percakapan/skill); data aktivitas menampilkan label status/kontrak dan mode kerja terjemahan; halaman **Proposal** freelancer memakai kamus `dashboard.freelancer.proposals*` + filter status memakai label `dashboard.client.bidStatus`; **Messages** dan **Notifications** diselaraskan ke shell/kartu NW, tanggal memakai locale, link job ke board publik memakai `withPublicLocale`.
 - **2026-05-09 — Global UI system & client dashboard:** utilitas bersama `nw-*` di `globals.css` + bayangan/typography di `tailwind.config.ts`; `Button`/`Card`/`EmptyStateCard`/`DashboardStatCard`/`DashboardEmptyState` diselaraskan; dashboard klien memakai token tersebut, label status job/bid/kontrak + meta job + CTA pintasan sepenuhnya dari kamus `dashboard.client.*` (termasuk nested `jobStatus` / `bidStatus` / `contractStatus`), link Settings memakai `withWorkspaceLocale`; board `/jobs` memakai kelas chip NW untuk work mode & trending.
 - **2026-05-09 — Public freelancer profile UX:** halaman profil publik freelancer (`/freelancers/[username]`) memakai hero storefront (avatar/inisial, verifikasi, skill, heuristik “great fit”), sidebar desktop berisi sinyal kepercayaan nyata (rating, jumlah ulasan, kontrak selesai, member since, aktivitas update profil, tarif, completeness), CTA Messages dengan path workspace ber-locale, simpan profil (`SaveFreelancerButton` + state awal dari `SavedFreelancer`), section layanan/preferensi/bahasa (placeholder jujur bila schema belum menyimpan bahasa), portofolio grid atau prompt owner-only jika kosong, ulasan dengan konteks job; mobile sticky contact + save tanpa backdrop blur. Label tombol simpan memakai i18n.

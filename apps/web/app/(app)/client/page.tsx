@@ -7,6 +7,7 @@ import type { ActivationChecklistStepVm } from "@/components/onboarding/Activati
 import { getAwaitingReplyThreadCountCached } from "@/lib/server/navigation-badges-cache";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
 import { OnboardingActivationService } from "@/server/services/onboarding-activation.service";
+import { PublicStatsService } from "@/server/services/public-stats.service";
 import {
   ClientDashboard,
   type ClientDashboardBid,
@@ -249,6 +250,8 @@ export default async function ClientDashboardPage() {
         : t("dashboard.client.statCompletedHiresHintEmpty")
   };
 
+  const marketplaceMomentumSnapshot = await new PublicStatsService().getMarketplaceMomentumSnapshot();
+
   return (
     <ClientDashboard
       locale={locale}
@@ -318,7 +321,15 @@ export default async function ClientDashboardPage() {
         quickActionHireDirectoryHint: t("dashboard.client.quickActionHireDirectoryHint"),
         proposalsReceivedBadgeOne: t("dashboard.client.proposalsReceivedBadgeOne"),
         proposalsReceivedBadgeMany: t("dashboard.client.proposalsReceivedBadgeMany"),
-        contractRowUpdated: t("dashboard.client.contractRowUpdated")
+        contractRowUpdated: t("dashboard.client.contractRowUpdated"),
+        marketplacePulseTitle: t("dashboard.client.marketplacePulseTitle"),
+        marketplacePulseSubtitle: t("dashboard.client.marketplacePulseSubtitle"),
+        marketplacePulseFootnote: t("dashboard.client.marketplacePulseFootnote"),
+        marketplacePulseOpenRoles: t("dashboard.client.marketplacePulseOpenRoles"),
+        marketplacePulseBids24h: t("dashboard.client.marketplacePulseBids24h"),
+        marketplacePulseFreelancers: t("dashboard.client.marketplacePulseFreelancers"),
+        marketplacePulseFresh24h: t("dashboard.client.marketplacePulseFresh24h"),
+        marketplacePulseHires7d: t("dashboard.client.marketplacePulseHires7d")
       }}
       activationChecklist={{
         title: t("activation.client.checklistTitle"),
@@ -335,6 +346,13 @@ export default async function ClientDashboardPage() {
           t("activation.client.liquidity.b3")
         ],
         footer: t("activation.shared.jobContextReminder")
+      }}
+      marketplacePulse={{
+        openPublicJobs: marketplaceMomentumSnapshot.openPublicJobs,
+        bidsLast24h: marketplaceMomentumSnapshot.bidsLast24h,
+        freelancersAvailable: marketplaceMomentumSnapshot.freelancersAvailable,
+        jobsPostedLast24h: marketplaceMomentumSnapshot.jobsPostedLast24h,
+        contractsCompletedLast7d: marketplaceMomentumSnapshot.contractsCompletedLast7d
       }}
     />
   );

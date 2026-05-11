@@ -1,5 +1,18 @@
 import { db } from "@acme/database";
-import { AvailabilityStatus, BidStatus, JobStatus, JobVisibility } from "@acme/types";
+import { AvailabilityStatus, BidStatus, ContractStatus, JobStatus, JobVisibility } from "@acme/types";
+
+/** DB-backed marketplace aggregates (no invented metrics). */
+export type MarketplaceMomentumSnapshot = {
+  bidsLast24h: number;
+  freelancersAvailable: number;
+  openPublicJobs: number;
+  /** Open public roles created in the last 24 hours. */
+  jobsPostedLast24h: number;
+  /** Contracts marked completed in the last 7 days (market-wide). */
+  contractsCompletedLast7d: number;
+  /** Categories with the most open public listings (top few). */
+  hotCategories: Array<{ id: string; name: string; openJobCount: number }>;
+};
 
 /** Lightweight, read-only aggregates for public “marketplace pulse” copy (no PII). */
 export class PublicStatsService {
@@ -14,9 +27,18 @@ export class PublicStatsService {
       freelancersAvailable: number;
       openPublicJobs: number;
     };
+    momentum: MarketplaceMomentumSnapshot;
     heroPanelActivity: Awaited<ReturnType<PublicStatsService["getHeroPanelActivity"]>>;
   }> {
     const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const openPublicWhere = {
+      deletedAt: null,
+      status: JobStatus.OPEN,
+      visibility: JobVisibility.PUBLIC,
+      moderationHiddenAt: null
+    } as const;
+
     return db.$transaction(async (tx) => {
       const bidsLast24h = await tx.bid.count({ where: { createdAt: { gte: since24h } } });
       const freelancersAvailable = await tx.freelancerProfile.count({
@@ -27,13 +49,49 @@ export class PublicStatsService {
         }
       });
       const openPublicJobs = await tx.job.count({
+        where: openPublicWhere
+      });
+      const jobsPostedLast24h = await tx.job.count({
+        where: { ...openPublicWhere, createdAt: { gte: since24h } }
+      });
+      const contractsCompletedLast7d = await tx.contract.count({
         where: {
           deletedAt: null,
-          status: JobStatus.OPEN,
-          visibility: JobVisibility.PUBLIC,
-          moderationHiddenAt: null
+          status: ContractStatus.COMPLETED,
+          updatedAt: { gte: since7d }
         }
       });
+
+      const catGrouped = await tx.job.groupBy({
+        by: ["categoryId"],
+        where: openPublicWhere,
+        _count: { id: true },
+        orderBy: { _count: { id: "desc" } },
+        take: 5
+      });
+      const catIds = catGrouped.map((g) => g.categoryId).filter(Boolean);
+      const catRows =
+        catIds.length === 0
+          ? []
+          : await tx.category.findMany({
+              where: { id: { in: catIds } },
+              select: { id: true, name: true }
+            });
+      const catNameById = new Map(catRows.map((c) => [c.id, c.name]));
+      const hotCategories = catGrouped.map((g) => ({
+        id: g.categoryId,
+        name: catNameById.get(g.categoryId)?.trim() || "",
+        openJobCount: g._count.id
+      }));
+
+      const momentum: MarketplaceMomentumSnapshot = {
+        bidsLast24h,
+        freelancersAvailable,
+        openPublicJobs,
+        jobsPostedLast24h,
+        contractsCompletedLast7d,
+        hotCategories
+      };
 
       const freelancers = await tx.freelancerProfile.findMany({
         where: {
@@ -90,6 +148,7 @@ export class PublicStatsService {
 
       return {
         pulse: { bidsLast24h, freelancersAvailable, openPublicJobs },
+        momentum,
         heroPanelActivity: {
           freelancerRows: freelancers.map((item) => ({
             title: item.fullName,
@@ -212,14 +271,20 @@ export class PublicStatsService {
     });
   }
 
-  async getMarketplacePulse(): Promise<{
-    bidsLast24h: number;
-    freelancersAvailable: number;
-    openPublicJobs: number;
-  }> {
+  /**
+   * Compact momentum snapshot for dashboards / landing (single transaction).
+   * Prefer {@link getPulseAndHeroForPublicBrowse} when the page already loads hero panels.
+   */
+  async getMarketplaceMomentumSnapshot(): Promise<MarketplaceMomentumSnapshot> {
     const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    // One interactive transaction = one pooled connection; avoids tripling
-    // concurrent checkouts vs Promise.all (important for small pool_size caps).
+    const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const openPublicWhere = {
+      deletedAt: null,
+      status: JobStatus.OPEN,
+      visibility: JobVisibility.PUBLIC,
+      moderationHiddenAt: null
+    } as const;
+
     return db.$transaction(async (tx) => {
       const bidsLast24h = await tx.bid.count({ where: { createdAt: { gte: since24h } } });
       const freelancersAvailable = await tx.freelancerProfile.count({
@@ -230,14 +295,49 @@ export class PublicStatsService {
         }
       });
       const openPublicJobs = await tx.job.count({
+        where: openPublicWhere
+      });
+      const jobsPostedLast24h = await tx.job.count({
+        where: { ...openPublicWhere, createdAt: { gte: since24h } }
+      });
+      const contractsCompletedLast7d = await tx.contract.count({
         where: {
           deletedAt: null,
-          status: JobStatus.OPEN,
-          visibility: JobVisibility.PUBLIC,
-          moderationHiddenAt: null
+          status: ContractStatus.COMPLETED,
+          updatedAt: { gte: since7d }
         }
       });
-      return { bidsLast24h, freelancersAvailable, openPublicJobs };
+
+      const catGrouped = await tx.job.groupBy({
+        by: ["categoryId"],
+        where: openPublicWhere,
+        _count: { id: true },
+        orderBy: { _count: { id: "desc" } },
+        take: 5
+      });
+      const catIds = catGrouped.map((g) => g.categoryId).filter(Boolean);
+      const catRows =
+        catIds.length === 0
+          ? []
+          : await tx.category.findMany({
+              where: { id: { in: catIds } },
+              select: { id: true, name: true }
+            });
+      const catNameById = new Map(catRows.map((c) => [c.id, c.name]));
+      const hotCategories = catGrouped.map((g) => ({
+        id: g.categoryId,
+        name: catNameById.get(g.categoryId)?.trim() || "",
+        openJobCount: g._count.id
+      }));
+
+      return {
+        bidsLast24h,
+        freelancersAvailable,
+        openPublicJobs,
+        jobsPostedLast24h,
+        contractsCompletedLast7d,
+        hotCategories
+      };
     });
   }
 }

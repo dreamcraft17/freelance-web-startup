@@ -1,13 +1,20 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v92  
-> Last synchronized: 2026-05-09 (freelancer dashboard + proposals + messages + notifications: `nw-*` surfaces; proposal workspace i18n; locale-aware dates; `withPublicLocale` untuk link job di notifikasi).
+> **Doc revision:** v93  
+> Last synchronized: 2026-05-09 (marketplace pulse/momentum: DB-backed strips di landing, `/jobs`, freelancer & client dashboard; chip interviewing dari jumlah bid SHORTLISTED; notifikasi read dibagi recent vs older).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-09 — Marketplace pulse & momentum (real aggregates)
+
+- **`PublicStatsService`:** transaksi tunggal melengkapi pulse dengan **momentum** (posting baru 24h, kontrak selesai 7 hari, kategori ramai dari `groupBy` listing publik terbuka); **`getMarketplaceMomentumSnapshot`** untuk landing/dashboard tanpa hero panels.
+- **Landing / `/jobs` / freelancer directory:** strip **`nw-card-trust`** / **`nw-chip-*`** memakai hitungan nyata; kartu jobs menampilkan chip **wawancara** bila ada bid **`SHORTLISTED`** (aggregate per halaman).
+- **Freelancer & client dashboard:** strip denyut marketplace + tautan kategori sibuk (freelancer); aktivitas kosong menyarankan kategori dengan lowongan hidup.
+- **Notifications:** bagian read dipisah **≤7 hari** vs lebih lama untuk ritme pemindaian.
 
 ### 2026-05-09 — Freelancer workspace + inbox + notifications (`nw-*`)
 

@@ -58,6 +58,7 @@ function toPublicJobCard(
     clientDisplayName: job.clientDisplayName,
     clientVerified: job.clientVerified,
     bidCount: job.bidCount,
+    shortlistedCount: job.shortlistedCount,
     skillNames: job.skillNames
   };
 }
@@ -131,7 +132,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
   const postJobHref = withWorkspaceLocale(locale, "/client/jobs/new");
   const notificationsHref = withPublicLocale(locale, "/notifications");
   const freelancerProfileHref = withPublicLocale(locale, "/freelancer/profile");
-  const [{ items, total }, categories, { pulse, heroPanelActivity }, session] = await Promise.all([
+  const [{ items, total }, categories, { pulse, momentum, heroPanelActivity }, session] = await Promise.all([
     jobService.listOpenJobs(query, locale),
     loadCategories(),
     statsSvc.getPulseAndHeroForPublicBrowse(),
@@ -276,6 +277,22 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                 </span>
                 <span>{t("public.jobs.heroStatFreelancers", { count: pulse.freelancersAvailable })}</span>
               </div>
+              {momentum.jobsPostedLast24h > 0 || momentum.contractsCompletedLast7d > 0 ? (
+                <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-medium text-slate-600 sm:text-xs">
+                  {momentum.jobsPostedLast24h > 0 ? (
+                    <span className="inline-flex items-center gap-1">
+                      <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" aria-hidden />
+                      {t("public.jobs.momentumFreshListings24h", { count: momentum.jobsPostedLast24h })}
+                    </span>
+                  ) : null}
+                  {momentum.contractsCompletedLast7d > 0 ? (
+                    <span className="inline-flex items-center gap-1">
+                      <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#3525cd]" aria-hidden />
+                      {t("public.jobs.momentumHiresWrapped7d", { count: momentum.contractsCompletedLast7d })}
+                    </span>
+                  ) : null}
+                </p>
+              ) : null}
 
               <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5 text-[11px] text-slate-600 sm:text-xs">
                 <li className="inline-flex items-center gap-1.5">
@@ -635,10 +652,21 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
             {total > 0 ? <JobsPublicList jobs={jobs} savedJobIds={savedJobIds} /> : null}
 
             {jobs.length === 0 ? (
-              <JobsPublicEmpty categorySelected={categorySelected} hasFilters={hasFilters} viewerRole={viewerRole} />
+              <JobsPublicEmpty
+                categorySelected={categorySelected}
+                hasFilters={hasFilters}
+                viewerRole={viewerRole}
+                platformHotCategories={
+                  noJobsBaseline
+                    ? momentum.hotCategories
+                        .filter((c) => c.name.length > 0 && c.openJobCount > 0)
+                        .slice(0, 6)
+                    : undefined
+                }
+              />
             ) : null}
 
-            <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+            <section className="nw-card rounded-xl p-4 shadow-sm">
               <div className="mb-3 flex items-center justify-between gap-2">
                 <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500">
                   {topDemandCategories.length > 0 ? t("public.jobs.demandTrendTitle") : t("public.jobs.demandProcessTitle")}
@@ -709,7 +737,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
           <aside
             className={["order-3 min-w-0 space-y-4", noJobsBaseline ? "mt-6" : "mt-4 lg:mt-0 lg:sticky lg:top-24"].join(" ")}
           >
-            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-md ring-1 ring-slate-900/[0.03]">
+            <section className="nw-card-elevated rounded-2xl p-4 shadow-md ring-1 ring-slate-900/[0.03]">
               <div className="flex items-center justify-between gap-2">
                 <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500">{t("public.jobs.pulseTitle")}</h2>
                 <Link href={notificationsHref as Route} className="text-xs font-bold text-[#3525cd] hover:underline">
@@ -767,21 +795,33 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
               </div>
             </section>
 
-            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-md ring-1 ring-slate-900/[0.03]">
+            <section className="nw-card-elevated rounded-2xl p-4 shadow-md ring-1 ring-slate-900/[0.03]">
               <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500">{t("public.jobs.insightTitle")}</h2>
               <div className="mt-3 grid grid-cols-1 gap-2">
-                <div className="border border-slate-200 bg-slate-50 px-3 py-2.5">
+                <div className="nw-card-inset px-3 py-2.5">
                   <p className="text-xl font-bold tabular-nums text-slate-900">{pulse.openPublicJobs}</p>
                   <p className="text-[11px] font-medium text-slate-600">{t("public.jobs.insightOpenRoles")}</p>
                 </div>
-                <div className="border border-slate-200 bg-slate-50 px-3 py-2.5">
+                <div className="nw-card-inset px-3 py-2.5">
                   <p className="text-xl font-bold tabular-nums text-slate-900">{pulse.bidsLast24h}</p>
                   <p className="text-[11px] font-medium text-slate-600">{t("public.jobs.insightApplyVolume")}</p>
                 </div>
-                <div className="border border-slate-200 bg-slate-50 px-3 py-2.5">
+                <div className="nw-card-inset px-3 py-2.5">
                   <p className="text-xl font-bold tabular-nums text-slate-900">{pulse.freelancersAvailable}</p>
                   <p className="text-[11px] font-medium text-slate-600">{t("public.jobs.insightFreelancerActive")}</p>
                 </div>
+                {momentum.jobsPostedLast24h > 0 ? (
+                  <div className="nw-card-inset border-emerald-200/60 bg-emerald-50/40 px-3 py-2.5">
+                    <p className="text-xl font-bold tabular-nums text-slate-900">{momentum.jobsPostedLast24h}</p>
+                    <p className="text-[11px] font-medium text-slate-600">{t("public.jobs.insightFreshPosted24h")}</p>
+                  </div>
+                ) : null}
+                {momentum.contractsCompletedLast7d > 0 ? (
+                  <div className="nw-card-inset border-[#3525cd]/15 bg-[#3525cd]/[0.04] px-3 py-2.5">
+                    <p className="text-xl font-bold tabular-nums text-slate-900">{momentum.contractsCompletedLast7d}</p>
+                    <p className="text-[11px] font-medium text-slate-600">{t("public.jobs.insightContractsCompleted7d")}</p>
+                  </div>
+                ) : null}
               </div>
               <p className="mt-2 text-[11px] leading-snug text-slate-500">{t("public.jobs.insightFootnote")}</p>
             </section>

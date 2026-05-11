@@ -18,7 +18,6 @@ import type { LandingIntent } from "@/components/marketing/LandingPage";
 import { useI18n } from "@/features/i18n/I18nProvider";
 import { withPublicLocale } from "@/lib/i18n/locale-path";
 import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
-
 type ModeContent = {
   headline: string;
   subHeadline: string;
@@ -37,14 +36,24 @@ const PROCESS_KEYS = ["post", "proposals", "chat", "hire"] as const;
 
 export type LandingCategoryOption = { id: string; name: string };
 
+export type LandingMarketplaceMomentum = {
+  openPublicJobs: number;
+  bidsLast24h: number;
+  freelancersAvailable: number;
+  jobsPostedLast24h: number;
+  contractsCompletedLast7d: number;
+};
+
 export function LandingHero({
   intent,
   homePath,
-  categories
+  categories,
+  marketplaceMomentum
 }: {
   intent: LandingIntent;
   homePath: string;
   categories: LandingCategoryOption[];
+  marketplaceMomentum: LandingMarketplaceMomentum;
 }) {
   const { t, locale } = useI18n();
   const router = useRouter();
@@ -154,6 +163,33 @@ export function LandingHero({
                 </h1>
                 <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg lg:mx-0">{modeContent.subHeadline}</p>
                 <p className="mx-auto mt-3 max-w-2xl text-sm font-semibold leading-snug text-[#3525cd] lg:mx-0">{modeContent.flowLine}</p>
+                <div className="nw-card-trust mx-auto mt-6 max-w-2xl border-[#3525cd]/12 px-4 py-3 lg:mx-0">
+                  <p className="nw-type-micro">{t("landing.hero.marketplacePulseTitle")}</p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <span className="nw-chip-quiet tabular-nums text-[11px] font-semibold">
+                      {t("landing.hero.marketplacePulseOpenRoles", { count: marketplaceMomentum.openPublicJobs })}
+                    </span>
+                    <span className="nw-chip-quiet tabular-nums text-[11px] font-semibold">
+                      {t("landing.hero.marketplacePulseBids24h", { count: marketplaceMomentum.bidsLast24h })}
+                    </span>
+                    <span className="nw-chip-quiet tabular-nums text-[11px] font-semibold">
+                      {t("landing.hero.marketplacePulseFreelancers", { count: marketplaceMomentum.freelancersAvailable })}
+                    </span>
+                    {marketplaceMomentum.jobsPostedLast24h > 0 ? (
+                      <span className="nw-chip nw-chip-success tabular-nums text-[11px] font-semibold normal-case tracking-normal">
+                        {t("landing.hero.marketplacePulseFresh24h", { count: marketplaceMomentum.jobsPostedLast24h })}
+                      </span>
+                    ) : null}
+                    {marketplaceMomentum.contractsCompletedLast7d > 0 ? (
+                      <span className="nw-chip nw-chip-brand tabular-nums text-[11px] font-semibold normal-case tracking-normal">
+                        {t("landing.hero.marketplacePulseHires7d", { count: marketplaceMomentum.contractsCompletedLast7d })}
+                      </span>
+                    ) : null}
+                  </div>
+                  <p className="nw-type-meta mt-2 font-medium normal-case tracking-normal text-slate-500">
+                    {t("landing.hero.marketplacePulseFootnote")}
+                  </p>
+                </div>
                 <div className="mt-7 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
                   <Link
                     href={modeContent.primaryCtaHref}

@@ -11,6 +11,7 @@ import type { ActivationChecklistStepVm } from "@/components/onboarding/Activati
 import { getServerTranslator } from "@/lib/i18n/server-translator";
 import { getAwaitingReplyThreadCountCached } from "@/lib/server/navigation-badges-cache";
 import { JobService } from "@/server/services/job.service";
+import { PublicStatsService } from "@/server/services/public-stats.service";
 import { OnboardingActivationService } from "@/server/services/onboarding-activation.service";
 import { QuotaService } from "@/server/services/quota.service";
 import {
@@ -71,6 +72,7 @@ export default async function FreelancerDashboardPage() {
     }
   });
   const openJobsResult = await new JobService().listOpenJobs({ page: 1, limit: 9 });
+  const marketplaceMomentumSnapshot = await new PublicStatsService().getMarketplaceMomentumSnapshot();
 
   let quota: Awaited<ReturnType<QuotaService["getUsageForFreelancerUser"]>> | null = null;
   let recentBidsRaw: {
@@ -192,7 +194,8 @@ export default async function FreelancerDashboardPage() {
     id: j.id,
     title: j.title,
     workModeLabel: workModeLabel(j.workMode),
-    city: j.city
+    city: j.city,
+    shortlistedCount: j.shortlistedCount
   }));
 
   const hasProfile = Boolean(profile);
@@ -470,7 +473,20 @@ export default async function FreelancerDashboardPage() {
         skillsYearsShort: t("dashboard.freelancer.skillsYearsShort"),
         heroMotivation: t("dashboard.freelancer.heroMotivation"),
         heroTrustCaption: t("dashboard.freelancer.heroTrustCaption"),
-        activityBidEta: t("dashboard.freelancer.activityBidEta")
+        activityBidEta: t("dashboard.freelancer.activityBidEta"),
+        marketplacePulseTitle: t("dashboard.freelancer.marketplacePulseTitle"),
+        marketplacePulseSubtitle: t("dashboard.freelancer.marketplacePulseSubtitle"),
+        marketplacePulseFootnote: t("dashboard.freelancer.marketplacePulseFootnote"),
+        marketplacePulseOpenRoles: t("dashboard.freelancer.marketplacePulseOpenRoles"),
+        marketplacePulseBids24h: t("dashboard.freelancer.marketplacePulseBids24h"),
+        marketplacePulseFreelancers: t("dashboard.freelancer.marketplacePulseFreelancers"),
+        marketplacePulseFresh24h: t("dashboard.freelancer.marketplacePulseFresh24h"),
+        marketplacePulseHires7d: t("dashboard.freelancer.marketplacePulseHires7d"),
+        marketplacePulseCategoriesMicro: t("dashboard.freelancer.marketplacePulseCategoriesMicro"),
+        activityEmptyMomentumTitle: t("dashboard.freelancer.activityEmptyMomentumTitle"),
+        activityEmptyMomentumBody: t("dashboard.freelancer.activityEmptyMomentumBody"),
+        openJobShortlistedOne: t("dashboard.freelancer.openJobShortlistedOne"),
+        openJobShortlistedMany: t("dashboard.freelancer.openJobShortlistedMany")
       }}
       activationChecklist={{
         title: t("activation.freelancer.checklistTitle"),
@@ -487,6 +503,20 @@ export default async function FreelancerDashboardPage() {
           t("activation.freelancer.liquidity.b3")
         ],
         footer: t("activation.shared.jobContextReminder")
+      }}
+      marketplacePulse={{
+        openPublicJobs: marketplaceMomentumSnapshot.openPublicJobs,
+        bidsLast24h: marketplaceMomentumSnapshot.bidsLast24h,
+        freelancersAvailable: marketplaceMomentumSnapshot.freelancersAvailable,
+        jobsPostedLast24h: marketplaceMomentumSnapshot.jobsPostedLast24h,
+        contractsCompletedLast7d: marketplaceMomentumSnapshot.contractsCompletedLast7d,
+        hotCategories: marketplaceMomentumSnapshot.hotCategories
+          .filter((c) => c.name.trim().length > 0)
+          .map((c) => ({
+            id: c.id,
+            name: c.name,
+            openJobCount: c.openJobCount
+          }))
       }}
     />
   );

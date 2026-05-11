@@ -1,7 +1,7 @@
 # Documentation maintenance (NearWork)
 
-> **Doc revision:** v16  
-> Last synchronized: 2026-05-09 (catatan navigasi locale-aware marketplace/workspace untuk stabilitas `/en` vs `/id`).
+> **Doc revision:** v17  
+> Last synchronized: 2026-05-09 (marketplace pulse docs sync: features, ui-redesign, application-overview, README).
 
 ## AUTO — wajib untuk AI & kontributor
 

@@ -13,7 +13,8 @@ import {
   Plus,
   Search,
   Sparkles,
-  Users
+  Users,
+  Waves
 } from "lucide-react";
 import { formatMoneyAmount } from "@/lib/format-money";
 import type { AppLocale } from "@/lib/i18n/types";
@@ -77,6 +78,14 @@ export type ClientDashboardCopy = {
   proposalsReceivedBadgeOne: string;
   proposalsReceivedBadgeMany: string;
   contractRowUpdated: string;
+  marketplacePulseTitle: string;
+  marketplacePulseSubtitle: string;
+  marketplacePulseFootnote: string;
+  marketplacePulseOpenRoles: string;
+  marketplacePulseBids24h: string;
+  marketplacePulseFreelancers: string;
+  marketplacePulseFresh24h: string;
+  marketplacePulseHires7d: string;
 };
 
 export type ClientDashboardJob = {
@@ -142,6 +151,13 @@ type ClientDashboardProps = {
     bullets: string[];
     footer: string;
   };
+  marketplacePulse: {
+    openPublicJobs: number;
+    bidsLast24h: number;
+    freelancersAvailable: number;
+    jobsPostedLast24h: number;
+    contractsCompletedLast7d: number;
+  };
 };
 
 const linkClass = "nw-link-action inline-flex items-center gap-1";
@@ -179,7 +195,8 @@ export function ClientDashboard({
   recentContracts,
   copy,
   activationChecklist,
-  liquidityTips
+  liquidityTips,
+  marketplacePulse
 }: ClientDashboardProps) {
   const listJobs = recentJobs.slice(0, 10);
   const hasJobs = recentJobs.length > 0;
@@ -230,6 +247,45 @@ export function ClientDashboard({
               <Plus className="h-5 w-5 shrink-0 opacity-95" aria-hidden />
               {copy.heroPostJobCta}
             </Link>
+          </div>
+        </div>
+      </section>
+
+      <section
+        aria-label={copy.marketplacePulseTitle}
+        className="nw-card-trust border-[#3525cd]/14 bg-gradient-to-r from-[#3525cd]/[0.05] to-white px-5 py-4 md:px-6"
+      >
+        <div className="flex flex-wrap items-start gap-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#3525cd] shadow-sm ring-1 ring-slate-200/80">
+            <Waves className="h-5 w-5" strokeWidth={1.75} aria-hidden />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="nw-type-micro">{copy.marketplacePulseTitle}</p>
+            <p className="nw-type-body mt-1 text-slate-700">{copy.marketplacePulseSubtitle}</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <span className="nw-chip nw-chip-muted px-3 py-1.5 text-[11px] normal-case tracking-normal md:text-xs">
+                {copy.marketplacePulseOpenRoles.split("{{count}}").join(String(marketplacePulse.openPublicJobs))}
+              </span>
+              <span className="nw-chip nw-chip-muted px-3 py-1.5 text-[11px] normal-case tracking-normal md:text-xs">
+                {copy.marketplacePulseBids24h.split("{{count}}").join(String(marketplacePulse.bidsLast24h))}
+              </span>
+              <span className="nw-chip nw-chip-muted px-3 py-1.5 text-[11px] normal-case tracking-normal md:text-xs">
+                {copy.marketplacePulseFreelancers.split("{{count}}").join(String(marketplacePulse.freelancersAvailable))}
+              </span>
+              {marketplacePulse.jobsPostedLast24h > 0 ? (
+                <span className="nw-chip nw-chip-success px-3 py-1.5 text-[11px] normal-case tracking-normal md:text-xs">
+                  {copy.marketplacePulseFresh24h.split("{{count}}").join(String(marketplacePulse.jobsPostedLast24h))}
+                </span>
+              ) : null}
+              {marketplacePulse.contractsCompletedLast7d > 0 ? (
+                <span className="nw-chip nw-chip-brand px-3 py-1.5 text-[11px] normal-case tracking-normal md:text-xs">
+                  {copy.marketplacePulseHires7d.split("{{count}}").join(String(marketplacePulse.contractsCompletedLast7d))}
+                </span>
+              ) : null}
+            </div>
+            <p className="nw-type-meta mt-3 font-medium normal-case tracking-normal text-slate-500">
+              {copy.marketplacePulseFootnote}
+            </p>
           </div>
         </div>
       </section>

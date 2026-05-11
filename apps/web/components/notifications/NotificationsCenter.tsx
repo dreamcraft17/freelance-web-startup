@@ -119,6 +119,8 @@ type NotificationsCenterProps = {
   items: NotificationListItem[];
 };
 
+const READ_SECTION_RECENT_MS = 7 * 24 * 60 * 60 * 1000;
+
 type NotificationCategory = "all" | "proposals" | "messages" | "contracts";
 
 function categoryForType(type: string): NotificationCategory {
@@ -168,6 +170,22 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
     }
     return { unread: u, read: r };
   }, [filteredItems]);
+
+  const { recentRead, olderRead } = useMemo(() => {
+    const recent: NotificationListItem[] = [];
+    const older: NotificationListItem[] = [];
+    const now = Date.now();
+    for (const n of read) {
+      const ts = new Date(n.createdAt).getTime();
+      if (!Number.isFinite(ts)) {
+        older.push(n);
+        continue;
+      }
+      if (now - ts <= READ_SECTION_RECENT_MS) recent.push(n);
+      else older.push(n);
+    }
+    return { recentRead: recent, olderRead: older };
+  }, [read]);
 
   async function handleActivate(n: NotificationListItem) {
     const href = linkForNotification(n, locale);
@@ -286,22 +304,53 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
         </section>
       ) : null}
 
-      {read.length > 0 ? (
+      {recentRead.length > 0 ? (
         <section aria-labelledby="notif-read-heading" className="space-y-3">
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-slate-300" aria-hidden />
               <h2 id="notif-read-heading" className="nw-type-section text-base text-slate-600">
-                {t("notifications.readLabel")}
+                {t("notifications.readRecentLabel")}
               </h2>
               <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium tabular-nums text-slate-500 ring-1 ring-slate-200/80">
-                {read.length}
+                {recentRead.length}
               </span>
             </div>
-            <p className="nw-type-meta mt-1 font-medium normal-case tracking-normal">{t("notifications.readCaption")}</p>
+            <p className="nw-type-meta mt-1 font-medium normal-case tracking-normal">{t("notifications.readRecentCaption")}</p>
           </div>
           <ul className="nw-card divide-y divide-slate-100 overflow-hidden rounded-xl bg-slate-50/60">
-            {read.map((n) => (
+            {recentRead.map((n) => (
+              <NotificationRow
+                key={n.id}
+                item={n}
+                isUnread={false}
+                busy={loadingId === n.id}
+                onActivate={() => handleActivate(n)}
+                locale={locale}
+              />
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      {olderRead.length > 0 ? (
+        <section aria-labelledby="notif-read-older-heading" className="space-y-3">
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-slate-200" aria-hidden />
+              <h2 id="notif-read-older-heading" className="nw-type-section text-base text-slate-500">
+                {t("notifications.readOlderLabel")}
+              </h2>
+              <span className="rounded-full bg-slate-100/90 px-2 py-0.5 text-xs font-medium tabular-nums text-slate-400 ring-1 ring-slate-200/70">
+                {olderRead.length}
+              </span>
+            </div>
+            <p className="nw-type-meta mt-1 font-medium normal-case tracking-normal text-slate-500">
+              {t("notifications.readOlderCaption")}
+            </p>
+          </div>
+          <ul className="nw-card divide-y divide-slate-100 overflow-hidden rounded-xl bg-slate-50/40">
+            {olderRead.map((n) => (
               <NotificationRow
                 key={n.id}
                 item={n}

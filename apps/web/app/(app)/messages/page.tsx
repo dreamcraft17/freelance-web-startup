@@ -133,6 +133,8 @@ export default async function MessagesPage({
               } else {
                 nextSuggested = t("messages.nextSuggestedFreelancerClarify");
               }
+            } else if (proposalRaw === BidStatus.SHORTLISTED) {
+              nextSuggested = t("messages.nextSuggestedFreelancerShortlisted");
             } else if (proposalRaw === BidStatus.ACCEPTED) {
               nextSuggested = t("messages.nextSuggestedFreelancerAccepted");
             }

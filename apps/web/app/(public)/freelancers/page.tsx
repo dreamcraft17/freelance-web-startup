@@ -163,7 +163,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
   const { t, locale } = await getServerTranslator();
   const flBase = withPublicLocale(locale, "/freelancers");
   const jobsBase = withPublicLocale(locale, "/jobs");
-  const [{ items, total }, categories, { pulse, heroPanelActivity }, latestJobs] = await Promise.all([
+  const [{ items, total }, categories, { pulse, momentum, heroPanelActivity }, latestJobs] = await Promise.all([
     search.searchFreelancers(geoQuery),
     loadCategories(),
     statsSvc.getPulseAndHeroForPublicBrowse(),
@@ -500,7 +500,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
           <section className="rounded-2xl border border-[#e5e7eb] bg-white p-4">
             <div className="flex items-center justify-between">
               <h2 className="text-base font-semibold text-slate-900">{t("public.freelancers.liveActivityTitle")}</h2>
-              <Link href="/notifications" className="text-xs font-semibold text-[#4f35e8] hover:underline">
+              <Link href={withPublicLocale(locale, "/notifications") as Route} className="text-xs font-semibold text-[#4f35e8] hover:underline">
                 {t("public.freelancers.viewAllSmall")}
               </Link>
             </div>
@@ -508,6 +508,16 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
               <li className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-2">
                 {t("public.freelancers.liveProposalCount", { count: pulse.bidsLast24h })}
               </li>
+              {momentum.jobsPostedLast24h > 0 ? (
+                <li className="rounded-md border border-emerald-200/70 bg-emerald-50/60 px-2.5 py-2 text-emerald-950">
+                  {t("public.jobs.momentumFreshListings24h", { count: momentum.jobsPostedLast24h })}
+                </li>
+              ) : null}
+              {momentum.contractsCompletedLast7d > 0 ? (
+                <li className="rounded-md border border-[#3525cd]/20 bg-[#3525cd]/[0.06] px-2.5 py-2 text-[#2b1ea8]">
+                  {t("public.jobs.momentumHiresWrapped7d", { count: momentum.contractsCompletedLast7d })}
+                </li>
+              ) : null}
               {heroPanelActivity.jobRows[0] ? (
                 <li className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-2">
                   {t("public.freelancers.liveNewJob", { title: heroPanelActivity.jobRows[0].title })}

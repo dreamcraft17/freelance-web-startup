@@ -12,6 +12,7 @@ import {
   Sparkles,
   Target,
   UserRound,
+  Waves,
   Zap
 } from "lucide-react";
 import type { FreelancerProposalPlaybookSection } from "@/components/onboarding/FreelancerProposalPlaybook";
@@ -22,6 +23,7 @@ import type { AppLocale } from "@/lib/i18n/types";
 import { withPublicLocale } from "@/lib/i18n/locale-path";
 import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
 import { cn } from "@/lib/utils";
+import { jobsBrowseQueryString } from "@/features/public/lib/jobs-browse-query";
 import { MarketplaceLiquidityHints } from "@/components/onboarding/MarketplaceLiquidityHints";
 import { DashboardEmptyState } from "./DashboardEmptyState";
 import { FreelancerDashboardHero, type FreelancerHeroStatVm } from "./FreelancerDashboardHero";
@@ -96,6 +98,19 @@ export type FreelancerDashboardCopy = {
   heroMotivation: string;
   heroTrustCaption: string;
   activityBidEta: string;
+  marketplacePulseTitle: string;
+  marketplacePulseSubtitle: string;
+  marketplacePulseFootnote: string;
+  marketplacePulseOpenRoles: string;
+  marketplacePulseBids24h: string;
+  marketplacePulseFreelancers: string;
+  marketplacePulseFresh24h: string;
+  marketplacePulseHires7d: string;
+  marketplacePulseCategoriesMicro: string;
+  activityEmptyMomentumTitle: string;
+  activityEmptyMomentumBody: string;
+  openJobShortlistedOne: string;
+  openJobShortlistedMany: string;
 };
 
 export type FreelancerDashboardBid = {
@@ -130,6 +145,7 @@ export type FreelancerOpenJob = {
   title: string;
   workModeLabel: string;
   city: string | null;
+  shortlistedCount: number;
 };
 
 export type FreelancerSkillChipVm = {
@@ -202,6 +218,14 @@ type FreelancerDashboardProps = {
     bullets: string[];
     footer: string;
   };
+  marketplacePulse: {
+    openPublicJobs: number;
+    bidsLast24h: number;
+    freelancersAvailable: number;
+    jobsPostedLast24h: number;
+    contractsCompletedLast7d: number;
+    hotCategories: Array<{ id: string; name: string; openJobCount: number }>;
+  };
 };
 
 function formatShortDate(d: Date, locale: AppLocale): string {
@@ -243,7 +267,8 @@ export function FreelancerDashboard({
   attention,
   copy,
   activationChecklist,
-  liquidityTips
+  liquidityTips,
+  marketplacePulse
 }: FreelancerDashboardProps) {
   const activity = buildActivity(recentBids, recentContracts);
   const jobsBrowseRoot = withPublicLocale(locale, "/jobs");
@@ -268,6 +293,75 @@ export function FreelancerDashboard({
         trustLine={copy.heroTrustCaption}
         trustPills={heroTrustPills}
       />
+
+      <section
+        aria-label={copy.marketplacePulseTitle}
+        className="nw-card-trust border-[#3525cd]/14 bg-gradient-to-r from-[#3525cd]/[0.05] to-white px-5 py-4 md:px-6"
+      >
+        <div className="flex flex-wrap items-start gap-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#3525cd] shadow-sm ring-1 ring-slate-200/80">
+            <Waves className="h-5 w-5" strokeWidth={1.75} aria-hidden />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="nw-type-micro">{copy.marketplacePulseTitle}</p>
+            <p className="nw-type-body mt-1 text-slate-700">{copy.marketplacePulseSubtitle}</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <span className="nw-chip nw-chip-muted px-3 py-1.5 text-[11px] normal-case tracking-normal md:text-xs">
+                {copy.marketplacePulseOpenRoles.split("{{count}}").join(String(marketplacePulse.openPublicJobs))}
+              </span>
+              <span className="nw-chip nw-chip-muted px-3 py-1.5 text-[11px] normal-case tracking-normal md:text-xs">
+                {copy.marketplacePulseBids24h.split("{{count}}").join(String(marketplacePulse.bidsLast24h))}
+              </span>
+              <span className="nw-chip nw-chip-muted px-3 py-1.5 text-[11px] normal-case tracking-normal md:text-xs">
+                {copy.marketplacePulseFreelancers.split("{{count}}").join(String(marketplacePulse.freelancersAvailable))}
+              </span>
+              {marketplacePulse.jobsPostedLast24h > 0 ? (
+                <span className="nw-chip nw-chip-success px-3 py-1.5 text-[11px] normal-case tracking-normal md:text-xs">
+                  {copy.marketplacePulseFresh24h.split("{{count}}").join(String(marketplacePulse.jobsPostedLast24h))}
+                </span>
+              ) : null}
+              {marketplacePulse.contractsCompletedLast7d > 0 ? (
+                <span className="nw-chip nw-chip-brand px-3 py-1.5 text-[11px] normal-case tracking-normal md:text-xs">
+                  {copy.marketplacePulseHires7d.split("{{count}}").join(String(marketplacePulse.contractsCompletedLast7d))}
+                </span>
+              ) : null}
+            </div>
+            {marketplacePulse.hotCategories.filter((c) => c.name.trim().length > 0).length > 0 ? (
+              <div className="mt-4 border-t border-slate-200/80 pt-3">
+                <p className="nw-type-micro">{copy.marketplacePulseCategoriesMicro}</p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {marketplacePulse.hotCategories
+                    .filter((c) => c.name.trim().length > 0 && c.openJobCount > 0)
+                    .slice(0, 5)
+                    .map((c) => (
+                      <Link
+                        key={c.id}
+                        href={
+                          `${jobsBrowseRoot}${jobsBrowseQueryString({
+                            keyword: "",
+                            city: "",
+                            workMode: "",
+                            categoryId: c.id,
+                            minBudget: "",
+                            postedWithinDays: "",
+                            page: 1
+                          })}` as Route
+                        }
+                        className="nw-chip-quiet text-[11px]"
+                      >
+                        {c.name}
+                        <span className="ml-1 tabular-nums text-slate-500">({c.openJobCount})</span>
+                      </Link>
+                    ))}
+                </div>
+              </div>
+            ) : null}
+            <p className="nw-type-meta mt-3 font-medium normal-case tracking-normal text-slate-500">
+              {copy.marketplacePulseFootnote}
+            </p>
+          </div>
+        </div>
+      </section>
 
       {hasProfile && attention.awaitingReplyThreads > 0 ? (
         <div className="nw-card-trust flex flex-col gap-3 border-amber-200/75 bg-gradient-to-r from-amber-50/95 to-white px-5 py-4 sm:flex-row sm:items-center sm:justify-between md:px-6">
@@ -430,7 +524,7 @@ export function FreelancerDashboard({
                 />
               </div>
             ) : hasProfile && activity.length === 0 ? (
-              <div className="mt-6">
+              <div className="mt-6 space-y-4">
                 <DashboardEmptyState
                   tone="elevated"
                   kicker={copy.activityEmptyKickerTimeline}
@@ -440,6 +534,37 @@ export function FreelancerDashboard({
                   action={{ label: copy.activityEmptyPrimary, href: jobsBrowseRoot as Route }}
                   secondaryAction={{ label: copy.activityEmptySecondary, href: wp("/freelancer/proposals") as Route }}
                 />
+                {marketplacePulse.hotCategories.filter((c) => c.name.trim().length > 0 && c.openJobCount > 0).length >
+                0 ? (
+                  <div className="nw-card-inset rounded-xl border-[#3525cd]/12 px-4 py-3">
+                    <p className="nw-type-micro">{copy.activityEmptyMomentumTitle}</p>
+                    <p className="nw-type-body mt-1 text-slate-600">{copy.activityEmptyMomentumBody}</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {marketplacePulse.hotCategories
+                        .filter((c) => c.name.trim().length > 0 && c.openJobCount > 0)
+                        .slice(0, 5)
+                        .map((c) => (
+                          <Link
+                            key={c.id}
+                            href={
+                              `${jobsBrowseRoot}${jobsBrowseQueryString({
+                                keyword: "",
+                                city: "",
+                                workMode: "",
+                                categoryId: c.id,
+                                minBudget: "",
+                                postedWithinDays: "",
+                                page: 1
+                              })}` as Route
+                            }
+                            className="nw-chip-quiet text-[11px]"
+                          >
+                            {c.name}
+                          </Link>
+                        ))}
+                    </div>
+                  </div>
+                ) : null}
               </div>
             ) : (
               <ul className="mt-6 divide-y divide-slate-100">
@@ -646,10 +771,19 @@ export function FreelancerDashboard({
                       className="nw-card-inset nw-card-inset-hover block rounded-xl px-3.5 py-3"
                     >
                       <p className="text-sm font-semibold leading-snug text-slate-900">{job.title}</p>
-                      <p className="nw-type-meta mt-1">
-                        {job.workModeLabel}
-                        {job.city ? ` · ${job.city}` : ""}
-                      </p>
+                      <div className="mt-1 flex flex-wrap items-center gap-2">
+                        <p className="nw-type-meta font-medium normal-case tracking-normal">
+                          {job.workModeLabel}
+                          {job.city ? ` · ${job.city}` : ""}
+                        </p>
+                        {job.shortlistedCount > 0 ? (
+                          <span className="nw-chip nw-chip-brand px-2 py-0.5 text-[10px] normal-case tracking-normal">
+                            {job.shortlistedCount === 1
+                              ? copy.openJobShortlistedOne
+                              : copy.openJobShortlistedMany.split("{{count}}").join(String(job.shortlistedCount))}
+                          </span>
+                        ) : null}
+                      </div>
                     </Link>
                   </li>
                 ))}

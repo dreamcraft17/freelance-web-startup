@@ -28,6 +28,8 @@ export type JobsPublicCard = {
   clientDisplayName: string;
   clientVerified: boolean;
   bidCount: number;
+  /** Shortlisted proposals (real count from bids in SHORTLISTED). */
+  shortlistedCount: number;
   skillNames: string[];
 };
 
@@ -155,6 +157,16 @@ export function JobsPublicList({ jobs, savedJobIds }: ListProps) {
                     {statusBadge === "competitive" ? (
                       <span className="rounded-md bg-slate-800 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
                         {t("public.jobs.badgeCompetitive")}
+                      </span>
+                    ) : null}
+                    {job.shortlistedCount > 0 ? (
+                      <span
+                        title={t("public.jobs.badgeInterviewingHint")}
+                        className="nw-chip nw-chip-brand px-2 py-0.5 text-[10px] normal-case tracking-normal"
+                      >
+                        {job.shortlistedCount === 1
+                          ? t("public.jobs.badgeInterviewingOne")
+                          : t("public.jobs.badgeInterviewingMany", { count: job.shortlistedCount })}
                       </span>
                     ) : null}
                     {showMatchChip(job) ? (

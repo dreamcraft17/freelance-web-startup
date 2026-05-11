@@ -34,6 +34,7 @@ export type OpenJobListItem = {
   clientDisplayName: string;
   clientVerified: boolean;
   bidCount: number;
+  shortlistedCount: number;
   skillNames: string[];
 };
 
@@ -63,6 +64,7 @@ function jobSearchItemToOpenListItem(j: JobSearchItem): OpenJobListItem {
     clientDisplayName: j.clientDisplayName,
     clientVerified: j.clientVerified,
     bidCount: j.bidCount,
+    shortlistedCount: j.shortlistedCount,
     skillNames: j.skillNames
   };
 }
