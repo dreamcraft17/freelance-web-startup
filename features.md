@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v100  
-> Last synchronized: 2026-05-09 (public freelancer profile `/freelancers/[username]` storefront + `SaveFreelancerButton` terlokalisasi).
+> **Doc revision:** v101  
+> Last synchronized: 2026-05-09 (design system globals + client dashboard i18n status + jobs chip utilities).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,6 +9,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
+- **2026-05-09 — Global UI system & client dashboard:** utilitas bersama `nw-*` di `globals.css` + bayangan/typography di `tailwind.config.ts`; `Button`/`Card`/`EmptyStateCard`/`DashboardStatCard`/`DashboardEmptyState` diselaraskan; dashboard klien memakai token tersebut, label status job/bid/kontrak + meta job + CTA pintasan sepenuhnya dari kamus `dashboard.client.*` (termasuk nested `jobStatus` / `bidStatus` / `contractStatus`), link Settings memakai `withWorkspaceLocale`; board `/jobs` memakai kelas chip NW untuk work mode & trending.
 - **2026-05-09 — Public freelancer profile UX:** halaman profil publik freelancer (`/freelancers/[username]`) memakai hero storefront (avatar/inisial, verifikasi, skill, heuristik “great fit”), sidebar desktop berisi sinyal kepercayaan nyata (rating, jumlah ulasan, kontrak selesai, member since, aktivitas update profil, tarif, completeness), CTA Messages dengan path workspace ber-locale, simpan profil (`SaveFreelancerButton` + state awal dari `SavedFreelancer`), section layanan/preferensi/bahasa (placeholder jujur bila schema belum menyimpan bahasa), portofolio grid atau prompt owner-only jika kosong, ulasan dengan konteks job; mobile sticky contact + save tanpa backdrop blur. Label tombol simpan memakai i18n.
 - **2026-05-09 — Public job detail UX & trust data:** halaman detail lowongan publik memuat hero opportunity, panel klien (verifikasi, ulasan agregat, member since, aktivitas update profil, kontrak selesai, jumlah lowongan terbuka publik), bagian brief terstruktur, lowongan terkait per kategori, serta kolom kanan sticky untuk form proposal / CTA `AuthAwareCtaLink` (tanpa duplikasi kartu sign-in). Query agregat paralel di server; tidak ada skor AI atau metrik respons palsu.
 - **2026-05-09 — Public jobs card & mobile filter sheet:** komponen `JobsPublicList` menata ulang kartu lowongan publik agar lebih scanable (badge status dari data nyata, baris klien + verifikasi, anggaran + jumlah proposal + waktu posting, skill + sinyal heuristik dengan tooltip jujur); CTA ganda “kirim proposal” (auth-aware) vs “lihat brief”. `JobsMarketplaceMobileFilters`: overlay gelap opaque tanpa blur, opsi aktif solid indigo, kontrol lebih thumb-friendly.

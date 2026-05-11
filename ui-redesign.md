@@ -1,13 +1,22 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v90  
-> Last synchronized: 2026-05-09 (public freelancer profile `/freelancers/[username]`: storefront hero, sticky trust sidebar, reviews/portfolio, `SaveFreelancerButton` i18n).
+> **Doc revision:** v91  
+> Last synchronized: 2026-05-09 (global marketplace design system: shared tokens di `globals.css` + Tailwind; `Button`/`Card`/`EmptyStateCard`; client dashboard surfaces + EN/ID status copy; jobs board chip utilities; `DashboardShell` header).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-09 — Global design system pass (tokens + primitives + client dashboard)
+
+- **`app/globals.css`:** `--primary` / `--ring` diselaraskan ke indigo NearWork; `--radius` sedikit lebih besar; utilitas baru **`nw-card`**, **`nw-card-elevated`**, **`nw-card-trust`**, **`nw-card-inset`**, **`nw-type-*`**, **`nw-stack*`**, **`nw-chip` / `nw-chip-brand` / `nw-chip-muted`**, **`nw-chip-quiet`**, **`nw-cta-secondary`**, **`nw-link-action`**, **`nw-app-header`**; `nw-surface` + `nw-empty-state` disempurnakan.
+- **`tailwind.config.ts`:** `fontSize` (`nw-lead`, `nw-body`, `nw-caption`), `boxShadow` (`nw-card`, `nw-card-hover`, `nw-elevated`), `transitionDuration.nw`.
+- **Komponen:** `Button` (tinggi default 40px, `rounded-lg`, secondary border); `Card` (`rounded-xl`, `shadow-nw-card`); `EmptyStateCard` memakai rail `nw-empty-state`; `DashboardStatCard` / `DashboardEmptyState` mengikuti kartu/stack baru.
+- **Client dashboard:** hero + panel memakai utilitas NW; quick actions + hero CTA + badge proposal + meta job + status kontrak/bid memakai **kamus** (`dashboard.client.*` termasuk `jobStatus` / `bidStatus` / `contractStatus`); link Settings locale-aware (`withWorkspaceLocale`).
+- **Jobs browse:** filter work mode + trending chips memakai **`nw-chip`** / **`nw-chip-quiet`**.
+- **`DashboardShell`:** header mobile memakai **`nw-app-header`**.
 
 ### 2026-05-09 — Public freelancer profile marketplace pass (`/freelancers/[username]`)
 

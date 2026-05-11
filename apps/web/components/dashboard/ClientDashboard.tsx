@@ -65,24 +65,32 @@ export type ClientDashboardCopy = {
   contractsEmptyBody: string;
   contractsEmptyPrimary: string;
   contractsEmptySecondary: string;
+  heroPostJobCta: string;
+  quickActionPostJobLabel: string;
+  quickActionPostJobHint: string;
+  quickActionManageJobsLabel: string;
+  quickActionManageJobsHint: string;
+  quickActionReviewBidsLabel: string;
+  quickActionReviewBidsHint: string;
+  quickActionHireDirectoryLabel: string;
+  quickActionHireDirectoryHint: string;
+  proposalsReceivedBadgeOne: string;
+  proposalsReceivedBadgeMany: string;
+  contractRowUpdated: string;
 };
 
 export type ClientDashboardJob = {
   id: string;
   title: string;
-  status: string;
-  workMode: string;
-  city: string | null;
-  createdAt: Date;
   updatedAt: Date;
-  categoryName: string | null;
+  metaLine: string;
   bidCount: number;
   latestBidAt: Date | null;
 };
 
 export type ClientDashboardBid = {
   id: string;
-  status: string;
+  statusLabel: string;
   createdAt: Date;
   bidAmount: unknown;
   job: { id: string; title: string; currency: string };
@@ -91,7 +99,7 @@ export type ClientDashboardBid = {
 
 export type ClientDashboardContract = {
   id: string;
-  status: string;
+  statusLabel: string;
   updatedAt: Date;
   amount: unknown;
   currency: string | null;
@@ -136,25 +144,20 @@ type ClientDashboardProps = {
   };
 };
 
-const linkClass =
-  "inline-flex items-center gap-1 text-sm font-medium text-[#433C93] underline-offset-4 transition hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#433C93]/25 focus-visible:ring-offset-2 rounded-sm";
+const linkClass = "nw-link-action inline-flex items-center gap-1";
 
 const primaryCtaClass =
-  "inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#433C93] px-6 py-3 text-base font-semibold text-white transition hover:bg-[#4d45a5] sm:w-auto";
+  "nw-cta-primary inline-flex w-full min-h-11 items-center justify-center gap-2 px-6 py-3 text-base sm:w-auto";
 
-const panelSurface =
-  "rounded-xl border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]";
+const panelSurface = "nw-card";
 
-function formatShortDate(d: Date): string {
-  return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric" }).format(d);
+function formatShortDate(d: Date, locale: AppLocale): string {
+  const tag = locale === "id" ? "id-ID" : "en-US";
+  return new Intl.DateTimeFormat(tag, { month: "short", day: "numeric" }).format(d);
 }
 
 function hasNewProposal(d: Date | null): boolean {
   return Boolean(d && Date.now() - d.getTime() <= 1000 * 60 * 60 * 48);
-}
-
-function humanizeStatus(s: string): string {
-  return s.replace(/_/g, " ").toLowerCase();
 }
 
 type QuickAction = {
@@ -186,48 +189,46 @@ export function ClientDashboard({
 
   const quickActions: QuickAction[] = [
     {
-      label: "Post a job",
-      hint: "Publish a new role",
+      label: copy.quickActionPostJobLabel,
+      hint: copy.quickActionPostJobHint,
       href: wp("/client/jobs/new"),
       icon: Plus,
       emphasize: true
     },
     {
-      label: "Manage jobs",
-      hint: "Edit listings & status",
+      label: copy.quickActionManageJobsLabel,
+      hint: copy.quickActionManageJobsHint,
       href: wp("/client/jobs"),
       icon: Briefcase
     },
     {
-      label: "Review bids",
-      hint: "Open proposals inbox",
+      label: copy.quickActionReviewBidsLabel,
+      hint: copy.quickActionReviewBidsHint,
       href: wp("/client/jobs"),
       icon: ClipboardList
     },
     {
-      label: "Hire from directory",
-      hint: "Discover freelancers",
+      label: copy.quickActionHireDirectoryLabel,
+      hint: copy.quickActionHireDirectoryHint,
       href: freelancersBrowseRoot as Route,
       icon: Search
     }
   ];
 
   return (
-    <div className="mx-auto max-w-6xl space-y-10 pb-10">
+    <div className="mx-auto max-w-6xl nw-page-stack">
       {/* Hero */}
-      <section className="rounded-2xl border border-slate-200/85 bg-white p-6 shadow-[0_2px_12px_-4px_rgba(15,23,42,0.08)] md:p-8">
+      <section className="nw-card-elevated p-6 md:p-8">
         <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="min-w-0 max-w-2xl space-y-3">
-            <p className="text-xs font-medium uppercase tracking-[0.14em] text-[#3525cd]/85">{copy.nearworkKicker}</p>
-            <h1 className="text-2xl font-semibold tracking-tight text-slate-900 md:text-[1.75rem] md:leading-tight">
-              {welcomeLine}
-            </h1>
-            <p className="text-sm leading-relaxed text-slate-600 md:text-[15px]">{subline}</p>
+            <p className="nw-section-title opacity-90">{copy.nearworkKicker}</p>
+            <h1 className="nw-type-display text-slate-900">{welcomeLine}</h1>
+            <p className="nw-type-body text-[15px] text-slate-600">{subline}</p>
           </div>
           <div className="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center">
             <Link href={wp("/client/jobs/new")} className={primaryCtaClass}>
               <Plus className="h-5 w-5 shrink-0 opacity-95" aria-hidden />
-              Post a job
+              {copy.heroPostJobCta}
             </Link>
           </div>
         </div>
@@ -252,10 +253,10 @@ export function ClientDashboard({
       <section aria-labelledby="client-summary-heading">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
           <div>
-            <h2 id="client-summary-heading" className="text-base font-semibold text-slate-900">
+            <h2 id="client-summary-heading" className="nw-type-section">
               {copy.summaryHeading}
             </h2>
-            <p className="mt-0.5 text-sm text-slate-500">{copy.summarySub}</p>
+            <p className="nw-type-meta mt-0.5 font-medium normal-case tracking-normal">{copy.summarySub}</p>
           </div>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
@@ -298,19 +299,19 @@ export function ClientDashboard({
       </section>
 
       {!hasProfile ? (
-        <div className="rounded-xl border border-slate-200 border-l-[3px] border-l-[#433C93] bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:flex md:items-center md:justify-between md:gap-6 md:p-6">
+        <div className="nw-card-trust p-5 md:flex md:items-center md:justify-between md:gap-6 md:p-6">
           <div className="flex min-w-0 gap-4">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-slate-50 text-[#433C93] ring-1 ring-slate-200/80">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[#3525cd]/[0.08] text-[#3525cd] ring-1 ring-[#3525cd]/12">
               <Sparkles className="h-5 w-5" strokeWidth={1.75} aria-hidden />
             </span>
             <div className="min-w-0">
-              <h3 className="text-base font-semibold text-slate-900">{copy.finishProfileCardTitle}</h3>
-              <p className="mt-1 text-sm leading-relaxed text-slate-600">{copy.finishProfileCardBody}</p>
+              <h3 className="nw-type-section">{copy.finishProfileCardTitle}</h3>
+              <p className="nw-type-body mt-1">{copy.finishProfileCardBody}</p>
             </div>
           </div>
           <Link
-            href={"/settings" as Route}
-            className="mt-4 inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-lg bg-[#433C93] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4d45a5] md:mt-0 md:w-auto"
+            href={wp("/settings") as Route}
+            className="nw-cta-primary mt-4 inline-flex w-full shrink-0 items-center justify-center gap-2 px-5 py-2.5 text-sm md:mt-0 md:w-auto"
           >
             {copy.finishProfileCta}
             <ArrowRight className="h-4 w-4 opacity-90" aria-hidden />
@@ -321,10 +322,10 @@ export function ClientDashboard({
       {/* Quick actions */}
       <section aria-labelledby="client-quick-actions-heading">
         <div className="mb-4">
-          <h2 id="client-quick-actions-heading" className="text-base font-semibold text-slate-900">
+          <h2 id="client-quick-actions-heading" className="nw-type-section">
             {copy.quickActionsHeading}
           </h2>
-          <p className="mt-0.5 text-sm text-slate-500">{copy.quickActionsSub}</p>
+          <p className="nw-type-meta mt-0.5 font-medium normal-case tracking-normal">{copy.quickActionsSub}</p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {quickActions.map((item) => (
@@ -332,18 +333,18 @@ export function ClientDashboard({
               key={item.label}
               href={item.href}
               className={cn(
-                "group relative flex flex-col gap-3 rounded-lg border p-4 transition md:p-5",
+                "group relative flex flex-col gap-3 rounded-xl border p-4 transition-[border-color,box-shadow,background-color] duration-200 md:p-5",
                 item.emphasize
-                  ? "border-[#433C93]/25 bg-[#433C93]/[0.05] hover:border-[#433C93]/45"
-                  : "border-slate-200 bg-white hover:border-slate-300/90"
+                  ? "border-[#3525cd]/20 bg-[#3525cd]/[0.04] hover:border-[#3525cd]/40 hover:shadow-nw-card"
+                  : "border border-slate-200/90 bg-white shadow-nw-card transition-[border-color,box-shadow] duration-200 hover:border-slate-300/85 hover:shadow-nw-card-hover"
               )}
             >
               <div className="flex items-start justify-between gap-2">
                 <span
                   className={cn(
-                    "flex h-11 w-11 items-center justify-center rounded-xl ring-1",
+                    "flex h-11 w-11 items-center justify-center rounded-xl ring-1 transition-colors duration-200",
                     item.emphasize
-                      ? "bg-[#433C93] text-white ring-[#433C93]/20"
+                      ? "bg-[#3525cd] text-white ring-[#3525cd]/25"
                       : "bg-slate-50 text-slate-700 ring-slate-200/80 group-hover:bg-white"
                   )}
                 >
@@ -351,15 +352,15 @@ export function ClientDashboard({
                 </span>
                 <ArrowUpRight
                   className={cn(
-                    "h-4 w-4 shrink-0 opacity-0 transition group-hover:opacity-100",
-                    item.emphasize ? "text-[#433C93]" : "text-slate-400"
+                    "h-4 w-4 shrink-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100",
+                    item.emphasize ? "text-[#3525cd]" : "text-slate-400"
                   )}
                   aria-hidden
                 />
               </div>
               <div>
-                <p className="font-semibold text-slate-900">{item.label}</p>
-                <p className="mt-1 text-xs leading-snug text-slate-500">{item.hint}</p>
+                <p className="text-sm font-semibold text-slate-900">{item.label}</p>
+                <p className="nw-type-meta mt-1 font-medium normal-case tracking-normal">{item.hint}</p>
               </div>
             </Link>
           ))}
@@ -367,14 +368,14 @@ export function ClientDashboard({
       </section>
 
       {/* Recent jobs + Incoming bids */}
-      <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
+      <div className="grid gap-5 sm:gap-6 lg:grid-cols-2 lg:items-start">
         <section className={cn(panelSurface, "p-5 md:p-6")} aria-labelledby="recent-jobs-heading">
           <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 pb-4">
             <div>
-              <h2 id="recent-jobs-heading" className="text-base font-semibold text-slate-900">
+              <h2 id="recent-jobs-heading" className="nw-type-section">
                 {copy.recentJobsHeading}
               </h2>
-              <p className="mt-0.5 text-sm text-slate-500">{copy.recentJobsSub}</p>
+              <p className="nw-type-meta mt-0.5 font-medium normal-case tracking-normal">{copy.recentJobsSub}</p>
             </div>
             {hasProfile && hasJobs ? (
               <Link href={wp("/client/jobs")} className={linkClass}>
@@ -392,7 +393,7 @@ export function ClientDashboard({
                 icon={FolderOpen}
                 title={copy.jobsEmptyNoProfileTitle}
                 description={copy.jobsEmptyNoProfileBody}
-                action={{ label: copy.finishProfileCta, href: "/settings" }}
+                action={{ label: copy.finishProfileCta, href: wp("/settings") }}
               />
             ) : listJobs.length === 0 ? (
               <DashboardEmptyState
@@ -417,31 +418,28 @@ export function ClientDashboard({
                       </Link>
                       <div className="mt-1 flex flex-wrap items-center gap-1.5">
                         {hasNewProposal(job.latestBidAt) ? (
-                          <span className="rounded-md border border-[#3525cd]/20 bg-[#3525cd]/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#3525cd]">
+                          <span className="nw-chip nw-chip-brand px-1.5 py-0.5 text-[10px] normal-case tracking-normal">
                             {copy.proposalNewBadge}
                           </span>
                         ) : null}
                         {job.bidCount > 0 ? (
-                          <span className="rounded-md border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
-                            {job.bidCount} proposal{job.bidCount === 1 ? "" : "s"} received
+                          <span className="nw-chip nw-chip-muted px-1.5 py-0.5 text-[10px] normal-case tracking-normal">
+                            {(job.bidCount === 1 ? copy.proposalsReceivedBadgeOne : copy.proposalsReceivedBadgeMany).replace(
+                              "{{count}}",
+                              String(job.bidCount)
+                            )}
                           </span>
                         ) : null}
                       </div>
-                      <p className="mt-1 text-xs leading-relaxed text-slate-600">
-                        <span className="capitalize">{humanizeStatus(job.status)}</span>
-                        {" · "}
-                        {job.workMode}
-                        {job.categoryName ? ` · ${job.categoryName}` : null}
-                        {job.city ? ` · ${job.city}` : null}
-                        {" · "}
-                        {job.bidCount} proposal{job.bidCount === 1 ? "" : "s"}
+                      <p className="nw-type-meta mt-1 font-medium normal-case tracking-normal text-slate-600">
+                        {job.metaLine}
                       </p>
                     </div>
                     <time
                       className="shrink-0 text-[11px] tabular-nums text-slate-400"
                       dateTime={job.updatedAt.toISOString()}
                     >
-                      {formatShortDate(job.updatedAt)}
+                      {formatShortDate(job.updatedAt, locale)}
                     </time>
                   </li>
                 ))}
@@ -453,10 +451,10 @@ export function ClientDashboard({
         <section className={cn(panelSurface, "p-5 md:p-6")} aria-labelledby="incoming-bids-heading">
           <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 pb-4">
             <div>
-              <h2 id="incoming-bids-heading" className="text-base font-semibold text-slate-900">
+              <h2 id="incoming-bids-heading" className="nw-type-section">
                 {copy.incomingBidsHeading}
               </h2>
-              <p className="mt-0.5 text-sm text-slate-500">{copy.incomingBidsSub}</p>
+              <p className="nw-type-meta mt-0.5 font-medium normal-case tracking-normal">{copy.incomingBidsSub}</p>
             </div>
             {hasProfile ? (
               <Link href={wp("/client/jobs")} className={linkClass}>
@@ -474,7 +472,7 @@ export function ClientDashboard({
                 icon={Inbox}
                 title={copy.bidsEmptyNoProfileTitle}
                 description={copy.bidsEmptyNoProfileBody}
-                action={{ label: copy.finishProfileCta, href: "/settings" }}
+                action={{ label: copy.finishProfileCta, href: wp("/settings") }}
               />
             ) : recentBids.length === 0 ? (
               <DashboardEmptyState
@@ -491,7 +489,7 @@ export function ClientDashboard({
                 {recentBids.map((bid) => (
                   <li
                     key={bid.id}
-                    className="rounded-lg border border-slate-100 bg-slate-50/40 p-3.5 transition hover:border-slate-200 hover:bg-slate-50/80"
+                    className="nw-card-inset nw-card-inset-hover rounded-lg p-3.5"
                   >
                     <Link
                       href={`${jobsBrowseRoot}/${bid.job.id}` as Route}
@@ -504,11 +502,11 @@ export function ClientDashboard({
                       <span className="text-slate-400">(@{bid.freelancer.username})</span>
                     </p>
                     <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-slate-500">
-                      <span className="rounded-md bg-white px-1.5 py-0.5 font-medium capitalize text-slate-700 ring-1 ring-slate-200/80">
-                        {humanizeStatus(bid.status)}
+                      <span className="nw-chip nw-chip-muted px-1.5 py-0.5 text-[10px] font-medium normal-case tracking-normal text-slate-700">
+                        {bid.statusLabel}
                       </span>
                       <span className="font-medium text-slate-700">{formatMoneyAmount(bid.bidAmount, bid.job.currency, { locale, maximumFractionDigits: 0 })}</span>
-                      <span className="text-slate-400">· {formatShortDate(bid.createdAt)}</span>
+                      <span className="text-slate-400">· {formatShortDate(bid.createdAt, locale)}</span>
                     </div>
                   </li>
                 ))}
@@ -520,11 +518,11 @@ export function ClientDashboard({
 
       <section className={cn(panelSurface, "p-5 md:p-6")} aria-labelledby="contracts-heading">
         <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 pb-4">
-            <div>
-            <h2 id="contracts-heading" className="text-base font-semibold text-slate-900">
+          <div>
+            <h2 id="contracts-heading" className="nw-type-section">
               {copy.contractsHeading}
             </h2>
-            <p className="mt-0.5 text-sm text-slate-500">{copy.contractsSub}</p>
+            <p className="nw-type-meta mt-0.5 font-medium normal-case tracking-normal">{copy.contractsSub}</p>
           </div>
           <Link href={wp("/messages")} className={linkClass}>
             {copy.contractsMessagesLink}
@@ -546,7 +544,7 @@ export function ClientDashboard({
           ) : (
             <ul className="grid gap-3 sm:grid-cols-2">
               {recentContracts.map((c) => (
-                <li key={c.id} className="rounded-lg border border-slate-100 bg-slate-50/70 p-4 transition hover:border-slate-200 hover:shadow-sm">
+                <li key={c.id} className="nw-card-inset nw-card-inset-hover rounded-lg p-4">
                   <Link
                     href={`${jobsBrowseRoot}/${c.bid.job.id}` as Route}
                     className="text-sm font-semibold text-slate-900 hover:text-[#3525cd]"
@@ -557,8 +555,8 @@ export function ClientDashboard({
                     {c.bid.freelancer.fullName}{" "}
                     <span className="text-slate-400">(@{c.bid.freelancer.username})</span>
                   </p>
-                  <p className="mt-2 text-xs text-slate-500">
-                    <span className="capitalize">{humanizeStatus(c.status)}</span>
+                  <p className="nw-type-meta mt-2 font-medium text-slate-500">
+                    <span>{c.statusLabel}</span>
                     {c.currency && c.amount != null ? (
                       <>
                         {" · "}
@@ -566,7 +564,7 @@ export function ClientDashboard({
                       </>
                     ) : null}
                     {" · "}
-                    Updated {formatShortDate(c.updatedAt)}
+                    {copy.contractRowUpdated.replace("{{date}}", formatShortDate(c.updatedAt, locale))}
                   </p>
                 </li>
               ))}

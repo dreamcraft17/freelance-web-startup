@@ -284,7 +284,50 @@
       "contractsHeading": "Hire terbaru",
       "contractsSub": "Kontrak yang terikat ke akun Anda.",
       "proposalNewBadge": "Proposal baru",
-      "proposalCountShort": "{{count}} proposal · {{total}} total"
+      "proposalCountShort": "{{count}} proposal · {{total}} total",
+      "heroPostJobCta": "Pasang lowongan",
+      "quickActionPostJobLabel": "Pasang lowongan",
+      "quickActionPostJobHint": "Publikasikan role baru",
+      "quickActionManageJobsLabel": "Kelola lowongan",
+      "quickActionManageJobsHint": "Edit listing dan status",
+      "quickActionReviewBidsLabel": "Tinjau bid",
+      "quickActionReviewBidsHint": "Buka inbox proposal",
+      "quickActionHireDirectoryLabel": "Rekrut dari direktori",
+      "quickActionHireDirectoryHint": "Temukan freelancer",
+      "jobRowProposalsZero": "Belum ada proposal",
+      "jobRowProposalsOne": "{{count}} proposal",
+      "jobRowProposalsMany": "{{count}} proposal",
+      "proposalsReceivedBadgeOne": "{{count}} proposal diterima",
+      "proposalsReceivedBadgeMany": "{{count}} proposal diterima",
+      "contractRowUpdated": "Diperbarui {{date}}",
+      "jobStatus": {
+        "DRAFT": "Draf",
+        "OPEN": "Terbuka",
+        "IN_REVIEW": "Dalam peninjauan",
+        "PAUSED": "Dijeda",
+        "CLOSED": "Ditutup",
+        "CANCELLED": "Dibatalkan",
+        "ARCHIVED": "Diarsipkan"
+      },
+      "bidStatus": {
+        "DRAFT": "Draf",
+        "SUBMITTED": "Dikirim",
+        "SHORTLISTED": "Shortlist",
+        "ACCEPTED": "Diterima",
+        "REJECTED": "Ditolak",
+        "WITHDRAWN": "Ditarik",
+        "EXPIRED": "Kedaluwarsa",
+        "CANCELLED": "Dibatalkan"
+      },
+      "contractStatus": {
+        "PENDING": "Menunggu",
+        "ACTIVE": "Aktif",
+        "IN_PROGRESS": "Berjalan",
+        "COMPLETED": "Selesai",
+        "CANCELLED": "Dibatalkan",
+        "DISPUTED": "Dispute",
+        "ARCHIVED": "Diarsipkan"
+      }
     },
     "freelancer": {
       "profileCardTitleNew": "Lengkapi profil freelancer",

@@ -284,7 +284,50 @@
       "contractsHeading": "Recent hires",
       "contractsSub": "Contracts and outcomes tied to your account.",
       "proposalNewBadge": "New proposal",
-      "proposalCountShort": "{{count}} proposal · {{total}} total"
+      "proposalCountShort": "{{count}} proposal · {{total}} total",
+      "heroPostJobCta": "Post a job",
+      "quickActionPostJobLabel": "Post a job",
+      "quickActionPostJobHint": "Publish a new role",
+      "quickActionManageJobsLabel": "Manage jobs",
+      "quickActionManageJobsHint": "Edit listings and status",
+      "quickActionReviewBidsLabel": "Review bids",
+      "quickActionReviewBidsHint": "Open your proposals inbox",
+      "quickActionHireDirectoryLabel": "Hire from directory",
+      "quickActionHireDirectoryHint": "Discover freelancers",
+      "jobRowProposalsZero": "No proposals yet",
+      "jobRowProposalsOne": "{{count}} proposal",
+      "jobRowProposalsMany": "{{count}} proposals",
+      "proposalsReceivedBadgeOne": "{{count}} proposal received",
+      "proposalsReceivedBadgeMany": "{{count}} proposals received",
+      "contractRowUpdated": "Updated {{date}}",
+      "jobStatus": {
+        "DRAFT": "Draft",
+        "OPEN": "Open",
+        "IN_REVIEW": "In review",
+        "PAUSED": "Paused",
+        "CLOSED": "Closed",
+        "CANCELLED": "Cancelled",
+        "ARCHIVED": "Archived"
+      },
+      "bidStatus": {
+        "DRAFT": "Draft",
+        "SUBMITTED": "Submitted",
+        "SHORTLISTED": "Shortlisted",
+        "ACCEPTED": "Accepted",
+        "REJECTED": "Rejected",
+        "WITHDRAWN": "Withdrawn",
+        "EXPIRED": "Expired",
+        "CANCELLED": "Cancelled"
+      },
+      "contractStatus": {
+        "PENDING": "Pending",
+        "ACTIVE": "Active",
+        "IN_PROGRESS": "In progress",
+        "COMPLETED": "Completed",
+        "CANCELLED": "Cancelled",
+        "DISPUTED": "Disputed",
+        "ARCHIVED": "Archived"
+      }
     },
     "freelancer": {
       "profileCardTitleNew": "Complete your freelancer profile",

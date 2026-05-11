@@ -60,7 +60,7 @@ export function DashboardShell({
 
   return (
     <div className={cn("nw-page min-h-screen", appearance === "premium" ? "bg-[#f4f5fb]" : "")}>
-      <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white shadow-[0_1px_0_rgba(15,23,42,0.04)] md:hidden">
+      <header className="nw-app-header md:hidden">
         <div className="flex items-start justify-between gap-3 border-b border-slate-100/80 px-3 pb-2.5 pt-3">
           <div>
             <BrandLogo imageClassName="h-5 w-auto" alt="NearWork logo" />

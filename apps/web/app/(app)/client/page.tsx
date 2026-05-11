@@ -163,22 +163,43 @@ export default async function ClientDashboardPage() {
     recentJobsRaw = jobs.map((j) => ({ ...j, latestBidAt: latestBidMap.get(j.id) ?? null }));
   }
 
-  const recentJobs: ClientDashboardJob[] = recentJobsRaw.map((j) => ({
-    id: j.id,
-    title: j.title,
-    status: j.status,
-    workMode: j.workMode,
-    city: j.city,
-    createdAt: j.createdAt,
-    updatedAt: j.updatedAt,
-    categoryName: j.category?.name ?? null,
-    bidCount: j._count.bids,
-    latestBidAt: j.latestBidAt ?? null
-  }));
+  const workModeLabel = (wm: string) =>
+    wm === "REMOTE"
+      ? t("public.filters.workModeRemote")
+      : wm === "ONSITE"
+        ? t("public.filters.workModeOnSite")
+        : wm === "HYBRID"
+          ? t("public.filters.workModeHybrid")
+          : wm;
+
+  const recentJobs: ClientDashboardJob[] = recentJobsRaw.map((j) => {
+    const statusLabel = t(`dashboard.client.jobStatus.${j.status}`);
+    const proposalSummary =
+      j._count.bids === 0
+        ? t("dashboard.client.jobRowProposalsZero")
+        : j._count.bids === 1
+          ? t("dashboard.client.jobRowProposalsOne", { count: j._count.bids })
+          : t("dashboard.client.jobRowProposalsMany", { count: j._count.bids });
+    const metaParts = [
+      statusLabel,
+      workModeLabel(j.workMode),
+      j.category?.name?.trim() || null,
+      j.city?.trim() || null,
+      proposalSummary
+    ].filter((x): x is string => Boolean(x));
+    return {
+      id: j.id,
+      title: j.title,
+      updatedAt: j.updatedAt,
+      metaLine: metaParts.join(" · "),
+      bidCount: j._count.bids,
+      latestBidAt: j.latestBidAt ?? null
+    };
+  });
 
   const recentBids: ClientDashboardBid[] = recentBidsRaw.map((b) => ({
     id: b.id,
-    status: b.status,
+    statusLabel: t(`dashboard.client.bidStatus.${b.status}`),
     createdAt: b.createdAt,
     bidAmount: b.bidAmount,
     job: b.job,
@@ -187,7 +208,7 @@ export default async function ClientDashboardPage() {
 
   const recentContracts: ClientDashboardContract[] = recentContractsRaw.map((c) => ({
     id: c.id,
-    status: c.status,
+    statusLabel: t(`dashboard.client.contractStatus.${c.status}`),
     updatedAt: c.updatedAt,
     amount: c.amount,
     currency: c.currency,
@@ -285,7 +306,19 @@ export default async function ClientDashboardPage() {
         contractsEmptyTitle: t("dashboard.client.contractsEmptyTitle"),
         contractsEmptyBody: t("dashboard.client.contractsEmptyBody"),
         contractsEmptyPrimary: t("dashboard.client.contractsEmptyPrimary"),
-        contractsEmptySecondary: t("dashboard.client.contractsEmptySecondary")
+        contractsEmptySecondary: t("dashboard.client.contractsEmptySecondary"),
+        heroPostJobCta: t("dashboard.client.heroPostJobCta"),
+        quickActionPostJobLabel: t("dashboard.client.quickActionPostJobLabel"),
+        quickActionPostJobHint: t("dashboard.client.quickActionPostJobHint"),
+        quickActionManageJobsLabel: t("dashboard.client.quickActionManageJobsLabel"),
+        quickActionManageJobsHint: t("dashboard.client.quickActionManageJobsHint"),
+        quickActionReviewBidsLabel: t("dashboard.client.quickActionReviewBidsLabel"),
+        quickActionReviewBidsHint: t("dashboard.client.quickActionReviewBidsHint"),
+        quickActionHireDirectoryLabel: t("dashboard.client.quickActionHireDirectoryLabel"),
+        quickActionHireDirectoryHint: t("dashboard.client.quickActionHireDirectoryHint"),
+        proposalsReceivedBadgeOne: t("dashboard.client.proposalsReceivedBadgeOne"),
+        proposalsReceivedBadgeMany: t("dashboard.client.proposalsReceivedBadgeMany"),
+        contractRowUpdated: t("dashboard.client.contractRowUpdated")
       }}
       activationChecklist={{
         title: t("activation.client.checklistTitle"),

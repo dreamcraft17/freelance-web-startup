@@ -15,6 +15,7 @@ import { withPublicLocale } from "@/lib/i18n/locale-path";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
 import type { AppLocale } from "@/lib/i18n/types";
 import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
+import { cn } from "@/lib/utils";
 import { CategoryService } from "@/server/services/category.service";
 import { JobService } from "@/server/services/job.service";
 import { PublicStatsService } from "@/server/services/public-stats.service";
@@ -169,12 +170,10 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
     { label: t("public.jobs.quickTagFullTime"), href: jobsBrowseQueryString({ ...qArgs, keyword: "full time" }) }
   ];
   const workModeChipClass = (active: boolean) =>
-    [
-      "rounded-md px-2.5 py-1 text-[11px] font-semibold transition",
-      active
-        ? "bg-[#3525cd] text-white"
-        : "border border-slate-200 bg-white text-slate-700 hover:border-slate-300"
-    ].join(" ");
+    cn(
+      "nw-chip min-h-9 px-2.5 py-1 text-[11px] transition-colors duration-150",
+      active ? "border-transparent bg-[#3525cd] text-white shadow-sm" : "text-slate-700 hover:border-slate-300"
+    );
 
   const workModeT = (wm: string) =>
     wm === "REMOTE"
@@ -304,7 +303,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                       <Link
                         key={chip.href}
                         href={`${jobsBase}${chip.href}` as Route}
-                        className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-semibold text-slate-800 transition hover:border-[#3525cd]/35 hover:bg-white"
+                        className="nw-chip-quiet"
                       >
                         {chip.label}
                         {chip.count != null ? (

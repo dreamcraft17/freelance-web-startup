@@ -9,7 +9,8 @@
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
+    /* Align shadcn primary with NearWork indigo — same hue as --nw-brand */
+    --primary: 249 69% 46%;
     --primary-foreground: 0 0% 98%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
@@ -19,8 +20,8 @@
     --accent-foreground: 240 5.9% 10%;
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
-    --radius: 0.5rem;
+    --ring: 249 69% 46%;
+    --radius: 0.625rem;
     --nw-bg: 215 27% 97%;
     --nw-surface: 0 0% 100%;
     --nw-surface-soft: 220 20% 98%;
@@ -36,8 +37,8 @@
     --foreground: 0 0% 98%;
     --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
+    --primary: 249 63% 58%;
+    --primary-foreground: 0 0% 98%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
@@ -46,7 +47,7 @@
     --accent-foreground: 0 0% 98%;
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
+    --ring: 249 63% 58%;
   }
 }
 
@@ -57,6 +58,13 @@
   body {
     @apply bg-background text-foreground antialiased;
   }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply text-balance;
+  }
 }
 
 @layer components {
@@ -65,11 +73,82 @@
   }
 
   .nw-surface {
-    @apply rounded-xl border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)];
+    @apply rounded-xl border border-slate-200/90 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition-[box-shadow,border-color] duration-200;
   }
 
   .nw-surface-soft {
-    @apply rounded-xl border border-slate-200/80 bg-slate-50;
+    @apply rounded-xl border border-slate-200/80 bg-slate-50 transition-[box-shadow,border-color] duration-200;
+  }
+
+  /** Unified marketplace cards — use variants for hierarchy (not identical white boxes). */
+  .nw-card {
+    @apply rounded-xl border border-slate-200/90 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition-[box-shadow,border-color] duration-200;
+  }
+
+  .nw-card-hover {
+    @apply hover:border-slate-300/85 hover:shadow-[0_4px_16px_-6px_rgba(15,23,42,0.09)];
+  }
+
+  .nw-card-elevated {
+    @apply rounded-xl border border-slate-200/85 bg-white shadow-[0_2px_12px_-4px_rgba(15,23,42,0.08)] transition-[box-shadow,border-color] duration-200;
+  }
+
+  .nw-card-trust {
+    @apply rounded-xl border border-slate-200 border-l-[3px] border-l-[#3525cd] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.05)];
+  }
+
+  .nw-card-inset {
+    @apply rounded-lg border border-slate-100 bg-slate-50/65 transition-[border-color,background-color] duration-200;
+  }
+
+  .nw-card-inset-hover {
+    @apply hover:border-slate-200 hover:bg-slate-50/90;
+  }
+
+  /** Typography — editorial hierarchy (avoid same-weight everything). */
+  .nw-type-display {
+    @apply text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl sm:leading-tight;
+  }
+
+  .nw-type-title {
+    @apply text-lg font-semibold tracking-tight text-slate-900;
+  }
+
+  .nw-type-section {
+    @apply text-base font-semibold tracking-tight text-slate-900;
+  }
+
+  .nw-type-body {
+    @apply text-sm leading-relaxed text-slate-600;
+  }
+
+  .nw-type-body-strong {
+    @apply text-sm font-medium leading-snug text-slate-800;
+  }
+
+  .nw-type-meta {
+    @apply text-xs leading-snug text-slate-500;
+  }
+
+  .nw-type-micro {
+    @apply text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500;
+  }
+
+  /** Vertical rhythm helpers */
+  .nw-stack-tight {
+    @apply flex flex-col gap-2;
+  }
+
+  .nw-stack {
+    @apply flex flex-col gap-4;
+  }
+
+  .nw-stack-loose {
+    @apply flex flex-col gap-6 sm:gap-8;
+  }
+
+  .nw-page-stack {
+    @apply space-y-8 pb-10 sm:space-y-10;
   }
 
   .nw-section-title {
@@ -89,7 +168,38 @@
   }
 
   .nw-cta-primary {
-    @apply rounded-md bg-[#3525cd] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#2b1f9e] active:bg-[#261a87];
+    @apply rounded-lg bg-[#3525cd] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-[#2b1f9e] active:bg-[#261a87];
+  }
+
+  .nw-cta-secondary {
+    @apply rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition-colors duration-200 hover:border-slate-400 hover:bg-slate-50;
+  }
+
+  /** Chips / compact status — semantic variants */
+  .nw-chip {
+    @apply inline-flex items-center gap-1 rounded-md border border-slate-200/90 bg-white px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-slate-600 transition-colors duration-150;
+  }
+
+  .nw-chip-brand {
+    @apply border-[#3525cd]/20 bg-[#3525cd]/[0.09] text-[#3525cd];
+  }
+
+  .nw-chip-success {
+    @apply border-emerald-200/90 bg-emerald-50 text-emerald-900;
+  }
+
+  .nw-chip-muted {
+    @apply border-slate-200 bg-slate-50 text-slate-600;
+  }
+
+  /** Discovery / trending — sentence case, not all-caps */
+  .nw-chip-quiet {
+    @apply inline-flex items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-semibold tracking-normal text-slate-800 transition-colors duration-150 hover:border-[#3525cd]/35 hover:bg-white;
+  }
+
+  /** Text CTAs — consistent with marketplace links */
+  .nw-link-action {
+    @apply inline-flex items-center gap-1 text-sm font-medium text-[#3525cd] underline-offset-4 transition hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/25 focus-visible:ring-offset-2 rounded-sm;
   }
 
   .nw-input {
@@ -102,7 +212,7 @@
   }
 
   .nw-empty-state {
-    @apply rounded-lg border border-dashed border-slate-300 bg-white p-6 sm:p-8 shadow-[inset_4px_0_0_0_#3525cd];
+    @apply rounded-xl border border-dashed border-slate-300/95 bg-white p-6 shadow-[inset_3px_0_0_0_#3525cd] sm:p-7;
   }
 
   .nw-text-brand {
@@ -134,5 +244,10 @@
 
   .nw-section-slab {
     @apply border-y border-slate-200/90 bg-slate-100/80;
+  }
+
+  /** Workspace chrome — subtle depth without glass everywhere */
+  .nw-app-header {
+    @apply sticky top-0 z-40 border-b border-slate-200/80 bg-white shadow-[0_1px_0_rgba(15,23,42,0.04)];
   }
 }

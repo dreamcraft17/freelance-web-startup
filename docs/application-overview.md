@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v98  
-> Last synchronized: 2026-05-09 (public freelancer profile: layout storefront + CTA locale-aware ke Messages).
+> **Doc revision:** v99  
+> Last synchronized: 2026-05-09 (design system tokens + client dashboard localized status/meta).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,7 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Global marketplace UI tokens (2026-05-09):** `globals.css` memperluas utilitas `nw-card*`, `nw-type*`, `nw-chip*`, `nw-cta-*`, `nw-link-action`, `nw-app-header`, dan menyelaraskan variabel shadcn `--primary` ke indigo merek; `tailwind.config.ts` menambah `shadow-nw-*` dan skala font utilitas. Dashboard klien dan beberapa permukaan terkait memakai pola ini; status enumerasi job/bid/kontrak pada ringkasan klien dirender lewat kamus EN/ID.
 - **Public freelancer profile (2026-05-09):** profil publik freelancer memakai hierarki “talent storefront” (hero, layanan, preferensi kerja, portofolio, ulasan) dengan panel kepercayaan sticky di desktop dan CTA kontak/simpan yang konsisten dengan locale workspace (`/en/messages`, `/id/messages`); tidak menambahkan metrik respons atau pendapatan palsu.
 - **Public job detail discovery (2026-05-09):** halaman detail job publik menonjolkan brief, sinyal kompetisi proposal nyata, profil klien (verifikasi, ulasan, histori hire via kontrak selesai, jumlah posting terbuka), rekomendasi lowongan sejenis, dan alur apply/proposal di sidebar/mobile—semua dari data Prisma, bukan template metrik palsu.
 - **Public jobs listing UX (2026-05-09):** board `/jobs` memakai kartu hasil client (`JobsPublicList`) dengan hierarki marketplace (klien, verifikasi, anggaran, proposal count, freshness, badge kompetisi berbasis `_count.bids` + `createdAt`, featured) dan CTA terstruktur (apply vs buka brief); lembar filter mobile (`JobsMarketplaceMobileFilters`) refined (tanpa backdrop blur, active state lebih jelas).
