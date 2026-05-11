@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v94  
-> Last synchronized: 2026-05-11 — Added unified `nw-skeleton*` loading language, expanded route `loading.tsx` coverage (public/workspace/admin), and refined pending feedback in messages/notifications/freelancer filters for smoother perceived performance.
+> **Doc revision:** v97  
+> Last synchronized: 2026-05-11 — Playwright infrastructure: `DATABASE_URL_TEST`, grouped projects + scripts, storageState setup, structured artifacts (`test-results/playwright`, `playwright-report/nearwork`), and `docs/testing-playwright.md`.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -317,6 +317,17 @@ pnpm exec tsc --noEmit -p apps/web
 | `pnpm test` | Alias to unit tests |
 | `pnpm test:unit` | Vitest unit tests for policies/services/helpers/validators |
 | `pnpm test:e2e` | Build web + `next start` (port **3041** default), lalu HTTP smoke CSRF auth→job→bid→messages→report (`SKIP_E2E_BUILD=1`/`E2E_PORT`) |
+| `pnpm test:playwright` | Playwright browser E2E (grouped projects: auth, marketplace, messaging, mobile, design; setup writes `tests/playwright/.auth/*`) |
+| `pnpm test:playwright:setup` | Generate storageState fixtures only |
+| `pnpm test:playwright:auth` | Auth specs (EN + ID desktop) |
+| `pnpm test:playwright:marketplace` | Marketplace browsing specs |
+| `pnpm test:playwright:messaging` | Client + freelancer flow (`freelancer-client.spec.ts`) |
+| `pnpm test:playwright:mobile` | Mobile marketplace specs |
+| `pnpm test:playwright:design` | Design QA specs |
+| `pnpm test:playwright:report` | Open HTML report (`playwright-report/nearwork`) |
+| `pnpm test:playwright:ui` | Playwright UI runner |
+| `pnpm test:playwright:headed` | Playwright headed run |
+| `pnpm test:playwright:debug` | Playwright debug mode (inspector) |
 | `pnpm test:all` | Run unit then e2e |
 
 ### Testing quickstart
@@ -326,9 +337,19 @@ pnpm exec tsc --noEmit -p apps/web
   1) sama seperti dev: `DATABASE_URL`, `SESSION_SECRET` (≥16 karakter), migrasi (`pnpm db:migrate`), seed kategori/admin (`pnpm db:seed`)
   2) jalankan `pnpm test:e2e` — harness akan **`pnpm --filter @acme/web build`** lalu **`next start`** di **`127.0.0.1:3041`** (atur `E2E_PORT`). Untuk lewati rebuild: **`SKIP_E2E_BUILD=1 pnpm test:e2e`**
   3) Smoke manual terhadap dev yang sedang jalan: **`BASE_URL=http://127.0.0.1:3000 node --test scripts/e2e-marketplace-flow.mjs`** — setelah ragu pada `.next`, pakai **`pnpm --filter @acme/web clean`** atau lebih baik pakai harness di langkah (2)
+- Playwright browser E2E (detail: [`docs/testing-playwright.md`](docs/testing-playwright.md)):
+  1) install browser driver: `pnpm exec playwright install chromium`
+  2) set `SESSION_SECRET` (≥16 chars). Prefer **`DATABASE_URL_TEST`** pointing at an isolated Postgres (migrate + seed seperti dev); jika tidak ada, fallback ke **`DATABASE_URL`** hanya untuk lokal. Playwright memetakan `DATABASE_URL_TEST` → `DATABASE_URL` pada proses `next start` agar Prisma tidak memakai DB dev yang sedang dipakai bersamaan.
+  3) jalankan `pnpm test:playwright` atau grup bertarget (`pnpm test:playwright:auth`, `…:marketplace`, `…:messaging`, `…:mobile`, `…:design`). Default: build + `next start` via `playwright.config.ts`; baseURL = `PLAYWRIGHT_BASE_URL` → `BASE_URL` → `http://localhost:${PLAYWRIGHT_WEB_PORT:-3000}` (host **`localhost`** agar selaras cookie dengan server).
+  4) mode visual/interaktif: `pnpm test:playwright:headed` atau `pnpm test:playwright:ui`
+  5) debug step-by-step: `pnpm test:playwright:debug`
+  6) artifacts terstruktur:
+     - output per tes: `test-results/playwright/`
+     - laporan HTML: `playwright-report/nearwork/` (buka dengan `pnpm test:playwright:report`)
+     - screenshots on failure, video on failure, trace on first retry
+  7) fixture auth: project **`setup`** menulis `tests/playwright/.auth/` (gitignored) untuk mengurangi register/login berulang.
 - Keep test traffic off production DB:
-  - set `TEST_DATABASE_URL=<isolated_db>`
-  - run tests with `DATABASE_URL=$TEST_DATABASE_URL`
+  - set `DATABASE_URL_TEST=<isolated_db>` (recommended) or run with a disposable `DATABASE_URL` only on CI/staging
 - Moderation/admin queue assertions in e2e:
   - set `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` (or use seed defaults)
   - run `pnpm db:seed` on test/staging DB only.
@@ -368,6 +389,7 @@ Topic docs live in **`docs/`**. See **`docs/DOCUMENTATION-MAINTENANCE.md`** for 
 
 - **Production deploy gate (commands + env)** → [`docs/deploy-checklist.md`](docs/deploy-checklist.md)
 - **Apa produk ini (non-teknis)?** → [`docs/apa-itu-nearwork.md`](docs/apa-itu-nearwork.md)
+- **Playwright browser E2E (test DB, projects, storageState)** → [`docs/testing-playwright.md`](docs/testing-playwright.md)
 
 ### Vercel (monorepo → `apps/web`)
 

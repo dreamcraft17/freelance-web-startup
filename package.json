@@ -22,9 +22,21 @@
     "test": "pnpm test:unit",
     "test:unit": "vitest run",
     "test:e2e": "node scripts/run-e2e-server.mjs",
-    "test:all": "pnpm test:unit && pnpm test:e2e"
+    "test:all": "pnpm test:unit && pnpm test:e2e",
+    "test:playwright": "playwright test",
+    "test:playwright:setup": "playwright test --project=setup",
+    "test:playwright:auth": "playwright test --project=auth-en --project=auth-id",
+    "test:playwright:marketplace": "playwright test --project=marketplace-en --project=marketplace-id",
+    "test:playwright:messaging": "playwright test --project=messaging-en --project=messaging-id",
+    "test:playwright:mobile": "playwright test --project=mobile-en --project=mobile-id",
+    "test:playwright:design": "playwright test --project=design-en --project=design-id",
+    "test:playwright:report": "playwright show-report playwright-report/nearwork",
+    "test:playwright:ui": "playwright test --ui",
+    "test:playwright:headed": "playwright test --headed",
+    "test:playwright:debug": "playwright test --debug"
   },
   "devDependencies": {
+    "@playwright/test": "^1.55.0",
     "next": "^15.1.0",
     "rimraf": "^6.0.1",
     "turbo": "^2.3.3",

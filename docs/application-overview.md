@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v104  
-> Last synchronized: 2026-05-11 (loading-state and route-transition polish with shared skeleton primitives).
+> **Doc revision:** v106  
+> Last synchronized: 2026-05-11 (Playwright infra: test DB env, grouped projects/scripts, storageState setup, artifact paths; see `docs/testing-playwright.md`).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,8 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Playwright browser visual E2E (2026-05-11):** root setup menambahkan `@playwright/test`, `playwright.config.ts`, script `test:playwright*`, serta flow browser nyata untuk auth/freelancer/client/marketplace. Konfigurasi default menjalankan web local (`build + next start`) dan menyimpan artifact debugging (`screenshot` saat gagal, `video` saat gagal, `trace` saat retry). Project mencakup desktop dan mobile (`iPhone`/`Pixel`) dengan locale `en-US` dan `id-ID`.
+- **Playwright infra (2026-05-11):** grup eksekusi terpisah (`auth`, `marketplace`, `messaging`, `mobile`, `design`, `setup`), dukungan **`DATABASE_URL_TEST`**, fixture **`storageState`** untuk mengurangi beban register/DB, direktori output `test-results/playwright` + laporan `playwright-report/nearwork`, panduan [`docs/testing-playwright.md`](testing-playwright.md).
 - **Loading/perceived-performance polish (2026-05-11):** App Router loading boundaries diperluas ke permukaan high-traffic; skeleton mengikuti layout final (cards/rows/chips) agar transisi antar route terasa stabil. Pending states lokal ditambahkan pada notifikasi (filter group switch), messages composer, dan filter lokasi freelancer tanpa menambah library animasi berat.
 - **Convergence pass 2 (2026-05-09):** halaman detail job publik, profil freelancer publik, editor profil freelancer, dan komponen onboarding utama mengikuti ladder tipografi `nw-type-*` + ritme card/chip yang sama; tabel admin reports/jobs/users/verification menerima pass visual ringan agar lebih cepat dipindai tanpa mengubah workflow RBAC.
 - **Editorial typography & density (2026-05-09):** utilitas CSS bersama (`nw-type-*`, stacks, chips, beberapa panel) dan skala font Tailwind (`nw-lead`/`nw-body`/`nw-caption`) disempurnakan untuk pesan visual lebih matang; landing, board job publik, dashboard role, inbox/thread Messages, pusat notifikasi, serta header halaman workspace pesan/pengaturan mengikuti spacing hierarchy baru tanpa mengubah API atau alur data.
