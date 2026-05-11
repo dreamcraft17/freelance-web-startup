@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v95  
-> Last synchronized: 2026-05-09 (landing publik: styling solid tanpa glassmorphism pada hero + section bawah).
+> **Doc revision:** v96  
+> Last synchronized: 2026-05-09 (public `/jobs`: kartu `JobsPublicList` + lembar filter mobile refined).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,7 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Public jobs listing UX (2026-05-09):** board `/jobs` memakai kartu hasil client (`JobsPublicList`) dengan hierarki marketplace (klien, verifikasi, anggaran, proposal count, freshness, badge kompetisi berbasis `_count.bids` + `createdAt`, featured) dan CTA terstruktur (apply vs buka brief); lembar filter mobile (`JobsMarketplaceMobileFilters`) refined (tanpa backdrop blur, active state lebih jelas).
 - **Landing polish tanpa glass (2026-05-09):** halaman beranda pemasaran (`LandingHero`, `LandingHomeSections`) memakai latar dan kartu **opaque** (`slate-50` / `white`), border `slate-200`, bayangan ringan; menghindari **`backdrop-blur`** dan panel **`bg-white/…`**.
 - **E2E HTTP harness (2026-05-09):** `pnpm test:e2e` memakai `scripts/run-e2e-server.mjs` untuk build `@acme/web`, menjalankan **`next start`** pada **`127.0.0.1:3041`** (override `E2E_PORT`), meng-set `BASE_URL`, lalu menjalankan `scripts/e2e-marketplace-flow.mjs`; mengurangi kegagalan palsu akibat chunk webpack hilang saat API dipanggil ke `next dev` dengan `.next` inkremental rusak.
 - **Public homepage marketplace pass (2026-05-09):** landing `/[locale]` memperjelas positioning marketplace terstruktur (lokal/remote/hybrid, alur lowongan → proposal → chat → hire), CTA terpisah klien (`Post a job`) vs freelancer (`Browse jobs`), formulir pencarian memakai kategori nyata dari layanan kategori + filter `workMode`, panel kanan/mobile diganti **kartu alur proses** (bukan profil contoh), serta section tambahan “How NearWork works”, manfaat dua audiens, pesan trust/safety tanpa metrik palsu, dan early-access gratis.

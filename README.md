@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v85  
-> Last synchronized: 2026-05-09 — Landing publik tanpa glassmorphism (solid neutrals); tetap **`dev:fresh`** untuk chunk Next dev stale.
+> **Doc revision:** v86  
+> Last synchronized: 2026-05-09 — Public `/jobs` listing cards + mobile filter sheet refined (`JobsPublicList`, `JobsMarketplaceMobileFilters`).
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)

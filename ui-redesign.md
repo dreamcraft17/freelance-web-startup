@@ -1,13 +1,19 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v87  
-> Last synchronized: 2026-05-09 (homepage marketing: hilangkan glassmorphism — permukaan solid `bg-white` / `bg-slate-50`, tanpa `backdrop-blur` atau overlay semi-transparan di `LandingHero` + `LandingHomeSections`).
+> **Doc revision:** v88  
+> Last synchronized: 2026-05-09 (public `/jobs`: kartu listing `JobsPublicList` lebih marketplace—avatar klien, hierarki budget/proposal/waktu, hover; lembar filter mobile tanpa blur, active states full indigo).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-09 — Public jobs listing realism (`JobsPublicList` + mobile filters)
+
+- **Cards:** dense scan row (work mode + category + translation + status badges from real `bidCount` / `createdAt` / featured), client row with initials chip + verified badge, title/description clamp, budget + proposal count + relative post time, skill tags + heuristic “signal” line with honest tooltip keys (`matchForYouHint`, `signalHint`).
+- **CTAs:** primary `AuthAwareCtaLink` with `intent="submit-bid"` (`Kirim proposal` / `Send proposal`); secondary plain `Link` for brief (`Lihat brief` / `View brief`); save affordance unchanged (real `SaveJobButton`).
+- **Mobile sheet:** `JobsMarketplaceMobileFilters` overlay `bg-slate-900/60` (no `backdrop-blur`), taller sheet `rounded-t-2xl`, section headers `font-bold` tracking, list selections use solid **`#3525cd`** active fills, thumb-friendly pill heights for work mode.
 
 ### 2026-05-09 — Homepage tanpa glass (anti-template)
 
