@@ -159,13 +159,11 @@ export default async function MessagesPage({
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-5 pb-8">
-      <header className="border-b border-slate-200/80 pb-5">
-        <p className="text-xs font-medium uppercase tracking-[0.12em] text-slate-500">NearWork</p>
-        <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900 md:text-[1.65rem]">
-          {t("nav.messages")}
-        </h1>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">{t("messages.pageSubtitle")}</p>
+    <div className="mx-auto max-w-6xl nw-page-stack">
+      <header className="border-b border-slate-200/80 pb-4">
+        <p className="nw-type-micro">NearWork</p>
+        <h1 className="nw-type-display mt-1 text-slate-900">{t("nav.messages")}</h1>
+        <p className="nw-type-body mt-2 max-w-2xl">{t("messages.pageSubtitle")}</p>
       </header>
       {sp.from === "proposal" || sp.from === "job-conversation" ? (
         <ProposalHandoffBanner

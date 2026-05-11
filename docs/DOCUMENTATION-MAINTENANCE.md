@@ -1,7 +1,7 @@
 # Documentation maintenance (NearWork)
 
-> **Doc revision:** v17  
-> Last synchronized: 2026-05-09 (marketplace pulse docs sync: features, ui-redesign, application-overview, README).
+> **Doc revision:** v18  
+> Last synchronized: 2026-05-09 (typography/density docs sync: ui-redesign, features, application-overview, README).
 
 ## AUTO — wajib untuk AI & kontributor
 

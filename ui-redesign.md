@@ -1,13 +1,19 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v93  
-> Last synchronized: 2026-05-09 (marketplace pulse/momentum: DB-backed strips di landing, `/jobs`, freelancer & client dashboard; chip interviewing dari jumlah bid SHORTLISTED; notifikasi read dibagi recent vs older).
+> **Doc revision:** v94  
+> Last synchronized: 2026-05-09 (editorial typography & density: tighter `nw-type-*` ladder, compact chips/stacks/panels; landing, jobs list, dashboards, messages + notifications).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-09 — Editorial typography & marketplace density
+
+- **`globals.css`:** hierarki tipografi lebih bertingkat dan kurang “template Tailwind” (`nw-type-display` → `nw-type-micro`), ritme vertikal sedikit lebih rapat (`nw-page-stack`, `nw-stack*`), chip/badge lebih padat (`nw-chip`, `nw-chip-quiet`, `nw-link-action`), panel marketplace (`nw-hero-panel`, `nw-discovery-panel`, `nw-results-toolbar`) dan `nw-empty-state` lebih hemat ruang.
+- **`tailwind.config.ts`:** `nw-lead` / `nw-body` / `nw-caption` mengikuti skala editorial baru.
+- **Komponen:** `LandingHero` (headline/hierarchy + pulse strip), `ClientDashboard` pulse (`nw-chip-quiet` untuk stat narasi), `FreelancerDashboard`/`FreelancerDashboardHero` spacing & judul, `JobsPublicList` judul/meta budget, `DashboardStatCard`, `DashboardEmptyState`, `MessagesWorkspace`, `NotificationsCenter`, header `/messages` & `/settings`.
 
 ### 2026-05-09 — Marketplace pulse & momentum (real aggregates)
 

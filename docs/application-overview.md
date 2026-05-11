@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v101  
-> Last synchronized: 2026-05-09 (marketplace pulse/momentum aggregates + shortlisted counts on job search/list UI).
+> **Doc revision:** v102  
+> Last synchronized: 2026-05-09 (editorial typography/density on shared `nw-*` utilities + key marketplace/dashboard surfaces).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,7 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Editorial typography & density (2026-05-09):** utilitas CSS bersama (`nw-type-*`, stacks, chips, beberapa panel) dan skala font Tailwind (`nw-lead`/`nw-body`/`nw-caption`) disempurnakan untuk pesan visual lebih matang; landing, board job publik, dashboard role, inbox/thread Messages, pusat notifikasi, serta header halaman workspace pesan/pengaturan mengikuti spacing hierarchy baru tanpa mengubah API atau alur data.
 - **Marketplace pulse & momentum (2026-05-09):** `PublicStatsService` mengembalikan agregat tambahan (posting baru 24 jam, kontrak selesai 7 hari, kategori dengan listing terbanyak) dalam transaksi yang sama dengan pulse hero untuk `/jobs`/`/freelancers`; snapshot ringkas (`getMarketplaceMomentumSnapshot`) memuat landing dan dashboard role; pencarian job publik melampirkan `shortlistedCount` untuk chip wawancara di kartu hasil.
 - **Freelancer workspace surfaces (2026-05-09):** dashboard dan halaman proposal freelancer memakai pola kartu/chip bersama (`nw-*`); status proposal/kontrak pada feed diserahkan sebagai string terlokalisasi dari server; pesan dan pusat notifikasi memakai kartu/list yang konsisten serta tautan discovery job memakai path publik ber-locale.
 - **Global marketplace UI tokens (2026-05-09):** `globals.css` memperluas utilitas `nw-card*`, `nw-type*`, `nw-chip*`, `nw-cta-*`, `nw-link-action`, `nw-app-header`, dan menyelaraskan variabel shadcn `--primary` ke indigo merek; `tailwind.config.ts` menambah `shadow-nw-*` dan skala font utilitas. Dashboard klien dan beberapa permukaan terkait memakai pola ini; status enumerasi job/bid/kontrak pada ringkasan klien dirender lewat kamus EN/ID.

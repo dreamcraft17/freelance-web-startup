@@ -136,7 +136,7 @@ export function LandingHero({
     <section className="relative overflow-hidden border-b border-slate-200 bg-slate-50">
       <div className="relative mx-auto max-w-[1180px] px-4 pb-12 pt-10 sm:px-6 sm:pb-16 sm:pt-14">
         <div className="px-1 sm:px-3">
-          <div className="grid items-start gap-10 lg:grid-cols-12 lg:gap-8">
+          <div className="grid items-start gap-8 lg:grid-cols-12 lg:gap-7">
             <div className="lg:col-span-8">
               <div className="flex justify-center lg:justify-start">
                 <div className="inline-flex rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
@@ -157,40 +157,40 @@ export function LandingHero({
                 </div>
               </div>
 
-              <div className={`mt-8 text-center transition-opacity duration-200 ease-in-out lg:text-left ${isPending ? "opacity-70" : "opacity-100"}`}>
-                <h1 className="mx-auto max-w-3xl whitespace-pre-line text-[2.45rem] font-bold leading-[1.06] tracking-tight text-[#071027] sm:text-[3.25rem] lg:mx-0 lg:max-w-none">
+              <div className={`mt-7 text-center transition-opacity duration-200 ease-in-out lg:mt-8 lg:text-left ${isPending ? "opacity-70" : "opacity-100"}`}>
+                <h1 className="mx-auto max-w-3xl whitespace-pre-line text-[2rem] font-semibold leading-[1.12] tracking-[-0.02em] text-[#071027] sm:text-[2.5rem] lg:mx-0 lg:max-w-none lg:text-[2.65rem]">
                   {modeContent.headline}
                 </h1>
-                <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg lg:mx-0">{modeContent.subHeadline}</p>
-                <p className="mx-auto mt-3 max-w-2xl text-sm font-semibold leading-snug text-[#3525cd] lg:mx-0">{modeContent.flowLine}</p>
-                <div className="nw-card-trust mx-auto mt-6 max-w-2xl border-[#3525cd]/12 px-4 py-3 lg:mx-0">
+                <p className="mx-auto mt-3 max-w-2xl text-[15px] leading-[1.52] text-slate-600 sm:text-base lg:mx-0">{modeContent.subHeadline}</p>
+                <p className="mx-auto mt-2 max-w-2xl text-[13px] font-semibold leading-snug text-[#3525cd] lg:mx-0">{modeContent.flowLine}</p>
+                <div className="nw-card-trust mx-auto mt-5 max-w-2xl border-[#3525cd]/12 px-3.5 py-2.5 lg:mx-0">
                   <p className="nw-type-micro">{t("landing.hero.marketplacePulseTitle")}</p>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    <span className="nw-chip-quiet tabular-nums text-[11px] font-semibold">
+                  <div className="mt-1.5 flex flex-wrap gap-1.5">
+                    <span className="nw-chip-quiet tabular-nums">
                       {t("landing.hero.marketplacePulseOpenRoles", { count: marketplaceMomentum.openPublicJobs })}
                     </span>
-                    <span className="nw-chip-quiet tabular-nums text-[11px] font-semibold">
+                    <span className="nw-chip-quiet tabular-nums">
                       {t("landing.hero.marketplacePulseBids24h", { count: marketplaceMomentum.bidsLast24h })}
                     </span>
-                    <span className="nw-chip-quiet tabular-nums text-[11px] font-semibold">
+                    <span className="nw-chip-quiet tabular-nums">
                       {t("landing.hero.marketplacePulseFreelancers", { count: marketplaceMomentum.freelancersAvailable })}
                     </span>
                     {marketplaceMomentum.jobsPostedLast24h > 0 ? (
-                      <span className="nw-chip nw-chip-success tabular-nums text-[11px] font-semibold normal-case tracking-normal">
+                      <span className="nw-chip nw-chip-success tabular-nums normal-case tracking-normal">
                         {t("landing.hero.marketplacePulseFresh24h", { count: marketplaceMomentum.jobsPostedLast24h })}
                       </span>
                     ) : null}
                     {marketplaceMomentum.contractsCompletedLast7d > 0 ? (
-                      <span className="nw-chip nw-chip-brand tabular-nums text-[11px] font-semibold normal-case tracking-normal">
+                      <span className="nw-chip nw-chip-brand tabular-nums normal-case tracking-normal">
                         {t("landing.hero.marketplacePulseHires7d", { count: marketplaceMomentum.contractsCompletedLast7d })}
                       </span>
                     ) : null}
                   </div>
-                  <p className="nw-type-meta mt-2 font-medium normal-case tracking-normal text-slate-500">
+                  <p className="nw-type-meta mt-1.5 font-medium normal-case tracking-normal text-slate-500">
                     {t("landing.hero.marketplacePulseFootnote")}
                   </p>
                 </div>
-                <div className="mt-7 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
+                <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5 lg:justify-start">
                   <Link
                     href={modeContent.primaryCtaHref}
                     className="inline-flex min-h-11 min-w-[10rem] items-center justify-center rounded-xl bg-[#3525cd] px-6 py-2.5 text-sm font-semibold text-white shadow-[0_12px_40px_-16px_rgba(53,37,205,0.65)] transition hover:bg-[#2b1da8]"
@@ -208,24 +208,24 @@ export function LandingHero({
             </div>
 
             <aside className="hidden lg:col-span-4 lg:block">
-              <div className="sticky top-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-md">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#3525cd]">{t("landing.hero.process.kicker")}</p>
-                <p className="mt-2 text-base font-bold text-[#071027]">{t("landing.hero.process.title")}</p>
-                <p className="mt-1 text-xs leading-relaxed text-slate-500">{t("landing.hero.process.subtitle")}</p>
-                <ul className="mt-5 space-y-3">
+              <div className="sticky top-24 rounded-2xl border border-slate-200 bg-white p-4 shadow-md sm:p-5">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#3525cd]">{t("landing.hero.process.kicker")}</p>
+                <p className="mt-1.5 text-[15px] font-semibold leading-snug text-[#071027]">{t("landing.hero.process.title")}</p>
+                <p className="mt-1 text-[11px] leading-relaxed text-slate-500">{t("landing.hero.process.subtitle")}</p>
+                <ul className="mt-4 space-y-2">
                   {PROCESS_KEYS.map((key, i) => {
                     const Icon = processIcons[i]!;
                     return (
                       <li
                         key={key}
-                        className="flex gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-3"
+                        className="flex gap-2.5 rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-2.5"
                       >
                         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#3525cd]/10 text-[#3525cd]">
                           <Icon className="h-4 w-4" aria-hidden />
                         </span>
                         <div className="min-w-0">
-                          <p className="text-sm font-semibold text-[#071027]">{t(`landing.hero.process.steps.${key}.title`)}</p>
-                          <p className="mt-0.5 text-xs leading-relaxed text-slate-600">{t(`landing.hero.process.steps.${key}.body`)}</p>
+                          <p className="text-[13px] font-semibold leading-snug text-[#071027]">{t(`landing.hero.process.steps.${key}.title`)}</p>
+                          <p className="mt-0.5 text-[11px] leading-relaxed text-slate-600">{t(`landing.hero.process.steps.${key}.body`)}</p>
                         </div>
                       </li>
                     );

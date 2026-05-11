@@ -244,7 +244,7 @@ function buildActivity(bids: FreelancerDashboardBid[], contracts: FreelancerDash
 
 const linkClass = "nw-link-action text-sm";
 
-const surfaceCard = "nw-card-elevated p-5 md:p-6";
+const surfaceCard = "nw-card-elevated p-4 md:p-5";
 
 export function FreelancerDashboard({
   locale,
@@ -381,8 +381,8 @@ export function FreelancerDashboard({
         </div>
       ) : null}
 
-      <div className="grid gap-5 sm:gap-6 lg:grid-cols-12 lg:items-start">
-        <div className="space-y-6 lg:col-span-7">
+      <div className="grid gap-4 sm:gap-5 lg:grid-cols-12 lg:items-start">
+        <div className="space-y-5 lg:col-span-7">
           <ActivationChecklistCard
             title={activationChecklist.title}
             intro={activationChecklist.intro}
@@ -483,7 +483,7 @@ export function FreelancerDashboard({
           </div>
         </div>
 
-        <div className="space-y-6 lg:col-span-5">
+        <div className="space-y-5 lg:col-span-5">
           <FreelancerProposalPlaybook
             title={proposalPlaybook.title}
             intro={proposalPlaybook.intro}
@@ -499,7 +499,7 @@ export function FreelancerDashboard({
         </div>
       </div>
 
-      <div className="grid gap-5 sm:gap-6 lg:grid-cols-12 lg:items-start">
+      <div className="grid gap-4 sm:gap-5 lg:grid-cols-12 lg:items-start">
         <section className="lg:col-span-5" aria-label={copy.activityTitle}>
           <div className={surfaceCard}>
             <div className="flex flex-wrap items-start justify-between gap-2">

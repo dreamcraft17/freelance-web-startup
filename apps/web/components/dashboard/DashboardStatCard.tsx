@@ -21,8 +21,8 @@ export function DashboardStatCard({
     return (
       <div
         className={cn(
-          "group relative overflow-hidden rounded-xl border border-slate-200/90 bg-white px-4 py-4 shadow-nw-card ring-1 ring-slate-100/80 transition-[box-shadow,border-color] duration-200",
-          "nw-card-hover sm:px-5 sm:py-4"
+          "group relative overflow-hidden rounded-xl border border-slate-200/90 bg-white px-4 py-3.5 shadow-nw-card ring-1 ring-slate-100/80 transition-[box-shadow,border-color] duration-200",
+          "nw-card-hover sm:px-5 sm:py-3.5"
         )}
       >
         <div
@@ -32,7 +32,7 @@ export function DashboardStatCard({
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
             <p className="nw-type-micro">{label}</p>
-            <p className="mt-1.5 text-3xl font-semibold tabular-nums tracking-tight text-slate-900">{value}</p>
+            <p className="mt-1 text-2xl font-semibold tabular-nums tracking-tight text-slate-900">{value}</p>
             {hint ? <p className="nw-type-meta mt-1.5">{hint}</p> : null}
           </div>
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#3525cd]/[0.09] text-[#3525cd] ring-1 ring-[#3525cd]/12">
@@ -44,11 +44,11 @@ export function DashboardStatCard({
   }
 
   return (
-    <div className="nw-card nw-card-hover rounded-xl px-5 py-4">
+    <div className="nw-card nw-card-hover rounded-xl px-4 py-3.5 sm:px-5">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0 flex-1">
           <p className="nw-type-meta font-medium text-slate-500 normal-case tracking-normal">{label}</p>
-          <p className="mt-2 text-2xl font-semibold tabular-nums tracking-tight text-slate-900">{value}</p>
+          <p className="mt-1.5 text-xl font-semibold tabular-nums tracking-tight text-slate-900 sm:text-2xl">{value}</p>
           {hint ? <p className="nw-type-meta mt-1.5">{hint}</p> : null}
         </div>
         <Icon className="mt-0.5 h-5 w-5 shrink-0 text-slate-400" strokeWidth={1.5} aria-hidden />

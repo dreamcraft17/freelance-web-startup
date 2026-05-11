@@ -274,13 +274,13 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
         </div>
       ) : null}
 
-      {filteredItems.length > 0 ? <div className="space-y-10">
+      {filteredItems.length > 0 ? <div className="space-y-8">
       {unread.length > 0 ? (
         <section aria-labelledby="notif-unread-heading" className="space-y-3">
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-[#3525cd] shadow-sm shadow-[#3525cd]/30" aria-hidden />
-              <h2 id="notif-unread-heading" className="nw-type-section text-base">
+              <h2 id="notif-unread-heading" className="nw-type-section">
                 {t("notifications.unreadLabel")}
               </h2>
               <span className="rounded-full bg-[#3525cd]/10 px-2 py-0.5 text-xs font-semibold tabular-nums text-[#3525cd] ring-1 ring-[#3525cd]/10">
@@ -309,7 +309,7 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-slate-300" aria-hidden />
-              <h2 id="notif-read-heading" className="nw-type-section text-base text-slate-600">
+              <h2 id="notif-read-heading" className="nw-type-section text-slate-600">
                 {t("notifications.readRecentLabel")}
               </h2>
               <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium tabular-nums text-slate-500 ring-1 ring-slate-200/80">
@@ -338,7 +338,7 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-slate-200" aria-hidden />
-              <h2 id="notif-read-older-heading" className="nw-type-section text-base text-slate-500">
+              <h2 id="notif-read-older-heading" className="nw-type-section text-slate-500">
                 {t("notifications.readOlderLabel")}
               </h2>
               <span className="rounded-full bg-slate-100/90 px-2 py-0.5 text-xs font-medium tabular-nums text-slate-400 ring-1 ring-slate-200/70">
@@ -391,7 +391,7 @@ function NotificationRow({
         onClick={onActivate}
         disabled={busy}
         className={cn(
-          "flex w-full gap-3 px-4 py-3.5 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/30 focus-visible:ring-offset-2 md:gap-4 md:px-5 md:py-4",
+          "flex w-full gap-2.5 px-3.5 py-3 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/30 focus-visible:ring-offset-2 md:gap-3 md:px-4 md:py-3",
           isUnread
             ? "border-l-[3px] border-l-[#3525cd] bg-[#3525cd]/[0.035] hover:bg-[#3525cd]/[0.06]"
             : "border-l-[3px] border-l-transparent bg-transparent hover:bg-slate-100/60"
@@ -409,7 +409,7 @@ function NotificationRow({
           <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1">
             <p
               className={cn(
-                "text-sm leading-snug",
+                "text-[13px] leading-snug",
                 isUnread ? "font-semibold text-slate-900" : "font-medium text-slate-600"
               )}
             >
@@ -417,7 +417,7 @@ function NotificationRow({
             </p>
             <time
               className={cn(
-                "shrink-0 text-[11px] tabular-nums",
+                "shrink-0 text-[10px] tabular-nums",
                 isUnread ? "font-medium text-slate-500" : "text-slate-400"
               )}
               dateTime={item.createdAt}
@@ -427,7 +427,7 @@ function NotificationRow({
           </div>
           <p
             className={cn(
-              "mt-1 text-sm leading-relaxed",
+              "mt-0.5 text-[13px] leading-snug",
               isUnread ? "text-slate-600" : "text-slate-500"
             )}
           >

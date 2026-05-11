@@ -29,13 +29,13 @@ export function DashboardEmptyState({
   return (
     <div
       className={cn(
-        "rounded-xl border p-4 sm:p-5",
+        "rounded-xl border p-3.5 sm:p-4",
         elevated
           ? "nw-card nw-card-hover border-slate-200/90 ring-1 ring-slate-100/80"
           : "border-slate-200 bg-slate-50/50"
       )}
     >
-      <div className="flex flex-col gap-3.5 sm:flex-row sm:items-start sm:gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-3.5">
         {elevated ? (
           <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#3525cd]/[0.08] text-[#3525cd] ring-1 ring-[#3525cd]/10">
             <Icon className="h-5 w-5" strokeWidth={1.75} aria-hidden />
@@ -53,9 +53,9 @@ export function DashboardEmptyState({
           >
             {title}
           </h3>
-          <div className="nw-type-body mt-2">{description}</div>
+          <div className="nw-type-body mt-1.5">{description}</div>
           {(action ?? secondaryAction) ? (
-            <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+            <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
               {action ? (
                 <Link
                   href={action.href}

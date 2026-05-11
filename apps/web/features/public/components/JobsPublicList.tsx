@@ -118,7 +118,7 @@ export function JobsPublicList({ jobs, savedJobIds }: ListProps) {
         return (
           <li key={job.id}>
             <article className="group rounded-xl border border-slate-200 bg-white shadow-sm transition hover:border-[#3525cd]/45 hover:shadow-md">
-              <div className="flex flex-col gap-3 p-3.5 sm:p-4 lg:flex-row lg:items-stretch lg:justify-between lg:gap-4">
+              <div className="flex flex-col gap-2.5 p-3 sm:p-3.5 lg:flex-row lg:items-stretch lg:justify-between lg:gap-3">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-1.5">
                     <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-700">
@@ -211,22 +211,22 @@ export function JobsPublicList({ jobs, savedJobIds }: ListProps) {
                     </p>
                   ) : null}
 
-                  <h2 className="mt-2 text-lg font-bold leading-snug tracking-tight text-slate-950 sm:text-xl">{job.title}</h2>
-                  <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-600 sm:text-sm">{job.description}</p>
+                  <h2 className="mt-1.5 text-base font-semibold leading-snug tracking-tight text-slate-950 sm:text-lg">{job.title}</h2>
+                  <p className="mt-1 line-clamp-2 text-[13px] leading-relaxed text-slate-600 sm:text-sm">{job.description}</p>
 
-                  <div className="mt-2.5 flex flex-wrap items-baseline gap-x-3 gap-y-1 border-t border-slate-100 pt-2.5">
-                    <span className="text-sm font-bold tabular-nums text-slate-900 sm:text-base">{budgetLabelLocalized(job)}</span>
+                  <div className="mt-2 flex flex-wrap items-baseline gap-x-2.5 gap-y-1 border-t border-slate-100 pt-2">
+                    <span className="text-sm font-semibold tabular-nums text-slate-900">{budgetLabelLocalized(job)}</span>
                     <span className="text-slate-300" aria-hidden>
                       ·
                     </span>
-                    <span title={t("public.jobs.proposalsMetaHint")} className="inline-flex items-center gap-1 text-xs font-semibold text-slate-700">
+                    <span title={t("public.jobs.proposalsMetaHint")} className="inline-flex items-center gap-1 text-[13px] font-medium text-slate-700">
                       <Users className="h-3.5 w-3.5 shrink-0 text-[#3525cd]" aria-hidden />
                       {job.bidCount === 1 ? t("public.jobs.proposalsSingular") : t("public.jobs.proposalsCount", { count: job.bidCount })}
                     </span>
                     <span className="text-slate-300" aria-hidden>
                       ·
                     </span>
-                    <span className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500">
+                    <span className="inline-flex items-center gap-1 text-[11px] font-normal tabular-nums text-slate-500">
                       <Clock3 className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden />
                       {timeAgoLabel(job.createdAt)}
                     </span>

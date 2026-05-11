@@ -8,19 +8,17 @@ import { SavedListsSection } from "./saved-lists";
 
 export default function SettingsPage() {
   return (
-    <div className="mx-auto max-w-3xl space-y-10 pb-14">
-      <header className="border-b border-slate-200/80 pb-6">
-        <p className="text-xs font-medium uppercase tracking-[0.12em] text-slate-500">NearWork</p>
-        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900 md:text-[1.65rem]">
-          Settings
-        </h1>
-        <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-600">
+    <div className="mx-auto max-w-3xl space-y-8 pb-12">
+      <header className="border-b border-slate-200/80 pb-4">
+        <p className="nw-type-micro">NearWork</p>
+        <h1 className="nw-type-display mt-1.5 text-slate-900">Settings</h1>
+        <p className="nw-type-body mt-2 max-w-xl">
           Your account, company profile, saved hiring lists, and preferences—organized like a product workspace, not a
           long form.
         </p>
       </header>
 
-      <div className="space-y-10">
+      <div className="space-y-8">
         <AccountSettingsSection />
 
         <SettingsCompanyProfileSection />

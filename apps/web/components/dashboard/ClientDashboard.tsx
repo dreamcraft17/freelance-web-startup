@@ -235,9 +235,9 @@ export function ClientDashboard({
   return (
     <div className="mx-auto max-w-6xl nw-page-stack">
       {/* Hero */}
-      <section className="nw-card-elevated p-6 md:p-8">
-        <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div className="min-w-0 max-w-2xl space-y-3">
+      <section className="nw-card-elevated p-5 md:p-7">
+        <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div className="min-w-0 max-w-2xl space-y-2">
             <p className="nw-section-title opacity-90">{copy.nearworkKicker}</p>
             <h1 className="nw-type-display text-slate-900">{welcomeLine}</h1>
             <p className="nw-type-body text-[15px] text-slate-600">{subline}</p>
@@ -253,44 +253,44 @@ export function ClientDashboard({
 
       <section
         aria-label={copy.marketplacePulseTitle}
-        className="nw-card-trust border-[#3525cd]/14 bg-gradient-to-r from-[#3525cd]/[0.05] to-white px-5 py-4 md:px-6"
+        className="nw-card-trust border-[#3525cd]/14 bg-gradient-to-r from-[#3525cd]/[0.05] to-white px-4 py-3 md:px-5 md:py-3.5"
       >
-        <div className="flex flex-wrap items-start gap-3">
+        <div className="flex flex-wrap items-start gap-2.5">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#3525cd] shadow-sm ring-1 ring-slate-200/80">
             <Waves className="h-5 w-5" strokeWidth={1.75} aria-hidden />
           </span>
           <div className="min-w-0 flex-1">
             <p className="nw-type-micro">{copy.marketplacePulseTitle}</p>
             <p className="nw-type-body mt-1 text-slate-700">{copy.marketplacePulseSubtitle}</p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <span className="nw-chip nw-chip-muted px-3 py-1.5 text-[11px] normal-case tracking-normal md:text-xs">
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              <span className="nw-chip-quiet tabular-nums">
                 {copy.marketplacePulseOpenRoles.split("{{count}}").join(String(marketplacePulse.openPublicJobs))}
               </span>
-              <span className="nw-chip nw-chip-muted px-3 py-1.5 text-[11px] normal-case tracking-normal md:text-xs">
+              <span className="nw-chip-quiet tabular-nums">
                 {copy.marketplacePulseBids24h.split("{{count}}").join(String(marketplacePulse.bidsLast24h))}
               </span>
-              <span className="nw-chip nw-chip-muted px-3 py-1.5 text-[11px] normal-case tracking-normal md:text-xs">
+              <span className="nw-chip-quiet tabular-nums">
                 {copy.marketplacePulseFreelancers.split("{{count}}").join(String(marketplacePulse.freelancersAvailable))}
               </span>
               {marketplacePulse.jobsPostedLast24h > 0 ? (
-                <span className="nw-chip nw-chip-success px-3 py-1.5 text-[11px] normal-case tracking-normal md:text-xs">
+                <span className="nw-chip nw-chip-success normal-case tracking-normal">
                   {copy.marketplacePulseFresh24h.split("{{count}}").join(String(marketplacePulse.jobsPostedLast24h))}
                 </span>
               ) : null}
               {marketplacePulse.contractsCompletedLast7d > 0 ? (
-                <span className="nw-chip nw-chip-brand px-3 py-1.5 text-[11px] normal-case tracking-normal md:text-xs">
+                <span className="nw-chip nw-chip-brand normal-case tracking-normal">
                   {copy.marketplacePulseHires7d.split("{{count}}").join(String(marketplacePulse.contractsCompletedLast7d))}
                 </span>
               ) : null}
             </div>
-            <p className="nw-type-meta mt-3 font-medium normal-case tracking-normal text-slate-500">
+            <p className="nw-type-meta mt-2 font-medium normal-case tracking-normal text-slate-500">
               {copy.marketplacePulseFootnote}
             </p>
           </div>
         </div>
       </section>
 
-      <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
+      <div className="grid gap-5 lg:grid-cols-2 lg:items-start">
         <ActivationChecklistCard
           title={activationChecklist.title}
           intro={activationChecklist.intro}
@@ -424,7 +424,7 @@ export function ClientDashboard({
       </section>
 
       {/* Recent jobs + Incoming bids */}
-      <div className="grid gap-5 sm:gap-6 lg:grid-cols-2 lg:items-start">
+      <div className="grid gap-4 sm:gap-5 lg:grid-cols-2 lg:items-start">
         <section className={cn(panelSurface, "p-5 md:p-6")} aria-labelledby="recent-jobs-heading">
           <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 pb-4">
             <div>

@@ -185,14 +185,14 @@ export function MessagesWorkspace({
         )}
         aria-label={t("messages.inboxAria")}
       >
-        <div className="border-b border-slate-100 bg-slate-50/80 px-4 py-4">
+        <div className="border-b border-slate-100 bg-slate-50/80 px-3.5 py-3 md:px-4">
           <div className="flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#3525cd]/10 text-[#3525cd] ring-1 ring-[#3525cd]/15">
-              <Inbox className="h-4 w-4" strokeWidth={2} aria-hidden />
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#3525cd]/10 text-[#3525cd] ring-1 ring-[#3525cd]/15">
+              <Inbox className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
             </span>
             <div>
               <p className="nw-type-micro">{t("messages.inboxHeading")}</p>
-              <p className="text-sm font-medium text-slate-800">
+              <p className="text-[13px] font-semibold leading-snug text-slate-800">
                 {threads.length === 1
                   ? t("messages.inboxOneConversation")
                   : t("messages.inboxManyConversations", { count: threads.length })}
@@ -238,7 +238,7 @@ export function MessagesWorkspace({
                       href={wp(`/messages?thread=${thread.threadId}`)}
                       scroll={false}
                       className={cn(
-                        "flex gap-3 px-4 py-3.5 transition hover:bg-slate-50/90",
+                        "flex gap-2.5 px-3 py-3 transition hover:bg-slate-50/90 sm:px-3.5",
                         active && "bg-[#3525cd]/[0.06] ring-1 ring-inset ring-[#3525cd]/12"
                       )}
                     >
@@ -264,14 +264,14 @@ export function MessagesWorkspace({
                         <div className="flex items-start justify-between gap-2">
                           <p
                             className={cn(
-                              "min-w-0 truncate text-sm leading-tight",
+                              "min-w-0 truncate text-[13px] leading-snug",
                               unread ? "font-semibold text-slate-900" : "font-medium text-slate-800"
                             )}
                           >
                             {rowTitle}
                           </p>
                           <time
-                            className="shrink-0 text-[11px] font-medium tabular-nums text-slate-400"
+                            className="shrink-0 text-[10px] font-medium tabular-nums text-slate-400"
                             dateTime={thread.updatedAt}
                           >
                             {formatThreadTime(thread.updatedAt, locale)}
@@ -279,7 +279,7 @@ export function MessagesWorkspace({
                         </div>
                         <p
                           className={cn(
-                            "mt-1 line-clamp-2 text-xs leading-snug",
+                            "mt-0.5 line-clamp-2 text-[11px] leading-snug sm:text-xs",
                             last ? "text-slate-500" : "italic text-slate-400"
                           )}
                         >
@@ -338,7 +338,7 @@ export function MessagesWorkspace({
           </div>
         ) : (
           <>
-            <header className="shrink-0 border-b border-slate-200/90 bg-white px-4 py-3 md:px-5 md:py-4">
+            <header className="shrink-0 border-b border-slate-200/90 bg-white px-3.5 py-3 md:px-5 md:py-3.5">
               <Link
                 href={wp("/messages")}
                 className="nw-link-action mb-3 inline-flex items-center gap-1.5 text-sm font-semibold md:hidden"
@@ -353,7 +353,7 @@ export function MessagesWorkspace({
                     {selectedThread ? peerInitials(selectedThread.peers, threadTitleFallback) : "?"}
                   </div>
                   <div className="min-w-0">
-                    <h2 className="truncate text-lg font-semibold tracking-tight text-slate-900 md:text-xl">
+                    <h2 className="truncate text-base font-semibold tracking-tight text-slate-900 md:text-[1.0625rem]">
                       {selectedThread
                         ? threadTitle(selectedThread.peers, threadTitleFallback)
                         : t("messages.threadHeaderFallback")}
@@ -386,7 +386,7 @@ export function MessagesWorkspace({
                         </div>
                       ) : null}
                       {selectedThread?.lastMessage ? (
-                        <span className="text-xs text-slate-500">
+                        <span className="text-[11px] text-slate-500">
                           {t("messages.lastActivityPrefix")}{" "}
                           {formatThreadTime(selectedThread.lastMessage.createdAt, locale)}
                         </span>
