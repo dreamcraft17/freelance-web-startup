@@ -18,7 +18,7 @@ import { isStaffRole } from "@/features/admin/lib/access";
 import { ModerationReportButton } from "@/features/moderation/components/ModerationReportButton";
 import { ReportJobButton } from "@/features/moderation/components/ReportJobButton";
 import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
-import { loginReturnTo, registerFreelancerReturnToJob } from "@/features/auth/lib/register-intents";
+import { registerFreelancerReturnToJob } from "@/features/auth/lib/register-intents";
 import { SaveJobButton } from "@/features/saved/components/SaveJobButton";
 import { JobProposalForm } from "@/features/public/components/JobProposalForm";
 import { BidDecisionAction } from "@/components/client-jobs/BidDecisionAction";
@@ -749,19 +749,12 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
         {isClientOwner ? (
         <Card id="nw-proposal-section" className="scroll-mt-28 border-slate-200/90 shadow-sm">
           <CardHeader>
-            <CardTitle className="text-base">
-              {isClientOwner ? t("public.jobDetail.proposalReview") : t("public.jobDetail.sendProposal")}
-            </CardTitle>
+            <CardTitle className="text-base">{t("public.jobDetail.proposalReview")}</CardTitle>
             <CardDescription>
-              {isClientOwner
-                ? acceptedBid
-                  ? t("public.jobDetail.ownerAcceptedDesc")
-                  : t("public.jobDetail.ownerCompareDesc")
-                : t("public.jobDetail.freelancerActionDesc")}
+              {acceptedBid ? t("public.jobDetail.ownerAcceptedDesc") : t("public.jobDetail.ownerCompareDesc")}
             </CardDescription>
           </CardHeader>
-          {isClientOwner ? (
-            <CardContent className="space-y-4">
+          <CardContent className="space-y-4">
               {!acceptedBid && (pendingDecisionCount > 0 || awaitingReplyCount > 0) ? (
                 <div className="rounded-md border border-amber-200 bg-amber-50/60 px-4 py-3">
                   <p className="text-[11px] font-semibold uppercase tracking-wide text-amber-700">
@@ -1056,22 +1049,6 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
                 </Link>
               </div>
             </CardContent>
-          ) : (
-            <CardContent className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-              <Link
-                href={loginReturnTo(returnToThisJob, "submit-bid") as Route}
-                className="inline-flex justify-center rounded-lg bg-[#3525cd] px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-[#4f46e5]"
-              >
-                {t("public.jobDetail.signInToSend")}
-              </Link>
-              <Link
-                href={registerFreelancerReturnToJob(job.id, locale) as Route}
-                className="inline-flex justify-center rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-center text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
-              >
-                {t("public.jobDetail.registerAsFreelancer")}
-              </Link>
-            </CardContent>
-          )}
         </Card>
         ) : null}
 
