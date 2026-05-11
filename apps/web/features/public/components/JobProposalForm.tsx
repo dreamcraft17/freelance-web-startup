@@ -406,6 +406,7 @@ export function JobProposalForm({
             </button>
             <button
               type="submit"
+              data-testid="proposal-submit"
               disabled={submitting}
               className="nw-cta-primary inline-flex min-h-[48px] w-full touch-manipulation items-center justify-center rounded-xl px-4 py-3 text-[15px] font-semibold disabled:cursor-not-allowed disabled:opacity-70 sm:min-h-0 sm:py-2.5 sm:text-sm"
             >

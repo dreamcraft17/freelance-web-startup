@@ -156,6 +156,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
         {error ? (
           <p
             role="alert"
+            data-testid="login-error"
             className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800"
           >
             {error}
@@ -168,6 +169,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
           </label>
           <input
             id={emailId}
+            data-testid="login-email"
             name="email"
             type="email"
             autoComplete="email"
@@ -193,6 +195,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
           <div className="relative">
             <input
               id={passwordId}
+              data-testid="login-password"
               name="password"
               type={showPassword ? "text" : "password"}
               autoComplete="current-password"
@@ -215,6 +218,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
 
         <button
           type="submit"
+          data-testid="login-submit"
           disabled={loading}
           className="flex w-full items-center justify-center rounded-lg bg-[#3525cd] px-4 py-3 text-sm font-semibold text-white shadow-md transition-colors hover:bg-[#4f46e5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3525cd] disabled:pointer-events-none disabled:opacity-60"
         >

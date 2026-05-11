@@ -527,6 +527,7 @@ export function MessagesWorkspace({
                 ) : null}
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
                   <textarea
+                    data-testid="messages-composer"
                     value={body}
                     onChange={(e) => setBody(e.target.value)}
                     placeholder={t("messages.composePlaceholder")}
@@ -542,6 +543,7 @@ export function MessagesWorkspace({
                   />
                   <Button
                     type="button"
+                    data-testid="messages-send"
                     className="h-11 shrink-0 rounded-xl bg-[#3525cd] px-6 text-sm font-semibold text-white shadow-md shadow-[#3525cd]/20 hover:bg-[#2d1fb0] sm:min-w-[7.5rem]"
                     disabled={isPending || !body.trim()}
                     onClick={submit}

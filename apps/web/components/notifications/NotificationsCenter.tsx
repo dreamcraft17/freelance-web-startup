@@ -294,7 +294,7 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
             </div>
             <p className="nw-type-meta mt-1 font-medium normal-case tracking-normal">{t("notifications.unreadCaption")}</p>
           </div>
-          <ul className="nw-card divide-y divide-slate-100 overflow-hidden rounded-xl">
+          <ul data-testid="notifications-list-unread" className="nw-card divide-y divide-slate-100 overflow-hidden rounded-xl">
             {unread.map((n) => (
               <NotificationRow
                 key={n.id}
@@ -323,7 +323,7 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
             </div>
             <p className="nw-type-meta mt-1 font-medium normal-case tracking-normal">{t("notifications.readRecentCaption")}</p>
           </div>
-          <ul className="nw-card divide-y divide-slate-100 overflow-hidden rounded-xl bg-slate-50/60">
+          <ul data-testid="notifications-list-recent" className="nw-card divide-y divide-slate-100 overflow-hidden rounded-xl bg-slate-50/60">
             {recentRead.map((n) => (
               <NotificationRow
                 key={n.id}
@@ -354,7 +354,7 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
               {t("notifications.readOlderCaption")}
             </p>
           </div>
-          <ul className="nw-card divide-y divide-slate-100 overflow-hidden rounded-xl bg-slate-50/40">
+          <ul data-testid="notifications-list-older" className="nw-card divide-y divide-slate-100 overflow-hidden rounded-xl bg-slate-50/40">
             {olderRead.map((n) => (
               <NotificationRow
                 key={n.id}

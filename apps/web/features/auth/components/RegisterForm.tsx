@@ -208,6 +208,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
         {error ? (
           <p
             role="alert"
+            data-testid="register-error"
             className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800"
           >
             {error}
@@ -220,6 +221,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
           </label>
           <input
             id={nameId}
+            data-testid="register-full-name"
             name="fullName"
             type="text"
             autoComplete="name"
@@ -238,6 +240,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
           </label>
           <input
             id={emailId}
+            data-testid="register-email"
             name="email"
             type="email"
             autoComplete="email"
@@ -266,6 +269,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
               <span className="flex shrink-0 items-start pt-0.5">
                 <input
                   type="radio"
+                  data-testid="register-role-freelancer"
                   name="role"
                   value="FREELANCER"
                   checked={role === "FREELANCER"}
@@ -301,6 +305,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
               <span className="flex shrink-0 items-start pt-0.5">
                 <input
                   type="radio"
+                  data-testid="register-role-client"
                   name="role"
                   value="CLIENT"
                   checked={role === "CLIENT"}
@@ -346,6 +351,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
           <div className="relative">
             <input
               id={passwordId}
+                data-testid="register-password"
               name="password"
               type={showPassword ? "text" : "password"}
               autoComplete="new-password"
@@ -376,6 +382,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
           <div className="relative">
             <input
               id={confirmId}
+                data-testid="register-confirm-password"
               name="confirmPassword"
               type={showConfirm ? "text" : "password"}
               autoComplete="new-password"
@@ -400,6 +407,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
 
         <button
           type="submit"
+          data-testid="register-submit"
           disabled={loading}
           className="flex w-full items-center justify-center rounded-lg bg-[#3525cd] px-4 py-3 text-sm font-semibold text-white shadow-md transition-colors hover:bg-[#4f46e5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3525cd] disabled:pointer-events-none disabled:opacity-60"
         >
