@@ -1,7 +1,7 @@
 # @acme/database
 
-> **Doc revision:** v9  
-> Last synchronized: 2026-05-11 (removed Playwright-only test DB note; pool guidance unchanged).
+> **Doc revision:** v10  
+> Last synchronized: 2026-05-12 (`DATABASE_URL_TEST` in `env.example.txt`; E2E runner prefers it over `DATABASE_URL`).
 
 PostgreSQL access via **Prisma**: schema, migrations, and generated client.
 
@@ -13,6 +13,8 @@ PostgreSQL access via **Prisma**: schema, migrations, and generated client.
 ```bash
 export DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/freelance_dev"
 ```
+
+- **Automated HTTP E2E (`pnpm test:e2e`):** set **`DATABASE_URL_TEST`** to a throwaway database (see `env.example.txt`). The root runner maps it to `DATABASE_URL` for the Next build + `next start` child process so local shells with a shared dev `DATABASE_URL` are not mutated by tests.
 
 For local setup, copy `env.example.txt` to `.env` in this package (or set `DATABASE_URL` in the monorepo root `.env` when your tooling loads it). Files matching `.env*` are gitignored by the monorepo.
 

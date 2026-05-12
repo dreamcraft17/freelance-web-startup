@@ -8,6 +8,8 @@ export default async function HelpPage() {
   const howPath = withPublicLocale(locale, "/how-it-works");
   const earlyAccessPath = withPublicLocale(locale, "/early-access");
   const pricingPath = withPublicLocale(locale, "/pricing");
+  const supportEmail = process.env.NEARWORK_SUPPORT_EMAIL?.trim() ?? "";
+
   const helpTopics = [
     { title: t("marketing.help.topic1Title"), blurb: t("marketing.help.topic1Body") },
     { title: t("marketing.help.topic2Title"), blurb: t("marketing.help.topic2Body") },
@@ -21,37 +23,43 @@ export default async function HelpPage() {
       <header className="nw-page-header mb-8">
         <p className="nw-section-title">{t("marketing.help.sectionTitle")}</p>
         <h1 className="nw-page-title md:text-4xl">{t("marketing.help.pageTitle")}</h1>
-        <p className="nw-page-description text-base leading-relaxed">
-          {t("marketing.help.description")}
-        </p>
+        <p className="nw-page-description text-base leading-relaxed">{t("marketing.help.description")}</p>
       </header>
 
       <section className="nw-surface mb-6 p-6 sm:p-7">
         <h2 className="text-lg font-semibold text-slate-900">{t("marketing.help.contactTitle")}</h2>
-        <p className="mt-3 text-sm leading-relaxed text-slate-700">
-          {t("marketing.help.contactBody")}
-        </p>
-        <p className="mt-4 rounded-md border border-slate-200 bg-slate-50 px-4 py-3 font-mono text-sm text-slate-800">
-          support@nearwork.example
-        </p>
-        <p className="mt-2 text-xs leading-relaxed text-slate-500">
-          {t("marketing.help.contactNote")}
-        </p>
+        <p className="mt-3 text-sm leading-relaxed text-slate-700">{t("marketing.help.contactBody")}</p>
+        {supportEmail ? (
+          <p className="mt-4">
+            <a
+              href={`mailto:${supportEmail}`}
+              className="inline-block rounded-md border border-slate-200 bg-slate-50 px-4 py-3 font-mono text-sm font-medium text-[#3525cd] hover:bg-white"
+            >
+              {supportEmail}
+            </a>
+          </p>
+        ) : (
+          <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+            <p>{t("marketing.help.contactNoEmail")}</p>
+            <Link href={earlyAccessPath as Route} className="mt-2 inline-block font-semibold text-[#3525cd] hover:underline">
+              {t("marketing.help.contactEarlyAccessCta")}
+            </Link>
+          </div>
+        )}
+        <p className="mt-2 text-xs leading-relaxed text-slate-500">{t("marketing.help.contactNote")}</p>
       </section>
 
       <section className="mb-6">
         <h2 className="text-base font-semibold text-slate-900">{t("marketing.help.topicsTitle")}</h2>
-        <p className="mt-2 text-sm text-slate-600">
-          {t("marketing.help.topicsBody")}
-        </p>
+        <p className="mt-2 text-sm text-slate-600">{t("marketing.help.topicsBody")}</p>
         <ul className="mt-5 space-y-4">
-          {helpTopics.map((t) => (
+          {helpTopics.map((topic) => (
             <li
-              key={t.title}
+              key={topic.title}
               className="rounded-md border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700"
             >
-              <span className="font-semibold text-slate-900">{t.title}</span>
-              <span className="mt-1 block leading-relaxed text-slate-600">{t.blurb}</span>
+              <span className="font-semibold text-slate-900">{topic.title}</span>
+              <span className="mt-1 block leading-relaxed text-slate-600">{topic.blurb}</span>
             </li>
           ))}
         </ul>
@@ -82,11 +90,11 @@ export default async function HelpPage() {
       </section>
 
       <p className="mt-10 text-xs text-slate-400">
-        <Link href="/privacy" className="text-[#3525cd] hover:underline">
+        <Link href={withPublicLocale(locale, "/privacy") as Route} className="text-[#3525cd] hover:underline">
           {t("footer.privacy")}
         </Link>
         {" · "}
-        <Link href="/terms" className="text-[#3525cd] hover:underline">
+        <Link href={withPublicLocale(locale, "/terms") as Route} className="text-[#3525cd] hover:underline">
           {t("footer.terms")}
         </Link>
       </p>

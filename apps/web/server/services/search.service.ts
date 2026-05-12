@@ -11,6 +11,10 @@ import { db, Prisma } from "@acme/database";
 import { clampLimit, clampPage, offsetFromPage } from "@acme/utils";
 import { isFreelancerBoostActiveAt, isJobFeaturedActiveAt } from "../lib/promotion-expiry";
 import type { AppLocale } from "@/lib/i18n/types";
+import {
+  excludeSyntheticPublicJobsWhere,
+  publicSyntheticListingsHidden
+} from "@/lib/server/synthetic-public-content";
 
 /**
  * **`$queryRaw`:** digunakan hanya untuk pencarian **freelancer** (JOIN subquery ranking).
@@ -136,6 +140,9 @@ function buildJobsListingWhere(
       ]
     });
   }
+
+  const synthetic = excludeSyntheticPublicJobsWhere();
+  if (synthetic) clauses.push(synthetic);
 
   return { AND: clauses };
 }
@@ -434,6 +441,16 @@ export class SearchService {
     const now = new Date();
 
     const fw = buildFreelancerListingWhereFragments(input);
+    const fpSyntheticHide = publicSyntheticListingsHidden()
+      ? Prisma.sql`
+          AND NOT (
+            fp."username" ILIKE 'pw_%'
+            OR fp."username" ILIKE 'e2e_%'
+            OR fp."fullName" ILIKE '%playwright%'
+            OR COALESCE(fp."headline", '') ILIKE '%playwright%'
+          )
+        `
+      : SQL_NOOP_FP_WHERE;
 
     const listSql = db.$queryRaw<
       {
@@ -458,68 +475,72 @@ export class SearchService {
         boostedUntil: Date | null;
       }[]
     >`
-        SELECT
-          fp."id",
-          fp."userId",
-          fp."username",
-          fp."fullName",
-          fp."headline",
-          (
-            SELECT c."name"
-            FROM "FreelancerSkill" fs
-            INNER JOIN "Skill" s ON s."id" = fs."skillId" AND s."isActive" = true
-            INNER JOIN "Category" c ON c."id" = s."categoryId" AND c."isActive" = true
-            WHERE fs."freelancerProfileId" = fp."id"
-            ORDER BY c."displayOrder" ASC, c."slug" ASC
-            LIMIT 1
-          ) AS "primaryCategoryName",
-          fp."workMode"::text AS "workMode",
-          fp."city",
-          fp."country",
-          fp."lat",
-          fp."lng",
-          fp."hourlyRate",
-          fp."availabilityStatus"::text AS "availabilityStatus",
-          fp."reviewCount",
-          fp."averageReviewRating",
-          fp."createdAt",
-          fp."isFeatured",
-          fp."isBoosted",
-          fp."boostedUntil"
-        FROM "FreelancerProfile" fp
-        WHERE
-          fp."deletedAt" IS NULL
-          ${fw.wfWorkMode}
-          ${fw.wfCity}
-          ${fw.wfCategory}
-          ${fw.wfSkill}
-          ${fw.wfKeyword}
-        ORDER BY
-          (
-            CASE
-              WHEN fp."isBoosted" = true
-                AND (fp."boostedUntil" IS NULL OR fp."boostedUntil" > ${now})
-              THEN 1
-              ELSE 0
-            END
-          ) DESC,
-          (CASE WHEN fp."isFeatured" = true THEN 1 ELSE 0 END) DESC,
-          fp."createdAt" DESC
-        LIMIT ${limit} OFFSET ${skip}
-      `;
+      SELECT
+        fp."id",
+        fp."userId",
+        fp."username",
+        fp."fullName",
+        fp."headline",
+        fc."primaryCategoryName",
+        fp."workMode"::text AS "workMode",
+        fp."city",
+        fp."country",
+        fp."lat",
+        fp."lng",
+        fp."hourlyRate",
+        fp."availabilityStatus"::text AS "availabilityStatus",
+        fp."reviewCount",
+        fp."averageReviewRating",
+        fp."createdAt",
+        fp."isFeatured",
+        fp."isBoosted",
+        fp."boostedUntil"
+      FROM "FreelancerProfile" fp
+      LEFT JOIN (
+        SELECT DISTINCT ON (fs_sub."freelancerProfileId")
+          fs_sub."freelancerProfileId",
+          c_sub."name" AS "primaryCategoryName"
+        FROM "FreelancerSkill" fs_sub
+        INNER JOIN "Skill" s_sub ON s_sub."id" = fs_sub."skillId" AND s_sub."isActive" = true
+        INNER JOIN "Category" c_sub ON c_sub."id" = s_sub."categoryId" AND c_sub."isActive" = true
+        ORDER BY fs_sub."freelancerProfileId", c_sub."displayOrder" ASC NULLS LAST, c_sub."slug" ASC
+      ) fc ON fc."freelancerProfileId" = fp."id"
+      WHERE
+        fp."deletedAt" IS NULL
+        ${fw.wfWorkMode}
+        ${fw.wfCity}
+        ${fw.wfCategory}
+        ${fw.wfSkill}
+        ${fw.wfKeyword}
+        ${fpSyntheticHide}
+      ORDER BY
+        (
+          CASE
+            WHEN fp."isBoosted" = true
+              AND (fp."boostedUntil" IS NULL OR fp."boostedUntil" > ${now})
+            THEN 1
+            ELSE 0
+          END
+        ) DESC,
+        (CASE WHEN fp."isFeatured" = true THEN 1 ELSE 0 END) DESC,
+        fp."createdAt" DESC
+      LIMIT ${limit} OFFSET ${skip}
+    `;
+
     const countSql = db.$queryRaw<{ count: bigint }[]>`
-        SELECT COUNT(*)::bigint AS count
-        FROM "FreelancerProfile" fp
-        WHERE
-          fp."deletedAt" IS NULL
-          ${fw.wfWorkMode}
-          ${fw.wfCity}
-          ${fw.wfCategory}
-          ${fw.wfSkill}
-          ${fw.wfKeyword}
-      `;
-    const countRows = await countSql;
-    const rows = await listSql;
+      SELECT COUNT(*)::bigint AS count
+      FROM "FreelancerProfile" fp
+      WHERE
+        fp."deletedAt" IS NULL
+        ${fw.wfWorkMode}
+        ${fw.wfCity}
+        ${fw.wfCategory}
+        ${fw.wfSkill}
+        ${fw.wfKeyword}
+        ${fpSyntheticHide}
+    `;
+
+    const [countRows, rows] = await Promise.all([countSql, listSql]);
 
     const total = Number(countRows[0]?.count ?? 0n);
     return {

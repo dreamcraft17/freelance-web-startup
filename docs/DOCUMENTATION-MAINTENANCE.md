@@ -1,7 +1,7 @@
 # Documentation maintenance (NearWork)
 
-> **Doc revision:** v22  
-> Last synchronized: 2026-05-11 (removed Playwright doc entry; testing = Vitest + Node E2E harness).
+> **Doc revision:** v23  
+> Last synchronized: 2026-05-12 (deploy checklist: synthetic public listings + test DB vs prod `DATABASE_URL`; README sync).
 
 ## AUTO — wajib untuk AI & kontributor
 

@@ -2,7 +2,7 @@
  * End-to-end marketplace flow (HTTP against a running Next app).
  *
  * Prerequisites:
- *   - `DATABASE_URL`, `SESSION_SECRET` (>=16 chars) set for the web app
+ *   - `DATABASE_URL`, `SESSION_SECRET` (>=16 chars) set for the web app — use a **disposable or local** database only; never point this harness at production or shared public staging.
  *   - Migrations applied: `pnpm db:migrate`
  *   - Seeded admin (`pnpm db:seed`): defaults `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` for `/api/admin/reports` assertion
  *   - Server: `pnpm test:e2e` builds `@acme/web`, starts `next start` on **3041**, and sets `BASE_URL`.

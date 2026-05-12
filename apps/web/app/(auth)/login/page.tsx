@@ -27,7 +27,7 @@ export default async function LoginPage({ searchParams }: PageProps) {
         <div className="w-full max-w-md rounded-2xl border border-slate-200/90 bg-white p-8 shadow-[0_2px_28px_-6px_rgba(15,23,42,0.12)] ring-1 ring-slate-100 sm:p-10">
           <div className="mb-10 flex justify-center px-1">
             <BrandLogo
-              href={"/" as Route}
+              href={withPublicLocale(locale, "/") as Route}
               imageClassName="h-[5.25rem] w-auto max-w-full object-contain sm:h-28 md:h-32"
               alt="NearWork logo"
             />
@@ -40,13 +40,13 @@ export default async function LoginPage({ searchParams }: PageProps) {
             className="mt-10 grid grid-cols-3 gap-3 border-t border-slate-200 pt-8 text-center text-xs text-slate-500"
           >
             <Link
-              href={"/privacy" as Route}
+              href={withPublicLocale(locale, "/privacy") as Route}
               className="truncate font-medium text-slate-600 underline-offset-4 hover:text-[#3525cd] hover:underline sm:whitespace-normal"
             >
               {t("footer.privacy")}
             </Link>
             <Link
-              href={"/terms" as Route}
+              href={withPublicLocale(locale, "/terms") as Route}
               className="truncate font-medium text-slate-600 underline-offset-4 hover:text-[#3525cd] hover:underline sm:whitespace-normal"
             >
               {t("footer.terms")}

@@ -1,5 +1,6 @@
 import { LandingHero, type LandingCategoryOption } from "@/components/marketing/LandingHero";
 import { LandingHomeSections } from "@/components/marketing/LandingHomeSections";
+import { LandingLiveMarketplacePreview } from "@/components/marketing/LandingLiveMarketplacePreview";
 import { CategoryService } from "@/server/services/category.service";
 import { PublicStatsService } from "@/server/services/public-stats.service";
 
@@ -34,6 +35,7 @@ export async function LandingPage({
   return (
     <main className="nw-page pb-16 text-[#071027] selection:bg-[#3525cd]/15 selection:text-[#071027]">
       <LandingHero intent={intent} homePath={homePath} categories={categories} marketplaceMomentum={marketplaceMomentum} />
+      <LandingLiveMarketplacePreview />
       <LandingHomeSections />
     </main>
   );

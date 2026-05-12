@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v98  
-> Last synchronized: 2026-05-11 — removed Playwright browser E2E; testing remains Vitest (`pnpm test:unit`) + Node HTTP smoke (`pnpm test:e2e` / `scripts/e2e-marketplace-flow.mjs`).
+> **Doc revision:** v99  
+> Last synchronized: 2026-05-12 — public staging: hide automation-shaped listings on Vercel (`VERCEL=1` + `synthetic-public-content`), support email `NEARWORK_SUPPORT_EMAIL` for `/help`, E2E/HTTP harness must use disposable DB only (never prod/staging public `DATABASE_URL`).
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -316,19 +316,19 @@ pnpm exec tsc --noEmit -p apps/web
 | `pnpm db:studio` | Prisma Studio |
 | `pnpm test` | Alias to unit tests |
 | `pnpm test:unit` | Vitest unit tests for policies/services/helpers/validators |
-| `pnpm test:e2e` | Build web + `next start` (port **3041** default), lalu HTTP smoke CSRF auth→job→bid→messages→report (`SKIP_E2E_BUILD=1`/`E2E_PORT`) |
+| `pnpm test:e2e` | Build web + `next start` (port **3041** default), lalu HTTP smoke CSRF auth→job→bid→messages→report (`SKIP_E2E_BUILD=1`/`E2E_PORT`). Prefer **`DATABASE_URL_TEST`** (isolated DB); runner meng-override `DATABASE_URL` untuk proses build + server. |
 | `pnpm test:all` | Run unit then e2e |
 
 ### Testing quickstart
 
 - Unit: `pnpm test:unit`
 - E2E:
-  1) sama seperti dev: `DATABASE_URL`, `SESSION_SECRET` (≥16 karakter), migrasi (`pnpm db:migrate`), seed kategori/admin (`pnpm db:seed`)
+  1) Set **`DATABASE_URL_TEST`** ke Postgres sekali pakai (disarankan) atau set `DATABASE_URL` hanya ke DB test; **`SESSION_SECRET`** (≥16 karakter), migrasi (`pnpm db:migrate`), seed kategori/admin (`pnpm db:seed`) pada **DB test yang sama**
   2) jalankan `pnpm test:e2e` — harness akan **`pnpm --filter @acme/web build`** lalu **`next start`** di **`127.0.0.1:3041`** (atur `E2E_PORT`). Untuk lewati rebuild: **`SKIP_E2E_BUILD=1 pnpm test:e2e`**
   3) Smoke manual terhadap dev yang sedang jalan: **`BASE_URL=http://127.0.0.1:3000 node --test scripts/e2e-marketplace-flow.mjs`** — setelah ragu pada `.next`, pakai **`pnpm --filter @acme/web clean`** atau lebih baik pakai harness di langkah (2)
 - Manual / localhost: gunakan **`pnpm dev`** untuk alur produk penuh di browser; tidak ada suite browser otomatis di repo ini.
-- Keep test traffic off production DB:
-  - run `pnpm test:e2e` and manual smoke against disposable **`DATABASE_URL`** / staging only
+- Keep test traffic off production / shared public staging:
+  - jalankan `pnpm test:e2e` hanya dengan **`DATABASE_URL_TEST`** atau `DATABASE_URL` yang mengarah ke DB throwaway — jangan menulis data tes ke DB staging publik pengunjung
 - Moderation/admin queue assertions in e2e:
   - set `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` (or use seed defaults)
   - run `pnpm db:seed` on test/staging DB only.

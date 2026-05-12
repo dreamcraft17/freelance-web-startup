@@ -1,14 +1,16 @@
 # Production deploy checklist (web + database)
 
-> **Doc revision:** v5  
-> Last synchronized: 2026-05-09 (troubleshooting: bersihkan `apps/web/.next` + build ulang jika dev/API mengembalikan 500 dengan `Cannot find module './vendor-chunks/jose@…'`).
+> **Doc revision:** v6  
+> Last synchronized: 2026-05-12 (public staging: synthetic listing filter, support email, test DB vs prod `DATABASE_URL`).
 
 Checklist singkat sebelum merilis NearWork ke lingkungan produksi. Sesuaikan penyedia hosting (mis. Vercel) dengan variabel yang sama di dashboard mereka.
 
 ## Secrets & connection
 
-- [ ] **`DATABASE_URL`** — string koneksi Postgres produksi (SSL sesuai penyedia).
+- [ ] **`DATABASE_URL`** — string koneksi Postgres produksi (SSL sesuai penyedia). **Jangan** menjalankan harness `pnpm test:e2e` atau skrip HTTP `scripts/e2e-marketplace-flow.mjs` dengan URL ini—gunakan DB sekali pakai / lokal.
 - [ ] **`SESSION_SECRET`** — rahasia acak kuat untuk sesi; jangan reuse dari dev.
+- [ ] **`NEARWORK_SUPPORT_EMAIL`** (disarankan) — alamat inbox dukungan untuk halaman `/help` (server-only). Tanpa ini, halaman menampilkan CTA ke Early access.
+- [ ] **Listing otomatis / E2E di marketplace publik** — di Vercel (`VERCEL=1`), job & profil yang cocok pola automation (mis. judul berisi `E2E integration`, `Playwright`, username `pw_`) disembunyikan dari board publik dan agregat marketing. Untuk debug: `NEARWORK_SHOW_SYNTHETIC_PUBLIC_LISTINGS=1`. Paksa sembunyikan di lokal: `NEARWORK_HIDE_SYNTHETIC_PUBLIC_LISTINGS=1`.
 
 ## Install & Prisma
 
@@ -56,9 +58,7 @@ Setelah mengganti dependensi atau jika beberapa route API mengembalikan **500 ha
 
 ## CI / test DB guidance
 
-- [ ] Gunakan DB terpisah untuk pengujian otomatis:
-  - `TEST_DATABASE_URL=<isolated_test_db>`
-  - jalankan test dengan `DATABASE_URL=$TEST_DATABASE_URL`
+- [ ] Gunakan DB terpisah untuk pengujian otomatis: set **`DATABASE_URL_TEST`** (disarankan) — `pnpm test:e2e` memetakan nilai ini ke `DATABASE_URL` untuk build + server. Tanpa itu, pastikan `DATABASE_URL` eksplisit ke DB throwaway saat menjalankan harness; **jangan** menempatkan data tes HTTP E2E pada database staging publik yang dipakai pengunjung.
 - [ ] Jalankan unit + e2e smoke sebelum release:
   - `pnpm test:unit`
   - `pnpm test:e2e` (app harus berjalan; skrip memanggil `GET /api/auth/csrf` + header `X-CSRF-Token` per mutasi; **`pnpm db:seed`** di DB test agar ada kategori untuk pembuatan job)

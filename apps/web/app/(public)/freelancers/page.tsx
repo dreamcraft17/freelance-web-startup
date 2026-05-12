@@ -159,7 +159,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
 
   const search = new SearchService();
   const statsSvc = new PublicStatsService();
-  const geoQuery = hasGeoCenter ? { ...query, page: 1 as const, limit: 120 as const } : query;
+  const geoQuery = hasGeoCenter ? { ...query, page: 1 as const, limit: 48 as const } : query;
   const { t, locale } = await getServerTranslator();
   const flBase = withPublicLocale(locale, "/freelancers");
   const jobsBase = withPublicLocale(locale, "/jobs");

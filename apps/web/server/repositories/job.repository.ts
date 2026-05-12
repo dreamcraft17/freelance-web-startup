@@ -3,6 +3,7 @@ import type { CreateJobDto, UpdateJobDto } from "@acme/validators";
 import { JobStatus, JobVisibility, WorkMode } from "@acme/types";
 import { NotFoundError } from "../errors/domain-errors";
 import type { AppLocale } from "@/lib/i18n/types";
+import { excludeSyntheticPublicJobsWhere, mergeJobWhere } from "@/lib/server/synthetic-public-content";
 
 function slugifyTitle(title: string): string {
   const base = title
@@ -153,14 +154,15 @@ export class JobRepository {
           }
         : { moderationHiddenAt: null };
 
-    const row = await db.job.findFirst({
-      where: {
+    const baseWhere = {
         id: jobId,
         deletedAt: null,
         status: JobStatus.OPEN,
         visibility: JobVisibility.PUBLIC,
         ...(moderationFilter ?? {})
-      },
+    };
+    const row = await db.job.findFirst({
+      where: mergeJobWhere(baseWhere, opts?.viewerIsStaff ? null : excludeSyntheticPublicJobsWhere()),
       select: {
         id: true,
         title: true,
@@ -208,12 +210,13 @@ export class JobRepository {
   }
 
   async listPublicPaginated(params: { skip: number; take: number }) {
-    const where = {
+    const base = {
       deletedAt: null,
       status: JobStatus.OPEN,
       visibility: JobVisibility.PUBLIC,
       moderationHiddenAt: null
     } as const;
+    const where = mergeJobWhere(base, excludeSyntheticPublicJobsWhere());
     const [items, total] = await Promise.all([
       db.job.findMany({
         where,

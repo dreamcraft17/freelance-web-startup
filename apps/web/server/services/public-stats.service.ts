@@ -1,5 +1,35 @@
 import { db } from "@acme/database";
 import { AvailabilityStatus, BidStatus, ContractStatus, JobStatus, JobVisibility } from "@acme/types";
+import {
+  excludeSyntheticPublicFreelancersWhere,
+  excludeSyntheticPublicJobsWhere,
+  mergeFreelancerWhere,
+  mergeJobWhere
+} from "@/lib/server/synthetic-public-content";
+
+/** Open + public + not moderation-hidden; merges automation/E2E title filter on Vercel. */
+function jobOpenPublicWhere() {
+  return mergeJobWhere(
+    {
+      deletedAt: null,
+      status: JobStatus.OPEN,
+      visibility: JobVisibility.PUBLIC,
+      moderationHiddenAt: null
+    },
+    excludeSyntheticPublicJobsWhere()
+  );
+}
+
+function freelancerAvailablePublicWhere() {
+  return mergeFreelancerWhere(
+    {
+      deletedAt: null,
+      availabilityStatus: AvailabilityStatus.AVAILABLE,
+      user: { deletedAt: null }
+    },
+    excludeSyntheticPublicFreelancersWhere()
+  );
+}
 
 /** DB-backed marketplace aggregates (no invented metrics). */
 export type MarketplaceMomentumSnapshot = {
@@ -32,27 +62,33 @@ export class PublicStatsService {
   }> {
     const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
     const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    const openPublicWhere = {
-      deletedAt: null,
-      status: JobStatus.OPEN,
-      visibility: JobVisibility.PUBLIC,
-      moderationHiddenAt: null
-    } as const;
+    const openJobWhere = jobOpenPublicWhere();
+    const openFreelancerWhere = freelancerAvailablePublicWhere();
 
     return db.$transaction(async (tx) => {
-      const bidsLast24h = await tx.bid.count({ where: { createdAt: { gte: since24h } } });
-      const freelancersAvailable = await tx.freelancerProfile.count({
+      const bidsLast24h = await tx.bid.count({
         where: {
-          deletedAt: null,
-          availabilityStatus: AvailabilityStatus.AVAILABLE,
-          user: { deletedAt: null }
+          createdAt: { gte: since24h },
+          job: openJobWhere
         }
       });
+      const freelancersAvailable = await tx.freelancerProfile.count({
+        where: openFreelancerWhere
+      });
       const openPublicJobs = await tx.job.count({
-        where: openPublicWhere
+        where: openJobWhere
       });
       const jobsPostedLast24h = await tx.job.count({
-        where: { ...openPublicWhere, createdAt: { gte: since24h } }
+        where: mergeJobWhere(
+          {
+            deletedAt: null,
+            status: JobStatus.OPEN,
+            visibility: JobVisibility.PUBLIC,
+            moderationHiddenAt: null,
+            createdAt: { gte: since24h }
+          },
+          excludeSyntheticPublicJobsWhere()
+        )
       });
       const contractsCompletedLast7d = await tx.contract.count({
         where: {
@@ -64,7 +100,7 @@ export class PublicStatsService {
 
       const catGrouped = await tx.job.groupBy({
         by: ["categoryId"],
-        where: openPublicWhere,
+        where: openJobWhere,
         _count: { id: true },
         orderBy: { _count: { id: "desc" } },
         take: 5
@@ -94,11 +130,7 @@ export class PublicStatsService {
       };
 
       const freelancers = await tx.freelancerProfile.findMany({
-        where: {
-          deletedAt: null,
-          availabilityStatus: AvailabilityStatus.AVAILABLE,
-          user: { deletedAt: null }
-        },
+        where: openFreelancerWhere,
         orderBy: { updatedAt: "desc" },
         take: 2,
         select: {
@@ -111,12 +143,7 @@ export class PublicStatsService {
       });
 
       const jobs = await tx.job.findMany({
-        where: {
-          deletedAt: null,
-          status: JobStatus.OPEN,
-          visibility: JobVisibility.PUBLIC,
-          moderationHiddenAt: null
-        },
+        where: openJobWhere,
         orderBy: { createdAt: "desc" },
         take: 2,
         select: {
@@ -130,12 +157,7 @@ export class PublicStatsService {
       const recentBids = await tx.bid.findMany({
         where: {
           status: { not: BidStatus.WITHDRAWN },
-          job: {
-            deletedAt: null,
-            status: JobStatus.OPEN,
-            visibility: JobVisibility.PUBLIC,
-            moderationHiddenAt: null
-          }
+          job: openJobWhere
         },
         orderBy: { createdAt: "desc" },
         take: 3,
@@ -194,13 +216,12 @@ export class PublicStatsService {
       createdAt: string;
     }>;
   }> {
+    const openJobWhere = jobOpenPublicWhere();
+    const openFreelancerWhere = freelancerAvailablePublicWhere();
+
     return db.$transaction(async (tx) => {
       const freelancers = await tx.freelancerProfile.findMany({
-        where: {
-          deletedAt: null,
-          availabilityStatus: AvailabilityStatus.AVAILABLE,
-          user: { deletedAt: null }
-        },
+        where: openFreelancerWhere,
         orderBy: { updatedAt: "desc" },
         take: 2,
         select: {
@@ -213,12 +234,7 @@ export class PublicStatsService {
       });
 
       const jobs = await tx.job.findMany({
-        where: {
-          deletedAt: null,
-          status: JobStatus.OPEN,
-          visibility: JobVisibility.PUBLIC,
-          moderationHiddenAt: null
-        },
+        where: openJobWhere,
         orderBy: { createdAt: "desc" },
         take: 2,
         select: {
@@ -232,12 +248,7 @@ export class PublicStatsService {
       const recentBids = await tx.bid.findMany({
         where: {
           status: { not: BidStatus.WITHDRAWN },
-          job: {
-            deletedAt: null,
-            status: JobStatus.OPEN,
-            visibility: JobVisibility.PUBLIC,
-            moderationHiddenAt: null
-          }
+          job: openJobWhere
         },
         orderBy: { createdAt: "desc" },
         take: 3,
@@ -278,27 +289,33 @@ export class PublicStatsService {
   async getMarketplaceMomentumSnapshot(): Promise<MarketplaceMomentumSnapshot> {
     const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
     const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    const openPublicWhere = {
-      deletedAt: null,
-      status: JobStatus.OPEN,
-      visibility: JobVisibility.PUBLIC,
-      moderationHiddenAt: null
-    } as const;
+    const openJobWhere = jobOpenPublicWhere();
+    const openFreelancerWhere = freelancerAvailablePublicWhere();
 
     return db.$transaction(async (tx) => {
-      const bidsLast24h = await tx.bid.count({ where: { createdAt: { gte: since24h } } });
-      const freelancersAvailable = await tx.freelancerProfile.count({
+      const bidsLast24h = await tx.bid.count({
         where: {
-          deletedAt: null,
-          availabilityStatus: AvailabilityStatus.AVAILABLE,
-          user: { deletedAt: null }
+          createdAt: { gte: since24h },
+          job: openJobWhere
         }
       });
+      const freelancersAvailable = await tx.freelancerProfile.count({
+        where: openFreelancerWhere
+      });
       const openPublicJobs = await tx.job.count({
-        where: openPublicWhere
+        where: openJobWhere
       });
       const jobsPostedLast24h = await tx.job.count({
-        where: { ...openPublicWhere, createdAt: { gte: since24h } }
+        where: mergeJobWhere(
+          {
+            deletedAt: null,
+            status: JobStatus.OPEN,
+            visibility: JobVisibility.PUBLIC,
+            moderationHiddenAt: null,
+            createdAt: { gte: since24h }
+          },
+          excludeSyntheticPublicJobsWhere()
+        )
       });
       const contractsCompletedLast7d = await tx.contract.count({
         where: {
@@ -310,7 +327,7 @@ export class PublicStatsService {
 
       const catGrouped = await tx.job.groupBy({
         by: ["categoryId"],
-        where: openPublicWhere,
+        where: openJobWhere,
         _count: { id: true },
         orderBy: { _count: { id: "desc" } },
         take: 5

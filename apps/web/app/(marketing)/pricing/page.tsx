@@ -11,6 +11,7 @@ export default async function PricingPage() {
   const freelancersPath = withPublicLocale(locale, "/freelancers");
   const earlyAccessPath = withPublicLocale(locale, "/early-access");
   const helpPath = withPublicLocale(locale, "/help");
+  const registerPath = withPublicLocale(locale, "/register");
   const postJobPath = withWorkspaceLocale(locale, "/client/jobs/new");
 
   return (
@@ -35,23 +36,15 @@ export default async function PricingPage() {
           </p>
         </section>
 
-        <section className="nw-surface-soft px-5 py-6 text-sm leading-relaxed text-slate-700 sm:px-6">
-          <h2 className="text-base font-semibold text-indigo-950">{t("marketing.pricing.donationTitle")}</h2>
-          <p className="mt-3">{t("marketing.pricing.donationBody")}</p>
-        </section>
-
         <section className="rounded-xl border border-dashed border-slate-300 bg-white px-5 py-6 text-sm leading-relaxed text-slate-700 sm:px-6">
           <h2 className="text-base font-semibold text-slate-900">{t("marketing.pricing.futureTitle")}</h2>
-          <p className="mt-3">{t("marketing.pricing.futureBody1")}</p>
-          <p className="mt-3">{t("marketing.pricing.futureBody2")}</p>
+          <p className="mt-3">{t("marketing.pricing.futureBody")}</p>
         </section>
       </div>
 
       <section className="nw-surface mt-8 px-6 py-7 sm:px-8">
         <h2 className="text-xl font-semibold text-slate-900">{t("marketing.pricing.ctaTitle")}</h2>
-        <p className="mt-2 max-w-lg text-sm leading-relaxed text-slate-600">
-          {t("marketing.pricing.ctaBody")}
-        </p>
+        <p className="mt-2 max-w-lg text-sm leading-relaxed text-slate-600">{t("marketing.pricing.ctaBody")}</p>
         <div className="mt-5 flex flex-wrap items-center gap-3">
           <AuthAwareCtaLink
             href={postJobPath as Route}
@@ -63,7 +56,7 @@ export default async function PricingPage() {
             {t("marketing.pricing.ctaPrimary")}
           </AuthAwareCtaLink>
           <Link
-            href="/register"
+            href={registerPath as Route}
             className="inline-flex justify-center rounded-md border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
           >
             {t("marketing.pricing.ctaRegister")}
