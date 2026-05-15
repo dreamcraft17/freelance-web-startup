@@ -1,49 +1,192 @@
 import type { SearchFreelancersQueryDto, SearchJobsQueryDto } from "@acme/validators";
-import { AvailabilityStatus, JobStatus, WorkMode } from "@acme/types";
+import {
+  AvailabilityStatus,
+  BidStatus,
+  JobStatus,
+  JobVisibility,
+  VerificationStatus,
+  WorkMode
+} from "@acme/types";
 import { db, Prisma } from "@acme/database";
 import { clampLimit, clampPage, offsetFromPage } from "@acme/utils";
 import { isFreelancerBoostActiveAt, isJobFeaturedActiveAt } from "../lib/promotion-expiry";
 import type { AppLocale } from "@/lib/i18n/types";
+import {
+  excludeSyntheticPublicJobsWhere,
+  publicSyntheticListingsHidden
+} from "@/lib/server/synthetic-public-content";
 
 /**
- * Prisma raw-query safety: this file is the only `$queryRaw` usage in the repo.
- * User-controlled filters are passed only as `${}` values inside {@link Prisma.sql}
- * fragments, then combined with {@link Prisma.join} — PostgreSQL receives bound
- * parameters (no string-built SQL from request input). Do not switch to
- * `$queryRawUnsafe` / string templates with embedded user text.
+ * **`$queryRaw`:** digunakan hanya untuk pencarian **freelancer** (JOIN subquery ranking).
+ * **Daftar job publik** (`listPublicOpenJobsPaginated`, `searchJobs`) memakai
+ * **`db.job.findMany` + `db.job.count`** agar stabilitas query sama di dev/production.
  */
 
-type JobColumnSupport = {
-  language: boolean;
-  titleEn: boolean;
-  titleId: boolean;
-  descriptionEn: boolean;
-  descriptionId: boolean;
+/** Empty sibling fragment for freelancer optional filters only. */
+const SQL_NOOP_FP_WHERE = Prisma.sql``;
+
+type JobSearchOptions = { publicVisibilityOnly: boolean; locale: AppLocale };
+
+type FreelancerListingWhereFragments = {
+  wfWorkMode: Prisma.Sql;
+  wfCity: Prisma.Sql;
+  wfCategory: Prisma.Sql;
+  wfSkill: Prisma.Sql;
+  wfKeyword: Prisma.Sql;
 };
 
-let jobColumnSupportPromise: Promise<JobColumnSupport> | null = null;
+function buildFreelancerListingWhereFragments(
+  input: SearchFreelancersQueryDto
+): FreelancerListingWhereFragments {
+  const wfWorkMode = input.workMode
+    ? Prisma.sql` AND fp."workMode" = ${input.workMode}::"WorkMode"`
+    : SQL_NOOP_FP_WHERE;
 
-async function getJobColumnSupport(): Promise<JobColumnSupport> {
-  if (jobColumnSupportPromise) return jobColumnSupportPromise;
-  jobColumnSupportPromise = (async () => {
-    const rows = await db.$queryRaw<{ column_name: string }[]>`
-      SELECT column_name
-      FROM information_schema.columns
-      WHERE table_schema = current_schema()
-        AND table_name = 'Job'
-        AND column_name IN ('language', 'titleEn', 'titleId', 'descriptionEn', 'descriptionId')
-    `;
-    const existing = new Set(rows.map((r) => r.column_name));
-    return {
-      language: existing.has("language"),
-      titleEn: existing.has("titleEn"),
-      titleId: existing.has("titleId"),
-      descriptionEn: existing.has("descriptionEn"),
-      descriptionId: existing.has("descriptionId")
-    };
-  })();
-  return jobColumnSupportPromise;
+  const cityTrimmed = input.city?.trim();
+  const wfCity = cityTrimmed
+    ? Prisma.sql` AND fp."city" ILIKE ${"%" + cityTrimmed + "%"}`
+    : SQL_NOOP_FP_WHERE;
+
+  const wfCategory = input.categoryId
+    ? Prisma.sql`
+        AND EXISTS (
+          SELECT 1 FROM "FreelancerSkill" fs
+          INNER JOIN "Skill" s ON s."id" = fs."skillId"
+          WHERE fs."freelancerProfileId" = fp."id"
+            AND s."categoryId" = ${input.categoryId}
+            AND s."isActive" = true
+        )
+      `
+    : SQL_NOOP_FP_WHERE;
+
+  const wfSkill = input.skillId
+    ? Prisma.sql`
+        AND EXISTS (
+          SELECT 1 FROM "FreelancerSkill" fs
+          WHERE fs."freelancerProfileId" = fp."id"
+            AND fs."skillId" = ${input.skillId}
+        )
+      `
+    : SQL_NOOP_FP_WHERE;
+
+  const kwTrimmed = input.keyword?.trim();
+  const wfKeyword = kwTrimmed
+    ? Prisma.sql` AND (fp."username" ILIKE ${"%" + kwTrimmed + "%"} OR fp."fullName" ILIKE ${"%" + kwTrimmed + "%"} OR fp."headline" ILIKE ${"%" + kwTrimmed + "%"} OR fp."bio" ILIKE ${"%" + kwTrimmed + "%"})`
+    : SQL_NOOP_FP_WHERE;
+
+  return { wfWorkMode, wfCity, wfCategory, wfSkill, wfKeyword };
 }
+
+/** Open jobs listing filters for public discovery APIs (moderation-visible only). */
+function buildJobsListingWhere(
+  input: SearchJobsQueryDto,
+  opts: JobSearchOptions,
+  now: Date
+): Prisma.JobWhereInput {
+  const clauses: Prisma.JobWhereInput[] = [
+    { deletedAt: null },
+    { status: JobStatus.OPEN },
+    { moderationHiddenAt: null }
+  ];
+
+  if (opts.publicVisibilityOnly) {
+    clauses.push({ visibility: JobVisibility.PUBLIC });
+  }
+
+  if (input.categoryId?.trim()) {
+    clauses.push({ categoryId: input.categoryId.trim() });
+  }
+
+  if (input.workMode) {
+    clauses.push({ workMode: input.workMode });
+  }
+
+  const cityTrimmed = input.city?.trim();
+  if (cityTrimmed) {
+    clauses.push({
+      city: { contains: cityTrimmed, mode: "insensitive" }
+    });
+  }
+
+  if (input.minBudget != null && Number.isFinite(input.minBudget)) {
+    clauses.push({
+      OR: [{ budgetMax: null }, { budgetMax: { gte: input.minBudget } }]
+    });
+  }
+
+  if (input.maxBudget != null && Number.isFinite(input.maxBudget)) {
+    clauses.push({
+      OR: [{ budgetMin: null }, { budgetMin: { lte: input.maxBudget } }]
+    });
+  }
+
+  if (input.postedWithinDays != null && Number.isFinite(input.postedWithinDays)) {
+    const days = Math.max(1, Math.min(30, Math.trunc(input.postedWithinDays)));
+    const since = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+    clauses.push({ createdAt: { gte: since } });
+  }
+
+  const kw = input.keyword?.trim();
+  if (kw) {
+    const mode = "insensitive" as const;
+    clauses.push({
+      OR: [
+        { title: { contains: kw, mode } },
+        { description: { contains: kw, mode } },
+        { titleEn: { contains: kw, mode } },
+        { titleId: { contains: kw, mode } },
+        { descriptionEn: { contains: kw, mode } },
+        { descriptionId: { contains: kw, mode } }
+      ]
+    });
+  }
+
+  const synthetic = excludeSyntheticPublicJobsWhere();
+  if (synthetic) clauses.push(synthetic);
+
+  return { AND: clauses };
+}
+
+const JOB_LIST_SELECT = {
+  id: true,
+  title: true,
+  titleEn: true,
+  titleId: true,
+  slug: true,
+  description: true,
+  descriptionEn: true,
+  descriptionId: true,
+  language: true,
+  budgetType: true,
+  budgetMin: true,
+  budgetMax: true,
+  currency: true,
+  workMode: true,
+  city: true,
+  categoryId: true,
+  subcategoryId: true,
+  bidDeadline: true,
+  createdAt: true,
+  isFeatured: true,
+  featuredUntil: true,
+  clientProfile: {
+    select: {
+      displayName: true,
+      companyName: true,
+      verificationStatus: true
+    }
+  },
+  _count: {
+    select: { bids: true }
+  },
+  skills: {
+    take: 5,
+    orderBy: { createdAt: "asc" },
+    select: {
+      skill: { select: { name: true } }
+    }
+  }
+} satisfies Prisma.JobSelect;
 
 export type JobSearchItem = {
   id: string;
@@ -66,6 +209,15 @@ export type JobSearchItem = {
   featuredUntil: string | null;
   /** True only when featured promotion is still within `featuredUntil` (if set). Matches ranking. */
   isFeaturedActive: boolean;
+  /** Display label from client profile (company name preferred). */
+  clientDisplayName: string;
+  clientVerified: boolean;
+  /** Open proposals on this job (real count). */
+  bidCount: number;
+  /** Shortlisted proposals on this job (real count). */
+  shortlistedCount: number;
+  /** Skill names attached to the job listing (limited). */
+  skillNames: string[];
 };
 
 export type FreelancerSearchItem = {
@@ -122,36 +274,20 @@ function num(v: { toString(): string } | null | undefined): number | null {
 }
 
 function mapJob(
-  row: {
-    id: string;
-    title: string;
-    titleEn: string | null;
-    titleId: string | null;
-    slug: string;
-    description: string;
-    descriptionEn: string | null;
-    descriptionId: string | null;
-    language: string;
-    budgetType: string;
-    budgetMin: { toString(): string } | null;
-    budgetMax: { toString(): string } | null;
-    currency: string;
-    workMode: string;
-    city: string | null;
-    categoryId: string;
-    subcategoryId: string | null;
-    bidDeadline: Date | null;
-    createdAt: Date;
-    isFeatured: boolean;
-    featuredUntil: Date | null;
-  },
+  row: Prisma.JobGetPayload<{ select: typeof JOB_LIST_SELECT }>,
   now: Date,
-  locale: AppLocale
+  locale: AppLocale,
+  shortlistedCount: number
 ): JobSearchItem {
   const featuredUntilIso = row.featuredUntil?.toISOString() ?? null;
   const source = row.language === "id" ? "id" : "en";
   const preferredTitle = locale === "id" ? row.titleId : row.titleEn;
   const preferredDescription = locale === "id" ? row.descriptionId : row.descriptionEn;
+  const company = row.clientProfile.companyName?.trim();
+  const display = row.clientProfile.displayName.trim();
+  const clientDisplayName = (company && company.length > 0 ? company : display) || display;
+  const clientVerified = row.clientProfile.verificationStatus === VerificationStatus.VERIFIED;
+  const skillNames = row.skills.map((s) => s.skill.name).filter((n) => n && n.trim().length > 0);
   return {
     id: row.id,
     title: preferredTitle ?? row.title,
@@ -171,7 +307,12 @@ function mapJob(
     createdAt: row.createdAt.toISOString(),
     isFeatured: row.isFeatured,
     featuredUntil: featuredUntilIso,
-    isFeaturedActive: isJobFeaturedActiveAt(now, row.isFeatured, row.featuredUntil)
+    isFeaturedActive: isJobFeaturedActiveAt(now, row.isFeatured, row.featuredUntil),
+    clientDisplayName,
+    clientVerified,
+    bidCount: row._count.bids,
+    shortlistedCount,
+    skillNames
   };
 }
 
@@ -230,18 +371,16 @@ function mapFreelancer(
   };
 }
 
-type JobSearchOptions = { publicVisibilityOnly: boolean; locale: AppLocale };
-
 export class SearchService {
   /**
-   * Public job board + search API: featured (non-expired) first, then recency.
+   * Job board + search API: ordered by **`createdAt` descending** (Prisma listing; ranking can be enriched later).
    */
   async searchJobs(input: SearchJobsQueryDto): Promise<{ items: JobSearchItem[]; total: number }> {
     return this.searchJobsInternal(input, { publicVisibilityOnly: false, locale: "en" });
   }
 
   /**
-   * Same ranking rules as {@link searchJobs}, restricted to `visibility = PUBLIC` (home/listing pages).
+   * Same filters and ordering as {@link searchJobs}, restricted to `visibility = PUBLIC` (home/API listing).
    */
   async listPublicOpenJobsPaginated(
     input: SearchJobsQueryDto,
@@ -258,122 +397,33 @@ export class SearchService {
     const limit = clampLimit(input.limit);
     const skip = offsetFromPage({ page, limit });
     const now = new Date();
-    const col = await getJobColumnSupport();
 
-    const parts: Prisma.Sql[] = [
-      Prisma.sql`j."deletedAt" IS NULL`,
-      Prisma.sql`j."status" = 'OPEN'::"JobStatus"`
-    ];
-    if (opts.publicVisibilityOnly) {
-      parts.push(Prisma.sql`j."visibility" = 'PUBLIC'::"JobVisibility"`);
-    }
-    if (input.categoryId) {
-      parts.push(Prisma.sql`j."categoryId" = ${input.categoryId}`);
-    }
-    if (input.workMode) {
-      parts.push(Prisma.sql`j."workMode" = ${input.workMode}::"WorkMode"`);
-    }
-    if (input.city?.trim()) {
-      const c = input.city.trim();
-      parts.push(Prisma.sql`j."city" ILIKE ${"%" + c + "%"}`);
-    }
-    if (input.minBudget != null && Number.isFinite(input.minBudget)) {
-      parts.push(Prisma.sql`j."budgetMax" IS NULL OR j."budgetMax" >= ${input.minBudget}`);
-    }
-    if (input.maxBudget != null && Number.isFinite(input.maxBudget)) {
-      parts.push(Prisma.sql`j."budgetMin" IS NULL OR j."budgetMin" <= ${input.maxBudget}`);
-    }
-    if (input.postedWithinDays != null && Number.isFinite(input.postedWithinDays)) {
-      const days = Math.max(1, Math.min(30, Math.trunc(input.postedWithinDays)));
-      const since = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
-      parts.push(Prisma.sql`j."createdAt" >= ${since}`);
-    }
-    if (input.keyword?.trim()) {
-      const q = `%${input.keyword.trim()}%`;
-      const keywordParts: Prisma.Sql[] = [
-        Prisma.sql`j."title" ILIKE ${q}`,
-        Prisma.sql`j."description" ILIKE ${q}`
-      ];
-      if (col.titleEn) keywordParts.push(Prisma.sql`j."titleEn" ILIKE ${q}`);
-      if (col.titleId) keywordParts.push(Prisma.sql`j."titleId" ILIKE ${q}`);
-      if (col.descriptionEn) keywordParts.push(Prisma.sql`j."descriptionEn" ILIKE ${q}`);
-      if (col.descriptionId) keywordParts.push(Prisma.sql`j."descriptionId" ILIKE ${q}`);
-      parts.push(Prisma.sql`(${Prisma.join(keywordParts, " OR ")})`);
+    const where = buildJobsListingWhere(input, opts, now);
+
+    // Sequential count → findMany: avoids holding 2 pool connections at once (session poolers
+    // e.g. `pool_size: 15` / EMAXCONNSESSION under parallel page loads).
+    const total = await db.job.count({ where });
+    const rows = await db.job.findMany({
+      where,
+      select: JOB_LIST_SELECT,
+      orderBy: { createdAt: "desc" },
+      take: limit,
+      skip
+    });
+
+    let shortlistedByJob = new Map<string, number>();
+    if (rows.length > 0) {
+      const jobIds = rows.map((r) => r.id);
+      const shortGrouped = await db.bid.groupBy({
+        by: ["jobId"],
+        where: { jobId: { in: jobIds }, status: BidStatus.SHORTLISTED },
+        _count: { id: true }
+      });
+      shortlistedByJob = new Map(shortGrouped.map((g) => [g.jobId, g._count.id]));
     }
 
-    const whereSql = Prisma.join(parts, " AND ");
-
-    const rows = await db.$queryRaw<
-      {
-        id: string;
-        title: string;
-        titleEn: string | null;
-        titleId: string | null;
-        slug: string;
-        description: string;
-        descriptionEn: string | null;
-        descriptionId: string | null;
-        language: string;
-        budgetType: string;
-        budgetMin: { toString(): string } | null;
-        budgetMax: { toString(): string } | null;
-        currency: string;
-        workMode: string;
-        city: string | null;
-        categoryId: string;
-        subcategoryId: string | null;
-        bidDeadline: Date | null;
-        createdAt: Date;
-        isFeatured: boolean;
-        featuredUntil: Date | null;
-      }[]
-    >`
-        SELECT
-          j."id",
-          j."title",
-          ${col.titleEn ? Prisma.sql`j."titleEn"` : Prisma.sql`NULL::text`} AS "titleEn",
-          ${col.titleId ? Prisma.sql`j."titleId"` : Prisma.sql`NULL::text`} AS "titleId",
-          j."slug",
-          j."description",
-          ${col.descriptionEn ? Prisma.sql`j."descriptionEn"` : Prisma.sql`NULL::text`} AS "descriptionEn",
-          ${col.descriptionId ? Prisma.sql`j."descriptionId"` : Prisma.sql`NULL::text`} AS "descriptionId",
-          ${col.language ? Prisma.sql`j."language"` : Prisma.sql`'en'::text`} AS "language",
-          j."budgetType"::text AS "budgetType",
-          j."budgetMin",
-          j."budgetMax",
-          j."currency",
-          j."workMode"::text AS "workMode",
-          j."city",
-          j."categoryId",
-          j."subcategoryId",
-          j."bidDeadline",
-          j."createdAt",
-          j."isFeatured",
-          j."featuredUntil"
-        FROM "Job" j
-        WHERE ${whereSql}
-        ORDER BY
-          -- Expired featured (until <= now) sort as 0; mirrors isJobFeaturedActiveAt()
-          (
-            CASE
-              WHEN j."isFeatured" = true
-                AND (j."featuredUntil" IS NULL OR j."featuredUntil" > ${now})
-              THEN 1
-              ELSE 0
-            END
-          ) DESC,
-          j."createdAt" DESC
-        LIMIT ${limit} OFFSET ${skip}
-      `;
-    const countRows = await db.$queryRaw<{ count: bigint }[]>`
-      SELECT COUNT(*)::bigint AS count
-      FROM "Job" j
-      WHERE ${whereSql}
-    `;
-
-    const total = Number(countRows[0]?.count ?? 0n);
     return {
-      items: rows.map((r) => mapJob(r, now, opts.locale)),
+      items: rows.map((r) => mapJob(r, now, opts.locale, shortlistedByJob.get(r.id) ?? 0)),
       total
     };
   }
@@ -390,117 +440,107 @@ export class SearchService {
     const skip = offsetFromPage({ page, limit });
     const now = new Date();
 
-    const parts: Prisma.Sql[] = [Prisma.sql`fp."deletedAt" IS NULL`];
-    if (input.workMode) {
-      parts.push(Prisma.sql`fp."workMode" = ${input.workMode}::"WorkMode"`);
-    }
-    if (input.city?.trim()) {
-      const c = input.city.trim();
-      parts.push(Prisma.sql`fp."city" ILIKE ${"%" + c + "%"}`);
-    }
-    if (input.categoryId) {
-      parts.push(Prisma.sql`
-        EXISTS (
-          SELECT 1 FROM "FreelancerSkill" fs
-          INNER JOIN "Skill" s ON s."id" = fs."skillId"
-          WHERE fs."freelancerProfileId" = fp."id"
-            AND s."categoryId" = ${input.categoryId}
-            AND s."isActive" = true
-        )
-      `);
-    }
-    if (input.skillId) {
-      parts.push(Prisma.sql`
-        EXISTS (
-          SELECT 1 FROM "FreelancerSkill" fs
-          WHERE fs."freelancerProfileId" = fp."id"
-            AND fs."skillId" = ${input.skillId}
-        )
-      `);
-    }
-    if (input.keyword?.trim()) {
-      const q = `%${input.keyword.trim()}%`;
-      parts.push(
-        Prisma.sql`(fp."username" ILIKE ${q} OR fp."fullName" ILIKE ${q} OR fp."headline" ILIKE ${q} OR fp."bio" ILIKE ${q})`
-      );
-    }
+    const fw = buildFreelancerListingWhereFragments(input);
+    const fpSyntheticHide = publicSyntheticListingsHidden()
+      ? Prisma.sql`
+          AND NOT (
+            fp."username" ILIKE 'pw_%'
+            OR fp."username" ILIKE 'e2e_%'
+            OR fp."fullName" ILIKE '%playwright%'
+            OR COALESCE(fp."headline", '') ILIKE '%playwright%'
+          )
+        `
+      : SQL_NOOP_FP_WHERE;
 
-    const whereSql = Prisma.join(parts, " AND ");
+    const listSql = db.$queryRaw<
+      {
+        id: string;
+        userId: string;
+        username: string;
+        fullName: string;
+        headline: string | null;
+        primaryCategoryName: string | null;
+        workMode: string;
+        city: string | null;
+        country: string | null;
+        lat: { toString(): string } | null;
+        lng: { toString(): string } | null;
+        hourlyRate: { toString(): string } | null;
+        availabilityStatus: string;
+        reviewCount: number | bigint;
+        averageReviewRating: number | { toString(): string } | null;
+        createdAt: Date;
+        isFeatured: boolean;
+        isBoosted: boolean;
+        boostedUntil: Date | null;
+      }[]
+    >`
+      SELECT
+        fp."id",
+        fp."userId",
+        fp."username",
+        fp."fullName",
+        fp."headline",
+        fc."primaryCategoryName",
+        fp."workMode"::text AS "workMode",
+        fp."city",
+        fp."country",
+        fp."lat",
+        fp."lng",
+        fp."hourlyRate",
+        fp."availabilityStatus"::text AS "availabilityStatus",
+        fp."reviewCount",
+        fp."averageReviewRating",
+        fp."createdAt",
+        fp."isFeatured",
+        fp."isBoosted",
+        fp."boostedUntil"
+      FROM "FreelancerProfile" fp
+      LEFT JOIN (
+        SELECT DISTINCT ON (fs_sub."freelancerProfileId")
+          fs_sub."freelancerProfileId",
+          c_sub."name" AS "primaryCategoryName"
+        FROM "FreelancerSkill" fs_sub
+        INNER JOIN "Skill" s_sub ON s_sub."id" = fs_sub."skillId" AND s_sub."isActive" = true
+        INNER JOIN "Category" c_sub ON c_sub."id" = s_sub."categoryId" AND c_sub."isActive" = true
+        ORDER BY fs_sub."freelancerProfileId", c_sub."displayOrder" ASC NULLS LAST, c_sub."slug" ASC
+      ) fc ON fc."freelancerProfileId" = fp."id"
+      WHERE
+        fp."deletedAt" IS NULL
+        ${fw.wfWorkMode}
+        ${fw.wfCity}
+        ${fw.wfCategory}
+        ${fw.wfSkill}
+        ${fw.wfKeyword}
+        ${fpSyntheticHide}
+      ORDER BY
+        (
+          CASE
+            WHEN fp."isBoosted" = true
+              AND (fp."boostedUntil" IS NULL OR fp."boostedUntil" > ${now})
+            THEN 1
+            ELSE 0
+          END
+        ) DESC,
+        (CASE WHEN fp."isFeatured" = true THEN 1 ELSE 0 END) DESC,
+        fp."createdAt" DESC
+      LIMIT ${limit} OFFSET ${skip}
+    `;
 
-    const [rows, countRows] = await Promise.all([
-      db.$queryRaw<
-        {
-          id: string;
-          userId: string;
-          username: string;
-          fullName: string;
-          headline: string | null;
-          primaryCategoryName: string | null;
-          workMode: string;
-          city: string | null;
-          country: string | null;
-          lat: { toString(): string } | null;
-          lng: { toString(): string } | null;
-          hourlyRate: { toString(): string } | null;
-          availabilityStatus: string;
-          reviewCount: number | bigint;
-          averageReviewRating: number | { toString(): string } | null;
-          createdAt: Date;
-          isFeatured: boolean;
-          isBoosted: boolean;
-          boostedUntil: Date | null;
-        }[]
-      >`
-        SELECT
-          fp."id",
-          fp."userId",
-          fp."username",
-          fp."fullName",
-          fp."headline",
-          (
-            SELECT c."name"
-            FROM "FreelancerSkill" fs
-            INNER JOIN "Skill" s ON s."id" = fs."skillId" AND s."isActive" = true
-            INNER JOIN "Category" c ON c."id" = s."categoryId" AND c."isActive" = true
-            WHERE fs."freelancerProfileId" = fp."id"
-            ORDER BY c."displayOrder" ASC, c."slug" ASC
-            LIMIT 1
-          ) AS "primaryCategoryName",
-          fp."workMode"::text AS "workMode",
-          fp."city",
-          fp."country",
-          fp."lat",
-          fp."lng",
-          fp."hourlyRate",
-          fp."availabilityStatus"::text AS "availabilityStatus",
-          fp."reviewCount",
-          fp."averageReviewRating",
-          fp."createdAt",
-          fp."isFeatured",
-          fp."isBoosted",
-          fp."boostedUntil"
-        FROM "FreelancerProfile" fp
-        WHERE ${whereSql}
-        ORDER BY
-          -- Expired boost sorts as 0; mirrors isFreelancerBoostActiveAt()
-          (
-            CASE
-              WHEN fp."isBoosted" = true
-                AND (fp."boostedUntil" IS NULL OR fp."boostedUntil" > ${now})
-              THEN 1
-              ELSE 0
-            END
-          ) DESC,
-          (CASE WHEN fp."isFeatured" = true THEN 1 ELSE 0 END) DESC,
-          fp."createdAt" DESC
-        LIMIT ${limit} OFFSET ${skip}
-      `,
-      db.$queryRaw<{ count: bigint }[]>`
-        SELECT COUNT(*)::bigint AS count
-        FROM "FreelancerProfile" fp
-        WHERE ${whereSql}
-      `
-    ]);
+    const countSql = db.$queryRaw<{ count: bigint }[]>`
+      SELECT COUNT(*)::bigint AS count
+      FROM "FreelancerProfile" fp
+      WHERE
+        fp."deletedAt" IS NULL
+        ${fw.wfWorkMode}
+        ${fw.wfCity}
+        ${fw.wfCategory}
+        ${fw.wfSkill}
+        ${fw.wfKeyword}
+        ${fpSyntheticHide}
+    `;
+
+    const [countRows, rows] = await Promise.all([countSql, listSql]);
 
     const total = Number(countRows[0]?.count ?? 0n);
     return {

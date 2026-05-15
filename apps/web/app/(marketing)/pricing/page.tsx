@@ -2,9 +2,17 @@ import type { Route } from "next";
 import Link from "next/link";
 import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
+import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
 
 export default async function PricingPage() {
-  const { t } = await getServerTranslator();
+  const { t, locale } = await getServerTranslator();
+  const jobsPath = withPublicLocale(locale, "/jobs");
+  const freelancersPath = withPublicLocale(locale, "/freelancers");
+  const earlyAccessPath = withPublicLocale(locale, "/early-access");
+  const helpPath = withPublicLocale(locale, "/help");
+  const registerPath = withPublicLocale(locale, "/register");
+  const postJobPath = withWorkspaceLocale(locale, "/client/jobs/new");
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 md:px-6 md:py-10">
@@ -28,26 +36,18 @@ export default async function PricingPage() {
           </p>
         </section>
 
-        <section className="nw-surface-soft px-5 py-6 text-sm leading-relaxed text-slate-700 sm:px-6">
-          <h2 className="text-base font-semibold text-indigo-950">{t("marketing.pricing.donationTitle")}</h2>
-          <p className="mt-3">{t("marketing.pricing.donationBody")}</p>
-        </section>
-
         <section className="rounded-xl border border-dashed border-slate-300 bg-white px-5 py-6 text-sm leading-relaxed text-slate-700 sm:px-6">
           <h2 className="text-base font-semibold text-slate-900">{t("marketing.pricing.futureTitle")}</h2>
-          <p className="mt-3">{t("marketing.pricing.futureBody1")}</p>
-          <p className="mt-3">{t("marketing.pricing.futureBody2")}</p>
+          <p className="mt-3">{t("marketing.pricing.futureBody")}</p>
         </section>
       </div>
 
       <section className="nw-surface mt-8 px-6 py-7 sm:px-8">
         <h2 className="text-xl font-semibold text-slate-900">{t("marketing.pricing.ctaTitle")}</h2>
-        <p className="mt-2 max-w-lg text-sm leading-relaxed text-slate-600">
-          {t("marketing.pricing.ctaBody")}
-        </p>
+        <p className="mt-2 max-w-lg text-sm leading-relaxed text-slate-600">{t("marketing.pricing.ctaBody")}</p>
         <div className="mt-5 flex flex-wrap items-center gap-3">
           <AuthAwareCtaLink
-            href={"/client/jobs/new" as Route}
+            href={postJobPath as Route}
             intent="post-job"
             unauthenticatedTo="register"
             registerRoleHint="client"
@@ -56,30 +56,30 @@ export default async function PricingPage() {
             {t("marketing.pricing.ctaPrimary")}
           </AuthAwareCtaLink>
           <Link
-            href="/register"
+            href={registerPath as Route}
             className="inline-flex justify-center rounded-md border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
           >
             {t("marketing.pricing.ctaRegister")}
           </Link>
           <Link
-            href="/jobs"
+            href={jobsPath as Route}
             className="inline-flex justify-center rounded-md border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
           >
             {t("marketing.pricing.ctaJobs")}
           </Link>
           <Link
-            href="/freelancers"
+            href={freelancersPath as Route}
             className="inline-flex justify-center px-1 py-3 text-sm font-semibold text-[#433C93] hover:underline"
           >
             {t("marketing.pricing.ctaFreelancers")}
           </Link>
         </div>
         <p className="mt-5 text-xs text-slate-500">
-          <Link href="/early-access" className="font-medium text-[#433C93] underline-offset-2 hover:underline">
+          <Link href={earlyAccessPath as Route} className="font-medium text-[#433C93] underline-offset-2 hover:underline">
             {t("marketing.pricing.footerEarlyAccess")}
           </Link>
           {" · "}
-          <Link href="/help" className="font-medium text-[#433C93] underline-offset-2 hover:underline">
+          <Link href={helpPath as Route} className="font-medium text-[#433C93] underline-offset-2 hover:underline">
             {t("nav.help")}
           </Link>
         </p>

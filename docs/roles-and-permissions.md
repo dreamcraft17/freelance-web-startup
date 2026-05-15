@@ -1,7 +1,7 @@
 # Roles and Permissions
 
-> **Doc revision:** v1  
-> Last synchronized: 2026-04-18 (post-accept handoff update applied across product and docs).
+> **Doc revision:** v3  
+> Last synchronized: 2026-05-08 (intake UX: participant rules untuk laporan BID/message thread tetap sesuai `ModerationReportService`).
 
 System roles:
 - `ADMIN`
@@ -27,3 +27,4 @@ Policy examples:
 
 - Staff role matrix (`ADMIN`, `SUPPORT_ADMIN`, `MODERATOR`, `FINANCE_ADMIN`) sudah aktif pada workspace `/admin` dengan pembatasan per halaman.
 - Auth-aware UI juga sudah membedakan perilaku public/client/freelancer/staff agar aksi utama sesuai role context.
+- **Moderation & trust (May 2026):** `SUPPORT_ADMIN` dapat mengakses `/admin/reports` (sama seperti `MODERATOR`). `ADMIN`/`SUPPORT_ADMIN` dapat **suspend/reactivate** akun marketplace `CLIENT`/`FREELANCER` dari `/admin/users`. `ADMIN`/`MODERATOR`/`SUPPORT_ADMIN` dapat **menyembunyikan/menampilkan** job publik dari discovery (flag `moderationHiddenAt` pada `Job`). Pada intake publik: **laporan BID** hanya boleh dari klien pemilik job atau freelancer pengirim proposal tersebut; **thread/message** dari peserta thread (atau staf untuk kasus escalation internal).

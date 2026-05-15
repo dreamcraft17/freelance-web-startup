@@ -31,6 +31,11 @@ export type OpenJobListItem = {
   featuredUntil: Date | null;
   /** Matches search ranking: true only while `featuredUntil` is unset or in the future. */
   isFeaturedActive: boolean;
+  clientDisplayName: string;
+  clientVerified: boolean;
+  bidCount: number;
+  shortlistedCount: number;
+  skillNames: string[];
 };
 
 function decShim(n: number | null): { toString(): string } | null {
@@ -55,7 +60,12 @@ function jobSearchItemToOpenListItem(j: JobSearchItem): OpenJobListItem {
     createdAt: j.createdAt,
     isFeatured: j.isFeatured,
     featuredUntil: j.featuredUntil ? new Date(j.featuredUntil) : null,
-    isFeaturedActive: j.isFeaturedActive
+    isFeaturedActive: j.isFeaturedActive,
+    clientDisplayName: j.clientDisplayName,
+    clientVerified: j.clientVerified,
+    bidCount: j.bidCount,
+    shortlistedCount: j.shortlistedCount,
+    skillNames: j.skillNames
   };
 }
 
@@ -88,8 +98,12 @@ export class JobService {
   }
 
   /** Open, public-visibility job with category, subcategory, and client summary for listing/detail UIs. */
-  async getJobByIdForPublic(jobId: string, locale: AppLocale | "source" = "en") {
-    return this.jobRepo.findByIdPublic(jobId, locale);
+  async getJobByIdForPublic(
+    jobId: string,
+    locale: AppLocale | "source" = "en",
+    opts?: { viewerUserId?: string; viewerIsStaff?: boolean }
+  ) {
+    return this.jobRepo.findByIdPublic(jobId, locale, opts);
   }
 
   async listOpenJobs(

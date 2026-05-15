@@ -1,18 +1,17 @@
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 type EmptyStateCardProps = {
   title: string;
   description: string;
+  className?: string;
 };
 
 /** Presentational empty state — no data fetching or domain rules. */
-export function EmptyStateCard({ title, description }: EmptyStateCardProps) {
+export function EmptyStateCard({ title, description, className }: EmptyStateCardProps) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-lg">{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
-      </CardHeader>
-    </Card>
+    <div className={cn("nw-empty-state", className)}>
+      <h3 className="text-base font-semibold leading-snug text-slate-900">{title}</h3>
+      <p className="nw-type-body mt-2">{description}</p>
+    </div>
   );
 }

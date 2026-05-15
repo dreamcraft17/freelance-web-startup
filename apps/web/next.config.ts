@@ -1,4 +1,11 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import type { NextConfig } from "next";
+
+//const workspaceRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+
+const workspaceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)),"../..");
+
 
 // CJS plugin — Prisma monorepo workaround copies query engine into the server bundle output
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -28,6 +35,14 @@ function buildSecurityHeaders(): { key: string; value: string }[] {
 }
 
 const nextConfig: NextConfig = {
+  /** Prefer monorepo lockfile (`pnpm-lock.yaml`) over stray lockfiles higher in the tree during tracing/lint inference. */
+  outputFileTracingRoot: workspaceRoot,
+  /**
+   * `cn()` (`clsx` + `tailwind-merge`) is pulled into many server/client boundaries; bundling them as
+   * webpack vendor chunks can yield intermittent dev errors (`Cannot find module './vendor-chunks/tailwind-merge@…js'`)
+   * after Fast Refresh. Prefer Node resolution for these small libs.
+   */
+  serverExternalPackages: ["clsx", "tailwind-merge"],
   typedRoutes: true,
   poweredByHeader: false,
   async headers() {

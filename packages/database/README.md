@@ -1,7 +1,7 @@
 # @acme/database
 
-> **Doc revision:** v4  
-> Last synchronized: 2026-04-24 (runtime pool exhaustion handling guidance + search compatibility fallback).
+> **Doc revision:** v10  
+> Last synchronized: 2026-05-12 (`DATABASE_URL_TEST` in `env.example.txt`; E2E runner prefers it over `DATABASE_URL`).
 
 PostgreSQL access via **Prisma**: schema, migrations, and generated client.
 
@@ -14,7 +14,24 @@ PostgreSQL access via **Prisma**: schema, migrations, and generated client.
 export DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/freelance_dev"
 ```
 
+- **Automated HTTP E2E (`pnpm test:e2e`):** set **`DATABASE_URL_TEST`** to a throwaway database (see `env.example.txt`). The root runner maps it to `DATABASE_URL` for the Next build + `next start` child process so local shells with a shared dev `DATABASE_URL` are not mutated by tests.
+
 For local setup, copy `env.example.txt` to `.env` in this package (or set `DATABASE_URL` in the monorepo root `.env` when your tooling loads it). Files matching `.env*` are gitignored by the monorepo.
+
+### Session poolers & `EMAXCONNSESSION`
+
+Hosted Postgres often fronts the DB with a **session-mode pooler** (e.g. capped `pool_size` such as **15**). Each Prisma query holds a session while it runs; **`Promise.all` across multiple queries** (or multiple overlapping serverless invocations) can exhaust the pool and yield:
+
+`FATAL: (EMAXCONNSESSION) max clients reached in session mode`
+
+Mitigations used in this repo:
+
+- Prefer **one interactive `$transaction`** when a page needs several reads (see `PublicStatsService.getPulseAndHeroForPublicBrowse`).
+- Prefer **sequential** `count` → `findMany` instead of parallel `Promise.all` on the same route unless you have headroom.
+- **`react` `cache()`** for expensive reads that repeat in the same RSC tree (e.g. nav badge counts used in both a layout and a child page — see `apps/web/lib/server/navigation-badges-cache.ts`).
+- For **serverless**, point Prisma at a pooler URL that matches your deployment model (or add a conservative `connection_limit` query param only when your provider documents it).
+
+The API layer maps pool exhaustion to **`503`** with `DB_POOL_EXHAUSTED` where applicable (`withApiHandler`).
 
 ## Bootstrap (reproducible)
 
@@ -55,17 +72,27 @@ The folder `prisma/migrations/20260412120000_init/` contains the **baseline** SQ
 | `db:migrate:deploy` | `prisma migrate deploy` |
 | `db:studio` | `prisma studio` |
 | `db:push` | `prisma db push` (prototyping only; prefer migrations for shared environments) |
-| `db:seed` | `prisma db seed` — creates/updates a dev **ADMIN** user (see below) |
+| `db:seed` | `prisma db seed` — taxonomy (category / subcategory / skill) + dev **ADMIN** user (see below) |
 
-## Seed admin user (local / internal)
+## Seed (local / internal / E2E)
 
-After migrations apply, from the **monorepo root** with `DATABASE_URL` set:
+After migrations apply, from the **monorepo root**:
 
 ```bash
 pnpm db:seed
 ```
 
-Defaults (override with env):
+`prisma/seed.ts` reads the **monorepo root** `.env` and `.env.local` (later file wins for unset keys only; variables already exported in your shell stay put), then **`DATABASE_URL` must resolve** against the DB your app uses.
+
+Idempotent taxonomy (stable slugs) so `GET /api/categories` always has at least one active category locally:
+
+| Entity | Purpose |
+|--------|---------|
+| Category | Active parent row for job `categoryId` |
+| Subcategory | Linked row for UI flows that drill into a category |
+| Skill | Active skill linked to that category/subcategory |
+
+Admin defaults (override with env — never commit real secrets):
 
 | Variable | Default |
 |----------|---------|

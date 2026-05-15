@@ -2,11 +2,16 @@
 
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { NotificationType } from "@acme/types";
+import { useI18n } from "@/features/i18n/I18nProvider";
 import { fetchWithCsrf } from "@/features/auth/lib/fetch-with-csrf";
 import { DashboardEmptyState } from "@/components/dashboard/DashboardEmptyState";
 import { cn } from "@/lib/utils";
+import type { AppLocale } from "@/lib/i18n/types";
+import type { Translator } from "@/lib/i18n/create-translator";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
+import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
 import {
   AlertCircle,
   Bell,
@@ -31,43 +36,57 @@ export type NotificationListItem = {
   createdAt: string;
 };
 
-function formatWhen(iso: string): string {
+function formatNotificationWhen(iso: string, locale: AppLocale, t: Translator): string {
   const d = new Date(iso);
-  const now = new Date();
-  const diffMs = now.getTime() - d.getTime();
+  const now = Date.now();
+  const diffMs = now - d.getTime();
   const mins = Math.floor(diffMs / 60000);
-  if (mins < 1) return "Just now";
-  if (mins < 60) return `${mins}m ago`;
+  if (mins < 1) return t("notifications.time.justNow");
+  if (mins < 60) return t("notifications.time.minutesAgo", { count: mins });
   const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs}h ago`;
+  if (hrs < 24) return t("notifications.time.hoursAgo", { count: hrs });
   const days = Math.floor(hrs / 24);
-  if (days < 7) return `${days}d ago`;
-  return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", year: "numeric" }).format(d);
+  if (days < 7) return t("notifications.time.daysAgo", { count: days });
+  return new Intl.DateTimeFormat(locale === "id" ? "id-ID" : "en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric"
+  }).format(d);
 }
 
-function linkForNotification(item: NotificationListItem): string | null {
+function linkForNotification(item: NotificationListItem, locale: AppLocale): string | null {
   const p = item.payload;
   if (!p || typeof p !== "object") return null;
   const o = p as Record<string, unknown>;
-  if (typeof o.threadId === "string") return `/messages?thread=${encodeURIComponent(o.threadId)}`;
+  if (typeof o.threadId === "string") {
+    return withWorkspaceLocale(locale, `/messages?thread=${encodeURIComponent(o.threadId)}`);
+  }
   if (typeof o.contractId === "string") return `/api/contracts/${encodeURIComponent(o.contractId)}`;
-  if (typeof o.jobId === "string") return `/jobs/${encodeURIComponent(o.jobId)}`;
+  if (typeof o.jobId === "string") return `${withPublicLocale(locale, "/jobs")}/${encodeURIComponent(o.jobId)}`;
   return null;
 }
 
-function activityLabel(type: string): string {
+function notificationActivityLabel(type: string, t: Translator): string {
   switch (type) {
     case NotificationType.BID_SUBMITTED:
     case NotificationType.BID_SHORTLISTED:
-      return "Proposal received";
+      return t("notifications.activity.bidProposal");
     case NotificationType.BID_ACCEPTED:
-      return "Bid accepted";
+      return t("notifications.activity.bidAccepted");
     case NotificationType.NEW_MESSAGE:
-      return "New message";
+      return t("notifications.activity.newMessage");
     case NotificationType.CONTRACT_STARTED:
-      return "Contract update";
+      return t("notifications.activity.contractUpdate");
+    case NotificationType.REVIEW_RECEIVED:
+      return t("notifications.activity.reviewReceived");
+    case NotificationType.VERIFICATION_UPDATED:
+      return t("notifications.activity.verificationUpdated");
+    case NotificationType.BILLING_UPDATED:
+      return t("notifications.activity.billingUpdated");
+    case NotificationType.ADMIN_MODERATION_EVENT:
+      return t("notifications.activity.adminModeration");
     default:
-      return "Update";
+      return t("notifications.activity.default");
   }
 }
 
@@ -100,6 +119,8 @@ type NotificationsCenterProps = {
   items: NotificationListItem[];
 };
 
+const READ_SECTION_RECENT_MS = 7 * 24 * 60 * 60 * 1000;
+
 type NotificationCategory = "all" | "proposals" | "messages" | "contracts";
 
 function categoryForType(type: string): NotificationCategory {
@@ -116,9 +137,11 @@ function categoryForType(type: string): NotificationCategory {
 }
 
 export function NotificationsCenter({ items }: NotificationsCenterProps) {
+  const { t, locale } = useI18n();
   const router = useRouter();
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [category, setCategory] = useState<NotificationCategory>("all");
+  const [isFiltering, startFilteringTransition] = useTransition();
 
   const counts = useMemo(
     () =>
@@ -149,8 +172,24 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
     return { unread: u, read: r };
   }, [filteredItems]);
 
+  const { recentRead, olderRead } = useMemo(() => {
+    const recent: NotificationListItem[] = [];
+    const older: NotificationListItem[] = [];
+    const now = Date.now();
+    for (const n of read) {
+      const ts = new Date(n.createdAt).getTime();
+      if (!Number.isFinite(ts)) {
+        older.push(n);
+        continue;
+      }
+      if (now - ts <= READ_SECTION_RECENT_MS) recent.push(n);
+      else older.push(n);
+    }
+    return { recentRead: recent, olderRead: older };
+  }, [read]);
+
   async function handleActivate(n: NotificationListItem) {
-    const href = linkForNotification(n);
+    const href = linkForNotification(n, locale);
     setLoadingId(n.id);
     try {
       if (n.readAt == null) {
@@ -170,28 +209,31 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
 
   if (items.length === 0) {
     return (
-      <div className="rounded-2xl border border-slate-200/70 bg-white/80 p-1 shadow-sm ring-1 ring-slate-900/[0.02]">
+      <div className="nw-card-elevated overflow-hidden p-1">
         <DashboardEmptyState
           tone="elevated"
-          kicker="Notifications"
+          kicker={t("nav.notifications")}
           icon={Inbox}
-          title="No updates yet."
-          description="Proposal, message, and hiring activity will appear here."
-          action={{ label: "Open messages", href: "/messages" }}
-          secondaryAction={{ label: "Browse jobs", href: "/jobs" }}
+          title={t("notifications.emptyTitle")}
+          description={t("notifications.emptyDescription")}
+          action={{ label: t("notifications.emptyPrimary"), href: withWorkspaceLocale(locale, "/messages") as Route }}
+          secondaryAction={{
+            label: t("notifications.emptySecondary"),
+            href: withPublicLocale(locale, "/jobs") as Route
+          }}
         />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <section aria-label="Notification categories" className="flex flex-wrap gap-2">
+    <div className="nw-stack-loose">
+      <section aria-label={t("notifications.categoriesAria")} className="flex flex-wrap gap-2">
         {[
-          { id: "all", label: "All" },
-          { id: "proposals", label: "Proposals" },
-          { id: "messages", label: "Messages" },
-          { id: "contracts", label: "Contracts" }
+          { id: "all", label: t("notifications.categoryAll") },
+          { id: "proposals", label: t("notifications.categoryProposals") },
+          { id: "messages", label: t("notifications.categoryMessages") },
+          { id: "contracts", label: t("notifications.categoryContracts") }
         ].map((chip) => {
           const active = category === chip.id;
           const count = counts[chip.id as NotificationCategory];
@@ -199,12 +241,16 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
             <button
               key={chip.id}
               type="button"
-              onClick={() => setCategory(chip.id as NotificationCategory)}
+              onClick={() =>
+                startFilteringTransition(() => {
+                  setCategory(chip.id as NotificationCategory);
+                })
+              }
               className={cn(
-                "rounded-full px-3.5 py-1.5 text-xs font-semibold transition ring-1",
+                "rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors duration-200 ring-1",
                 active
                   ? "bg-[#3525cd] text-white ring-[#3525cd] shadow-sm"
-                  : "bg-white text-slate-600 ring-slate-200/90 hover:bg-slate-50 hover:text-slate-900"
+                  : "nw-chip nw-chip-muted rounded-full normal-case tracking-normal ring-slate-200/90 hover:bg-white"
               )}
             >
               <span>{chip.label}</span>
@@ -217,35 +263,38 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
       </section>
 
       {filteredItems.length === 0 ? (
-        <div className="rounded-2xl border border-slate-200/70 bg-white/80 p-1 shadow-sm ring-1 ring-slate-900/[0.02]">
+        <div className="nw-card-elevated overflow-hidden p-1">
           <DashboardEmptyState
             tone="elevated"
-            kicker="Notifications"
+            kicker={t("nav.notifications")}
             icon={Inbox}
-            title="No notifications in this category yet."
-            description="Choose another category or check back as new activity arrives."
-            action={{ label: "Open messages", href: "/messages" }}
-            secondaryAction={{ label: "Browse jobs", href: "/jobs" }}
+            title={t("notifications.filterEmptyTitle")}
+            description={t("notifications.filterEmptyDescription")}
+            action={{ label: t("notifications.emptyPrimary"), href: withWorkspaceLocale(locale, "/messages") as Route }}
+            secondaryAction={{
+              label: t("notifications.emptySecondary"),
+              href: withPublicLocale(locale, "/jobs") as Route
+            }}
           />
         </div>
       ) : null}
 
-      {filteredItems.length > 0 ? <div className="space-y-10">
+      {filteredItems.length > 0 ? <div className={cn("space-y-8 transition-opacity duration-150", isFiltering && "opacity-75")}>
       {unread.length > 0 ? (
         <section aria-labelledby="notif-unread-heading" className="space-y-3">
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-[#3525cd] shadow-sm shadow-[#3525cd]/30" aria-hidden />
-              <h2 id="notif-unread-heading" className="text-sm font-semibold text-slate-900">
-                Unread
+              <h2 id="notif-unread-heading" className="nw-type-section">
+                {t("notifications.unreadLabel")}
               </h2>
               <span className="rounded-full bg-[#3525cd]/10 px-2 py-0.5 text-xs font-semibold tabular-nums text-[#3525cd] ring-1 ring-[#3525cd]/10">
                 {unread.length}
               </span>
             </div>
-            <p className="mt-1 text-xs text-slate-500">Tap to mark read and jump to the related page when available.</p>
+            <p className="nw-type-meta mt-1 font-medium normal-case tracking-normal">{t("notifications.unreadCaption")}</p>
           </div>
-          <ul className="divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200/75 bg-white shadow-sm ring-1 ring-slate-900/[0.02]">
+          <ul data-testid="notifications-list-unread" className="nw-card divide-y divide-slate-100 overflow-hidden rounded-xl">
             {unread.map((n) => (
               <NotificationRow
                 key={n.id}
@@ -253,40 +302,86 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
                 isUnread
                 busy={loadingId === n.id}
                 onActivate={() => handleActivate(n)}
+                locale={locale}
               />
             ))}
           </ul>
         </section>
       ) : null}
 
-      {read.length > 0 ? (
+      {recentRead.length > 0 ? (
         <section aria-labelledby="notif-read-heading" className="space-y-3">
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-slate-300" aria-hidden />
-              <h2 id="notif-read-heading" className="text-sm font-semibold text-slate-600">
-                Read
+              <h2 id="notif-read-heading" className="nw-type-section text-slate-600">
+                {t("notifications.readRecentLabel")}
               </h2>
               <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium tabular-nums text-slate-500 ring-1 ring-slate-200/80">
-                {read.length}
+                {recentRead.length}
               </span>
             </div>
-            <p className="mt-1 text-xs text-slate-500">Opened or cleared—still available for reference.</p>
+            <p className="nw-type-meta mt-1 font-medium normal-case tracking-normal">{t("notifications.readRecentCaption")}</p>
           </div>
-          <ul className="divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200/50 bg-slate-50/70 shadow-sm ring-1 ring-slate-900/[0.02]">
-            {read.map((n) => (
+          <ul data-testid="notifications-list-recent" className="nw-card divide-y divide-slate-100 overflow-hidden rounded-xl bg-slate-50/60">
+            {recentRead.map((n) => (
               <NotificationRow
                 key={n.id}
                 item={n}
                 isUnread={false}
                 busy={loadingId === n.id}
                 onActivate={() => handleActivate(n)}
+                locale={locale}
+              />
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      {olderRead.length > 0 ? (
+        <section aria-labelledby="notif-read-older-heading" className="space-y-3">
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-slate-200" aria-hidden />
+              <h2 id="notif-read-older-heading" className="nw-type-section text-slate-500">
+                {t("notifications.readOlderLabel")}
+              </h2>
+              <span className="rounded-full bg-slate-100/90 px-2 py-0.5 text-xs font-medium tabular-nums text-slate-400 ring-1 ring-slate-200/70">
+                {olderRead.length}
+              </span>
+            </div>
+            <p className="nw-type-meta mt-1 font-medium normal-case tracking-normal text-slate-500">
+              {t("notifications.readOlderCaption")}
+            </p>
+          </div>
+          <ul data-testid="notifications-list-older" className="nw-card divide-y divide-slate-100 overflow-hidden rounded-xl bg-slate-50/40">
+            {olderRead.map((n) => (
+              <NotificationRow
+                key={n.id}
+                item={n}
+                isUnread={false}
+                busy={loadingId === n.id}
+                onActivate={() => handleActivate(n)}
+                locale={locale}
               />
             ))}
           </ul>
         </section>
       ) : null}
       </div> : null}
+      {isFiltering ? (
+        <div className="nw-card overflow-hidden rounded-xl border-slate-200/80">
+          {Array.from({ length: 3 }).map((_, idx) => (
+            <div key={`notif-filter-skeleton-${idx}`} className="flex gap-2.5 border-b border-slate-100 px-3.5 py-3 last:border-b-0">
+              <div className="nw-skeleton h-10 w-10 rounded-xl" />
+              <div className="min-w-0 flex-1">
+                <div className="nw-skeleton h-3.5 w-2/3" />
+                <div className="nw-skeleton-soft mt-1.5 h-3 w-full" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -295,14 +390,17 @@ function NotificationRow({
   item,
   isUnread,
   busy,
-  onActivate
+  onActivate,
+  locale
 }: {
   item: NotificationListItem;
   isUnread: boolean;
   busy: boolean;
   onActivate: () => void;
+  locale: AppLocale;
 }) {
-  const href = linkForNotification(item);
+  const { t } = useI18n();
+  const href = linkForNotification(item, locale);
 
   return (
     <li>
@@ -311,7 +409,7 @@ function NotificationRow({
         onClick={onActivate}
         disabled={busy}
         className={cn(
-          "flex w-full gap-3 px-4 py-3.5 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/30 focus-visible:ring-offset-2 md:gap-4 md:px-5 md:py-4",
+          "flex w-full gap-2.5 px-3.5 py-3 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/30 focus-visible:ring-offset-2 md:gap-3 md:px-4 md:py-3",
           isUnread
             ? "border-l-[3px] border-l-[#3525cd] bg-[#3525cd]/[0.035] hover:bg-[#3525cd]/[0.06]"
             : "border-l-[3px] border-l-transparent bg-transparent hover:bg-slate-100/60"
@@ -329,7 +427,7 @@ function NotificationRow({
           <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1">
             <p
               className={cn(
-                "text-sm leading-snug",
+                "text-[13px] leading-snug",
                 isUnread ? "font-semibold text-slate-900" : "font-medium text-slate-600"
               )}
             >
@@ -337,17 +435,17 @@ function NotificationRow({
             </p>
             <time
               className={cn(
-                "shrink-0 text-[11px] tabular-nums",
+                "shrink-0 text-[10px] tabular-nums",
                 isUnread ? "font-medium text-slate-500" : "text-slate-400"
               )}
               dateTime={item.createdAt}
             >
-              {formatWhen(item.createdAt)}
+              {formatNotificationWhen(item.createdAt, locale, t)}
             </time>
           </div>
           <p
             className={cn(
-              "mt-1 text-sm leading-relaxed",
+              "mt-0.5 text-[13px] leading-snug",
               isUnread ? "text-slate-600" : "text-slate-500"
             )}
           >
@@ -356,15 +454,13 @@ function NotificationRow({
           <div className="mt-2 flex flex-wrap items-center gap-2">
             <span
               className={cn(
-                "rounded-md px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ring-1",
-                isUnread
-                  ? "bg-white text-slate-700 ring-slate-200/90"
-                  : "bg-slate-100 text-slate-600 ring-slate-200/70"
+                "nw-chip px-1.5 py-0.5 text-[10px] normal-case tracking-normal ring-1",
+                isUnread ? "nw-chip-muted ring-slate-200/90" : "bg-slate-100 text-slate-600 ring-slate-200/70"
               )}
             >
-              {activityLabel(item.type)}
+              {notificationActivityLabel(item.type, t)}
             </span>
-            {href ? <p className="text-xs font-semibold text-[#3525cd]">Open related page →</p> : null}
+            {href ? <p className="nw-link-action text-xs font-semibold">{t("notifications.openRelated")}</p> : null}
           </div>
         </div>
       </button>

@@ -1,9 +1,12 @@
 "use client";
 
+import type { Route } from "next";
 import Link from "next/link";
 import { BadgeCheck, MapPin, Star } from "lucide-react";
 import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
 import { useI18n } from "@/features/i18n/I18nProvider";
+import { defaultFreelancerRateCurrency, formatMoneyAmount } from "@/lib/format-money";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 
 export type PublicFreelancerCard = {
   id: string;
@@ -53,7 +56,8 @@ type FreelancersBrowseListProps = {
 };
 
 export function FreelancersBrowseList({ freelancers, activeCityFilter }: FreelancersBrowseListProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const flBase = withPublicLocale(locale, "/freelancers");
 
   const workModeLabel = (wm: string): string => {
     if (wm === "REMOTE") return t("public.filters.workModeRemote");
@@ -64,15 +68,10 @@ export function FreelancersBrowseList({ freelancers, activeCityFilter }: Freelan
 
   const rateLabel = (f: PublicFreelancerCard): string => {
     if (f.hourlyRate == null || !Number.isFinite(f.hourlyRate)) return t("public.freelancers.rateOnRequest");
-    try {
-      return t("public.freelancers.ratePerHour", {
-        amount: new Intl.NumberFormat(undefined, { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(
-          f.hourlyRate
-        )
-      });
-    } catch {
-      return t("public.freelancers.ratePerHour", { amount: String(f.hourlyRate) });
-    }
+    const cur = defaultFreelancerRateCurrency();
+    return t("public.freelancers.ratePerHour", {
+      amount: formatMoneyAmount(f.hourlyRate, cur, { locale, maximumFractionDigits: 0 })
+    });
   };
 
   const ratingLine = (f: PublicFreelancerCard): string | null => {
@@ -264,7 +263,10 @@ export function FreelancersBrowseList({ freelancers, activeCityFilter }: Freelan
                     >
                       {t("public.freelancers.primaryActionChat")}
                     </AuthAwareCtaLink>
-                    <Link href={`/freelancers/${encodeURIComponent(f.username)}`} className="inline-flex min-w-[9rem] items-center justify-center rounded-md border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">
+                    <Link
+                      href={`${flBase}/${encodeURIComponent(f.username)}` as Route}
+                      className="inline-flex min-w-[9rem] items-center justify-center rounded-md border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                    >
                       {t("public.freelancers.primaryActionViewProfile")}
                     </Link>
                   </div>

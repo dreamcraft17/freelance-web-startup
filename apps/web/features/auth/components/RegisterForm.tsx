@@ -7,6 +7,7 @@ import { Suspense, useCallback, useEffect, useId, useMemo, useState } from "reac
 import { Briefcase, Eye, EyeOff, UserRound } from "lucide-react";
 import type { UserRole } from "@acme/types";
 import { resolvePostLoginRedirect, sanitizeReturnUrl } from "@src/lib/return-url";
+import { stripLeadingLocaleFromWorkspacePath } from "@/lib/i18n/workspace-path";
 import { parseAuthIntent, registerIntentMessageKey, roleHintFromIntent, type AuthIntent } from "@/features/auth/lib/auth-intent";
 import { useI18n } from "@/features/i18n/I18nProvider";
 import { clearPasswordFieldsInForm } from "@/features/auth/lib/clear-form-password-fields";
@@ -33,8 +34,13 @@ type RegisterFormInnerProps = {
   initialIntent?: AuthIntent;
 };
 
+function pathOnly(raw: string): string {
+  const q = raw.indexOf("?");
+  return q === -1 ? raw : raw.slice(0, q);
+}
+
 function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "continue" }: RegisterFormInnerProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const searchParams = useSearchParams();
   const id = useId();
   const nameId = `${id}-name`;
@@ -70,11 +76,12 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
   const returnDestinationLabel = useMemo(() => {
     if (!nextDest) return null;
     const safe = sanitizeReturnUrl(nextDest, "/");
-    if (safe.startsWith("/freelancer/profile")) return t("auth.registerForm.returnDestinationProfile");
-    if (safe.startsWith("/messages")) return t("auth.registerForm.returnDestinationMessages");
-    if (safe.startsWith("/notifications")) return t("auth.registerForm.returnDestinationNotifications");
-    if (safe.startsWith("/settings")) return t("auth.registerForm.returnDestinationSettings");
-    if (safe.startsWith("/client") || safe.startsWith("/freelancer")) return t("auth.registerForm.returnDestinationDashboard");
+    const p = stripLeadingLocaleFromWorkspacePath(pathOnly(safe));
+    if (p.startsWith("/freelancer/profile")) return t("auth.registerForm.returnDestinationProfile");
+    if (p.startsWith("/messages")) return t("auth.registerForm.returnDestinationMessages");
+    if (p.startsWith("/notifications")) return t("auth.registerForm.returnDestinationNotifications");
+    if (p.startsWith("/settings")) return t("auth.registerForm.returnDestinationSettings");
+    if (p.startsWith("/client") || p.startsWith("/freelancer")) return t("auth.registerForm.returnDestinationDashboard");
     return t("auth.registerForm.returnDestinationGeneric");
   }, [nextDest, t]);
 
@@ -134,7 +141,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
 
         const rawNext = searchParams.get("next");
         form.reset();
-        window.location.assign(resolvePostLoginRedirect(body.data.session.role, rawNext));
+        window.location.assign(resolvePostLoginRedirect(body.data.session.role, rawNext, locale));
       } catch (err) {
         const msg = err instanceof Error && err.message ? err.message : t("auth.registerForm.errorRequestFailed");
         setError(
@@ -146,7 +153,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
         setLoading(false);
       }
     },
-    [loading, role, searchParams, t]
+    [loading, locale, role, searchParams, t]
   );
 
   const signUpContext =
@@ -201,6 +208,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
         {error ? (
           <p
             role="alert"
+            data-testid="register-error"
             className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800"
           >
             {error}
@@ -213,6 +221,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
           </label>
           <input
             id={nameId}
+            data-testid="register-full-name"
             name="fullName"
             type="text"
             autoComplete="name"
@@ -231,6 +240,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
           </label>
           <input
             id={emailId}
+            data-testid="register-email"
             name="email"
             type="email"
             autoComplete="email"
@@ -259,6 +269,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
               <span className="flex shrink-0 items-start pt-0.5">
                 <input
                   type="radio"
+                  data-testid="register-role-freelancer"
                   name="role"
                   value="FREELANCER"
                   checked={role === "FREELANCER"}
@@ -294,6 +305,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
               <span className="flex shrink-0 items-start pt-0.5">
                 <input
                   type="radio"
+                  data-testid="register-role-client"
                   name="role"
                   value="CLIENT"
                   checked={role === "CLIENT"}
@@ -339,6 +351,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
           <div className="relative">
             <input
               id={passwordId}
+                data-testid="register-password"
               name="password"
               type={showPassword ? "text" : "password"}
               autoComplete="new-password"
@@ -369,6 +382,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
           <div className="relative">
             <input
               id={confirmId}
+                data-testid="register-confirm-password"
               name="confirmPassword"
               type={showConfirm ? "text" : "password"}
               autoComplete="new-password"
@@ -393,6 +407,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
 
         <button
           type="submit"
+          data-testid="register-submit"
           disabled={loading}
           className="flex w-full items-center justify-center rounded-lg bg-[#3525cd] px-4 py-3 text-sm font-semibold text-white shadow-md transition-colors hover:bg-[#4f46e5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3525cd] disabled:pointer-events-none disabled:opacity-60"
         >

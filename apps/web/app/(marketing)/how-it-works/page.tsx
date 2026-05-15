@@ -1,8 +1,14 @@
+import type { Route } from "next";
 import Link from "next/link";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 
 export default async function HowItWorksPage() {
-  const { t } = await getServerTranslator();
+  const { t, locale } = await getServerTranslator();
+  const jobsPath = withPublicLocale(locale, "/jobs");
+  const freelancersPath = withPublicLocale(locale, "/freelancers");
+  const earlyAccessPath = withPublicLocale(locale, "/early-access");
+  const helpPath = withPublicLocale(locale, "/help");
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 md:px-6 md:py-10">
@@ -60,7 +66,7 @@ export default async function HowItWorksPage() {
           <h2 className="text-base font-semibold text-slate-900">{t("marketing.how.earlyAccessTitle")}</h2>
           <p className="mt-3">{t("marketing.how.earlyAccessBody")}</p>
           <p className="mt-3">
-            <Link href="/early-access" className="font-semibold text-[#3525cd] hover:underline">
+            <Link href={earlyAccessPath as Route} className="font-semibold text-[#3525cd] hover:underline">
               {t("marketing.how.earlyAccessLink")}
             </Link>
           </p>
@@ -80,13 +86,13 @@ export default async function HowItWorksPage() {
             {t("marketing.how.ctaPrimary")}
           </Link>
           <Link
-            href="/jobs"
+            href={jobsPath as Route}
             className="inline-flex justify-center rounded-md border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
           >
             {t("marketing.how.ctaJobs")}
           </Link>
           <Link
-            href="/freelancers"
+            href={freelancersPath as Route}
             className="inline-flex justify-center px-1 py-3 text-sm font-semibold text-[#433C93] hover:underline"
           >
             {t("marketing.how.ctaFreelancers")}
@@ -94,7 +100,7 @@ export default async function HowItWorksPage() {
         </div>
         <p className="mt-5 text-xs text-slate-500">
           {t("marketing.how.footerPrefix")}{" "}
-          <Link href="/help" className="font-medium text-[#433C93] underline-offset-2 hover:underline">
+          <Link href={helpPath as Route} className="font-medium text-[#433C93] underline-offset-2 hover:underline">
             {t("nav.help")}
           </Link>
         </p>

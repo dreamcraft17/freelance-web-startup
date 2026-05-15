@@ -3,6 +3,8 @@ import { AdminEmptyState, AdminPageIntro } from "@/features/admin/components/Adm
 import { AdminDonationsFilters } from "@/features/admin/components/donations/AdminDonationsFilters";
 import { AdminDonationsTable } from "@/features/admin/components/donations/AdminDonationsTable";
 import { requireAdminAccess } from "@/features/admin/lib/server-auth";
+import { formatMoneyAmount } from "@/lib/format-money";
+import { getServerTranslator } from "@/lib/i18n/server-translator";
 
 type SearchParams = { provider?: string; currency?: string; q?: string };
 
@@ -11,18 +13,9 @@ const PAGE_LIMIT = 120;
 /** Schema has no payment lifecycle; rows represent captured ledger entries. */
 const DISPLAY_STATUS = "Recorded";
 
-function formatMoney(amount: unknown, currency: string): string {
-  const n = typeof amount === "number" ? amount : Number(amount);
-  if (Number.isNaN(n)) return "—";
-  try {
-    return new Intl.NumberFormat(undefined, { style: "currency", currency }).format(n);
-  } catch {
-    return `${currency} ${n.toFixed(2)}`;
-  }
-}
-
 export default async function AdminDonationsPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   await requireAdminAccess("donations");
+  const { locale } = await getServerTranslator();
   const sp = await searchParams;
   const q = sp.q?.trim() || undefined;
   const provider = sp.provider?.trim() || undefined;
@@ -71,7 +64,7 @@ export default async function AdminDonationsPage({ searchParams }: { searchParam
 
   const rows = donations.map((d) => ({
     id: d.id,
-    amountLabel: formatMoney(d.amount, d.currency ?? "USD"),
+    amountLabel: formatMoneyAmount(d.amount, d.currency ?? "USD", { locale }),
     methodLabel: d.provider,
     statusLabel: DISPLAY_STATUS,
     userLabel: d.user?.email ?? "Anonymous",

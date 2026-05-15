@@ -2,6 +2,9 @@ import Link from "next/link";
 import type { Route } from "next";
 import { MapPin, Navigation, Radar } from "lucide-react";
 import { DashboardEmptyState } from "@/components/dashboard/DashboardEmptyState";
+import type { AppLocale } from "@/lib/i18n/types";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
+import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
 import { cn } from "@/lib/utils";
 
 export type NearbyJobDisplay = {
@@ -15,6 +18,7 @@ export type NearbyJobDisplay = {
 export type FreelancerNearbyDiscovery = "geo" | "city" | "none";
 
 type FreelancerNearbyViewProps = {
+  locale: AppLocale;
   discovery: FreelancerNearbyDiscovery;
   hasProfile: boolean;
   /** Human-readable area, e.g. "Berlin, DE" */
@@ -45,6 +49,7 @@ function workModeLabel(mode: string): string {
 }
 
 export function FreelancerNearbyView({
+  locale,
   discovery,
   hasProfile,
   areaLabel,
@@ -53,6 +58,9 @@ export function FreelancerNearbyView({
   searchDefaults,
   jobs
 }: FreelancerNearbyViewProps) {
+  const jobsBrowseRoot = withPublicLocale(locale, "/jobs");
+  const wp = (path: string) => withWorkspaceLocale(locale, path) as Route;
+
   if (!hasProfile) {
     return (
       <DashboardEmptyState
@@ -61,8 +69,8 @@ export function FreelancerNearbyView({
         icon={MapPin}
         title="Add a freelancer profile to use Nearby"
         description="Nearby uses your saved city or map pin to surface open roles. Set your location on your profile, then return here for a focused local feed."
-        action={{ label: "Go to profile", href: "/freelancer/profile" }}
-        secondaryAction={{ label: "Browse all jobs", href: "/jobs" }}
+        action={{ label: "Go to profile", href: wp("/freelancer/profile") }}
+        secondaryAction={{ label: "Browse all jobs", href: jobsBrowseRoot as Route }}
       />
     );
   }
@@ -75,8 +83,8 @@ export function FreelancerNearbyView({
         icon={Radar}
         title="We need a place to anchor Nearby"
         description="Add a city or set your map coordinates on your profile. NearWork will match open jobs in that area—or within a radius when a pin is saved."
-        action={{ label: "Update profile location", href: "/freelancer/profile" }}
-        secondaryAction={{ label: "Browse all jobs", href: "/jobs" }}
+        action={{ label: "Update profile location", href: wp("/freelancer/profile") }}
+        secondaryAction={{ label: "Browse all jobs", href: jobsBrowseRoot as Route }}
       />
     );
   }
@@ -118,7 +126,7 @@ export function FreelancerNearbyView({
 
       <form
         method="get"
-        action="/freelancer/nearby"
+        action={wp("/freelancer/nearby")}
         className="flex flex-col gap-3 rounded-xl border border-slate-200/90 bg-white p-4 shadow-sm md:flex-row md:flex-wrap md:items-end"
       >
         <div className="min-w-0 flex-1 space-y-1.5">
@@ -181,7 +189,7 @@ export function FreelancerNearbyView({
             Apply
           </button>
           <Link
-            href={"/freelancer/nearby" as Route}
+            href={wp("/freelancer/nearby")}
             className="inline-flex h-9 items-center justify-center rounded-md border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 hover:bg-slate-50"
           >
             Reset
@@ -196,8 +204,8 @@ export function FreelancerNearbyView({
           icon={Radar}
           title="Nothing nearby with these filters"
           description="Try widening the radius, clearing work mode, or searching a shorter keyword. New roles appear on the board as clients publish them."
-          action={{ label: "Browse all jobs", href: "/jobs" }}
-          secondaryAction={{ label: "Clear filters", href: "/freelancer/nearby" }}
+          action={{ label: "Browse all jobs", href: jobsBrowseRoot as Route }}
+          secondaryAction={{ label: "Clear filters", href: wp("/freelancer/nearby") }}
         />
       ) : (
         <ul className="space-y-3">
@@ -206,7 +214,7 @@ export function FreelancerNearbyView({
             return (
               <li key={job.id}>
                 <Link
-                  href={`/jobs/${job.id}` as Route}
+                  href={`${jobsBrowseRoot}/${job.id}` as Route}
                   className={cn(
                     "block rounded-xl border border-slate-200/90 bg-white p-4 shadow-sm transition hover:border-[#3525cd]/25 hover:shadow-md md:p-5",
                     job.distanceKm != null && job.distanceKm <= 15

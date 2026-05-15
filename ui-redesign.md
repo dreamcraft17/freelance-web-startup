@@ -1,13 +1,136 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v76  
-> Last synchronized: 2026-05-01 (homepage reference matching refined with denser hero controls and full-width footer information architecture).
+> **Doc revision:** v96  
+> Last synchronized: 2026-05-11 (loading/skeleton convergence: shared `nw-skeleton*`, route `loading.tsx` for key surfaces, calmer pending states in messages/notifications/filters).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-09 — Convergence pass 2 (detail pages + onboarding + admin)
+
+- **Public job detail (`/jobs/[jobId]`):** hero/trust/brief/related/sidebar memakai ritme `nw-type-*` + padding lebih rapat; chip status/signal/skill digeser ke pola `nw-chip*`; CTA sticky proposal dipertahankan.
+- **Public freelancer profile (`/freelancers/[username]`):** hero, service/review/portfolio sections, final CTA, dan trust sidebar menyamakan tipografi editorial; badges availability/work-mode/reasons lebih konsisten.
+- **Onboarding surfaces:** `ActivationChecklistCard`, `FreelancerProposalPlaybook`, `MarketplaceLiquidityHints` memakai `nw-card*`, skala teks lebih terstruktur, dan spacing lebih efisien tanpa mengubah milestone logic.
+- **Admin light pass:** `AdminUi` dan pill status di tabel jobs/reports/users/verification dipadatkan dengan gaya chip konsisten untuk scanability operasional.
+
+### 2026-05-11 — Perceived performance pass (loading & transitions)
+
+- **Design-system loading primitives:** `globals.css` menambah `nw-skeleton`, `nw-skeleton-soft`, `nw-skeleton-chip`, `nw-skeleton-row`, `nw-skeleton-card`; `LoadingSkeleton` helper dipakai untuk menjaga hierarki placeholder tetap seragam dengan ritme `nw-card`/`nw-type`.
+- **Route loading coverage:** ditambah `loading.tsx` pada surface inti (`/jobs`, `/jobs/[jobId]`, `/freelancers`, `/freelancers/[username]`, dashboard client/freelancer, messages, notifications, settings, freelancer profile/proposals, admin jobs/users/verification/reports) agar transisi tidak blank.
+- **Interactive pending polish:** `FreelancersPublicFilters` memakai `useTransition` untuk nearby actions (apply/clear/use location), `NotificationsCenter` menampilkan placeholder saat pindah kategori, `MessagesWorkspace` memberi feedback composer/list saat kirim pesan.
+
+### 2026-05-09 — Editorial typography & marketplace density
+
+- **`globals.css`:** hierarki tipografi lebih bertingkat dan kurang “template Tailwind” (`nw-type-display` → `nw-type-micro`), ritme vertikal sedikit lebih rapat (`nw-page-stack`, `nw-stack*`), chip/badge lebih padat (`nw-chip`, `nw-chip-quiet`, `nw-link-action`), panel marketplace (`nw-hero-panel`, `nw-discovery-panel`, `nw-results-toolbar`) dan `nw-empty-state` lebih hemat ruang.
+- **`tailwind.config.ts`:** `nw-lead` / `nw-body` / `nw-caption` mengikuti skala editorial baru.
+- **Komponen:** `LandingHero` (headline/hierarchy + pulse strip), `ClientDashboard` pulse (`nw-chip-quiet` untuk stat narasi), `FreelancerDashboard`/`FreelancerDashboardHero` spacing & judul, `JobsPublicList` judul/meta budget, `DashboardStatCard`, `DashboardEmptyState`, `MessagesWorkspace`, `NotificationsCenter`, header `/messages` & `/settings`.
+
+### 2026-05-09 — Marketplace pulse & momentum (real aggregates)
+
+- **`PublicStatsService`:** transaksi tunggal melengkapi pulse dengan **momentum** (posting baru 24h, kontrak selesai 7 hari, kategori ramai dari `groupBy` listing publik terbuka); **`getMarketplaceMomentumSnapshot`** untuk landing/dashboard tanpa hero panels.
+- **Landing / `/jobs` / freelancer directory:** strip **`nw-card-trust`** / **`nw-chip-*`** memakai hitungan nyata; kartu jobs menampilkan chip **wawancara** bila ada bid **`SHORTLISTED`** (aggregate per halaman).
+- **Freelancer & client dashboard:** strip denyut marketplace + tautan kategori sibuk (freelancer); aktivitas kosong menyarankan kategori dengan lowongan hidup.
+- **Notifications:** bagian read dipisah **≤7 hari** vs lebih lama untuk ritme pemindaian.
+
+### 2026-05-09 — Freelancer workspace + inbox + notifications (`nw-*`)
+
+- **Freelancer dashboard:** `nw-page-stack`, `nw-card-elevated` / `nw-card-trust`, pulse & quick actions memakai **`nw-chip`** / **`nw-card-inset`**; aktivitas proposal/kontrak memakai **`statusLabel`** / **`workModeLabel`** dari server (reuse `dashboard.client.bidStatus` / `contractStatus` + `public.filters.workMode*`); tanggal memakai locale; **`activityBidEta`** di kamus.
+- **Hero freelancer:** gradien merek pekat tanpa **`backdrop-blur`**; pill trust solid; stat grid border **`border-white/18`**.
+- **Halaman `/freelancer/proposals`:** header terlokalisasi + link `withPublicLocale` / `withWorkspaceLocale`; **`FreelancerProposalsWorkspace`** memakai **`useI18n()`** untuk filter, empty states, baris proposal (**`nw-card`**, **`nw-chip`** status), tanpa string EN keras.
+- **Messages:** shell **`nw-card`** + **`shadow-nw-elevated`**; inbox/context chips **`nw-*`**; **`nw-empty-state`** untuk thread kosong; **`nw-card-trust`** ringkas untuk “next suggested”; composer **`sticky bottom-0`**; format waktu inbox/pesan memakai **`en-US` / `id-ID`**.
+- **Notifications:** kategori + daftar unread/read memakai **`nw-card`** / **`nw-stack-loose`**; tautan sekunder & payload job memakai **`withPublicLocale`**; **`notifications.categoriesAria`**.
+
+### 2026-05-09 — Global design system pass (tokens + primitives + client dashboard)
+
+- **`app/globals.css`:** `--primary` / `--ring` diselaraskan ke indigo NearWork; `--radius` sedikit lebih besar; utilitas baru **`nw-card`**, **`nw-card-elevated`**, **`nw-card-trust`**, **`nw-card-inset`**, **`nw-type-*`**, **`nw-stack*`**, **`nw-chip` / `nw-chip-brand` / `nw-chip-muted`**, **`nw-chip-quiet`**, **`nw-cta-secondary`**, **`nw-link-action`**, **`nw-app-header`**; `nw-surface` + `nw-empty-state` disempurnakan.
+- **`tailwind.config.ts`:** `fontSize` (`nw-lead`, `nw-body`, `nw-caption`), `boxShadow` (`nw-card`, `nw-card-hover`, `nw-elevated`), `transitionDuration.nw`.
+- **Komponen:** `Button` (tinggi default 40px, `rounded-lg`, secondary border); `Card` (`rounded-xl`, `shadow-nw-card`); `EmptyStateCard` memakai rail `nw-empty-state`; `DashboardStatCard` / `DashboardEmptyState` mengikuti kartu/stack baru.
+- **Client dashboard:** hero + panel memakai utilitas NW; quick actions + hero CTA + badge proposal + meta job + status kontrak/bid memakai **kamus** (`dashboard.client.*` termasuk `jobStatus` / `bidStatus` / `contractStatus`); link Settings locale-aware (`withWorkspaceLocale`).
+- **Jobs browse:** filter work mode + trending chips memakai **`nw-chip`** / **`nw-chip-quiet`**.
+- **`DashboardShell`:** header mobile memakai **`nw-app-header`**.
+
+### 2026-05-09 — Public freelancer profile marketplace pass (`/freelancers/[username]`)
+
+- **Layout:** breadcrumb ke direktori publik; grid desktop **konten utama + sidebar sticky** (rating, ulasan, kontrak selesai, member since, update profil relatif, tarif, completeness hint, mode, ketersediaan, lokasi); CTA pesan + simpan profil + kembali.
+- **Hero:** `NW_HERO_WRAP`, avatar URL atau inisial, verifikasi/pending, headline, chip mode + ketersediaan + hire count, lokasi, skill chips, **Great fit for** (heuristik nyata seperti sebelumnya), CTA primer `AuthAwareCtaLink` ke `withWorkspaceLocale(…, /messages)`.
+- **Konten:** section About / Services / Work preferences / Languages (placeholder jujur—belum ada kolom bahasa di schema) / Portofolio grid atau **owner-only** empty CTA ke `/freelancer/profile` / Reviews premium + konteks job dari relasi review.
+- **Mobile:** strip ringkas rating+tarif di hero; sticky bawah **kontak + save** tanpa blur.
+- **Tombol simpan:** `SaveFreelancerButton` memakai kamus `public.freelancerProfile.saveFreelancerCta*` (EN/ID).
+
+### 2026-05-09 — Public job detail marketplace pass (`/jobs/[jobId]`)
+
+- **Hero:** `NW_HERO_WRAP` + gradient hairline, status/proposal/posted/competition chips, budget indigo besar, mode+lokasi+kategori, skills di fold, sinyal heuristik (tanpa metrik palsu).
+- **Trust panel:** inisial klien, `verificationStatus`, ulasan agregat (`reviewCount` / `averageReviewRating`), `createdAt`/`updatedAt` profil, hitungan kontrak `COMPLETED` per `clientUserId`, jumlah lowongan `OPEN` publik per klien—**tanpa** respons palsu.
+- **Freelancer:** overlap skill dari `FreelancerSkill` vs tag job; sidebar sticky (`nw-proposal-section`) berisi pulse mini + `JobProposalForm` atau `AuthAwareCtaLink` + CTA diskusi ke anchor; footer mobile solid (tanpa `backdrop-blur`).
+- **Klien:** kartu `Card` review proposal tetap; snapshot 3-kolom lama dihapus agar tidak redundan.
+- **Related jobs:** query Prisma kategori sama, judul dilokalisasi seperti board.
+- **Repo:** `findByIdPublic` memperluas `clientProfile` dengan field verifikasi/ulasan/timestamp (tanpa `userId` di payload publik—tetap lewat query `owner` internal untuk form).
+
+### 2026-05-09 — Public jobs listing realism (`JobsPublicList` + mobile filters)
+
+- **Cards:** dense scan row (work mode + category + translation + status badges from real `bidCount` / `createdAt` / featured), client row with initials chip + verified badge, title/description clamp, budget + proposal count + relative post time, skill tags + heuristic “signal” line with honest tooltip keys (`matchForYouHint`, `signalHint`).
+- **CTAs:** primary `AuthAwareCtaLink` with `intent="submit-bid"` (`Kirim proposal` / `Send proposal`); secondary plain `Link` for brief (`Lihat brief` / `View brief`); save affordance unchanged (real `SaveJobButton`).
+- **Mobile sheet:** `JobsMarketplaceMobileFilters` overlay `bg-slate-900/60` (no `backdrop-blur`), taller sheet `rounded-t-2xl`, section headers `font-bold` tracking, list selections use solid **`#3525cd`** active fills, thumb-friendly pill heights for work mode.
+
+### 2026-05-09 — Homepage tanpa glass (anti-template)
+
+- **Solid surfaces:** hero dan section bawah memakai **`bg-slate-50` / `bg-white`** + border `slate-200`; kartu proses **`bg-slate-50`**; tidak ada **`backdrop-blur`** atau **`bg-white/80`** pada landing.
+
+### 2026-05-09 — Homepage marketplace-first hero
+
+- **Process rail:** panel kanan hero (dan blok ringkas di mobile) menampilkan empat langkah alur produk nyata (`post → proposals → chat → hire`) dari kamus `landing.hero.process.*`, bukan kartu freelancer contoh.
+- **Search affordances:** bar pencarian memuat keyword + kota + `categoryId` dari data kategori + `workMode` (REMOTE/HYBRID/ONSITE) selaras dengan direktori publik.
+
+### 2026-05-10 — Workspace URLs mirror marketing locale
+
+- **Canonical bars:** bilah alamat untuk shell klien/freelancer/inbox mengikuti pola `/en/…` atau `/id/…`, selaras dengan halaman pemasaran berbahasa tunggal.
+
+### 2026-05-09 — Locale + currency presentation (marketplace-wide)
+
+- **Principle:** job/bid/contract amounts use **stored ISO currency**; UI locale chooses grouping/symbol conventions (`id-ID` grouping for Indonesian app locale; IDR-specific compact helpers where used).
+- **Implementation:** consolidate on `apps/web/lib/format-money.ts` for cards, dashboards, proposals, admin financial tables, and subscription catalog tiles—avoid raw `Intl.NumberFormat(undefined, …)` in product surfaces.
+- **Profile hourly rates:** no per-profile currency column yet; display defaults to **IDR** until schema extends.
+
+### 2026-05-09 — Public jobs marketplace editorial pass (`/jobs`)
+
+- **Desktop filters** (sticky aside): category / budget / posted / work-mode links aligned to **`rounded-lg`** (same rhythm as search row + mobile filter sheet).
+- **Hero**: neutral editorial shell, activity strip from **pulse** aggregates, category browse chips, **live snapshot** column (featured first job + real proposal/job/freelancer rows from `PublicStatsService`)—no decorative placeholder card.
+- **Search**: compact **h-10** controls, `rounded-lg`, work-mode pills—less “giant AI search” footprint.
+- **Job list**: flatter **`rounded-lg`** cards, **no gradient orb**, tighter padding; **client initials** avatar; budget / proposals / posted time in one scan line; badges **grounded in data** (“Few applicants” only when `bidCount ≤ 2`, “High activity” when `bidCount ≥ 10`).
+- **Mobile**: filter trigger + sheet use **tighter radii/spacing** (`rounded-lg` / `rounded-t-xl`).
+
+### 2026-05-09 — Public jobs marketplace premium pass (`/jobs`)
+
+- Full-width **hero**: soft violet gradient, trust row, abstract “opportunity density” panel (non-data illustrative), elevated **search card** (keyword, location, category, primary CTA), popular chips + **work-mode chips** including “any mode”.
+- **Three-column** layout retained with **floating** filter column (accordion, category/budget/posted/work mode — posted windows are real query params), **mobile filter sheet** (drawer-style, touch-friendly).
+- **Job cards**: NearWork indigo CTAs, bookmark/save (**real** saved state when logged in via server-resolved ids), **verified client** badge from `ClientProfile.verificationStatus`, **exact proposal count** from `_count.bids`, skill chips from `JobSkill`, heuristic “great match” chip with honest tooltip (freshness/budget/featured—not ML).
+- **Marketplace pulse**: recent **open jobs** with per-row `createdAt`, recent **bids** with freelancer name + timestamp; **insights** strip drops fabricated “avg response” in favor of three **live aggregates** (open public jobs, bids 24h, freelancers available) + footnote.
+- i18n: new `public.jobs.*` strings (EN/ID) for hero, pulse, notifications CTA, chips; listing data paths extended in `SearchService`/`JobService` (SSR-friendly; no new client-only data layers).
+
+### 2026-05-09 — Freelancer dashboard “career workspace” pass
+
+- `/freelancer` layout adopts **premium DashboardShell**: frosted floating sidebar (`rounded-3xl`), clearer icon rail navigation, localized **jobs keyword search**, inbox/notification badges (real unread + awaiting reply), and community help card (**no billing checkout** beyond existing early-access copy).
+- Freelancer dashboard view: dark **hero** surface with translucent stat tiles (**proposals submitted, active contracts, review signal, saves**), onboarding **journey** checklist (progress meter + elevated step cards), **proposal playbook + liquidity hints**, workspace pulse ribbons, authentic **7-day pulse** pane, threaded **conversation shortcuts**, skill bars keyed to profile years, and refreshed job sampler.
+
+### 2026-05-09 — Role dashboards liquidity read
+
+- Client `/client`: hero card + expanded **At a glance** grid (five stats: jobs, proposals, discussions awaiting reply, active contracts, completed hires); section chrome + summaries pull from localized copy; hints no longer ship hardcoded English in the loader.
+- Freelancer `/freelancer`: matching premium shell (brand kicker header card, softer panel shadow), fifth stat column for **threads awaiting reply**, localized quota/profile hints, amber **next action** strip with Messages CTA when reply backlog is non-zero, localized activity/open-job empty kickers.
+- Principle unchanged: counts and flags are **live service data only** (`MessageService` thread backlog, quotas, bids, contracts), not invented funnel KPIs.
+
+### 2026-05-08 — Proposal & review trust surfaces
+
+- Detail job (freelancer): panel proposal terstruktur + petunjuk ringan per field; assemble cover letter konsisten dengan heading yang diparse untuk skor kelengkapan.
+- Owner review: kolom/kartu “proposal depth”, bandingkan cepat (harga/hari/profil), CTA diskusi primer, laporan sekunder; empty state proposal memakai blok What/Why/Next.
+- `/messages`: strip konteks hiring (judul + status job + status proposal + langkah disarankan); tone workplace, bukan obrolan sosial; target sentuh checklist aktivasi diperbesar.
+
+### 2026-05-08 — Early-launch onboarding & empty surfaces
+
+- Dasbor client/freelancer: kartu checklist aktivasi + blok petunjuk likuiditas (brief/proposal) dengan EN/ID; empty states utama memakai hierarki produk konsisten dengan `DashboardEmptyState`.
+- `/messages` workspace + `/notifications` center menggunakan string kamus untuk empty, filter kosong, label kategori utas/thread, serta handoff banner dari proposal/job review—tanpa menyentuh billing.
 
 ### 2026-05-01 — Homepage full composition refinement
 

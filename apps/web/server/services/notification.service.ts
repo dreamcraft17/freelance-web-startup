@@ -1,6 +1,10 @@
 import { db } from "@acme/database";
 import type { Prisma } from "@acme/database";
 import { NotificationType } from "@acme/types";
+import { createTranslator } from "@/lib/i18n/create-translator";
+import { getMessagesForLocale } from "@/lib/i18n/dictionaries";
+import { localizedNotificationStrings, notificationPayloadWithCopy } from "@/lib/i18n/notification-copy";
+import type { AppLocale } from "@/lib/i18n/types";
 import type { AuthActor } from "../domain/auth-actor";
 import { NotFoundError } from "../errors/domain-errors";
 
@@ -50,7 +54,13 @@ export class NotificationService {
       type: NotificationType.BID_SUBMITTED,
       title: "New bid on your job",
       body: `${params.freelancerLabel} submitted a bid on “${params.jobTitle}”.`,
-      payload: { jobId: params.jobId, bidId: params.bidId }
+      payload: notificationPayloadWithCopy(
+        { jobId: params.jobId, bidId: params.bidId },
+        {
+          kind: "BID_SUBMITTED",
+          params: { freelancerLabel: params.freelancerLabel, jobTitle: params.jobTitle }
+        }
+      )
     });
   }
 
@@ -66,7 +76,10 @@ export class NotificationService {
       type: NotificationType.BID_ACCEPTED,
       title: "Your bid was accepted",
       body: `Your bid on “${params.jobTitle}” was accepted. A contract has been created.`,
-      payload: { jobId: params.jobId, bidId: params.bidId, contractId: params.contractId }
+      payload: notificationPayloadWithCopy(
+        { jobId: params.jobId, bidId: params.bidId, contractId: params.contractId },
+        { kind: "BID_ACCEPTED", params: { jobTitle: params.jobTitle } }
+      )
     });
   }
 
@@ -81,7 +94,10 @@ export class NotificationService {
       type: NotificationType.NEW_MESSAGE,
       title: "New message",
       body: params.preview,
-      payload: { threadId: params.threadId, messageId: params.messageId }
+      payload: notificationPayloadWithCopy(
+        { threadId: params.threadId, messageId: params.messageId },
+        { kind: "NEW_MESSAGE", params: { preview: params.preview } }
+      )
     });
   }
 
@@ -91,7 +107,7 @@ export class NotificationService {
     });
   }
 
-  async listForActor(actor: AuthActor) {
+  async listForActor(actor: AuthActor, locale: AppLocale) {
     const rows = await db.notification.findMany({
       where: { userId: actor.userId, dismissedAt: null },
       orderBy: { createdAt: "desc" },
@@ -107,16 +123,21 @@ export class NotificationService {
       }
     });
 
+    const t = createTranslator(getMessagesForLocale(locale));
+
     return {
-      items: rows.map((n) => ({
-        id: n.id,
-        type: n.type,
-        title: n.title,
-        body: n.body,
-        payload: n.payload,
-        readAt: n.readAt?.toISOString() ?? null,
-        createdAt: n.createdAt.toISOString()
-      }))
+      items: rows.map((n) => {
+        const strings = localizedNotificationStrings(n.title, n.body, n.payload, t);
+        return {
+          id: n.id,
+          type: n.type,
+          title: strings.title,
+          body: strings.body,
+          payload: n.payload,
+          readAt: n.readAt?.toISOString() ?? null,
+          createdAt: n.createdAt.toISOString()
+        };
+      })
     };
   }
 
@@ -134,12 +155,24 @@ export class NotificationService {
         : `Your ${params.requestType} verification was rejected.${
             params.staffNote?.trim() ? ` ${params.staffNote.trim()}` : ""
           }`;
+    const staffNote = params.staffNote?.trim() ?? "";
+    const copy =
+      params.decision === "APPROVED"
+        ? ({ kind: "VERIFICATION_APPROVED", params: { requestType: params.requestType } } as const)
+        : ({
+            kind: "VERIFICATION_REJECTED",
+            params: { requestType: params.requestType, staffNote }
+          } as const);
+
     await this.createForUser({
       userId: params.subjectUserId,
       type: NotificationType.VERIFICATION_UPDATED,
       title,
       body,
-      payload: { decision: params.decision, type: params.requestType }
+      payload: notificationPayloadWithCopy(
+        { decision: params.decision, type: params.requestType },
+        copy
+      )
     });
   }
 

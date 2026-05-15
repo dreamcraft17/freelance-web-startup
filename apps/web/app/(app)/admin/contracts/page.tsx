@@ -4,22 +4,12 @@ import { AdminEmptyState, AdminPageIntro } from "@/features/admin/components/Adm
 import { AdminContractsFilters } from "@/features/admin/components/contracts/AdminContractsFilters";
 import { AdminContractsTable } from "@/features/admin/components/contracts/AdminContractsTable";
 import { requireAdminAccess } from "@/features/admin/lib/server-auth";
+import { formatMoneyAmount } from "@/lib/format-money";
+import { getServerTranslator } from "@/lib/i18n/server-translator";
 
 type SearchParams = { status?: string; q?: string };
 
 const PAGE_LIMIT = 120;
-
-function formatMoney(amount: unknown | null | undefined, currency: string | null | undefined): string {
-  if (amount == null) return "—";
-  const n = typeof amount === "number" ? amount : Number(amount);
-  if (Number.isNaN(n)) return "—";
-  const cur = currency?.trim() || "USD";
-  try {
-    return new Intl.NumberFormat(undefined, { style: "currency", currency: cur }).format(n);
-  } catch {
-    return `${cur} ${n.toFixed(2)}`;
-  }
-}
 
 function clientLabel(u: {
   email: string;
@@ -43,6 +33,7 @@ function freelancerLabel(u: {
 
 export default async function AdminContractsPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   await requireAdminAccess("contracts");
+  const { locale } = await getServerTranslator();
   const sp = await searchParams;
   const q = sp.q?.trim() || undefined;
   const status = Object.values(ContractStatus).includes(sp.status as ContractStatus)
@@ -95,7 +86,7 @@ export default async function AdminContractsPage({ searchParams }: { searchParam
       freelancerLabel: fl.line,
       freelancerHandle: fl.handle,
       status: c.status,
-      amountLabel: formatMoney(c.amount, c.currency),
+      amountLabel: formatMoneyAmount(c.amount, c.currency ?? "USD", { locale }),
       createdAt: c.createdAt
     };
   });

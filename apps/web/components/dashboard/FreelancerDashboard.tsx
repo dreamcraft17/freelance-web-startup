@@ -2,24 +2,120 @@ import Link from "next/link";
 import type { Route } from "next";
 import {
   ArrowRight,
+  BadgeCheck,
   Briefcase,
   CalendarClock,
-  ClipboardList,
   Compass,
   FileText,
   Inbox,
+  MessageCircle,
   Sparkles,
   Target,
   UserRound,
+  Waves,
   Zap
 } from "lucide-react";
+import type { FreelancerProposalPlaybookSection } from "@/components/onboarding/FreelancerProposalPlaybook";
+import { FreelancerProposalPlaybook } from "@/components/onboarding/FreelancerProposalPlaybook";
+import { ActivationChecklistCard, type ActivationChecklistStepVm } from "@/components/onboarding/ActivationChecklistCard";
+import { formatMoneyAmount } from "@/lib/format-money";
+import type { AppLocale } from "@/lib/i18n/types";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
+import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
 import { cn } from "@/lib/utils";
+import { jobsBrowseQueryString } from "@/features/public/lib/jobs-browse-query";
+import { MarketplaceLiquidityHints } from "@/components/onboarding/MarketplaceLiquidityHints";
 import { DashboardEmptyState } from "./DashboardEmptyState";
-import { DashboardStatCard } from "./DashboardStatCard";
+import { FreelancerDashboardHero, type FreelancerHeroStatVm } from "./FreelancerDashboardHero";
+
+export type FreelancerDashboardCopy = {
+  browseJobsCta: string;
+  quickActionsHeading: string;
+  statActiveBids: string;
+  statActiveContracts: string;
+  statRemainingQuota: string;
+  statProfileCompletion: string;
+  statAwaitingReplies: string;
+  attentionKicker: string;
+  attentionAccepted: string;
+  attentionAwaiting: string;
+  attentionProposalUpdates: string;
+  profileCardTitleNew: string;
+  profileCardTitleBoost: string;
+  profileCardBodyNew: string;
+  profileCardBodyBoost: string;
+  profileCardCta: string;
+  quickCompleteProfile: string;
+  quickFindJobs: string;
+  quickTrackProposals: string;
+  quickAvailability: string;
+  activityTitle: string;
+  activitySubtitle: string;
+  activityViewAll: string;
+  openJobsTitle: string;
+  openJobsSubtitle: string;
+  openJobsSeeAll: string;
+  activityEmptyNoProfileTitle: string;
+  activityEmptyNoProfileBody: string;
+  activityEmptyNoActivityTitle: string;
+  activityEmptyNoActivityBody: string;
+  activityEmptyPrimary: string;
+  activityEmptySecondary: string;
+  openJobsEmptyTitle: string;
+  openJobsEmptyBody: string;
+  openJobsEmptyCta: string;
+  profileRequiredBanner: string;
+  profileRequiredSub: string;
+  activityKindProposal: string;
+  activityKindContract: string;
+  activityEmptyKickerProfile: string;
+  activityEmptyKickerTimeline: string;
+  openJobsEmptyKicker: string;
+  nextActionAwaitingBanner: string;
+  openMessagesCta: string;
+  pulseStripTitle: string;
+  playbookTitle: string;
+  playbookIntro: string;
+  playbookFooter: string;
+  pulseQuotaLabel: string;
+  pulseProfileLabel: string;
+  pulseAwaitingLabel: string;
+  snapshotTitle: string;
+  snapshotSubtitle: string;
+  snapshotBidUpdatesLabel: string;
+  snapshotAcceptedLabel: string;
+  snapshotAwaitingLabel: string;
+  snapshotSavedLabel: string;
+  conversationsTitle: string;
+  conversationsSubtitle: string;
+  conversationsSeeAll: string;
+  conversationsEmptyTitle: string;
+  conversationsEmptyBody: string;
+  skillsTitle: string;
+  skillsSubtitle: string;
+  skillsEmptyBody: string;
+  skillsYearsShort: string;
+  heroMotivation: string;
+  heroTrustCaption: string;
+  activityBidEta: string;
+  marketplacePulseTitle: string;
+  marketplacePulseSubtitle: string;
+  marketplacePulseFootnote: string;
+  marketplacePulseOpenRoles: string;
+  marketplacePulseBids24h: string;
+  marketplacePulseFreelancers: string;
+  marketplacePulseFresh24h: string;
+  marketplacePulseHires7d: string;
+  marketplacePulseCategoriesMicro: string;
+  activityEmptyMomentumTitle: string;
+  activityEmptyMomentumBody: string;
+  openJobShortlistedOne: string;
+  openJobShortlistedMany: string;
+};
 
 export type FreelancerDashboardBid = {
   id: string;
-  status: string;
+  statusLabel: string;
   bidAmount: unknown;
   estimatedDays: number | null;
   createdAt: Date;
@@ -36,7 +132,7 @@ export type FreelancerDashboardBid = {
 
 export type FreelancerDashboardContract = {
   id: string;
-  status: string;
+  statusLabel: string;
   createdAt: Date;
   updatedAt: Date;
   bid: {
@@ -47,8 +143,20 @@ export type FreelancerDashboardContract = {
 export type FreelancerOpenJob = {
   id: string;
   title: string;
-  workMode: string;
+  workModeLabel: string;
   city: string | null;
+  shortlistedCount: number;
+};
+
+export type FreelancerSkillChipVm = {
+  name: string;
+  years: number | null;
+};
+
+export type FreelancerConversationVm = {
+  threadId: string;
+  title: string;
+  updatedAt: Date;
 };
 
 type ActivityItem =
@@ -56,10 +164,10 @@ type ActivityItem =
   | { kind: "contract"; at: Date; contract: FreelancerDashboardContract };
 
 type FreelancerDashboardProps = {
-  displayName: string;
-  greetingName: string | null;
+  locale: AppLocale;
+  welcomeTitle: string;
+  subtitle: string;
   hasProfile: boolean;
-  username: string | null;
   profileCompleteness: number | null;
   showStrongProfileCard: boolean;
   stats: {
@@ -69,7 +177,25 @@ type FreelancerDashboardProps = {
     bidQuotaHint: string;
     profileReadiness: string;
     profileHint: string;
+    threadsAwaiting: string;
+    threadsAwaitingHint: string;
   };
+  heroStats: FreelancerHeroStatVm[];
+  heroTrustPills: string[];
+  proposalPlaybook: {
+    title: string;
+    intro: string;
+    footer: string;
+    sections: FreelancerProposalPlaybookSection[];
+  };
+  snapshot: {
+    bidUpdates7d: string;
+    acceptedBids: string;
+    awaitingReplyThreads: string;
+    savedByClients: string;
+  };
+  skills: FreelancerSkillChipVm[];
+  conversations: FreelancerConversationVm[];
   recentBids: FreelancerDashboardBid[];
   recentContracts: FreelancerDashboardContract[];
   openJobs: FreelancerOpenJob[];
@@ -79,23 +205,32 @@ type FreelancerDashboardProps = {
     awaitingReplyThreads: number;
     proposalUpdates: number;
   };
+  copy: FreelancerDashboardCopy;
+  activationChecklist: {
+    title: string;
+    intro: string;
+    steps: ActivationChecklistStepVm[];
+    allCompleteBanner: string | null;
+  };
+  liquidityTips: {
+    title: string;
+    intro: string;
+    bullets: string[];
+    footer: string;
+  };
+  marketplacePulse: {
+    openPublicJobs: number;
+    bidsLast24h: number;
+    freelancersAvailable: number;
+    jobsPostedLast24h: number;
+    contractsCompletedLast7d: number;
+    hotCategories: Array<{ id: string; name: string; openJobCount: number }>;
+  };
 };
 
-function money(amount: unknown, currency: string): string {
-  const n =
-    amount != null && typeof (amount as { toString?: () => string }).toString === "function"
-      ? Number(amount)
-      : NaN;
-  if (!Number.isFinite(n)) return "—";
-  try {
-    return new Intl.NumberFormat(undefined, { style: "currency", currency, maximumFractionDigits: 0 }).format(n);
-  } catch {
-    return `${n} ${currency}`;
-  }
-}
-
-function formatShortDate(d: Date): string {
-  return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric" }).format(d);
+function formatShortDate(d: Date, locale: AppLocale): string {
+  const tag = locale === "id" ? "id-ID" : "en-US";
+  return new Intl.DateTimeFormat(tag, { month: "short", day: "numeric" }).format(d);
 }
 
 function buildActivity(bids: FreelancerDashboardBid[], contracts: FreelancerDashboardContract[]): ActivityItem[] {
@@ -107,254 +242,382 @@ function buildActivity(bids: FreelancerDashboardBid[], contracts: FreelancerDash
   return items.slice(0, 8);
 }
 
-function sectionLabel(title: string, subtitle?: string) {
-  return (
-    <div className="min-w-0">
-      <h2 className="text-xs font-medium uppercase tracking-wide text-slate-500">{title}</h2>
-      {subtitle ? <p className="mt-0.5 text-sm leading-snug text-slate-600">{subtitle}</p> : null}
-    </div>
-  );
-}
+const linkClass = "nw-link-action text-sm";
 
-const linkClass =
-  "text-sm font-medium text-[#3525cd] underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/25 focus-visible:ring-offset-2 rounded-sm";
-
-const panelClass =
-  "rounded-xl border border-slate-200/90 bg-white p-5 shadow-sm shadow-slate-900/[0.04] md:p-6";
-
-const browseJobsCtaClass =
-  "inline-flex w-full items-center justify-center gap-2 rounded-lg border-2 border-[#3525cd] bg-white px-5 py-3 text-base font-semibold text-[#3525cd] shadow-sm transition hover:bg-[#3525cd]/[0.06] sm:w-auto sm:min-w-[11rem] sm:px-6";
+const surfaceCard = "nw-card-elevated p-4 md:p-5";
 
 export function FreelancerDashboard({
-  displayName,
-  greetingName,
+  locale,
+  welcomeTitle,
+  subtitle,
   hasProfile,
-  username,
   profileCompleteness,
   showStrongProfileCard,
   stats,
+  heroStats,
+  heroTrustPills,
+  proposalPlaybook,
+  snapshot,
+  skills,
+  conversations,
   recentBids,
   recentContracts,
   openJobs,
   openTotal,
-  attention
+  attention,
+  copy,
+  activationChecklist,
+  liquidityTips,
+  marketplacePulse
 }: FreelancerDashboardProps) {
   const activity = buildActivity(recentBids, recentContracts);
-  const welcomeLine = greetingName ? `Welcome back, ${greetingName}` : "Welcome back";
-  const subline = hasProfile
-    ? `${displayName}${username ? ` · @${username}` : ""} · Bids, quota, and open roles in one view.`
-    : "Finish setup to bid on jobs and track proposals and contracts here.";
+  const jobsBrowseRoot = withPublicLocale(locale, "/jobs");
+  const wp = (path: string) => withWorkspaceLocale(locale, path) as Route;
 
   const quickLinks = [
-    { label: "Complete profile", href: "/freelancer/profile" as Route, icon: UserRound, primary: true as const },
-    { label: "Find jobs", href: "/jobs" as Route, icon: Compass, primary: true as const },
-    { label: "Track proposals", href: "/freelancer/proposals" as Route, icon: FileText, primary: false as const },
-    { label: "Update availability", href: "/freelancer/profile" as Route, icon: CalendarClock, primary: false as const }
+    { label: copy.quickCompleteProfile, href: wp("/freelancer/profile"), icon: UserRound, primary: true as const },
+    { label: copy.quickFindJobs, href: jobsBrowseRoot as Route, icon: Compass, primary: true as const },
+    { label: copy.quickTrackProposals, href: wp("/freelancer/proposals"), icon: FileText, primary: false as const },
+    { label: copy.quickAvailability, href: wp("/freelancer/profile"), icon: CalendarClock, primary: false as const }
   ];
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
-      <header className="flex flex-col gap-4 border-b border-slate-200/80 pb-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
-        <div className="min-w-0 space-y-1">
-          <p className="text-xs font-medium text-slate-500">Freelancer dashboard</p>
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900 md:text-[1.65rem] md:leading-snug">
-            {welcomeLine}
-          </h1>
-          <p className="max-w-lg text-sm leading-snug text-slate-600">{subline}</p>
-        </div>
-        <Link href={"/jobs" as Route} className={browseJobsCtaClass}>
-          <Compass className="h-5 w-5 shrink-0" aria-hidden />
-          Browse jobs
-        </Link>
-      </header>
+    <div className="mx-auto max-w-6xl nw-page-stack">
+      <FreelancerDashboardHero
+        welcomeTitle={welcomeTitle}
+        subtitle={subtitle}
+        motivation={copy.heroMotivation}
+        browseJobsCta={copy.browseJobsCta}
+        browseJobsHref={jobsBrowseRoot as Route}
+        stats={heroStats}
+        trustLine={copy.heroTrustCaption}
+        trustPills={heroTrustPills}
+      />
 
-      <section aria-label="Overview and actions" className={panelClass}>
-        {sectionLabel("Overview", "Live counts from your plan and profile.")}
-
-        <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          <DashboardStatCard
-            variant="emphasized"
-            label="Active bids"
-            value={stats.activeBids}
-            icon={Target}
-          />
-          <DashboardStatCard
-            variant="emphasized"
-            label="Active contracts"
-            value={stats.activeContracts}
-            icon={Briefcase}
-          />
-          <DashboardStatCard
-            variant="emphasized"
-            label="Remaining quota"
-            value={stats.bidQuotaRemaining}
-            hint={stats.bidQuotaHint}
-            icon={Zap}
-          />
-          <DashboardStatCard
-            variant="emphasized"
-            label="Profile completion"
-            value={stats.profileReadiness}
-            hint={stats.profileHint}
-            icon={UserRound}
-          />
-        </div>
-        <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50/70 px-4 py-3">
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Attention now</p>
-          <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-700">
-            <span>
-              <span className="font-semibold">{attention.acceptedBids}</span> bid accepted
-            </span>
-            <span>
-              <span className="font-semibold">{attention.awaitingReplyThreads}</span> message thread awaiting reply
-            </span>
-            <span>
-              <span className="font-semibold">{attention.proposalUpdates}</span> proposal status update
-            </span>
+      <section
+        aria-label={copy.marketplacePulseTitle}
+        className="nw-card-trust border-[#3525cd]/14 bg-gradient-to-r from-[#3525cd]/[0.05] to-white px-5 py-4 md:px-6"
+      >
+        <div className="flex flex-wrap items-start gap-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#3525cd] shadow-sm ring-1 ring-slate-200/80">
+            <Waves className="h-5 w-5" strokeWidth={1.75} aria-hidden />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="nw-type-micro">{copy.marketplacePulseTitle}</p>
+            <p className="nw-type-body mt-1 text-slate-700">{copy.marketplacePulseSubtitle}</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <span className="nw-chip nw-chip-muted px-3 py-1.5 text-[11px] normal-case tracking-normal md:text-xs">
+                {copy.marketplacePulseOpenRoles.split("{{count}}").join(String(marketplacePulse.openPublicJobs))}
+              </span>
+              <span className="nw-chip nw-chip-muted px-3 py-1.5 text-[11px] normal-case tracking-normal md:text-xs">
+                {copy.marketplacePulseBids24h.split("{{count}}").join(String(marketplacePulse.bidsLast24h))}
+              </span>
+              <span className="nw-chip nw-chip-muted px-3 py-1.5 text-[11px] normal-case tracking-normal md:text-xs">
+                {copy.marketplacePulseFreelancers.split("{{count}}").join(String(marketplacePulse.freelancersAvailable))}
+              </span>
+              {marketplacePulse.jobsPostedLast24h > 0 ? (
+                <span className="nw-chip nw-chip-success px-3 py-1.5 text-[11px] normal-case tracking-normal md:text-xs">
+                  {copy.marketplacePulseFresh24h.split("{{count}}").join(String(marketplacePulse.jobsPostedLast24h))}
+                </span>
+              ) : null}
+              {marketplacePulse.contractsCompletedLast7d > 0 ? (
+                <span className="nw-chip nw-chip-brand px-3 py-1.5 text-[11px] normal-case tracking-normal md:text-xs">
+                  {copy.marketplacePulseHires7d.split("{{count}}").join(String(marketplacePulse.contractsCompletedLast7d))}
+                </span>
+              ) : null}
+            </div>
+            {marketplacePulse.hotCategories.filter((c) => c.name.trim().length > 0).length > 0 ? (
+              <div className="mt-4 border-t border-slate-200/80 pt-3">
+                <p className="nw-type-micro">{copy.marketplacePulseCategoriesMicro}</p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {marketplacePulse.hotCategories
+                    .filter((c) => c.name.trim().length > 0 && c.openJobCount > 0)
+                    .slice(0, 5)
+                    .map((c) => (
+                      <Link
+                        key={c.id}
+                        href={
+                          `${jobsBrowseRoot}${jobsBrowseQueryString({
+                            keyword: "",
+                            city: "",
+                            workMode: "",
+                            categoryId: c.id,
+                            minBudget: "",
+                            postedWithinDays: "",
+                            page: 1
+                          })}` as Route
+                        }
+                        className="nw-chip-quiet text-[11px]"
+                      >
+                        {c.name}
+                        <span className="ml-1 tabular-nums text-slate-500">({c.openJobCount})</span>
+                      </Link>
+                    ))}
+                </div>
+              </div>
+            ) : null}
+            <p className="nw-type-meta mt-3 font-medium normal-case tracking-normal text-slate-500">
+              {copy.marketplacePulseFootnote}
+            </p>
           </div>
         </div>
+      </section>
 
-        {showStrongProfileCard ? (
-          <div className="mt-5 border-t border-slate-100 pt-5">
-            <div className="flex flex-col gap-3 rounded-lg border border-slate-200 border-l-[3px] border-l-[#3525cd] bg-slate-50/70 p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+      {hasProfile && attention.awaitingReplyThreads > 0 ? (
+        <div className="nw-card-trust flex flex-col gap-3 border-amber-200/75 bg-gradient-to-r from-amber-50/95 to-white px-5 py-4 sm:flex-row sm:items-center sm:justify-between md:px-6">
+          <div className="flex items-start gap-3">
+            <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100/90 text-amber-900 ring-1 ring-amber-200/70">
+              <MessageCircle className="h-5 w-5" aria-hidden />
+            </span>
+            <p className="nw-type-body text-amber-950/90">{copy.nextActionAwaitingBanner}</p>
+          </div>
+          <Link
+            href={wp("/messages")}
+            className="nw-cta-primary inline-flex shrink-0 items-center justify-center gap-2 px-5 py-2.5 text-sm"
+          >
+            {copy.openMessagesCta}
+            <ArrowRight className="h-4 w-4 opacity-90" aria-hidden />
+          </Link>
+        </div>
+      ) : null}
+
+      <div className="grid gap-4 sm:gap-5 lg:grid-cols-12 lg:items-start">
+        <div className="space-y-5 lg:col-span-7">
+          <ActivationChecklistCard
+            title={activationChecklist.title}
+            intro={activationChecklist.intro}
+            steps={activationChecklist.steps}
+            allCompleteBanner={activationChecklist.allCompleteBanner}
+            variant="journey"
+          />
+          {showStrongProfileCard ? (
+            <div className="nw-card-trust flex flex-col gap-4 border-[#3525cd]/18 bg-gradient-to-br from-[#3525cd]/[0.06] to-white p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-5 md:p-6">
               <div className="flex min-w-0 gap-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white text-[#3525cd] ring-1 ring-slate-200/80">
-                  <Sparkles className="h-4 w-4" strokeWidth={1.75} aria-hidden />
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-[#3525cd] shadow-sm ring-1 ring-slate-200/85">
+                  <Sparkles className="h-[22px] w-[22px]" strokeWidth={1.75} aria-hidden />
                 </span>
                 <div className="min-w-0">
-                  <h3 className="text-sm font-semibold text-slate-900">
-                    {hasProfile ? "Strengthen your profile" : "Complete your freelancer profile"}
+                  <h3 className="nw-type-section">
+                    {hasProfile ? copy.profileCardTitleBoost : copy.profileCardTitleNew}
                   </h3>
-                  <p className="mt-0.5 text-xs leading-relaxed text-slate-600 sm:text-sm">
+                  <p className="nw-type-body mt-1">
                     {hasProfile
-                      ? `${profileCompleteness ?? 0}% complete—headline, bio, and rates help you win work.`
-                      : "Skills, work mode, and a short bio unlock proposals and full quota visibility."}
+                      ? copy.profileCardBodyBoost.split("{{percent}}").join(String(profileCompleteness ?? 0))
+                      : copy.profileCardBodyNew}
                   </p>
                 </div>
               </div>
               <Link
-                href={"/freelancer/profile" as Route}
-                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-[#3525cd] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#2d1fb0]"
+                href={wp("/freelancer/profile")}
+                className="nw-cta-primary inline-flex shrink-0 items-center justify-center gap-2 px-5 py-2.5 text-sm"
               >
-                Complete profile
+                {copy.profileCardCta}
                 <ArrowRight className="h-4 w-4 opacity-90" aria-hidden />
               </Link>
             </div>
+          ) : null}
+
+          <div className={cn(surfaceCard)}>
+            <div className="flex flex-wrap items-end justify-between gap-3 border-b border-slate-100 pb-5">
+              <div>
+                <h2 className="nw-type-micro">{copy.pulseStripTitle}</h2>
+                <div className="mt-4 flex flex-wrap gap-2 md:gap-3">
+                  <span className="nw-chip nw-chip-muted inline-flex items-center gap-2 px-3 py-2 text-xs normal-case tracking-normal md:text-[13px]">
+                    <Target className="h-4 w-4 text-[#3525cd]" aria-hidden />
+                    <span className="font-medium text-slate-700">{copy.statActiveBids}</span>
+                    <span className="font-semibold tabular-nums text-slate-900">{stats.activeBids}</span>
+                  </span>
+                  <span className="nw-chip nw-chip-muted inline-flex items-center gap-2 px-3 py-2 text-xs normal-case tracking-normal md:text-[13px]">
+                    <Zap className="h-4 w-4 text-amber-600" aria-hidden />
+                    <span className="font-medium text-slate-700">{copy.pulseQuotaLabel}</span>
+                    <span className="font-semibold tabular-nums text-slate-900">{stats.bidQuotaRemaining}</span>
+                  </span>
+                  <span className="nw-chip nw-chip-muted inline-flex items-center gap-2 px-3 py-2 text-xs normal-case tracking-normal md:text-[13px]">
+                    <UserRound className="h-4 w-4 text-[#3525cd]" aria-hidden />
+                    <span className="font-medium text-slate-700">{copy.pulseProfileLabel}</span>
+                    <span className="font-semibold tabular-nums text-slate-900">{stats.profileReadiness}</span>
+                  </span>
+                  <span className="nw-chip nw-chip-muted inline-flex items-center gap-2 px-3 py-2 text-xs normal-case tracking-normal md:text-[13px]">
+                    <MessageCircle className="h-4 w-4 text-sky-600" aria-hidden />
+                    <span className="font-medium text-slate-700">{copy.pulseAwaitingLabel}</span>
+                    <span className="font-semibold tabular-nums text-slate-900">{stats.threadsAwaiting}</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="nw-card-inset mt-4 rounded-xl px-4 py-4 md:flex md:flex-wrap md:items-center md:justify-between md:gap-6">
+              <div>
+                <p className="nw-type-micro">{copy.attentionKicker}</p>
+                <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm text-slate-700">
+                  <span>{copy.attentionAccepted.split("{{count}}").join(snapshot.acceptedBids)}</span>
+                  <span>{copy.attentionAwaiting.split("{{count}}").join(snapshot.awaitingReplyThreads)}</span>
+                  <span>{copy.attentionProposalUpdates.split("{{count}}").join(snapshot.bidUpdates7d)}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 border-t border-slate-100 pt-5">
+              <h3 className="nw-type-micro">{copy.quickActionsHeading}</h3>
+              <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+                {quickLinks.map((item) => (
+                  <li key={item.label}>
+                    <Link
+                      href={item.href}
+                      className={cn(
+                        "nw-card-inset nw-card-inset-hover flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-colors duration-200",
+                        item.primary ? "border-[#3525cd]/20 bg-[#3525cd]/[0.06] text-[#3525cd]" : "text-slate-700"
+                      )}
+                    >
+                      <item.icon
+                        className={cn("h-4 w-4 shrink-0", item.primary ? "text-[#3525cd]" : "text-slate-400")}
+                        strokeWidth={1.5}
+                        aria-hidden
+                      />
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-        ) : null}
-
-        <div className="mt-5 border-t border-slate-100 pt-5">
-          <h3 className="text-xs font-medium uppercase tracking-wide text-slate-500">Quick actions</h3>
-          <ul className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-            {quickLinks.map((item) => (
-              <li key={item.label}>
-                <Link
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition",
-                    item.primary
-                      ? "bg-[#3525cd]/10 text-[#3525cd] ring-1 ring-[#3525cd]/15 hover:bg-[#3525cd]/14"
-                      : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
-                  )}
-                >
-                  <item.icon
-                    className={cn("h-4 w-4 shrink-0", item.primary ? "text-[#3525cd]" : "text-slate-400")}
-                    strokeWidth={1.5}
-                    aria-hidden
-                  />
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
         </div>
-      </section>
 
-      <div className="grid gap-6 lg:grid-cols-12 lg:items-start">
-        <section className="lg:col-span-7" aria-label="Recent activity">
-          <div className={panelClass}>
+        <div className="space-y-5 lg:col-span-5">
+          <FreelancerProposalPlaybook
+            title={proposalPlaybook.title}
+            intro={proposalPlaybook.intro}
+            sections={proposalPlaybook.sections}
+            footerHint={proposalPlaybook.footer}
+          />
+          <MarketplaceLiquidityHints
+            title={liquidityTips.title}
+            intro={liquidityTips.intro}
+            bullets={liquidityTips.bullets}
+            footer={liquidityTips.footer}
+          />
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:gap-5 lg:grid-cols-12 lg:items-start">
+        <section className="lg:col-span-5" aria-label={copy.activityTitle}>
+          <div className={surfaceCard}>
             <div className="flex flex-wrap items-start justify-between gap-2">
-              {sectionLabel("Recent activity", "Proposals and contract updates")}
-              <Link href={"/freelancer/proposals" as Route} className={linkClass}>
-                View all
+              <div>
+                <h2 className="nw-type-title">{copy.activityTitle}</h2>
+                <p className="nw-type-body mt-1">{copy.activitySubtitle}</p>
+              </div>
+              <Link href={wp("/freelancer/proposals")} className={linkClass}>
+                {copy.activityViewAll}
               </Link>
             </div>
 
             {!hasProfile && activity.length === 0 ? (
-              <div className="mt-5">
+              <div className="mt-6">
                 <DashboardEmptyState
                   tone="elevated"
-                  kicker="Profile"
-                  icon={ClipboardList}
-                  title="Your timeline starts after setup"
-                  description="Create your freelancer profile to send proposals and see every update in one place."
-                  action={{ label: "Complete profile", href: "/freelancer/profile" }}
+                  kicker={copy.activityEmptyKickerProfile}
+                  icon={FileText}
+                  title={copy.activityEmptyNoProfileTitle}
+                  description={copy.activityEmptyNoProfileBody}
+                  action={{ label: copy.profileCardCta, href: wp("/freelancer/profile") }}
                 />
               </div>
             ) : hasProfile && activity.length === 0 ? (
-              <div className="mt-5">
+              <div className="mt-6 space-y-4">
                 <DashboardEmptyState
                   tone="elevated"
-                  kicker="Timeline"
+                  kicker={copy.activityEmptyKickerTimeline}
                   icon={Inbox}
-                  title="No proposal activity yet"
-                  description="Send your first bid to start tracking client responses and contract updates."
-                  action={{ label: "Find jobs", href: "/jobs" }}
-                  secondaryAction={{ label: "Track proposals", href: "/freelancer/proposals" }}
+                  title={copy.activityEmptyNoActivityTitle}
+                  description={copy.activityEmptyNoActivityBody}
+                  action={{ label: copy.activityEmptyPrimary, href: jobsBrowseRoot as Route }}
+                  secondaryAction={{ label: copy.activityEmptySecondary, href: wp("/freelancer/proposals") as Route }}
                 />
+                {marketplacePulse.hotCategories.filter((c) => c.name.trim().length > 0 && c.openJobCount > 0).length >
+                0 ? (
+                  <div className="nw-card-inset rounded-xl border-[#3525cd]/12 px-4 py-3">
+                    <p className="nw-type-micro">{copy.activityEmptyMomentumTitle}</p>
+                    <p className="nw-type-body mt-1 text-slate-600">{copy.activityEmptyMomentumBody}</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {marketplacePulse.hotCategories
+                        .filter((c) => c.name.trim().length > 0 && c.openJobCount > 0)
+                        .slice(0, 5)
+                        .map((c) => (
+                          <Link
+                            key={c.id}
+                            href={
+                              `${jobsBrowseRoot}${jobsBrowseQueryString({
+                                keyword: "",
+                                city: "",
+                                workMode: "",
+                                categoryId: c.id,
+                                minBudget: "",
+                                postedWithinDays: "",
+                                page: 1
+                              })}` as Route
+                            }
+                            className="nw-chip-quiet text-[11px]"
+                          >
+                            {c.name}
+                          </Link>
+                        ))}
+                    </div>
+                  </div>
+                ) : null}
               </div>
             ) : (
-              <ul className="mt-5 divide-y divide-slate-100">
+              <ul className="mt-6 divide-y divide-slate-100">
                 {!hasProfile ? (
-                  <li className="pb-3">
-                    <div className="rounded-lg border border-amber-200/80 bg-amber-50/50 px-3 py-2.5 text-xs leading-relaxed text-amber-950">
-                      <span className="font-medium">Profile required for new bids.</span>{" "}
-                      <span className="text-amber-900/90">Contract updates still appear below.</span>
+                  <li className="pb-4">
+                    <div className="nw-card-inset rounded-xl border-amber-200/80 bg-amber-50/60 px-4 py-3 text-xs leading-relaxed text-amber-950">
+                      <span className="font-semibold">{copy.profileRequiredBanner}</span>{" "}
+                      <span className="text-amber-900/90">{copy.profileRequiredSub}</span>
                     </div>
                   </li>
                 ) : null}
                 {activity.map((item) =>
                   item.kind === "bid" ? (
-                    <li
-                      key={`bid-${item.bid.id}`}
-                      className="flex flex-wrap items-start justify-between gap-2 py-3 first:pt-0"
-                    >
+                    <li key={`bid-${item.bid.id}`} className="flex flex-wrap items-start justify-between gap-3 py-4 first:pt-0">
                       <div className="min-w-0">
-                        <p className="text-[11px] font-medium uppercase tracking-wide text-slate-500">Proposal</p>
+                        <p className="nw-type-micro">{copy.activityKindProposal}</p>
                         <Link
-                          href={`/jobs/${item.bid.job.id}` as Route}
-                          className="mt-0.5 block text-sm font-medium text-slate-900 hover:text-[#3525cd]"
+                          href={`${jobsBrowseRoot}/${item.bid.job.id}` as Route}
+                          className="mt-0.5 block text-sm font-semibold text-slate-900 hover:text-[#3525cd]"
                         >
                           {item.bid.job.title}
                         </Link>
-                        <p className="mt-0.5 text-xs leading-relaxed text-slate-600">
-                          {item.bid.status.replace(/_/g, " ")} · {money(item.bid.bidAmount, item.bid.job.currency)}
-                          {item.bid.estimatedDays != null ? ` · ~${item.bid.estimatedDays}d` : null}
+                        <p className="nw-type-meta mt-1 font-medium normal-case tracking-normal text-slate-600">
+                          {item.bid.statusLabel} ·{" "}
+                          {formatMoneyAmount(item.bid.bidAmount, item.bid.job.currency, { locale, maximumFractionDigits: 0 })}
+                          {item.bid.estimatedDays != null
+                            ? ` · ${copy.activityBidEta.replace("{{days}}", String(item.bid.estimatedDays))}`
+                            : null}
                         </p>
                       </div>
                       <time className="shrink-0 text-xs tabular-nums text-slate-400" dateTime={item.at.toISOString()}>
-                        {formatShortDate(item.at)}
+                        {formatShortDate(item.at, locale)}
                       </time>
                     </li>
                   ) : (
                     <li
                       key={`contract-${item.contract.id}`}
-                      className="flex flex-wrap items-start justify-between gap-2 py-3 first:pt-0"
+                      className="flex flex-wrap items-start justify-between gap-3 py-4 first:pt-0"
                     >
                       <div className="min-w-0">
-                        <p className="text-[11px] font-medium uppercase tracking-wide text-slate-500">Contract</p>
+                        <p className="nw-type-micro">{copy.activityKindContract}</p>
                         <Link
-                          href={`/jobs/${item.contract.bid.job.id}` as Route}
-                          className="mt-0.5 block text-sm font-medium text-slate-900 hover:text-[#3525cd]"
+                          href={`${jobsBrowseRoot}/${item.contract.bid.job.id}` as Route}
+                          className="mt-0.5 block text-sm font-semibold text-slate-900 hover:text-[#3525cd]"
                         >
                           {item.contract.bid.job.title}
                         </Link>
-                        <p className="mt-0.5 text-xs leading-relaxed text-slate-600">
-                          {item.contract.status.replace(/_/g, " ")}
+                        <p className="nw-type-meta mt-1 font-medium normal-case tracking-normal text-slate-600">
+                          {item.contract.statusLabel}
                         </p>
                       </div>
                       <time className="shrink-0 text-xs tabular-nums text-slate-400" dateTime={item.at.toISOString()}>
-                        {formatShortDate(item.at)}
+                        {formatShortDate(item.at, locale)}
                       </time>
                     </li>
                   )
@@ -364,24 +627,139 @@ export function FreelancerDashboard({
           </div>
         </section>
 
-        <section className="lg:col-span-5" aria-label="Open jobs">
-          <div className={panelClass}>
-            <div className="flex flex-wrap items-start justify-between gap-2">
-              {sectionLabel("Open & recommended jobs", `${openTotal} role${openTotal === 1 ? "" : "s"} on the board`)}
-              <Link href={"/jobs" as Route} className={linkClass}>
-                See all
+        <section className="space-y-5 sm:space-y-6 lg:col-span-4" aria-label={copy.snapshotTitle}>
+          <div className={surfaceCard}>
+            <div>
+              <h2 className="nw-type-title">{copy.snapshotTitle}</h2>
+              <p className="nw-type-body mt-1">{copy.snapshotSubtitle}</p>
+            </div>
+            <ul className="mt-5 space-y-4">
+              <li className="nw-card-inset flex items-start gap-3 rounded-xl p-3">
+                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200/65">
+                  <FileText className="h-[18px] w-[18px]" aria-hidden />
+                </span>
+                <div>
+                  <p className="nw-type-micro">{copy.snapshotBidUpdatesLabel}</p>
+                  <p className="mt-1 text-xl font-semibold tabular-nums text-slate-900">{snapshot.bidUpdates7d}</p>
+                </div>
+              </li>
+              <li className="nw-card-inset flex items-start gap-3 rounded-xl p-3">
+                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#3525cd]/12 text-[#3525cd] ring-1 ring-[#3525cd]/20">
+                  <BadgeCheck className="h-[18px] w-[18px]" aria-hidden />
+                </span>
+                <div>
+                  <p className="nw-type-micro">{copy.snapshotAcceptedLabel}</p>
+                  <p className="mt-1 text-xl font-semibold tabular-nums text-slate-900">{snapshot.acceptedBids}</p>
+                </div>
+              </li>
+              <li className="nw-card-inset flex items-start gap-3 rounded-xl p-3">
+                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sky-50 text-sky-800 ring-1 ring-sky-200/70">
+                  <MessageCircle className="h-[18px] w-[18px]" aria-hidden />
+                </span>
+                <div>
+                  <p className="nw-type-micro">{copy.snapshotAwaitingLabel}</p>
+                  <p className="mt-1 text-xl font-semibold tabular-nums text-slate-900">{snapshot.awaitingReplyThreads}</p>
+                </div>
+              </li>
+              <li className="nw-card-inset flex items-start gap-3 rounded-xl p-3">
+                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-rose-50 text-rose-800 ring-1 ring-rose-200/70">
+                  <Briefcase className="h-[18px] w-[18px]" aria-hidden />
+                </span>
+                <div>
+                  <p className="nw-type-micro">{copy.snapshotSavedLabel}</p>
+                  <p className="mt-1 text-xl font-semibold tabular-nums text-slate-900">{snapshot.savedByClients}</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div className={surfaceCard}>
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h2 className="nw-type-title">{copy.conversationsTitle}</h2>
+                <p className="nw-type-body mt-0.5">{copy.conversationsSubtitle}</p>
+              </div>
+              <Link href={wp("/messages")} className={linkClass}>
+                {copy.conversationsSeeAll}
               </Link>
             </div>
+            {conversations.length === 0 ? (
+              <div className="nw-empty-state mt-5 text-center">
+                <p className="text-sm font-semibold text-slate-800">{copy.conversationsEmptyTitle}</p>
+                <p className="nw-type-body mt-2">{copy.conversationsEmptyBody}</p>
+              </div>
+            ) : (
+              <ul className="mt-5 space-y-2.5">
+                {conversations.map((c) => (
+                  <li key={c.threadId}>
+                    <Link
+                      href={wp(`/messages?thread=${encodeURIComponent(c.threadId)}`)}
+                      className="nw-card-inset nw-card-inset-hover block rounded-xl px-3.5 py-3"
+                    >
+                      <p className="text-sm font-semibold text-slate-900">{c.title}</p>
+                      <p className="nw-type-meta mt-1">{formatShortDate(c.updatedAt, locale)}</p>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </section>
 
+        <section className="space-y-5 sm:space-y-6 lg:col-span-3" aria-label={copy.skillsTitle}>
+          <div className={surfaceCard}>
+            <div>
+              <h2 className="nw-type-title">{copy.skillsTitle}</h2>
+              <p className="nw-type-body mt-1">{copy.skillsSubtitle}</p>
+            </div>
+            {skills.length === 0 ? (
+              <div className="nw-empty-state mt-5">
+                <p className="nw-type-body">{copy.skillsEmptyBody}</p>
+              </div>
+            ) : (
+              <ul className="mt-5 space-y-4">
+                {skills.map((s) => {
+                  const y = Math.min(10, Math.max(1, s.years ?? 1));
+                  const pct = Math.min(100, Math.max(12, Math.round((y / 10) * 100)));
+                  const yearsSuffix = copy.skillsYearsShort.replace("{{years}}", String(s.years ?? "—"));
+                  return (
+                    <li key={s.name}>
+                      <div className="flex items-center justify-between gap-2 text-sm font-medium text-slate-900">
+                        <span className="truncate">{s.name}</span>
+                        <span className="shrink-0 text-xs tabular-nums text-slate-500">{yearsSuffix}</span>
+                      </div>
+                      <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200/80">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-[#3525cd] to-indigo-400"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+
+          <div className={surfaceCard}>
+            <div className="flex flex-wrap items-start justify-between gap-2">
+              <div>
+                <h2 className="nw-type-title">{copy.openJobsTitle}</h2>
+                <p className="nw-type-body mt-1">{copy.openJobsSubtitle.split("{{count}}").join(String(openTotal))}</p>
+              </div>
+              <Link href={jobsBrowseRoot as Route} className={linkClass}>
+                {copy.openJobsSeeAll}
+              </Link>
+            </div>
             {openJobs.length === 0 ? (
               <div className="mt-5">
                 <DashboardEmptyState
                   tone="elevated"
-                  kicker="Opportunities"
+                  kicker={copy.openJobsEmptyKicker}
                   icon={Briefcase}
-                  title="No listings in this snapshot"
-                  description="The job board updates as clients post work. Open the full board to search and filter roles that fit you."
-                  action={{ label: "Browse job board", href: "/jobs" }}
+                  title={copy.openJobsEmptyTitle}
+                  description={copy.openJobsEmptyBody}
+                  action={{ label: copy.openJobsEmptyCta, href: jobsBrowseRoot as Route }}
                 />
               </div>
             ) : (
@@ -389,14 +767,23 @@ export function FreelancerDashboard({
                 {openJobs.map((job) => (
                   <li key={job.id}>
                     <Link
-                      href={`/jobs/${job.id}` as Route}
-                      className="block rounded-lg border border-slate-100 bg-slate-50/50 px-3 py-2.5 transition hover:border-slate-200 hover:bg-slate-50"
+                      href={`${jobsBrowseRoot}/${job.id}` as Route}
+                      className="nw-card-inset nw-card-inset-hover block rounded-xl px-3.5 py-3"
                     >
-                      <p className="text-sm font-medium leading-snug text-slate-900">{job.title}</p>
-                      <p className="mt-0.5 text-xs text-slate-500">
-                        {job.workMode}
-                        {job.city ? ` · ${job.city}` : ""}
-                      </p>
+                      <p className="text-sm font-semibold leading-snug text-slate-900">{job.title}</p>
+                      <div className="mt-1 flex flex-wrap items-center gap-2">
+                        <p className="nw-type-meta font-medium normal-case tracking-normal">
+                          {job.workModeLabel}
+                          {job.city ? ` · ${job.city}` : ""}
+                        </p>
+                        {job.shortlistedCount > 0 ? (
+                          <span className="nw-chip nw-chip-brand px-2 py-0.5 text-[10px] normal-case tracking-normal">
+                            {job.shortlistedCount === 1
+                              ? copy.openJobShortlistedOne
+                              : copy.openJobShortlistedMany.split("{{count}}").join(String(job.shortlistedCount))}
+                          </span>
+                        ) : null}
+                      </div>
                     </Link>
                   </li>
                 ))}

@@ -1,0 +1,10 @@
+#!/bin/sh
+# Drop Cursor Co-authored-by trailers from commit messages (IDE-injected).
+# Enable once per clone: git config core.hooksPath .githooks
+MSG_FILE="${1:?}"
+[ -f "$MSG_FILE" ] || exit 0
+TMP=$(mktemp)
+trap 'rm -f "$TMP"' EXIT
+# Any "Co-authored-by:" line naming Cursor (any email / spacing).
+grep -Ev '^Co-authored-by:[[:space:]]+Cursor[[:space:]]+<' "$MSG_FILE" >"$TMP" || true
+cat "$TMP" >"$MSG_FILE"

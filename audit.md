@@ -1,18 +1,21 @@
 # Audit teknis — Freelance-web (monorepo)
 
-> **Doc revision:** v7  
-> Last synchronized: 2026-04-27 (credential docs sanitized and apps/web source tree normalized to reduce path ambiguity).
+> **Doc revision:** v14  
+> Last synchronized: 2026-05-10 (middleware: rewrite workspace ber-prefix locale + redirect dari path internal legacy; sanitasi return URL login/register mengenali `/<locale>/client` dll.).
 
 **Lingkup:** `apps/web`, `packages/*`, dan jalur operasional yang mempengaruhi produksi.  
 **Tanggal referensi:** April 2026 (sinkron dengan update terakhir implementasi).
 
 ## Addendum update (April 2026)
 
+- **2026-05-10 — Workspace routing parity:** middleware mendeteksi `/(en|id)/(client|freelancer|messages|notifications|settings)` → rewrite ke path `/client`… yang sama seperti sebelumnya (tanpa menduplikasi tree App Router). Permintaan ke `/client`… tanpa prefix dialihkan ke `/<preferredLocale>/…` sebelum gate sesi; return URL ke `/login` dapat berupa URL bermerek locale penuh. Deep link lama tanpa prefix tetap valid via redirect.
+- **2026-05-09 — Pool pressure / `EMAXCONNSESSION` (read path):** halaman publik `/jobs` dan `/freelancers` memanggil **satu** transaksi Prisma untuk **`PublicStatsService.getPulseAndHeroForPublicBrowse`** (pulse + **momentum** + hero panels), bukan beberapa transaksi paralel terpisah. `SearchService` menyerialkan pasangan **`count` → `findMany`** untuk job list dan **`COUNT` → list** untuk freelancer `$queryRaw`; `CategoryService.list` juga menyerialkan pasangan tersebut. Layout freelancer menyerialkan **notifikasi unread** dan **inbox awaiting reply** (bukan `Promise.all`). Tujuan: menurunkan checkout koneksi bersamaan terhadap pool session (`pool_size` kecil di penyedia managed Postgres).
+- **2026-05-09 — Nav badges & awaiting-reply (lanjutan):** `MarketingShell` (semua rute marketing/publik dengan sesi) tidak lagi memakai `Promise.all` untuk dua count badge. **`react` `cache()`** mem-dedupe hitungan notifikasi / thread awaiting reply per request antara **layout freelancer** dan **halaman dashboard** (`navigation-badges-cache.ts`), sehingga query berat tidak dijalankan dua kali per navigasi. `MessageService.countAwaitingReplyThreadsForUser` diganti **satu** `$queryRaw` agregat (bukan `findMany` peserta + nested message). Dashboard **client** dan **freelancer** menyerialkan blok query yang sebelumnya `Promise.all` (hingga 6 parallel).
 - **2026-04-27 — Source tree consistency hardening:** struktur runtime `apps/web` dinormalisasi ke root-level folders (`app`, `components`, `features`, `lib`, `server`) dan ketergantungan pada `apps/web/src` dihapus untuk mengurangi ambiguitas path/alias yang rawan salah import.
 - **2026-04-27 — Credential hygiene pass:** `credential.md` tidak lagi memuat nilai credential konkret; kini hanya berisi template env placeholders. `credential.example.md` ditambahkan sebagai referensi aman, sementara `.gitignore` tetap memblokir file credential lokal.
 - **2026-04-24 — Graceful API degradation for pool exhaustion:** `withApiHandler` sekarang memetakan error Prisma `EMAXCONNSESSION` / `max clients reached` menjadi `503 Service Unavailable` dengan kode `DB_POOL_EXHAUSTED` dan header `Retry-After`, menggantikan pola unhandled 500 saat DB pool session sedang jenuh.
-- **2026-04-24 — Search query compatibility hardening:** jalur `$queryRaw` untuk public jobs search kini mendeteksi ketersediaan kolom translasi (`titleEn/titleId/descriptionEn/descriptionId` + `language`) via `information_schema` dan otomatis fallback ke alias `NULL`/default saat kolom belum ada. Ini mencegah runtime crash `42703 column ... does not exist` pada environment yang migrasinya tertinggal.
-- **2026-04-24 — Pool pressure reduction (session mode):** pada jalur search jobs, eksekusi query list + count diubah dari paralel ke berurutan untuk menurunkan lonjakan koneksi simultan, membantu meredam error `EMAXCONNSESSION max clients reached` pada pool kecil.
+- **2026-05-09 — Job listings tanpa `$queryRaw`:** `SearchService.searchJobsInternal` memakai **`db.job.count` + `db.job.findMany`** dengan **`Prisma.JobWhereInput`** (`status OPEN`, **`moderationHiddenAt` null**, filter kota/kategori/mode kerja/rentang budget/tanggal/keyword (**`contains`**, case-insensitive), termasuk kolom translasi). Urutan daftar distabilkan sebagai **`createdAt` DESC** (tanpa CASE featured di SQL untuk menghindari raw query). Freelancer listing tetap memakai `$queryRaw`; raw job path dihapus menekan P2010/`$n` di bundling dev/production.
+- **2026-04-24 — Search query compatibility hardening (legacy):** sebelum pemindahan ORM job, beberapa environment memprobe `information_schema` untuk kolom translasi pada raw SQL; kini skema **Prisma** menjadi sumber kolom untuk job listing.
 - **Cookie preferensi bahasa:** `lang` disetel oleh `POST /api/locale` (nilai `en` \| `id`, path `/`, `SameSite=Lax`, `Secure` di produksi). Bukan secret; tetap jaga agar respons API tidak mem-cache konten sensitif lintas locale tanpa `Vary: Cookie` bila menambahkan cache edge di masa depan.
 - **Google Translate untuk UGC job:** kunci API (`GOOGLE_TRANSLATE_API_KEY`) dipakai hanya di server saat create job; terjemahan disimpan ke DB untuk mencegah panggilan API per-request. Risiko biaya dibatasi oleh rate limit create job yang sudah ada; jangan pernah mengekspos key ke client bundle.
 - UI telah bergeser dari “template-like” ke pendekatan **product-first** dengan hierarchy yang lebih operasional.
@@ -199,7 +202,7 @@ Belum ada:
 
 - `apps/web` typecheck: lulus di update terbaru.
 - Lints file yang disentuh: bersih.
-- E2E script tersedia (`pnpm test:e2e`) tapi tetap butuh environment + server hidup.
+- E2E script (`pnpm test:e2e`) membutuhkan server hidup, DB bermigrasi + seed (kategori), dan mem-behavior-kan browser pada mutasi terlindungi CSRF (mint token lewat `GET /api/auth/csrf`, kirim `Cookie` + `X-CSRF-Token`, simpan header cookie terbaru setelah respons karena sesi dapat berputar).
 
 Ops checklist yang tetap wajib:
 

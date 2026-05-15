@@ -1,3 +1,4 @@
+import { AdminJobModerationToggle } from "@/features/admin/components/jobs/AdminJobModerationToggle";
 import { formatAdminDateTime } from "@/features/admin/components/AdminUi";
 import {
   AdminIdCell,
@@ -18,11 +19,12 @@ export type AdminJobRow = {
   status: string;
   createdAt: Date;
   bidCount: number;
+  moderationHiddenAt: Date | null;
 };
 
 function StatusPill({ children }: { children: string }) {
   return (
-    <span className="inline-flex max-w-full truncate rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[11px] font-medium text-slate-800 ring-1 ring-slate-200/80">
+    <span className="nw-chip nw-chip-muted inline-flex max-w-full truncate font-mono normal-case tracking-normal text-slate-800">
       {children}
     </span>
   );
@@ -39,7 +41,9 @@ export function AdminJobsTable({ jobs }: { jobs: AdminJobRow[] }) {
             <AdminTh>Client</AdminTh>
             <AdminTh>Status</AdminTh>
             <AdminTh className="text-right">Bids</AdminTh>
+            <AdminTh>Public</AdminTh>
             <AdminTh>Created</AdminTh>
+            <AdminTh>Actions</AdminTh>
           </AdminTr>
         </AdminThead>
         <AdminTbody>
@@ -61,7 +65,21 @@ export function AdminJobsTable({ jobs }: { jobs: AdminJobRow[] }) {
                 <StatusPill>{j.status}</StatusPill>
               </AdminTd>
               <AdminTd className="text-right tabular-nums text-slate-800">{j.bidCount}</AdminTd>
+              <AdminTd>
+                {j.moderationHiddenAt ? (
+                  <span className="nw-chip inline-flex border-rose-200 bg-rose-50 normal-case tracking-normal text-rose-900">
+                    Hidden
+                  </span>
+                ) : (
+                  <span className="nw-chip nw-chip-success inline-flex normal-case tracking-normal">
+                    Listed
+                  </span>
+                )}
+              </AdminTd>
               <AdminTd className="whitespace-nowrap text-xs text-slate-600">{formatAdminDateTime(j.createdAt)}</AdminTd>
+              <AdminTd className="align-top">
+                <AdminJobModerationToggle jobId={j.id} moderationHiddenAt={j.moderationHiddenAt} />
+              </AdminTd>
             </AdminTr>
           ))}
         </AdminTbody>

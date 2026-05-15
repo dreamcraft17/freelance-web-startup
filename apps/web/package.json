@@ -5,6 +5,7 @@
   "description": "Marketplace application: App Router UI + API",
   "scripts": {
     "dev": "next dev",
+    "dev:fresh": "rimraf .next && next dev",
     "build": "pnpm --filter @acme/database exec prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
@@ -32,6 +33,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.5",
     "@prisma/nextjs-monorepo-workaround-plugin": "5.22.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^22.10.2",

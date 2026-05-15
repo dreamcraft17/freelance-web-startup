@@ -4,7 +4,13 @@ import Link from "next/link";
 import type { Route } from "next";
 import { useMemo, useState } from "react";
 import { BidStatus } from "@acme/types";
+import { ModerationReportButton } from "@/features/moderation/components/ModerationReportButton";
 import { DashboardEmptyState } from "@/components/dashboard/DashboardEmptyState";
+import type { AppLocale } from "@/lib/i18n/types";
+import { useI18n } from "@/features/i18n/I18nProvider";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
+import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
+import { formatMoneyAmount } from "@/lib/format-money";
 import { cn } from "@/lib/utils";
 import { FileText, Inbox } from "lucide-react";
 
@@ -20,57 +26,42 @@ export type FreelancerProposalRow = {
 
 type FilterKey = "all" | "submitted" | "shortlisted" | "accepted" | "rejected";
 
-const FILTERS: { key: FilterKey; label: string; statuses: BidStatus[] | null }[] = [
-  { key: "all", label: "All", statuses: null },
-  { key: "submitted", label: "Submitted", statuses: [BidStatus.SUBMITTED] },
-  { key: "shortlisted", label: "Shortlisted", statuses: [BidStatus.SHORTLISTED] },
-  { key: "accepted", label: "Accepted", statuses: [BidStatus.ACCEPTED] },
-  { key: "rejected", label: "Rejected", statuses: [BidStatus.REJECTED] }
-];
+type FilterDef = {
+  key: FilterKey;
+  label: string;
+  statuses: BidStatus[] | null;
+};
 
-function money(amount: number, currency: string): string {
-  if (!Number.isFinite(amount)) return "—";
-  try {
-    return new Intl.NumberFormat(undefined, { style: "currency", currency, maximumFractionDigits: 0 }).format(amount);
-  } catch {
-    return `${amount} ${currency}`;
-  }
+function formatDate(iso: string, locale: AppLocale): string {
+  const tag = locale === "id" ? "id-ID" : "en-US";
+  return new Intl.DateTimeFormat(tag, { month: "short", day: "numeric", year: "numeric" }).format(new Date(iso));
 }
 
-function formatDate(iso: string): string {
-  const d = new Date(iso);
-  return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", year: "numeric" }).format(d);
-}
-
-function humanizeStatus(status: string): string {
-  return status.replace(/_/g, " ").toLowerCase();
-}
-
-function rowVisual(status: string): string {
+function rowTone(status: string): string {
   switch (status) {
     case BidStatus.ACCEPTED:
-      return "border-emerald-200/90 bg-emerald-50/60";
+      return "border-emerald-200/90 bg-emerald-50/50";
     case BidStatus.SHORTLISTED:
-      return "border-[#3525cd]/25 bg-[#3525cd]/[0.05]";
+      return "border-[#3525cd]/20 bg-[#3525cd]/[0.05]";
     case BidStatus.REJECTED:
-      return "border-red-200/80 bg-red-50/40";
+      return "border-red-200/80 bg-red-50/45";
     default:
       return "border-slate-200/90 bg-white";
   }
 }
 
-function statusPill(status: string): string {
+function statusChipClass(status: string): string {
   switch (status) {
     case BidStatus.ACCEPTED:
-      return "bg-emerald-100 text-emerald-900 ring-emerald-200/80";
+      return "nw-chip-success normal-case tracking-normal";
     case BidStatus.SHORTLISTED:
-      return "bg-[#3525cd]/15 text-[#3525cd] ring-[#3525cd]/20";
+      return "nw-chip-brand normal-case tracking-normal";
     case BidStatus.REJECTED:
-      return "bg-red-100 text-red-900 ring-red-200/70";
+      return "inline-flex items-center rounded-md border border-red-200/80 bg-red-100 px-2.5 py-0.5 text-xs font-semibold normal-case text-red-900";
     case BidStatus.SUBMITTED:
-      return "bg-slate-100 text-slate-800 ring-slate-200/80";
+      return "nw-chip nw-chip-muted normal-case tracking-normal";
     default:
-      return "bg-slate-100 text-slate-700 ring-slate-200/70";
+      return "nw-chip nw-chip-muted normal-case tracking-normal";
   }
 }
 
@@ -91,11 +82,36 @@ function statusOrder(status: string): number {
 
 export function FreelancerProposalsWorkspace({
   hasProfile,
-  proposals
+  proposals,
+  emptyOnboarding
 }: {
   hasProfile: boolean;
   proposals: FreelancerProposalRow[];
+  emptyOnboarding?: { step1: string; step2: string; step3: string };
 }) {
+  const { t, locale } = useI18n();
+  const jobsBrowseRoot = withPublicLocale(locale, "/jobs");
+  const wp = (path: string) => withWorkspaceLocale(locale, path) as Route;
+
+  const filterDefs: FilterDef[] = useMemo(
+    () => [
+      { key: "all", label: t("dashboard.freelancer.proposalsFilterAll"), statuses: null },
+      {
+        key: "submitted",
+        label: t("dashboard.freelancer.proposalsFilterSubmitted"),
+        statuses: [BidStatus.SUBMITTED]
+      },
+      {
+        key: "shortlisted",
+        label: t("dashboard.freelancer.proposalsFilterShortlisted"),
+        statuses: [BidStatus.SHORTLISTED]
+      },
+      { key: "accepted", label: t("dashboard.freelancer.proposalsFilterAccepted"), statuses: [BidStatus.ACCEPTED] },
+      { key: "rejected", label: t("dashboard.freelancer.proposalsFilterRejected"), statuses: [BidStatus.REJECTED] }
+    ],
+    [t]
+  );
+
   const [filter, setFilter] = useState<FilterKey>("all");
 
   const counts = useMemo(() => {
@@ -116,25 +132,31 @@ export function FreelancerProposalsWorkspace({
   }, [proposals]);
 
   const filtered = useMemo(() => {
-    const def = FILTERS.find((f) => f.key === filter);
-    const pool = !def?.statuses ? proposals : proposals.filter((p) => def.statuses!.includes(p.status as BidStatus));
+    const def = filterDefs.find((f) => f.key === filter);
+    const statuses = def?.statuses;
+    const pool = !statuses ? proposals : proposals.filter((p) => statuses.includes(p.status as BidStatus));
     return [...pool].sort((a, b) => {
       const order = statusOrder(a.status) - statusOrder(b.status);
       if (order !== 0) return order;
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
-  }, [proposals, filter]);
+  }, [proposals, filter, filterDefs]);
+
+  const statusLabel = (s: string) => t(`dashboard.client.bidStatus.${s}`);
 
   if (!hasProfile) {
     return (
       <DashboardEmptyState
         tone="elevated"
-        kicker="Profile"
+        kicker={t("dashboard.freelancer.proposalsEmptyProfileKicker")}
         icon={FileText}
-        title="Proposals live on your freelancer profile"
-        description="Create your profile and send bids on open jobs—every proposal you submit will show up here with status and amounts."
-        action={{ label: "Complete profile", href: "/freelancer/profile" }}
-        secondaryAction={{ label: "Browse jobs", href: "/jobs" }}
+        title={t("dashboard.freelancer.proposalsEmptyProfileTitle")}
+        description={t("dashboard.freelancer.proposalsEmptyProfileBody")}
+        action={{ label: t("dashboard.freelancer.proposalsEmptyProfilePrimary"), href: wp("/freelancer/profile") }}
+        secondaryAction={{
+          label: t("dashboard.freelancer.proposalsEmptyProfileSecondary"),
+          href: jobsBrowseRoot as Route
+        }}
       />
     );
   }
@@ -143,23 +165,38 @@ export function FreelancerProposalsWorkspace({
     return (
       <DashboardEmptyState
         tone="elevated"
-        kicker="Inbox"
+        kicker={t("dashboard.freelancer.proposalsEmptyInboxKicker")}
         icon={Inbox}
-        title="No proposals yet"
-        description="When you respond to a job with a bid, it appears here so you can track client decisions in one workspace."
-        action={{ label: "Browse open jobs", href: "/jobs" }}
+        title={t("dashboard.freelancer.proposalsEmptyInboxTitle")}
+        description={
+          <>
+            <p>{t("dashboard.freelancer.proposalsEmptyInboxLead")}</p>
+            {emptyOnboarding ? (
+              <ol className="mt-3 list-decimal space-y-1.5 pl-5 marker:font-semibold">
+                <li>{emptyOnboarding.step1}</li>
+                <li>{emptyOnboarding.step2}</li>
+                <li>{emptyOnboarding.step3}</li>
+              </ol>
+            ) : null}
+          </>
+        }
+        action={{ label: t("dashboard.freelancer.proposalsEmptyInboxPrimary"), href: jobsBrowseRoot as Route }}
       />
     );
   }
 
-  return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm text-slate-600">Filter by client response. Other statuses (e.g. withdrawn) stay in “All”.</p>
-      </div>
+  const activeFilterLabel = filterDefs.find((f) => f.key === filter)?.label ?? "";
 
-      <div role="tablist" aria-label="Proposal status" className="flex gap-1 overflow-x-auto rounded-lg border border-slate-200 bg-slate-50 p-1">
-        {FILTERS.map((f) => {
+  return (
+    <div className="nw-stack">
+      <p className="nw-type-body">{t("dashboard.freelancer.proposalsFilterHint")}</p>
+
+      <div
+        role="tablist"
+        aria-label={t("dashboard.freelancer.proposalsFilterAria")}
+        className="nw-card flex gap-1 overflow-x-auto p-1"
+      >
+        {filterDefs.map((f) => {
           const active = filter === f.key;
           const count = counts[f.key];
           return (
@@ -170,10 +207,8 @@ export function FreelancerProposalsWorkspace({
               aria-selected={active}
               onClick={() => setFilter(f.key)}
               className={cn(
-                "whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/30",
-                active
-                  ? "bg-white text-[#3525cd] ring-1 ring-slate-200/90"
-                  : "text-slate-600 hover:bg-white/60 hover:text-slate-900"
+                "whitespace-nowrap rounded-lg px-3 py-2 text-sm font-semibold transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/30",
+                active ? "bg-white text-[#3525cd] shadow-sm ring-1 ring-slate-200/90" : "text-slate-600 hover:bg-white/70 hover:text-slate-900"
               )}
             >
               {f.label}
@@ -186,55 +221,50 @@ export function FreelancerProposalsWorkspace({
       </div>
 
       {filtered.length === 0 ? (
-        <div className="rounded-xl border border-slate-200/90 bg-white p-8 text-center shadow-sm">
-          <p className="text-sm font-medium text-slate-900">Nothing in this view</p>
-          <p className="mx-auto mt-2 max-w-md text-sm text-slate-600">
-            No proposals match “{FILTERS.find((x) => x.key === filter)?.label}”. Try another tab or browse new roles.
+        <div className="nw-empty-state text-center">
+          <p className="text-sm font-semibold text-slate-900">{t("dashboard.freelancer.proposalsFilterEmptyTitle")}</p>
+          <p className="nw-type-body mx-auto mt-2 max-w-md">
+            {t("dashboard.freelancer.proposalsFilterEmptyBody", { filter: activeFilterLabel })}
           </p>
-          <Link
-            href={"/jobs" as Route}
-            className="mt-4 inline-flex text-sm font-semibold text-[#3525cd] underline-offset-4 hover:underline"
-          >
-            Browse jobs
+          <Link href={jobsBrowseRoot as Route} className={cn("nw-link-action mt-4 inline-flex justify-center font-semibold")}>
+            {t("dashboard.freelancer.proposalsFilterEmptyBrowse")}
           </Link>
         </div>
       ) : (
         <ul className="space-y-2.5">
-          {filtered.map((p) => (
-            <li key={p.id}>
-              <Link
-                href={`/jobs/${p.job.id}` as Route}
-                className={cn(
-                  "block rounded-lg border p-4 transition hover:border-slate-300 md:p-5",
-                  rowVisual(p.status)
-                )}
-              >
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                  <div className="min-w-0 flex-1">
-                    <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Job</p>
-                    <p className="mt-1 text-base font-semibold leading-snug text-slate-900">{p.job.title}</p>
-                    <p className="mt-2 text-sm text-slate-600">
-                      Submitted <time dateTime={p.createdAt}>{formatDate(p.createdAt)}</time>
-                      {p.estimatedDays != null ? ` · ~${p.estimatedDays} day timeline` : null}
-                    </p>
-                  </div>
-                  <div className="flex shrink-0 flex-col items-start gap-2 sm:items-end">
-                    <span
-                      className={cn(
-                        "inline-flex rounded-md px-2.5 py-0.5 text-xs font-semibold capitalize ring-1",
-                        statusPill(p.status)
-                      )}
+          {filtered.map((p) => {
+            const submitted = formatDate(p.createdAt, locale);
+            const eta =
+              p.estimatedDays != null ? t("dashboard.freelancer.proposalsRowEstimated", { days: p.estimatedDays }) : "";
+            return (
+              <li key={p.id}>
+                <div className={cn("nw-card nw-card-hover rounded-xl border p-4 md:p-5", rowTone(p.status))}>
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <Link
+                      href={`${jobsBrowseRoot}/${p.job.id}` as Route}
+                      className="min-w-0 flex-1 transition-opacity hover:opacity-90"
                     >
-                      {humanizeStatus(p.status)}
-                    </span>
-                    <p className="text-lg font-semibold tabular-nums text-slate-900">
-                      {money(p.amount, p.currency)}
-                    </p>
+                      <p className="nw-type-micro">{t("dashboard.freelancer.proposalsRowJobKicker")}</p>
+                      <p className="mt-1 text-base font-semibold leading-snug text-slate-900">{p.job.title}</p>
+                      <p className="nw-type-body mt-2">
+                        {t("dashboard.freelancer.proposalsRowSubmitted", { date: submitted })}
+                        {eta ? ` · ${eta}` : null}
+                      </p>
+                    </Link>
+                    <div className="flex shrink-0 flex-col items-start gap-2 sm:items-end">
+                      <span className={cn("inline-flex px-2.5 py-0.5 text-xs font-semibold normal-case", statusChipClass(p.status))}>
+                        {statusLabel(p.status)}
+                      </span>
+                      <p className="text-lg font-semibold tabular-nums text-slate-900">
+                        {formatMoneyAmount(p.amount, p.currency, { locale, maximumFractionDigits: 0 })}
+                      </p>
+                      <ModerationReportButton intent="bid" target={{ subjectType: "BID", subjectBidId: p.id }} />
+                    </div>
                   </div>
                 </div>
-              </Link>
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>

@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v71  
-> Last synchronized: 2026-05-01 — homepage visual alignment pass refined hero proportions and expanded marketing footer structure to match final target layout.
+> **Doc revision:** v99  
+> Last synchronized: 2026-05-12 — public staging: hide automation-shaped listings on Vercel (`VERCEL=1` + `synthetic-public-content`), support email `NEARWORK_SUPPORT_EMAIL` for `/help`, E2E/HTTP harness must use disposable DB only (never prod/staging public `DATABASE_URL`).
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -22,12 +22,13 @@ Platform ini dirancang untuk mendukung **semua jenis freelance**, bukan hanya pr
 
 - Kamus JSON: `apps/web/locales/en.json`, `apps/web/locales/id.json`.
 - Preferensi: cookie **`lang`** (`en` \| `id`); API: `POST /api/locale` dengan body JSON `{ "locale": "en" | "id" }`.
+- **Workspace routes:** permukaan `/client`, `/freelancer`, `/messages`, `/notifications`, `/settings` dialihkan ke **`/<lang>/…`** di URL publik; middleware melakukan rewrite ke file route yang sama dan menyetel header locale. `/admin` tidak di-prefix.
 - Provider: `I18nProvider` di root layout; server helpers: `getAppLocale()`, `getServerTranslator()`.
 - SEO routes: `app/[locale]` untuk halaman publik (`/en/*`, `/id/*`) dengan metadata per-locale + `alternates.languages` (`en`, `id`, `x-default`).
-- Cakupan terbaru: halaman detail job (`/jobs/[jobId]`), legal (`/terms`, `/privacy`), forbidden, dan nearby search sudah membaca kamus EN/ID.
+- Cakupan terbaru: halaman detail job (`/jobs/[jobId]`) termasuk form proposal + review owner, workspace `/messages`, legal (`/terms`, `/privacy`), forbidden, dan nearby search sudah membaca kamus EN/ID; struktur `public.jobDetail` di `id.json` selaras dengan `en.json` (label status job/bid).
 - **UGC translation (jobs only):** saat job dibuat, server mendeteksi bahasa (`id`/`en`) lalu menyimpan teks asli + terjemahan cache (`titleId`, `titleEn`, `descriptionId`, `descriptionEn`, `language`) agar render per-locale tidak memanggil API setiap request.
 - Integrasi translate berjalan **server-side only** via `GOOGLE_TRANSLATE_API_KEY` (jangan expose ke frontend).
-- Homepage publik (`/[locale]`) sekarang memakai metadata SEO yang lebih kuat per bahasa (title + description keyword-intent), serta copy produk yang lebih operasional untuk angle local freelancer + remote freelancer.
+- Homepage publik (`/[locale]`) memakai metadata SEO per bahasa untuk marketplace terstruktur (lokal/remote/hybrid + alur job/proposal/chat), hero dengan CTA terpisah klien vs freelancer, kartu alur proses menggantikan persona demo, serta section penjelasan cara kerja, manfaat audiens, trust, dan early-access.
 - Homepage publik menambahkan lapisan marketplace yang lebih aktif: category browse lane horizontal di bawah search, hero trust cues + quick browse link, dan listing preview row-style dengan atribut operasional (harga, lokasi, tags, action links) agar entry ke discovery lebih terasa seperti produk live.
 - Refinement terbaru menambah activity signals ringan di row preview, merapikan alignment data untuk compare cepat, mempertegas category lane sebagai navigasi, dan menambah cue urgensi operasional di hero tanpa elemen dekoratif berlebih.
 - Pass lanjutan memperkuat confidence memilih: tiap row punya alasan pemilihan singkat, top rows diberi penekanan ringan, CTA utama per-row dibuat lebih tegas daripada aksi sekunder, dan harga dilengkapi konteks value.
@@ -80,6 +81,7 @@ Platform ini dirancang untuk mendukung **semua jenis freelance**, bukan hanya pr
 - Pass lanjutan `/freelancers` memoles kualitas marketplace list: setiap row menonjolkan role + 1-line value statement + trust/rating + location/work mode + starting price + signals keputusan, CTA tetap satu (`View profile`), dan mode kosong kini menampilkan `Example freelancers` agar user tetap memahami struktur perbandingan sebelum data masuk.
 - Redesign terbaru `/freelancers` menggeser halaman menjadi tool hiring cepat: search bar dominan + quick tags, filter kiri yang ringkas/collapsible, list kandidat tengah dengan hierarchy keputusan (`Nama > Harga > Status > Rating`), panel kanan live insights, CTA utama `Chat`, serta section `Job terbaru dari klien` di bawah listing untuk menjaga continuity aksi.
 - Redesign terbaru `/jobs` mengubah halaman lowongan menjadi board operasional: search bar dominan + quick tags, struktur 3 kolom (filter kiri, list tengah, insight kanan), row lowongan berorientasi scan cepat (judul/client/lokasi/budget/waktu + badge urgensi), dan CTA utama `Apply` dengan `Lihat detail` sebagai aksi sekunder.
+- Pass **2026-05-09** menaikkan `/jobs` ke experience marketplace premium: hero gradien penuh + kartu pencarian mengambang, kartu lowongan dengan nama klien/verifikasi/skill/jumlah proposal nyata, pulse aktivitas dari job & bid terbaru, filter sheet mobile, strip insight tanpa metrik respons palsu; warna primer UI selaras brand `#3525cd`.
 - Navigasi global kini memiliki feedback transisi halaman: progress bar tipis di atas layar saat route berubah, dim/fade halus pada konten selama perpindahan, dan skeleton fallback global agar perpindahan tidak terasa “kedip”/blank.
 - Homepage final kini tetap clean namun tidak kosong: toggle dua mode, headline/CTA/search dinamis, visual context cards di sisi kanan hero, search penuh (keyword+lokkasi+kategori+chips), value strip 3 poin, dan CTA bawah—tanpa list job/freelancer atau panel data-heavy.
 - Micro-pass terbaru menyelaraskan proporsi dan ritme landing agar lebih “plek ketiplek” dengan referensi final: skala headline, shape visual kanan, quick chips bar, serta band CTA.
@@ -281,6 +283,20 @@ pnpm db:migrate
 pnpm dev
 ```
 
+This starts **all** packages that define a `dev` task (web, admin, worker, etc.). The **worker** reads `DATABASE_URL` from the **monorepo root** `.env` or `.env.local` (it does not load `apps/web/.env.local` automatically). If you only need the web UI, run:
+
+```bash
+pnpm --filter @acme/web dev
+```
+
+**Local dev — common noise in logs**
+
+| Symptom | What it usually means |
+|--------|------------------------|
+| `DATABASE_URL` / Prisma errors in **`@acme/worker`** | Root env missing or worker not needed — use root `.env` with `DATABASE_URL`, or run web-only (above). Without DB, the worker idles after a clear warning. |
+| `EMAXCONNSESSION` / `max clients reached` (pool ~15) | Hosted Postgres pooler session limit; reduce concurrent dev tabs/processes, or use a connection string / tier with a higher pool, or a **direct** (non-pooler) URL for local dev. |
+| `Cannot find module './…js'` / **`MODULE_NOT_FOUND`** on **`PATCH /api/freelancer-profiles`** (500 HTML) | Stale webpack chunks under **`apps/web/.next`** after incremental compile — stop dev, then **`pnpm --filter @acme/web dev:fresh`** (alias: **`pnpm --filter @acme/web clean`**, lalu **`pnpm --filter @acme/web dev`**). Smoke **`pnpm test:e2e`** memakai **`next start`** setelah build penuh agar tidak kena pola ini. |
+
 ### Type checking
 
 ```bash
@@ -298,6 +314,24 @@ pnpm exec tsc --noEmit -p apps/web
 | `pnpm db:migrate` | Dev migrations |
 | `pnpm db:migrate:deploy` | Prod/CI migrations |
 | `pnpm db:studio` | Prisma Studio |
+| `pnpm test` | Alias to unit tests |
+| `pnpm test:unit` | Vitest unit tests for policies/services/helpers/validators |
+| `pnpm test:e2e` | Build web + `next start` (port **3041** default), lalu HTTP smoke CSRF auth→job→bid→messages→report (`SKIP_E2E_BUILD=1`/`E2E_PORT`). Prefer **`DATABASE_URL_TEST`** (isolated DB); runner meng-override `DATABASE_URL` untuk proses build + server. |
+| `pnpm test:all` | Run unit then e2e |
+
+### Testing quickstart
+
+- Unit: `pnpm test:unit`
+- E2E:
+  1) Set **`DATABASE_URL_TEST`** ke Postgres sekali pakai (disarankan) atau set `DATABASE_URL` hanya ke DB test; **`SESSION_SECRET`** (≥16 karakter), migrasi (`pnpm db:migrate`), seed kategori/admin (`pnpm db:seed`) pada **DB test yang sama**
+  2) jalankan `pnpm test:e2e` — harness akan **`pnpm --filter @acme/web build`** lalu **`next start`** di **`127.0.0.1:3041`** (atur `E2E_PORT`). Untuk lewati rebuild: **`SKIP_E2E_BUILD=1 pnpm test:e2e`**
+  3) Smoke manual terhadap dev yang sedang jalan: **`BASE_URL=http://127.0.0.1:3000 node --test scripts/e2e-marketplace-flow.mjs`** — setelah ragu pada `.next`, pakai **`pnpm --filter @acme/web clean`** atau lebih baik pakai harness di langkah (2)
+- Manual / localhost: gunakan **`pnpm dev`** untuk alur produk penuh di browser; tidak ada suite browser otomatis di repo ini.
+- Keep test traffic off production / shared public staging:
+  - jalankan `pnpm test:e2e` hanya dengan **`DATABASE_URL_TEST`** atau `DATABASE_URL` yang mengarah ke DB throwaway — jangan menulis data tes ke DB staging publik pengunjung
+- Moderation/admin queue assertions in e2e:
+  - set `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` (or use seed defaults)
+  - run `pnpm db:seed` on test/staging DB only.
 
 ---
 
@@ -324,7 +358,7 @@ pnpm exec tsc --noEmit -p apps/web
 - Run `pnpm db:migrate:deploy`
 - HTTPS + review `next.config.ts` security headers / optional `NEARWORK_ENABLE_HSTS`
 - `pnpm exec tsc --noEmit -p apps/web`
-- Smoke: register → login → create job → submit bid
+- Smoke: register → login → create job → submit bid → (opsional) utas `JOB` + pesan pertama — lihat `scripts/e2e-marketplace-flow.mjs`
 
 ---
 
@@ -332,25 +366,36 @@ pnpm exec tsc --noEmit -p apps/web
 
 Topic docs live in **`docs/`**. See **`docs/DOCUMENTATION-MAINTENANCE.md`** for which files to touch when you change security, UI, or APIs.
 
+- **Production deploy gate (commands + env)** → [`docs/deploy-checklist.md`](docs/deploy-checklist.md)
 - **Apa produk ini (non-teknis)?** → [`docs/apa-itu-nearwork.md`](docs/apa-itu-nearwork.md)
-
 ### Vercel (monorepo → `apps/web`)
 
 **Commit `pnpm-lock.yaml`.** It must not be gitignored: without it, Turbo warns and Vercel can fall back to **npm** (~few dozen packages), which skips workspace linking and omits devDependencies your Next build needs (`tailwindcss`, Radix, etc.).
 
 **Recommended project settings (fixes unstyled `/login` + `/_next/static` 307 on deploy)**
 
-Use **Root Directory = `apps/web`** so Vercel treats the folder as a normal Next app (correct `/_next` routing). Do **not** set a custom **Output Directory** for Next.js — use the framework default (see [Vercel + Turborepo](https://vercel.com/docs/monorepos/turborepo)).
+Use one of these two valid setups (see [Vercel + Turborepo](https://vercel.com/docs/monorepos/turborepo)):
 
 | Setting | Value |
 |--------|--------|
-| **Root Directory** | **`apps/web`** (recommended) |
+| **Mode** | **Option A (recommended)** |
+| **Root Directory** | **`apps/web`** |
 | **Framework Preset** | Next.js |
 | **Install Command** | **`cd ../.. && pnpm install`** (already in **`apps/web/vercel.json`**) |
 | **Build Command** | **`cd ../.. && pnpm exec turbo run build --filter=@acme/web`** (same file) |
 | **Output Directory** | *(empty — framework default)* |
 
-If the Vercel project **Root Directory** is the **repository root** (default for many imports), the root **`vercel.json`** must include **`"outputDirectory": "apps/web/.next"`** so Vercel finds the Next build output (otherwise deploy fails: *Next.js output directory ".next" was not found*). Middleware skips **`/_next`** so static CSS/JS are not redirected. Prefer **Root Directory = `apps/web`** long-term: then clear **Output Directory** in the dashboard and rely on **`apps/web/vercel.json`** only.
+Option B (root deploy) tetap valid:
+
+| Setting | Value |
+|--------|--------|
+| **Mode** | **Option B** |
+| **Root Directory** | repository root |
+| **Install Command** | `pnpm install` |
+| **Build Command** | `pnpm exec turbo run build --filter=@acme/web` |
+| **Output Directory** | `apps/web/.next` |
+
+Do not mix **Root Directory = `apps/web`** with **Output Directory = `apps/web/.next`**; that mismatch can break artifact lookup paths.
 
 **Prisma:** `@acme/database` runs **`postinstall`: `prisma generate`** — no DB connection required for generate.
 

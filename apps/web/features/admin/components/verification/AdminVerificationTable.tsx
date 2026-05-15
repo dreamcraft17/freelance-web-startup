@@ -37,7 +37,7 @@ function StatusPill({ status, label }: { status: VerificationStatus; label: stri
 
   return (
     <span
-      className={`inline-flex max-w-full truncate rounded px-1.5 py-0.5 font-mono text-[11px] font-medium ring-1 ${tone}`}
+      className={`nw-chip inline-flex max-w-full truncate font-mono normal-case tracking-normal ring-1 ${tone}`}
       title={status}
     >
       {label}

@@ -78,18 +78,18 @@ export async function MarketingSiteFooter() {
           </nav>
 
           <div className="lg:col-span-3">
-            <p className="text-sm font-semibold text-slate-900">Dapatkan tips dan update terbaru</p>
+            <p className="text-sm font-semibold text-slate-900">{t("footer.newsletterTitle")}</p>
             <form className="mt-3 flex items-center gap-2">
               <input
                 type="email"
-                placeholder="Email Anda"
+                placeholder={t("footer.newsletterEmailPlaceholder")}
                 className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-[#4f35e8] focus:outline-none"
               />
               <button
                 type="button"
                 className="inline-flex items-center justify-center rounded-lg bg-[#4f35e8] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#4326d9]"
               >
-                Berlangganan
+                {t("footer.newsletterSubscribe")}
               </button>
             </form>
           </div>

@@ -212,6 +212,86 @@ export const markNotificationReadBodySchema = z.object({
   read: z.literal(true)
 });
 
+const moderationCategories = ["spam", "harassment", "scam", "policy", "ip", "other"] as const;
+
+export const createModerationReportSchema = z.discriminatedUnion("subjectType", [
+  z.object({
+    subjectType: z.literal("USER"),
+    subjectUserId: z.string().min(1),
+    category: z.enum(moderationCategories),
+    description: z.string().min(10).max(8000)
+  }),
+  z.object({
+    subjectType: z.literal("JOB"),
+    subjectJobId: z.string().min(1),
+    category: z.enum(moderationCategories),
+    description: z.string().min(10).max(8000)
+  }),
+  z.object({
+    subjectType: z.literal("BID"),
+    subjectBidId: z.string().min(1),
+    category: z.enum(moderationCategories),
+    description: z.string().min(10).max(8000)
+  }),
+  z.object({
+    subjectType: z.literal("REVIEW"),
+    subjectReviewId: z.string().min(1),
+    category: z.enum(moderationCategories),
+    description: z.string().min(10).max(8000)
+  }),
+  z.object({
+    subjectType: z.literal("MESSAGE_THREAD"),
+    subjectThreadId: z.string().min(1),
+    category: z.enum(moderationCategories),
+    description: z.string().min(10).max(8000)
+  }),
+  z.object({
+    subjectType: z.literal("MESSAGE"),
+    subjectMessageId: z.string().min(1),
+    category: z.enum(moderationCategories),
+    description: z.string().min(10).max(8000)
+  })
+]);
+
+export const patchModerationReportSchema = z
+  .object({
+    status: z.enum(["OPEN", "IN_REVIEW", "RESOLVED", "DISMISSED"]).optional(),
+    assignedToStaffUserId: z.union([z.string().min(1).max(64), z.null()]).optional(),
+    resolutionSummary: z.string().max(2000).optional(),
+    addNote: z.string().min(1).max(6000).optional()
+  })
+  .superRefine((data, ctx) => {
+    const keys = ["status", "assignedToStaffUserId", "resolutionSummary", "addNote"] as const;
+    const any = keys.some((k) => data[k] !== undefined);
+    if (!any) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "At least one field is required",
+        path: []
+      });
+    }
+  });
+
+export const addModerationReportNoteSchema = z.object({
+  body: z.string().min(1).max(6000)
+});
+
+export const staffSetJobModerationSchema = z.object({
+  hidden: z.boolean(),
+  reason: z.string().max(2000).optional()
+});
+
+export const staffSetUserModerationSchema = z.object({
+  accountStatus: z.enum(["ACTIVE", "SUSPENDED"])
+});
+
+export const adminReportsQuerySchema = paginationSchema.extend({
+  status: z.enum(["OPEN", "IN_REVIEW", "RESOLVED", "DISMISSED"]).optional(),
+  subjectType: z.enum(["USER", "JOB", "BID", "REVIEW", "MESSAGE_THREAD", "MESSAGE"]).optional(),
+  assignedToStaffUserId: z.string().max(72).optional(),
+  q: z.string().max(200).optional()
+});
+
 export const categoryListQuerySchema = paginationSchema.extend({
   parentSlug: z.string().optional()
 });
@@ -244,3 +324,8 @@ export type MarkNotificationReadBodyDto = z.infer<typeof markNotificationReadBod
 export type CategoryListQueryDto = z.infer<typeof categoryListQuerySchema>;
 export type SkillListQueryDto = z.infer<typeof skillListQuerySchema>;
 export type FreelancerProfileUsernameQueryDto = z.infer<typeof freelancerProfileUsernameQuerySchema>;
+export type CreateModerationReportDto = z.infer<typeof createModerationReportSchema>;
+export type PatchModerationReportDto = z.infer<typeof patchModerationReportSchema>;
+export type StaffSetJobModerationDto = z.infer<typeof staffSetJobModerationSchema>;
+export type StaffSetUserModerationDto = z.infer<typeof staffSetUserModerationSchema>;
+export type AdminReportsQueryDto = z.infer<typeof adminReportsQuerySchema>;

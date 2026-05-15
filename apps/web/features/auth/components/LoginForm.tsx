@@ -6,6 +6,7 @@ import { useCallback, useId, useMemo, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import type { UserRole } from "@acme/types";
 import { resolvePostLoginRedirect, sanitizeReturnUrl } from "@src/lib/return-url";
+import { stripLeadingLocaleFromWorkspacePath } from "@/lib/i18n/workspace-path";
 import { buildLoginToRegisterHref, loginIntentMessageKey, type AuthIntent } from "@/features/auth/lib/auth-intent";
 import { useI18n } from "@/features/i18n/I18nProvider";
 import { clearPasswordFieldsInForm } from "@/features/auth/lib/clear-form-password-fields";
@@ -30,19 +31,25 @@ export type LoginFormProps = {
   intent?: AuthIntent;
 };
 
+function pathOnlyForReturnHint(raw: string): string {
+  const q = raw.indexOf("?");
+  return q === -1 ? raw : raw.slice(0, q);
+}
+
 function returnUrlMessageKey(safeReturn: string): string | null {
   if (safeReturn === "/") return null;
-  if (safeReturn === "/client" || safeReturn.startsWith("/client/")) return "auth.login.continueClient";
-  if (safeReturn === "/freelancer" || safeReturn.startsWith("/freelancer/")) return "auth.login.continueFreelancer";
-  if (safeReturn === "/messages" || safeReturn.startsWith("/messages/")) return "auth.login.continueMessages";
-  if (safeReturn === "/notifications" || safeReturn.startsWith("/notifications/")) return "auth.login.continueNotifications";
-  if (safeReturn === "/settings" || safeReturn.startsWith("/settings/")) return "auth.login.continueSettings";
-  if (safeReturn === "/admin" || safeReturn.startsWith("/admin/")) return "auth.login.continueAdmin";
+  const p = stripLeadingLocaleFromWorkspacePath(pathOnlyForReturnHint(safeReturn));
+  if (p === "/client" || p.startsWith("/client/")) return "auth.login.continueClient";
+  if (p === "/freelancer" || p.startsWith("/freelancer/")) return "auth.login.continueFreelancer";
+  if (p === "/messages" || p.startsWith("/messages/")) return "auth.login.continueMessages";
+  if (p === "/notifications" || p.startsWith("/notifications/")) return "auth.login.continueNotifications";
+  if (p === "/settings" || p.startsWith("/settings/")) return "auth.login.continueSettings";
+  if (p === "/admin" || p.startsWith("/admin/")) return "auth.login.continueAdmin";
   return "auth.login.continueGeneric";
 }
 
 export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const formId = useId();
   const emailId = `${formId}-email`;
   const passwordId = `${formId}-password`;
@@ -107,7 +114,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
 
         const role = body.data.session.role;
         form.reset();
-        window.location.assign(resolvePostLoginRedirect(role, returnUrl));
+        window.location.assign(resolvePostLoginRedirect(role, returnUrl, locale));
       } catch (err) {
         const msg = err instanceof Error && err.message ? err.message : t("auth.login.errorRequestFailed");
         setError(
@@ -119,7 +126,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
         setLoading(false);
       }
     },
-    [loading, returnUrl, t]
+    [loading, locale, returnUrl, t]
   );
 
   return (
@@ -149,6 +156,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
         {error ? (
           <p
             role="alert"
+            data-testid="login-error"
             className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800"
           >
             {error}
@@ -161,6 +169,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
           </label>
           <input
             id={emailId}
+            data-testid="login-email"
             name="email"
             type="email"
             autoComplete="email"
@@ -186,6 +195,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
           <div className="relative">
             <input
               id={passwordId}
+              data-testid="login-password"
               name="password"
               type={showPassword ? "text" : "password"}
               autoComplete="current-password"
@@ -208,6 +218,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
 
         <button
           type="submit"
+          data-testid="login-submit"
           disabled={loading}
           className="flex w-full items-center justify-center rounded-lg bg-[#3525cd] px-4 py-3 text-sm font-semibold text-white shadow-md transition-colors hover:bg-[#4f46e5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3525cd] disabled:pointer-events-none disabled:opacity-60"
         >

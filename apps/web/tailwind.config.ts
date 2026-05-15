@@ -44,6 +44,20 @@ const config: Config = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)"
+      },
+      fontSize: {
+        /** Editorial scale — pair with nw-type-* utilities in globals.css */
+        "nw-lead": ["1rem", { lineHeight: "1.48", fontWeight: "600" }],
+        "nw-body": ["0.8125rem", { lineHeight: "1.52" }],
+        "nw-caption": ["0.6875rem", { lineHeight: "1.4" }]
+      },
+      boxShadow: {
+        "nw-card": "0 1px 2px rgba(15, 23, 42, 0.05)",
+        "nw-card-hover": "0 4px 16px -6px rgba(15, 23, 42, 0.09)",
+        "nw-elevated": "0 2px 12px -4px rgba(15, 23, 42, 0.08)"
+      },
+      transitionDuration: {
+        "nw": "180ms"
       }
     }
   },

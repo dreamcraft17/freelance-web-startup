@@ -1,7 +1,7 @@
 # Documentation maintenance (NearWork)
 
-> **Doc revision:** v6  
-> Last synchronized: 2026-04-20
+> **Doc revision:** v23  
+> Last synchronized: 2026-05-12 (deploy checklist: synthetic public listings + test DB vs prod `DATABASE_URL`; README sync).
 
 ## AUTO — wajib untuk AI & kontributor
 
@@ -42,13 +42,14 @@ When you change **product behavior**, **security**, **UI patterns**, **env/deplo
 | Public discovery / anti-scraping / rate limits | `README.md`, `audit.md`, `features.md`, `docs/application-overview.md` |
 | UI / design tokens / landing / footer / locale | `ui-redesign.md`, `features.md`, `docs/application-overview.md`, `README.md` |
 | Database / Prisma / migrations | `packages/database/README.md`, `audit.md` if risk-related |
+| Deploy / env / release gate | `docs/deploy-checklist.md`, `README.md` if operator-facing |
 | Roles / billing / taxonomy | Matching file under `docs/*.md` |
 | **Positioning / “produk apa ini?”** (bahasa non-teknis) | `docs/apa-itu-nearwork.md` (+ tautan di `README.md` bagian Documentation) |
 
 ## Repo map
 
 - **Root:** `README.md`, `audit.md`, `features.md`, `ui-redesign.md`, `credential.md` (dev seed notes only — **never** put production secrets here; file is gitignored from commits when using local-only copies).
-- **`docs/`:** product and engineering references — termasuk **`docs/apa-itu-nearwork.md`** untuk penjelasan produk singkat.
+- **`docs/`:** product and engineering references — termasuk **`docs/apa-itu-nearwork.md`** untuk penjelasan produk singkat dan **`docs/deploy-checklist.md`** untuk gate deploy produksi.
 - **`packages/*/README.md`:** package-specific setup.
 
 ## Metadata baris kedua

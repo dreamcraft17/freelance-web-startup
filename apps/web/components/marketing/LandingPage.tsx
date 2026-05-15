@@ -1,4 +1,8 @@
-import { LandingHero } from "@/components/marketing/LandingHero";
+import { LandingHero, type LandingCategoryOption } from "@/components/marketing/LandingHero";
+import { LandingHomeSections } from "@/components/marketing/LandingHomeSections";
+import { LandingLiveMarketplacePreview } from "@/components/marketing/LandingLiveMarketplacePreview";
+import { CategoryService } from "@/server/services/category.service";
+import { PublicStatsService } from "@/server/services/public-stats.service";
 
 export type LandingIntent = "hire" | "work" | "neutral";
 
@@ -8,6 +12,16 @@ export function resolveLandingIntent(intent: string | undefined): LandingIntent 
   return "hire";
 }
 
+async function loadLandingCategories(): Promise<LandingCategoryOption[]> {
+  try {
+    const catRes = await new CategoryService().list({ page: 1, limit: 100 });
+    if (catRes.mode !== "categories") return [];
+    return catRes.items.map((c) => ({ id: c.id, name: c.name }));
+  } catch {
+    return [];
+  }
+}
+
 export async function LandingPage({
   intent = "hire",
   homePath = "/"
@@ -15,9 +29,14 @@ export async function LandingPage({
   intent?: LandingIntent;
   homePath?: string;
 }) {
+  const categories = await loadLandingCategories();
+  const marketplaceMomentum = await new PublicStatsService().getMarketplaceMomentumSnapshot();
+
   return (
-    <main className="nw-page pb-16 text-[#071027] selection:bg-[#4f35e8]/15 selection:text-[#071027]">
-      <LandingHero intent={intent} homePath={homePath} />
+    <main className="nw-page pb-16 text-[#071027] selection:bg-[#3525cd]/15 selection:text-[#071027]">
+      <LandingHero intent={intent} homePath={homePath} categories={categories} marketplaceMomentum={marketplaceMomentum} />
+      <LandingLiveMarketplacePreview />
+      <LandingHomeSections />
     </main>
   );
 }

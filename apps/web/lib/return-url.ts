@@ -1,4 +1,5 @@
 import { UserRole } from "@acme/types";
+import type { AppLocale } from "@/lib/i18n/types";
 
 const MAX_RETURN_URL_LEN = 2048;
 
@@ -48,22 +49,26 @@ export function sanitizeReturnUrl(raw: string | null | undefined, fallback: stri
  * Default home path after auth when no `returnUrl` applies (or it is invalid).
  * CLIENT/FREELANCER keep product dashboards; staff roles use /admin; other roles fall back to /settings.
  */
-export function homePathForSessionRole(role: UserRole): string {
+export function homePathForSessionRole(role: UserRole, locale: AppLocale = "id"): string {
   if (isStaffWorkspaceRole(role)) return "/admin";
   switch (role) {
     case UserRole.FREELANCER:
-      return "/freelancer";
+      return `/${locale}/freelancer`;
     case UserRole.CLIENT:
-      return "/client";
+      return `/${locale}/client`;
     default:
-      return "/settings";
+      return `/${locale}/settings`;
   }
 }
 
 /**
  * Single entry for post-login / post-register redirects: same-origin returnUrl wins when valid, else role home.
  */
-export function resolvePostLoginRedirect(role: UserRole, returnUrl: string | null | undefined): string {
-  const fallback = homePathForSessionRole(role);
+export function resolvePostLoginRedirect(
+  role: UserRole,
+  returnUrl: string | null | undefined,
+  locale: AppLocale = "id"
+): string {
+  const fallback = homePathForSessionRole(role, locale);
   return sanitizeReturnUrl(returnUrl ?? null, fallback);
 }

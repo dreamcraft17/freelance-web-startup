@@ -3,7 +3,10 @@ import type { NextRequest } from "next/server";
 import { AccountStatus } from "@acme/types";
 import { canAccessAdminPage, isStaffRole } from "@/features/admin/lib/access";
 import { LOCALE_COOKIE } from "@/lib/i18n/constants";
+import { resolveNavigationLocale } from "@/lib/i18n/navigation-locale";
 import { resolveLocale } from "@/lib/i18n/resolve-locale";
+import type { AppLocale } from "@/lib/i18n/types";
+import { isUnprefixedWorkspacePath, matchPrefixedWorkspacePath } from "@/lib/i18n/workspace-path";
 import {
   getSessionFromRequest,
   homePathForSessionRole,
@@ -19,7 +22,16 @@ function localeDebugEnabled(): boolean {
   return process.env.NEARWORK_DEBUG_LOCALE === "1";
 }
 
-function preferredLocale(request: NextRequest): "en" | "id" {
+function localeCookieOptions() {
+  return {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 365,
+    sameSite: "lax" as const,
+    secure: process.env.NODE_ENV === "production"
+  };
+}
+
+function preferredLocale(request: NextRequest): AppLocale {
   const cookieLocale = request.cookies.get(LOCALE_COOKIE)?.value;
   const acceptLanguage = request.headers.get("accept-language");
   const resolved = resolveLocale(cookieLocale, null);
@@ -38,6 +50,16 @@ function preferredLocale(request: NextRequest): "en" | "id" {
   }
 
   return resolved;
+}
+
+/** Cookie preference, overridden by same-origin Referer `/en|id/` when navigating to unprefixed paths. */
+function navigationLocale(request: NextRequest): AppLocale {
+  return resolveNavigationLocale(
+    request.cookies.get(LOCALE_COOKIE)?.value,
+    request.headers.get("referer"),
+    request.headers.get("sec-fetch-site"),
+    request.nextUrl.origin
+  );
 }
 
 function isAuthPublicPath(pathname: string): boolean {
@@ -88,13 +110,45 @@ export default async function middleware(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = `/${locale}`;
     const response = NextResponse.redirect(url);
-    response.cookies.set(LOCALE_COOKIE, locale, {
-      path: "/",
-      maxAge: 60 * 60 * 24 * 365,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production"
-    });
+    response.cookies.set(LOCALE_COOKIE, locale, localeCookieOptions());
     return response;
+  }
+
+  const prefixedWorkspace = matchPrefixedWorkspacePath(pathname);
+  if (prefixedWorkspace) {
+    const { locale: wsLocale, internalPath } = prefixedWorkspace;
+    const sessionWs = await getSessionFromRequest(request);
+    if (!sessionWs) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/login";
+      url.searchParams.delete("returnUrl");
+      const candidate = pathname + request.nextUrl.search;
+      const safe = sanitizeReturnUrl(candidate, "/");
+      if (safe !== "/") {
+        url.searchParams.set("returnUrl", safe);
+      }
+      url.searchParams.set("intent", "protected");
+      return NextResponse.redirect(url);
+    }
+
+    const rewriteUrl = request.nextUrl.clone();
+    rewriteUrl.pathname = internalPath;
+    const wsHeaders = new Headers(request.headers);
+    wsHeaders.set("x-nearwork-locale", wsLocale);
+    const rewriteResponse = NextResponse.rewrite(rewriteUrl, {
+      request: { headers: wsHeaders }
+    });
+    rewriteResponse.cookies.set(LOCALE_COOKIE, wsLocale, localeCookieOptions());
+    return rewriteResponse;
+  }
+
+  if (isUnprefixedWorkspacePath(pathname)) {
+    const locale = navigationLocale(request);
+    const url = request.nextUrl.clone();
+    url.pathname = `/${locale}${pathname}`;
+    const redirectLocale = NextResponse.redirect(url);
+    redirectLocale.cookies.set(LOCALE_COOKIE, locale, localeCookieOptions());
+    return redirectLocale;
   }
 
   const localeMatch = pathname.match(LOCALE_PREFIX);
@@ -107,30 +161,28 @@ export default async function middleware(request: NextRequest) {
         headers: requestHeaders
       }
     });
-    response.cookies.set(LOCALE_COOKIE, locale, {
-      path: "/",
-      maxAge: 60 * 60 * 24 * 365,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production"
-    });
+    response.cookies.set(LOCALE_COOKIE, locale, localeCookieOptions());
     return response;
   }
 
   if (SEO_PREFIX_PATH.test(pathname)) {
-    const locale = preferredLocale(request);
+    const locale = navigationLocale(request);
     const url = request.nextUrl.clone();
     url.pathname = `/${locale}${pathname}`;
-    return NextResponse.redirect(url);
+    const seoRedirect = NextResponse.redirect(url);
+    seoRedirect.cookies.set(LOCALE_COOKIE, locale, localeCookieOptions());
+    return seoRedirect;
   }
 
   const session = await getSessionFromRequest(request);
+  const navLocale = navigationLocale(request);
 
   if (isAuthPublicPath(pathname)) {
     const authPath = pathname.toLowerCase();
     if ((authPath === "/login" || authPath === "/register") && session) {
       const rawReturn =
         request.nextUrl.searchParams.get("returnUrl") ?? request.nextUrl.searchParams.get("next");
-      const target = resolvePostLoginRedirect(session.role, rawReturn);
+      const target = resolvePostLoginRedirect(session.role, rawReturn, navLocale);
       return NextResponse.redirect(new URL(target, request.url));
     }
     return NextResponse.next();
@@ -158,7 +210,7 @@ export default async function middleware(request: NextRequest) {
       }
       if (!isStaffRole(session.role)) {
         // Logged-in marketplace user: send them to their workspace instead of a dead-end forbidden page.
-        const dest = homePathForSessionRole(session.role);
+        const dest = homePathForSessionRole(session.role, navLocale);
         return NextResponse.redirect(new URL(dest, request.url));
       }
       if (!canAccessAdminPage(session.role, pathname)) {

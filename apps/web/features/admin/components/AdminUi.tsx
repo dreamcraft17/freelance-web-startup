@@ -13,14 +13,14 @@ export function AdminPageIntro({
   badge?: string;
 }) {
   return (
-    <header className="mb-4 border-b border-slate-200/80 pb-4">
+    <header className="mb-4 border-b border-slate-200/80 pb-3.5">
       {badge ? (
-        <p className="mb-2 inline-flex rounded-full bg-slate-200 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-700">
+        <p className="mb-1.5 inline-flex rounded-full bg-slate-200 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-700">
           {badge}
         </p>
       ) : null}
-      <h2 className="text-2xl font-bold tracking-tight text-slate-900">{title}</h2>
-      <p className="mt-1 max-w-3xl text-sm text-slate-600">{description}</p>
+      <h2 className="nw-type-display text-slate-900 sm:text-[1.5rem]">{title}</h2>
+      <p className="nw-type-body mt-1 max-w-3xl">{description}</p>
     </header>
   );
 }
@@ -31,8 +31,8 @@ export function AdminStatGrid({ children }: { children: ReactNode }) {
 
 export function AdminStatSection({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="space-y-2">
-      <h3 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">{title}</h3>
+    <section className="space-y-1.5">
+      <h3 className="nw-type-micro">{title}</h3>
       {children}
     </section>
   );
@@ -71,10 +71,10 @@ export function formatAdminDateTime(d: Date): string {
 
 export function AdminStatCard({ label, value, hint }: { label: string; value: string; hint?: string }) {
   return (
-    <article className="rounded-lg border border-slate-200 bg-white p-3.5">
-      <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{label}</p>
-      <p className="mt-1.5 text-2xl font-semibold text-slate-900">{value}</p>
-      {hint ? <p className="mt-1 text-xs text-slate-500">{hint}</p> : null}
+    <article className="rounded-lg border border-slate-200 bg-white p-3">
+      <p className="nw-type-micro">{label}</p>
+      <p className="mt-1 text-xl font-semibold text-slate-900">{value}</p>
+      {hint ? <p className="nw-type-meta mt-1 normal-case tracking-normal">{hint}</p> : null}
     </article>
   );
 }

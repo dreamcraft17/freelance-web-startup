@@ -6,6 +6,7 @@ import { BrandLogo } from "@/features/shared/components/BrandLogo";
 import { LocaleSwitcher } from "@/features/i18n/LocaleSwitcher";
 import { parseAuthIntent } from "@/features/auth/lib/auth-intent";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 
 type PageProps = {
   searchParams: Promise<{ returnUrl?: string; next?: string; intent?: string }>;
@@ -17,7 +18,8 @@ export default async function LoginPage({ searchParams }: PageProps) {
   const returnUrl = sp.returnUrl ?? sp.next;
   const intent = parseAuthIntent(sp.intent);
   const year = new Date().getFullYear();
-  const { t } = await getServerTranslator();
+  const { t, locale } = await getServerTranslator();
+  const helpPath = withPublicLocale(locale, "/help");
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 px-4 py-8 sm:py-12">
@@ -25,7 +27,7 @@ export default async function LoginPage({ searchParams }: PageProps) {
         <div className="w-full max-w-md rounded-2xl border border-slate-200/90 bg-white p-8 shadow-[0_2px_28px_-6px_rgba(15,23,42,0.12)] ring-1 ring-slate-100 sm:p-10">
           <div className="mb-10 flex justify-center px-1">
             <BrandLogo
-              href={"/" as Route}
+              href={withPublicLocale(locale, "/") as Route}
               imageClassName="h-[5.25rem] w-auto max-w-full object-contain sm:h-28 md:h-32"
               alt="NearWork logo"
             />
@@ -38,19 +40,19 @@ export default async function LoginPage({ searchParams }: PageProps) {
             className="mt-10 grid grid-cols-3 gap-3 border-t border-slate-200 pt-8 text-center text-xs text-slate-500"
           >
             <Link
-              href={"/privacy" as Route}
+              href={withPublicLocale(locale, "/privacy") as Route}
               className="truncate font-medium text-slate-600 underline-offset-4 hover:text-[#3525cd] hover:underline sm:whitespace-normal"
             >
               {t("footer.privacy")}
             </Link>
             <Link
-              href={"/terms" as Route}
+              href={withPublicLocale(locale, "/terms") as Route}
               className="truncate font-medium text-slate-600 underline-offset-4 hover:text-[#3525cd] hover:underline sm:whitespace-normal"
             >
               {t("footer.terms")}
             </Link>
             <Link
-              href={"/help" as Route}
+              href={helpPath as Route}
               className="truncate font-medium text-slate-600 underline-offset-4 hover:text-[#3525cd] hover:underline sm:whitespace-normal"
             >
               {t("footer.help")}

@@ -4,9 +4,14 @@ import type { Route } from "next";
 import Link from "next/link";
 import { HeartHandshake } from "lucide-react";
 import { SupportPlatformCta } from "@/features/monetization/components/SupportPlatformCta";
+import { useI18n } from "@/features/i18n/I18nProvider";
+import { withPublicLocale } from "@/lib/i18n/locale-path";
 import { SettingsSectionCard } from "@/components/settings/SettingsSectionCard";
 
 export function SettingsSupportBlock() {
+  const { locale } = useI18n();
+  const helpPath = withPublicLocale(locale, "/help");
+
   return (
     <SettingsSectionCard
       icon={HeartHandshake}
@@ -19,7 +24,7 @@ export function SettingsSupportBlock() {
           <p>
             Questions, feedback, and roadmap notes belong in our{" "}
             <Link
-              href={"/help" as Route}
+              href={helpPath as Route}
               className="font-medium text-[#3525cd] underline-offset-4 hover:underline"
             >
               help center
