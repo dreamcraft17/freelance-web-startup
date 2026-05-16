@@ -44,6 +44,19 @@ describe("validators", () => {
     ).toBe(true);
 
     expect(
+      createJobSchema.safeParse({
+        title: "Build onboarding flow",
+        description: "Need complete onboarding redesign with reusable components and copy.",
+        categoryId: "cat_1",
+        workMode: "REMOTE",
+        budgetType: "FIXED",
+        budgetMin: 100,
+        budgetMax: 500,
+        currency: "EUR"
+      }).success
+    ).toBe(false);
+
+    expect(
       submitBidSchema.safeParse({
         jobId: "job_1",
         coverLetter: "x".repeat(30),

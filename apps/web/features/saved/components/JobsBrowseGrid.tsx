@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useI18n } from "@/features/i18n/I18nProvider";
-import { formatMoneyAmount } from "@/lib/format-money";
+import { budgetListingUsesCompactNotation, formatMoneyAmount, normalizeCurrencyCode } from "@/lib/format-money";
 import type { AppLocale } from "@/lib/i18n/types";
 import { withPublicLocale } from "@/lib/i18n/locale-path";
 import { SaveJobButton } from "./SaveJobButton";
@@ -27,7 +27,12 @@ type ApiErr = { success: false };
 
 function budgetLabel(job: SerializableJobCard, locale: AppLocale): string {
   const { budgetMin: min, budgetMax: max, currency, budgetType } = job;
-  const opt = { locale, maximumFractionDigits: 0 } as const;
+  const cur = normalizeCurrencyCode(currency);
+  const opt = {
+    locale,
+    maximumFractionDigits: cur === "IDR" ? 0 : 2,
+    compact: budgetListingUsesCompactNotation(cur)
+  } as const;
   if (min != null && max != null)
     return `${formatMoneyAmount(min, currency, opt)} – ${formatMoneyAmount(max, currency, opt)}`;
   if (min != null) return `From ${formatMoneyAmount(min, currency, opt)}`;

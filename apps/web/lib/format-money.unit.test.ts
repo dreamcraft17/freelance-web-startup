@@ -1,8 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
+  budgetListingUsesCompactNotation,
   coerceMoneyNumber,
   defaultFreelancerRateCurrency,
   exampleNumericMoneyPlaceholder,
+  formatMoney,
+  formatBudgetRange,
   formatMoneyAmount,
   formatMoneyRange,
   normalizeCurrencyCode,
@@ -21,15 +24,13 @@ describe("normalizeCurrencyCode", () => {
 });
 
 describe("resolveIntlLocaleForMoney", () => {
-  it("uses id-ID for IDR regardless of app locale", () => {
-    expect(resolveIntlLocaleForMoney("en", "IDR")).toBe("id-ID");
-    expect(resolveIntlLocaleForMoney("id", "IDR")).toBe("id-ID");
-  });
-  it("uses id-ID for Indonesian UI with USD", () => {
-    expect(resolveIntlLocaleForMoney("id", "USD")).toBe("id-ID");
-  });
-  it("uses en-US for English UI non-IDR", () => {
+  it("uses en-US for English UI regardless of ISO currency (locale ≠ currency unit)", () => {
+    expect(resolveIntlLocaleForMoney("en", "IDR")).toBe("en-US");
     expect(resolveIntlLocaleForMoney("en", "USD")).toBe("en-US");
+  });
+  it("uses id-ID for Indonesian UI so USD still displays as dollars (e.g. US$)", () => {
+    expect(resolveIntlLocaleForMoney("id", "USD")).toBe("id-ID");
+    expect(resolveIntlLocaleForMoney("id", "IDR")).toBe("id-ID");
   });
 });
 
@@ -53,6 +54,29 @@ describe("formatMoneyAmount", () => {
   it("USD with English locale uses en-US grouping", () => {
     const s = formatMoneyAmount(120, "USD", { locale: "en" });
     expect(s).toMatch(/120|\$120/);
+  });
+  it("IDR with English locale uses en-US (not Indonesian Rp grouping) when not compact", () => {
+    const s = formatMoneyAmount(500_000, "IDR", { locale: "en", maximumFractionDigits: 0 });
+    expect(s).toMatch(/IDR/);
+    expect(s).not.toMatch(/rb|jt/);
+  });
+  it("IDR compact in English uses K-style via Intl", () => {
+    const s = formatMoneyAmount(500_000, "IDR", { locale: "en", compact: true });
+    expect(s.toUpperCase()).toMatch(/500|K/);
+  });
+});
+
+describe("budgetListingUsesCompactNotation", () => {
+  it("is true for IDR only", () => {
+    expect(budgetListingUsesCompactNotation("IDR")).toBe(true);
+    expect(budgetListingUsesCompactNotation("USD")).toBe(false);
+  });
+});
+
+describe("formatMoney / formatBudgetRange aliases", () => {
+  it("matches formatMoneyAmount / formatMoneyRange", () => {
+    expect(formatMoney(50, "USD", "en")).toBe(formatMoneyAmount(50, "USD", { locale: "en" }));
+    expect(formatBudgetRange(1, 2, "USD", "en")).toBe(formatMoneyRange(1, 2, "USD", { locale: "en" }));
   });
 });
 

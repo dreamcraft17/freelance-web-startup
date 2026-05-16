@@ -1,7 +1,7 @@
 # NearWork Application Overview
 
-> **Doc revision:** v109  
-> Last synchronized: 2026-05-12 (E2E runner loads root + `apps/web/.env.local` before DB check).
+> **Doc revision:** v111  
+> Last synchronized: 2026-05-11 (marketplace money: UI locale ≠ job currency; Prisma default `Job.currency` IDR).
 
 Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fitur, arsitektur singkat, dan peta route utama.
 
@@ -9,6 +9,7 @@ Dokumen ini menjelaskan gambaran umum aplikasi NearWork: tujuan produk, area fit
 
 ## Update status (April 2026)
 
+- **Marketplace currency rules (2026-05-11):** Budget dan penawaran memakai **`Job.currency`** (IDR atau USD). Locale (`/en` vs `/id`) mengontrol format angka **`Intl`** (`en-US` vs `id-ID`), bukan mengonversi mata uang. Form klien memilih **IDR/USD**; default UI **IDR** saat locale Indonesia dan **USD** saat English.
 - **Loading/perceived-performance polish (2026-05-11):** App Router loading boundaries diperluas ke permukaan high-traffic; skeleton mengikuti layout final (cards/rows/chips) agar transisi antar route terasa stabil. Pending states lokal ditambahkan pada notifikasi (filter group switch), messages composer, dan filter lokasi freelancer tanpa menambah library animasi berat.
 - **Convergence pass 2 (2026-05-09):** halaman detail job publik, profil freelancer publik, editor profil freelancer, dan komponen onboarding utama mengikuti ladder tipografi `nw-type-*` + ritme card/chip yang sama; tabel admin reports/jobs/users/verification menerima pass visual ringan agar lebih cepat dipindai tanpa mengubah workflow RBAC.
 - **Editorial typography & density (2026-05-09):** utilitas CSS bersama (`nw-type-*`, stacks, chips, beberapa panel) dan skala font Tailwind (`nw-lead`/`nw-body`/`nw-caption`) disempurnakan untuk pesan visual lebih matang; landing, board job publik, dashboard role, inbox/thread Messages, pusat notifikasi, serta header halaman workspace pesan/pengaturan mengikuti spacing hierarchy baru tanpa mengubah API atau alur data.

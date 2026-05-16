@@ -10,7 +10,7 @@ import { JobsMarketplaceMobileFilters } from "@/features/public/components/JobsM
 import { JobsPublicEmpty } from "@/features/public/components/JobsPublicEmpty";
 import { JobsPublicList, type JobsPublicCard } from "@/features/public/components/JobsPublicList";
 import { jobsBrowseQueryString } from "@/features/public/lib/jobs-browse-query";
-import { formatMoneyAmount } from "@/lib/format-money";
+import { budgetListingUsesCompactNotation, formatMoneyAmount } from "@/lib/format-money";
 import { withPublicLocale } from "@/lib/i18n/locale-path";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
 import type { AppLocale } from "@/lib/i18n/types";
@@ -84,7 +84,8 @@ function formatBudgetShort(job: JobsPublicCard, appLocale: AppLocale): string {
   const max = job.budgetMax;
   const { currency } = job;
   if (min != null && max != null && Number.isFinite(min) && Number.isFinite(max)) {
-    return `${formatMoneyAmount(min, currency, { locale: appLocale, maximumFractionDigits: 0, compact: appLocale === "id" })}–${formatMoneyAmount(max, currency, { locale: appLocale, maximumFractionDigits: 0, compact: appLocale === "id" })}`;
+    const compact = budgetListingUsesCompactNotation(currency);
+    return `${formatMoneyAmount(min, currency, { locale: appLocale, maximumFractionDigits: 0, compact })}–${formatMoneyAmount(max, currency, { locale: appLocale, maximumFractionDigits: 0, compact })}`;
   }
   return "—";
 }

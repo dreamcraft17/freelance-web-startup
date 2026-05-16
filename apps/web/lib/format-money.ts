@@ -1,19 +1,24 @@
 import type { AppLocale } from "@/lib/i18n/types";
 
-/** ISO 4217 (3-letter). Fallback matches legacy Prisma defaults when missing. */
+/** ISO 4217 (3-letter). Fallback matches legacy assumptions when `Job.currency` is missing. */
 export function normalizeCurrencyCode(currency: string | null | undefined): string {
   const c = (currency ?? "").trim().toUpperCase().slice(0, 3);
   return c || "USD";
 }
 
 /**
- * Intl locale tags: IDR uses Indonesian grouping/symbols; Indonesian UI applies id-ID grouping to other FX too.
+ * BCP 47 tag for `Intl.NumberFormat` **given viewer language and job/contract ISO currency**.
+ * UI locale shapes symbols/grouping; currency is never “upgraded” to IDR just because path is `/id`.
  */
-export function resolveIntlLocaleForMoney(appLocale: AppLocale, currency: string): string {
-  const cur = normalizeCurrencyCode(currency);
-  if (cur === "IDR") return "id-ID";
-  if (appLocale === "id") return "id-ID";
-  return "en-US";
+export function resolveIntlLocaleForMoney(appLocale: AppLocale, _currency: string): string {
+  return appLocale === "id" ? "id-ID" : "en-US";
+}
+
+/**
+ * Compact listing labels (rb/jt / K–M): **IDR only**. USD and other currencies stay non-compact on cards.
+ */
+export function budgetListingUsesCompactNotation(currency: string): boolean {
+  return normalizeCurrencyCode(currency) === "IDR";
 }
 
 /** Coerce Prisma.Decimal, bigint, strings, numbers. */
@@ -142,6 +147,27 @@ export function formatMoneyRange(
   const b = coerceMoneyNumber(max);
   if (a == null || b == null) return null;
   return `${formatMoneyAmount(a, currency, options)} – ${formatMoneyAmount(b, currency, options)}`;
+}
+
+/** Alias: `amount` + ISO `currencyCode` + viewer `locale` (no FX conversion). */
+export function formatMoney(
+  amount: unknown,
+  currencyCode: string,
+  locale: AppLocale,
+  options?: Omit<FormatMoneyOptions, "locale">
+): string {
+  return formatMoneyAmount(amount, currencyCode, { locale, ...options });
+}
+
+/** Alias for budget min/max ranges. */
+export function formatBudgetRange(
+  min: unknown,
+  max: unknown,
+  currencyCode: string,
+  locale: AppLocale,
+  options?: Omit<FormatMoneyOptions, "locale">
+): string | null {
+  return formatMoneyRange(min, max, currencyCode, { locale, ...options });
 }
 
 /** Hourly/start rates on profiles lack a currency column — marketplace default for display. */

@@ -91,7 +91,7 @@ function formatBudget(
   t: (key: string, values?: Record<string, string | number>) => string,
   locale: AppLocale
 ): string {
-  const cur = normalizeCurrencyCode(job.currency ?? "IDR");
+  const cur = normalizeCurrencyCode(job.currency);
   const frac = cur === "IDR" ? 0 : 2;
   const fmtOpts = { locale, maximumFractionDigits: frac } as const;
 

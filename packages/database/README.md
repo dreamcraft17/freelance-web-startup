@@ -1,7 +1,7 @@
 # @acme/database
 
-> **Doc revision:** v10  
-> Last synchronized: 2026-05-12 (`DATABASE_URL_TEST` in `env.example.txt`; E2E runner prefers it over `DATABASE_URL`).
+> **Doc revision:** v11  
+> Last synchronized: 2026-05-11 (migration `job_currency_default_idr`: `Job.currency` default IDR).
 
 PostgreSQL access via **Prisma**: schema, migrations, and generated client.
 

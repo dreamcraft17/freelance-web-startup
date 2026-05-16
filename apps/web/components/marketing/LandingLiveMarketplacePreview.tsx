@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { Camera, PenSquare } from "lucide-react";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
 import { withPublicLocale } from "@/lib/i18n/locale-path";
-import { formatMoneyAmount, normalizeCurrencyCode } from "@/lib/format-money";
+import { formatMoneyAmount, defaultFreelancerRateCurrency } from "@/lib/format-money";
 import { SearchService } from "@/server/services/search.service";
 
 /**
@@ -85,7 +85,7 @@ export async function LandingLiveMarketplacePreview() {
                     <span className="text-xs font-semibold text-slate-700">{f.workMode}</span>
                     {f.hourlyRate != null ? (
                       <span className="text-xs font-bold text-slate-900">
-                        {formatMoneyAmount(f.hourlyRate, normalizeCurrencyCode("IDR"), {
+                        {formatMoneyAmount(f.hourlyRate, defaultFreelancerRateCurrency(), {
                           locale,
                           maximumFractionDigits: 0
                         })}

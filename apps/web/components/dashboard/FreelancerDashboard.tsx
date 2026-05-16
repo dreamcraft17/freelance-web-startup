@@ -18,7 +18,7 @@ import {
 import type { FreelancerProposalPlaybookSection } from "@/components/onboarding/FreelancerProposalPlaybook";
 import { FreelancerProposalPlaybook } from "@/components/onboarding/FreelancerProposalPlaybook";
 import { ActivationChecklistCard, type ActivationChecklistStepVm } from "@/components/onboarding/ActivationChecklistCard";
-import { formatMoneyAmount } from "@/lib/format-money";
+import { formatMoneyAmount, normalizeCurrencyCode } from "@/lib/format-money";
 import type { AppLocale } from "@/lib/i18n/types";
 import { withPublicLocale } from "@/lib/i18n/locale-path";
 import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
@@ -589,7 +589,10 @@ export function FreelancerDashboard({
                         </Link>
                         <p className="nw-type-meta mt-1 font-medium normal-case tracking-normal text-slate-600">
                           {item.bid.statusLabel} ·{" "}
-                          {formatMoneyAmount(item.bid.bidAmount, item.bid.job.currency, { locale, maximumFractionDigits: 0 })}
+                          {formatMoneyAmount(item.bid.bidAmount, item.bid.job.currency, {
+                            locale,
+                            maximumFractionDigits: normalizeCurrencyCode(item.bid.job.currency) === "IDR" ? 0 : 2
+                          })}
                           {item.bid.estimatedDays != null
                             ? ` · ${copy.activityBidEta.replace("{{days}}", String(item.bid.estimatedDays))}`
                             : null}

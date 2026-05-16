@@ -1568,7 +1568,7 @@
       "formTimelinePlaceholder": "Kapan bisa mulai, titik kontrol utama, serta rentang selesai realistis untuk scope yang Anda hargai.",
       "formQuoteSectionKicker": "Penawaran & durasi",
       "formAmountLabel": "Nominal penawaran",
-      "formAmountHint": "Gunakan mata uang seperti di listing—tambahkan catatan pajak atau add-on jika perlu.",
+      "formAmountHint": "Masukkan total Anda dalam {{currency}}. Mata uang mengikuti lowongan—bukan bahasa situs. Sebutkan jika sudah termasuk pajak atau add-on.",
       "formDaysLabel": "Durasi perkiraan (hari)",
       "formDaysHint": "Perkiraan hari kerja/kalender—catat jika durasi bergulir.",
       "formFirstStep": "Kirim memulai proses tinjauan terstruktur—persempurnakan detail di utas hiring yang sama.",
@@ -1990,6 +1990,14 @@
         "sendMessage": "Buat akun untuk mulai mengirim pesan.",
         "protected": "Buat akun untuk melanjutkan."
       }
+    }
+  },
+  "clientJobs": {
+    "newJob": {
+      "currencyLabel": "Mata uang anggaran",
+      "currencyHint": "Ini menentukan satuan anggaran dan setiap penawaran di lowongan ini. Memilih /id atau /en hanya mengubah cara angka ditulis—bukan mata uang yang berlaku.",
+      "currencyOptionIdr": "IDR (Rupiah Indonesia)",
+      "currencyOptionUsd": "USD (Dolar AS)"
     }
   }
 }

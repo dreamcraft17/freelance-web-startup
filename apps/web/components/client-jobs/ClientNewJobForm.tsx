@@ -67,7 +67,7 @@ function sectionCard(
 }
 
 export function ClientNewJobForm({ categories }: ClientNewJobFormProps) {
-  const { locale } = useI18n();
+  const { locale, t } = useI18n();
   const jobsBrowseRoot = withPublicLocale(locale, "/jobs");
   const router = useRouter();
   const [title, setTitle] = useState("");
@@ -77,7 +77,7 @@ export function ClientNewJobForm({ categories }: ClientNewJobFormProps) {
   const [budgetType, setBudgetType] = useState<BudgetType>(BudgetType.RANGE);
   const [budgetMin, setBudgetMin] = useState("");
   const [budgetMax, setBudgetMax] = useState("");
-  const [currency, setCurrency] = useState("IDR");
+  const [currency, setCurrency] = useState<"IDR" | "USD">(() => (locale === "id" ? "IDR" : "USD"));
   const [workMode, setWorkMode] = useState<WorkMode>(WorkMode.REMOTE);
   const [city, setCity] = useState("");
   const [bidDeadlineLocal, setBidDeadlineLocal] = useState("");
@@ -103,7 +103,7 @@ export function ClientNewJobForm({ categories }: ClientNewJobFormProps) {
       categoryId,
       workMode,
       budgetType,
-      currency: currency.trim().toUpperCase().slice(0, 3) || "IDR"
+      currency
     };
 
     if (subcategoryId) payload.subcategoryId = subcategoryId;
@@ -342,22 +342,24 @@ export function ClientNewJobForm({ categories }: ClientNewJobFormProps) {
                   <option value={BudgetType.REQUEST_QUOTE}>Request quote</option>
                 </select>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="currency" className="text-slate-700">
-                    Currency (ISO)
-                  </Label>
-                  <Input
-                    id="currency"
-                    name="currency"
-                    value={currency}
-                    onChange={(e) => setCurrency(e.target.value.toUpperCase())}
-                    maxLength={3}
-                    placeholder="IDR"
-                    className={inputClass}
-                    required
-                  />
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="currency" className="text-slate-700">
+                  {t("clientJobs.newJob.currencyLabel")}
+                </Label>
+                <p className="text-xs text-slate-500">{t("clientJobs.newJob.currencyHint")}</p>
+                <select
+                  id="currency"
+                  name="currency"
+                  value={currency}
+                  onChange={(e) => setCurrency(e.target.value as "IDR" | "USD")}
+                  className={selectClass}
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`
+                  }}
+                >
+                  <option value="IDR">{t("clientJobs.newJob.currencyOptionIdr")}</option>
+                  <option value="USD">{t("clientJobs.newJob.currencyOptionUsd")}</option>
+                </select>
               </div>
               {budgetType !== BudgetType.REQUEST_QUOTE ? (
                 <div className="grid gap-4 sm:grid-cols-2">

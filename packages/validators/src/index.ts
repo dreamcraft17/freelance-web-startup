@@ -1,6 +1,9 @@
 import { AvailabilityStatus } from "@acme/types";
 import { z } from "zod";
 
+/** ISO codes supported on job budgets and linked bids/contracts (no FX in product). */
+export const jobMarketplaceCurrencySchema = z.enum(["IDR", "USD"]);
+
 /** Use `.extend()` (not object spread) so Zod keeps `page` / `limit` required on output. */
 export const paginationSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
@@ -65,7 +68,7 @@ export const createJobSchema = z.object({
   budgetType: z.enum(["FIXED", "HOURLY", "RANGE", "REQUEST_QUOTE"]),
   budgetMin: z.number().nonnegative().optional(),
   budgetMax: z.number().nonnegative().optional(),
-  currency: z.string().length(3),
+  currency: jobMarketplaceCurrencySchema,
   city: z.string().max(120).optional(),
   bidDeadline: z.string().datetime().optional()
 });

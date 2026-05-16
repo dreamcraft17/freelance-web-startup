@@ -10,7 +10,7 @@ import type { AppLocale } from "@/lib/i18n/types";
 import { useI18n } from "@/features/i18n/I18nProvider";
 import { withPublicLocale } from "@/lib/i18n/locale-path";
 import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
-import { formatMoneyAmount } from "@/lib/format-money";
+import { formatMoneyAmount, normalizeCurrencyCode } from "@/lib/format-money";
 import { cn } from "@/lib/utils";
 import { FileText, Inbox } from "lucide-react";
 
@@ -256,7 +256,10 @@ export function FreelancerProposalsWorkspace({
                         {statusLabel(p.status)}
                       </span>
                       <p className="text-lg font-semibold tabular-nums text-slate-900">
-                        {formatMoneyAmount(p.amount, p.currency, { locale, maximumFractionDigits: 0 })}
+                        {formatMoneyAmount(p.amount, p.currency, {
+                          locale,
+                          maximumFractionDigits: normalizeCurrencyCode(p.currency) === "IDR" ? 0 : 2
+                        })}
                       </p>
                       <ModerationReportButton intent="bid" target={{ subjectType: "BID", subjectBidId: p.id }} />
                     </div>

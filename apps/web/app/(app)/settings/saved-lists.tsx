@@ -4,7 +4,7 @@ import { getSessionFromCookies, sessionToActor } from "@src/lib/auth";
 import { SavedFreelancerUnsaveButton, SavedJobUnsaveButton } from "@/features/saved/components/SavedListRefreshButtons";
 import { SavedItemsService } from "@/server/services/saved-items.service";
 import { SettingsSectionCard } from "@/components/settings/SettingsSectionCard";
-import { formatMoneyAmount } from "@/lib/format-money";
+import { formatMoneyAmount, normalizeCurrencyCode } from "@/lib/format-money";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
 import type { AppLocale } from "@/lib/i18n/types";
 import { withPublicLocale } from "@/lib/i18n/locale-path";
@@ -21,7 +21,8 @@ function budgetLine(
 ): string {
   const min = job.budgetMin;
   const max = job.budgetMax;
-  const opt = { locale, maximumFractionDigits: 0 } as const;
+  const cur = normalizeCurrencyCode(job.currency);
+  const opt = { locale, maximumFractionDigits: cur === "IDR" ? 0 : 2 } as const;
   if (min != null && max != null) {
     return `${formatMoneyAmount(min, job.currency, opt)} – ${formatMoneyAmount(max, job.currency, opt)}`;
   }

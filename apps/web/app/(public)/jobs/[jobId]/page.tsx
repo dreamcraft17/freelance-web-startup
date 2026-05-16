@@ -26,7 +26,7 @@ import { BidConversationAction } from "@/components/client-jobs/BidConversationA
 import { JobService } from "@/server/services/job.service";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { formatMoneyAmount } from "@/lib/format-money";
+import { formatMoneyAmount, normalizeCurrencyCode } from "@/lib/format-money";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
 import { withPublicLocale } from "@/lib/i18n/locale-path";
 import type { AppLocale } from "@/lib/i18n/types";
@@ -62,7 +62,8 @@ function budgetLine(
 ): string {
   const min = job.budgetMin;
   const max = job.budgetMax;
-  const opt = { locale, maximumFractionDigits: 0 } as const;
+  const cur = normalizeCurrencyCode(job.currency);
+  const opt = { locale, maximumFractionDigits: cur === "IDR" ? 0 : 2 } as const;
   if (min != null && max != null) {
     return `${formatMoneyAmount(min, job.currency, opt)} – ${formatMoneyAmount(max, job.currency, opt)}`;
   }
@@ -395,7 +396,13 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
   const topSignals: string[] = [];
   if (isActiveHiring) topSignals.push(t("public.jobDetail.signalActiveHiring"));
   if (Date.now() - job.createdAt.getTime() <= 24 * 60 * 60 * 1000) topSignals.push(t("public.jobDetail.signalNewJob"));
-  if ((Number(job.budgetMax ?? 0) || Number(job.budgetMin ?? 0)) >= 3000000) topSignals.push(t("public.jobDetail.signalGoodBudgetFit"));
+  const maxBudgetSignal = Number(job.budgetMax ?? 0) || Number(job.budgetMin ?? 0);
+  const jobCur = normalizeCurrencyCode(job.currency);
+  if (
+    (jobCur === "IDR" && maxBudgetSignal >= 3_000_000) ||
+    (jobCur === "USD" && maxBudgetSignal >= 200)
+  )
+    topSignals.push(t("public.jobDetail.signalGoodBudgetFit"));
   if (job.city && job.workMode !== "REMOTE") topSignals.push(t("public.jobDetail.signalNearbyProject"));
   if (job.description.trim().length <= 220) topSignals.push(t("public.jobDetail.signalQuickBrief"));
   if (publicBidCount > 0 && publicBidCount <= 3) topSignals.push(t("public.jobDetail.signalLowCompetition"));
@@ -435,7 +442,10 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
           freelancerName: bid.freelancer.fullName,
           freelancerUsername: bid.freelancer.username,
           freelancerUserId: bid.freelancer.userId,
-          amountLine: formatMoneyAmount(bid.bidAmount, job.currency, { locale, maximumFractionDigits: 0 }),
+          amountLine: formatMoneyAmount(bid.bidAmount, job.currency, {
+            locale,
+            maximumFractionDigits: normalizeCurrencyCode(job.currency) === "IDR" ? 0 : 2
+          }),
           daysLine:
             bid.estimatedDays != null ? t("public.jobDetail.dayTimeline", { count: bid.estimatedDays }) : null,
           completenessPct: pct,
@@ -925,7 +935,10 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
                             </td>
                             <td className="px-3 py-3">
                               <p className="font-semibold text-slate-900">
-                                {formatMoneyAmount(bid.bidAmount, job.currency, { locale, maximumFractionDigits: 0 })}
+                                {formatMoneyAmount(bid.bidAmount, job.currency, {
+                                  locale,
+                                  maximumFractionDigits: normalizeCurrencyCode(job.currency) === "IDR" ? 0 : 2
+                                })}
                               </p>
                               {bid.estimatedDays != null ? (
                                 <p className="text-xs text-slate-500">{t("public.jobDetail.dayTimeline", { count: bid.estimatedDays })}</p>
@@ -1163,7 +1176,9 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
                     timelinePlaceholder: t("public.jobDetail.formTimelinePlaceholder"),
                     quoteSectionKicker: t("public.jobDetail.formQuoteSectionKicker"),
                     amountLabel: t("public.jobDetail.formAmountLabel"),
-                    amountHint: t("public.jobDetail.formAmountHint"),
+                    amountHint: t("public.jobDetail.formAmountHint", {
+                      currency: normalizeCurrencyCode(job.currency)
+                    }),
                     daysLabel: t("public.jobDetail.formDaysLabel"),
                     daysHint: t("public.jobDetail.formDaysHint"),
                     reassurance: t("public.jobDetail.applyReassurance"),

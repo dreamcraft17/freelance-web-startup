@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Building2, Clock3, MapPin, Users } from "lucide-react";
 import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
 import { useI18n } from "@/features/i18n/I18nProvider";
-import { formatMoneyAmount, normalizeCurrencyCode } from "@/lib/format-money";
+import { budgetListingUsesCompactNotation, formatMoneyAmount, normalizeCurrencyCode } from "@/lib/format-money";
 import { withPublicLocale } from "@/lib/i18n/locale-path";
 import { SaveJobButton } from "@/features/saved/components/SaveJobButton";
 
@@ -53,7 +53,11 @@ export function JobsPublicList({ jobs, savedJobIds }: ListProps) {
   const budgetLabelLocalized = (job: JobsPublicCard): string => {
     const { budgetMin: min, budgetMax: max, currency, budgetType } = job;
     const cur = normalizeCurrencyCode(currency);
-    const opt = { locale, maximumFractionDigits: cur === "IDR" ? 0 : 2 } as const;
+    const opt = {
+      locale,
+      maximumFractionDigits: cur === "IDR" ? 0 : 2,
+      compact: budgetListingUsesCompactNotation(cur)
+    } as const;
     if (min != null && max != null)
       return `${formatMoneyAmount(min, cur, opt)} – ${formatMoneyAmount(max, cur, opt)}`;
     if (min != null) return t("public.jobs.budgetFrom", { amount: formatMoneyAmount(min, cur, opt) });
@@ -71,11 +75,18 @@ export function JobsPublicList({ jobs, savedJobIds }: ListProps) {
     return t("public.jobs.postedDaysAgo", { count: Math.max(1, days) });
   };
 
+  const maxBudgetUsdStrong = 200;
+  const maxBudgetIdrStrong = 3_000_000;
+
   const whyApplySignal = (job: JobsPublicCard): string => {
     const ageHours = Math.floor((Date.now() - Date.parse(job.createdAt)) / (1000 * 60 * 60));
+    const cur = normalizeCurrencyCode(job.currency);
+    const maxBudget = Math.max(job.budgetMin ?? 0, job.budgetMax ?? 0);
+    const strongBudget =
+      (cur === "IDR" && maxBudget >= maxBudgetIdrStrong) || (cur === "USD" && maxBudget >= maxBudgetUsdStrong);
     if (job.isFeaturedActive) return t("public.jobs.signalActiveHiring");
     if (Number.isFinite(ageHours) && ageHours <= 24) return t("public.jobs.signalNewJob");
-    if ((job.budgetMax ?? job.budgetMin ?? 0) >= 3000000) return t("public.jobs.signalGoodBudgetFit");
+    if (strongBudget) return t("public.jobs.signalGoodBudgetFit");
     if (job.city && job.workMode !== "REMOTE") return t("public.jobs.signalNearbyProject");
     if ((job.description || "").trim().length <= 180) return t("public.jobs.signalQuickBrief");
     return t("public.jobs.signalReviewBrief");
@@ -84,8 +95,11 @@ export function JobsPublicList({ jobs, savedJobIds }: ListProps) {
   const showMatchChip = (job: JobsPublicCard): boolean => {
     if (job.isFeaturedActive) return true;
     const ageHours = (Date.now() - Date.parse(job.createdAt)) / (1000 * 60 * 60);
+    const cur = normalizeCurrencyCode(job.currency);
     const maxBudget = Math.max(job.budgetMin ?? 0, job.budgetMax ?? 0);
-    return ageHours <= 48 && maxBudget >= 3000000;
+    const strongBudget =
+      (cur === "IDR" && maxBudget >= maxBudgetIdrStrong) || (cur === "USD" && maxBudget >= maxBudgetUsdStrong);
+    return ageHours <= 48 && strongBudget;
   };
 
   /** Status row: only show labels backed by real fields (time, featured, bid counts). */

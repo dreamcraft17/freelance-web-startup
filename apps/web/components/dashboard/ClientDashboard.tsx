@@ -16,7 +16,7 @@ import {
   Users,
   Waves
 } from "lucide-react";
-import { formatMoneyAmount } from "@/lib/format-money";
+import { formatMoneyAmount, normalizeCurrencyCode } from "@/lib/format-money";
 import type { AppLocale } from "@/lib/i18n/types";
 import { withPublicLocale } from "@/lib/i18n/locale-path";
 import { withWorkspaceLocale } from "@/lib/i18n/workspace-path";
@@ -561,7 +561,12 @@ export function ClientDashboard({
                       <span className="nw-chip nw-chip-muted px-1.5 py-0.5 text-[10px] font-medium normal-case tracking-normal text-slate-700">
                         {bid.statusLabel}
                       </span>
-                      <span className="font-medium text-slate-700">{formatMoneyAmount(bid.bidAmount, bid.job.currency, { locale, maximumFractionDigits: 0 })}</span>
+                      <span className="font-medium text-slate-700">
+                        {formatMoneyAmount(bid.bidAmount, bid.job.currency, {
+                          locale,
+                          maximumFractionDigits: normalizeCurrencyCode(bid.job.currency) === "IDR" ? 0 : 2
+                        })}
+                      </span>
                       <span className="text-slate-400">· {formatShortDate(bid.createdAt, locale)}</span>
                     </div>
                   </li>
@@ -616,7 +621,10 @@ export function ClientDashboard({
                     {c.currency && c.amount != null ? (
                       <>
                         {" · "}
-                        {formatMoneyAmount(c.amount, c.currency ?? "USD", { locale, maximumFractionDigits: 0 })}
+                        {formatMoneyAmount(c.amount, c.currency ?? "USD", {
+                          locale,
+                          maximumFractionDigits: normalizeCurrencyCode(c.currency) === "IDR" ? 0 : 2
+                        })}
                       </>
                     ) : null}
                     {" · "}

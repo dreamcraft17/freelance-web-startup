@@ -1568,7 +1568,7 @@
       "formTimelinePlaceholder": "When you can start, key checkpoints, and realistic delivery range for the scope you priced.",
       "formQuoteSectionKicker": "Quote & duration",
       "formAmountLabel": "Quote amount",
-      "formAmountHint": "Use the listing currency. Mention if it covers taxes or optional add-ons.",
+      "formAmountHint": "Enter your total in {{currency}}. The job listing sets the currency—not the site language. Say if it includes tax or optional add-ons.",
       "formDaysLabel": "Estimated duration (days)",
       "formDaysHint": "Calendar or working days estimate for the scoped work—note if rolling.",
       "formFirstStep": "Submitting starts a structured review—finalize details inside the job-linked thread.",
@@ -1990,6 +1990,14 @@
         "sendMessage": "Create an account to start messaging.",
         "protected": "Create an account to continue."
       }
+    }
+  },
+  "clientJobs": {
+    "newJob": {
+      "currencyLabel": "Budget currency",
+      "currencyHint": "This sets the unit for your budget and every quote on the job. Changing /en vs /id only changes number wording—not which currency applies.",
+      "currencyOptionIdr": "IDR (Indonesian Rupiah)",
+      "currencyOptionUsd": "USD (US Dollar)"
     }
   }
 }
