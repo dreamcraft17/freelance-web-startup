@@ -22,59 +22,60 @@ import {
  * **`db.job.findMany` + `db.job.count`** agar stabilitas query sama di dev/production.
  */
 
-/** Empty sibling fragment for freelancer optional filters only. */
-const SQL_NOOP_FP_WHERE = Prisma.sql``;
-
 type JobSearchOptions = { publicVisibilityOnly: boolean; locale: AppLocale };
 
-type FreelancerListingWhereFragments = {
-  wfWorkMode: Prisma.Sql;
-  wfCity: Prisma.Sql;
-  wfCategory: Prisma.Sql;
-  wfSkill: Prisma.Sql;
-  wfKeyword: Prisma.Sql;
-};
+/**
+ * Single composed WHERE for freelancer directory raw SQL.
+ * Uses Prisma.join (string separator `" AND "`) — do not pass `Prisma.sql` as the separator
+ * or it stringifies to `[object Object]` and breaks the query.
+ */
+function buildFreelancerPublicWhereSql(input: SearchFreelancersQueryDto): Prisma.Sql {
+  const parts: Prisma.Sql[] = [Prisma.sql`fp."deletedAt" IS NULL`];
 
-function buildFreelancerListingWhereFragments(
-  input: SearchFreelancersQueryDto
-): FreelancerListingWhereFragments {
-  const wfWorkMode = input.workMode
-    ? Prisma.sql` AND fp."workMode" = ${input.workMode}::"WorkMode"`
-    : SQL_NOOP_FP_WHERE;
+  if (input.workMode) {
+    parts.push(Prisma.sql`fp."workMode" = CAST(${input.workMode} AS "WorkMode")`);
+  }
 
   const cityTrimmed = input.city?.trim();
-  const wfCity = cityTrimmed
-    ? Prisma.sql` AND fp."city" ILIKE ${"%" + cityTrimmed + "%"}`
-    : SQL_NOOP_FP_WHERE;
+  if (cityTrimmed) {
+    parts.push(Prisma.sql`fp."city" ILIKE ${"%" + cityTrimmed + "%"}`);
+  }
 
-  const wfCategory = input.categoryId
-    ? Prisma.sql`
-        AND EXISTS (
-          SELECT 1 FROM "FreelancerSkill" fs
-          INNER JOIN "Skill" s ON s."id" = fs."skillId"
-          WHERE fs."freelancerProfileId" = fp."id"
-            AND s."categoryId" = ${input.categoryId}
-            AND s."isActive" = true
-        )
-      `
-    : SQL_NOOP_FP_WHERE;
+  if (input.categoryId) {
+    parts.push(Prisma.sql`EXISTS (
+      SELECT 1 FROM "FreelancerSkill" fs
+      INNER JOIN "Skill" s ON s."id" = fs."skillId"
+      WHERE fs."freelancerProfileId" = fp."id"
+        AND s."categoryId" = ${input.categoryId}
+        AND s."isActive" = true
+    )`);
+  }
 
-  const wfSkill = input.skillId
-    ? Prisma.sql`
-        AND EXISTS (
-          SELECT 1 FROM "FreelancerSkill" fs
-          WHERE fs."freelancerProfileId" = fp."id"
-            AND fs."skillId" = ${input.skillId}
-        )
-      `
-    : SQL_NOOP_FP_WHERE;
+  if (input.skillId) {
+    parts.push(Prisma.sql`EXISTS (
+      SELECT 1 FROM "FreelancerSkill" fs
+      WHERE fs."freelancerProfileId" = fp."id"
+        AND fs."skillId" = ${input.skillId}
+    )`);
+  }
 
   const kwTrimmed = input.keyword?.trim();
-  const wfKeyword = kwTrimmed
-    ? Prisma.sql` AND (fp."username" ILIKE ${"%" + kwTrimmed + "%"} OR fp."fullName" ILIKE ${"%" + kwTrimmed + "%"} OR fp."headline" ILIKE ${"%" + kwTrimmed + "%"} OR fp."bio" ILIKE ${"%" + kwTrimmed + "%"})`
-    : SQL_NOOP_FP_WHERE;
+  if (kwTrimmed) {
+    parts.push(
+      Prisma.sql`(fp."username" ILIKE ${"%" + kwTrimmed + "%"} OR fp."fullName" ILIKE ${"%" + kwTrimmed + "%"} OR fp."headline" ILIKE ${"%" + kwTrimmed + "%"} OR fp."bio" ILIKE ${"%" + kwTrimmed + "%"})`
+    );
+  }
 
-  return { wfWorkMode, wfCity, wfCategory, wfSkill, wfKeyword };
+  if (publicSyntheticListingsHidden()) {
+    parts.push(Prisma.sql`NOT (
+      fp."username" ILIKE 'pw_%'
+      OR fp."username" ILIKE 'e2e_%'
+      OR fp."fullName" ILIKE '%playwright%'
+      OR COALESCE(fp."headline", '') ILIKE '%playwright%'
+    )`);
+  }
+
+  return Prisma.join(parts, " AND ");
 }
 
 /** Open jobs listing filters for public discovery APIs (moderation-visible only). */
@@ -439,18 +440,7 @@ export class SearchService {
     const limit = clampLimit(input.limit);
     const skip = offsetFromPage({ page, limit });
     const now = new Date();
-
-    const fw = buildFreelancerListingWhereFragments(input);
-    const fpSyntheticHide = publicSyntheticListingsHidden()
-      ? Prisma.sql`
-          AND NOT (
-            fp."username" ILIKE 'pw_%'
-            OR fp."username" ILIKE 'e2e_%'
-            OR fp."fullName" ILIKE '%playwright%'
-            OR COALESCE(fp."headline", '') ILIKE '%playwright%'
-          )
-        `
-      : SQL_NOOP_FP_WHERE;
+    const whereSql = buildFreelancerPublicWhereSql(input);
 
     const listSql = db.$queryRaw<
       {
@@ -505,14 +495,7 @@ export class SearchService {
         INNER JOIN "Category" c_sub ON c_sub."id" = s_sub."categoryId" AND c_sub."isActive" = true
         ORDER BY fs_sub."freelancerProfileId", c_sub."displayOrder" ASC NULLS LAST, c_sub."slug" ASC
       ) fc ON fc."freelancerProfileId" = fp."id"
-      WHERE
-        fp."deletedAt" IS NULL
-        ${fw.wfWorkMode}
-        ${fw.wfCity}
-        ${fw.wfCategory}
-        ${fw.wfSkill}
-        ${fw.wfKeyword}
-        ${fpSyntheticHide}
+      WHERE ${whereSql}
       ORDER BY
         (
           CASE
@@ -530,17 +513,11 @@ export class SearchService {
     const countSql = db.$queryRaw<{ count: bigint }[]>`
       SELECT COUNT(*)::bigint AS count
       FROM "FreelancerProfile" fp
-      WHERE
-        fp."deletedAt" IS NULL
-        ${fw.wfWorkMode}
-        ${fw.wfCity}
-        ${fw.wfCategory}
-        ${fw.wfSkill}
-        ${fw.wfKeyword}
-        ${fpSyntheticHide}
+      WHERE ${whereSql}
     `;
 
-    const [countRows, rows] = await Promise.all([countSql, listSql]);
+    const countRows = await countSql;
+    const rows = await listSql;
 
     const total = Number(countRows[0]?.count ?? 0n);
     return {
