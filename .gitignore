@@ -10,3 +10,5 @@ coverage
 # Local-only secrets / notes — never commit
 credential.md
 **/credential.md
+e2e-test-accounts.local.md
+**/e2e-test-accounts.local.md

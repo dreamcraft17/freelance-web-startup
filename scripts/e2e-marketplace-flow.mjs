@@ -24,9 +24,15 @@
  */
 
 import assert from "node:assert/strict";
-import { test } from "node:test";
+import { writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { after, test } from "node:test";
 
 const BASE_URL = (process.env.BASE_URL ?? "http://127.0.0.1:3000").replace(/\/$/, "");
+const E2E_DEFAULT_PASSWORD = "e2e-pass-ok-12";
+const E2E_REPORT_FILE = process.env.E2E_ACCOUNTS_REPORT_PATH
+  ? resolve(process.env.E2E_ACCOUNTS_REPORT_PATH)
+  : resolve(process.cwd(), "e2e-test-accounts.local.md");
 const SESSION = "acme_session";
 const NW_CSRF_HEADER = "X-CSRF-Token";
 
@@ -259,6 +265,281 @@ async function api(path, { method = "GET", cookie = null, json = undefined } = {
   const { body } = await readJson(res);
   return { res, body };
 }
+
+const e2eReport = {
+  generatedAt: null,
+  baseUrl: BASE_URL,
+  fixtureAccounts: fixtureAccountsFromEnv(),
+  scenarios: []
+};
+
+function fixtureAccountsFromEnv() {
+  const password =
+    process.env.SEED_E2E_PASSWORD ??
+    process.env.E2E_FIXTURE_PASSWORD ??
+    "NearWorkE2eDev123!";
+  return {
+    client: {
+      label: "Klien (seed E2E)",
+      email: (
+        process.env.SEED_E2E_CLIENT_EMAIL ??
+        process.env.E2E_CLIENT_EMAIL ??
+        "e2e.client@nearwork.local"
+      )
+        .toLowerCase()
+        .trim(),
+      password,
+      role: "CLIENT"
+    },
+    freelancer: {
+      label: "Freelancer (seed E2E)",
+      email: (
+        process.env.SEED_E2E_FREELANCER_EMAIL ??
+        process.env.E2E_FREELANCER_EMAIL ??
+        "e2e.freelancer@nearwork.local"
+      )
+        .toLowerCase()
+        .trim(),
+      password,
+      role: "FREELANCER"
+    },
+    admin: {
+      label: "Admin (seed)",
+      email: (process.env.SEED_ADMIN_EMAIL ?? "admin@nearwork.local").toLowerCase().trim(),
+      password: process.env.SEED_ADMIN_PASSWORD ?? "NearWorkAdminDev123!",
+      role: "ADMIN"
+    }
+  };
+}
+
+function recordScenario(name, data) {
+  e2eReport.scenarios.push({
+    name,
+    at: new Date().toISOString(),
+    ...data
+  });
+}
+
+function writeE2eAccountsReport() {
+  e2eReport.generatedAt = new Date().toISOString();
+  const f = e2eReport.fixtureAccounts;
+  const lines = [
+    "# Akun E2E NearWork (cek manual)",
+    "",
+    `**Dibuat:** ${e2eReport.generatedAt}`,
+    `**Base URL:** ${e2eReport.baseUrl}`,
+    "",
+    "> File ini dibuat otomatis oleh `pnpm test:e2e`. Jangan commit ke git.",
+    "",
+    "## Akun tetap (jalankan `pnpm db:seed` dulu)",
+    "",
+    "| Peran | Email | Password |",
+    "|--------|--------|----------|",
+    `| ${f.client.label} | \`${f.client.email}\` | \`${f.client.password}\` |`,
+    `| ${f.freelancer.label} | \`${f.freelancer.email}\` | \`${f.freelancer.password}\` |`,
+    `| ${f.admin.label} | \`${f.admin.email}\` | \`${f.admin.password}\` |`,
+    "",
+    "## Cara cek di browser",
+    "",
+    `1. Buka **${e2eReport.baseUrl}/login** — masuk sebagai klien atau freelancer.`,
+    "2. Buka **Pesan**: `/id/messages` atau `/en/messages` (sesuai bahasa).",
+    "3. Untuk chat dua akun: gunakan dua jendela (mis. normal + incognito).",
+    "",
+    "## Data dari run tes terakhir",
+    ""
+  ];
+
+  if (!e2eReport.scenarios.length) {
+    lines.push("_Belum ada skenario tercatat pada run ini._");
+  } else {
+    for (const s of e2eReport.scenarios) {
+      lines.push(`### ${s.name}`);
+      lines.push(`- **Waktu:** ${s.at}`);
+      if (s.clientEmail) {
+        lines.push(`- **Klien:** \`${s.clientEmail}\` · password: \`${s.password ?? E2E_DEFAULT_PASSWORD}\``);
+      }
+      if (s.freelancerEmail) {
+        lines.push(
+          `- **Freelancer:** \`${s.freelancerEmail}\` · password: \`${s.password ?? E2E_DEFAULT_PASSWORD}\``
+        );
+      }
+      if (s.jobId) {
+        lines.push(`- **Lowongan:** ${e2eReport.baseUrl}/en/jobs/${s.jobId}`);
+      }
+      if (s.bidId) lines.push(`- **Proposal ID:** \`${s.bidId}\``);
+      if (s.contractId) lines.push(`- **Kontrak ID:** \`${s.contractId}\``);
+      if (s.threadId) {
+        lines.push(`- **Thread pesan ID:** \`${s.threadId}\``);
+        lines.push(`- **Inbox UI:** ${e2eReport.baseUrl}/en/messages`);
+      }
+      if (s.chatNote) lines.push(`- **Chat:** ${s.chatNote}`);
+      lines.push("");
+    }
+  }
+
+  writeFileSync(E2E_REPORT_FILE, `${lines.join("\n")}\n`, "utf8");
+  // eslint-disable-next-line no-console
+  console.log(`\n[e2e] Akun & link cek manual → ${E2E_REPORT_FILE}\n`);
+}
+
+after(() => {
+  writeE2eAccountsReport();
+});
+
+/** Login if account exists (seed or prior run); otherwise register. */
+async function loginOrRegister({ email, password, fullName, role }) {
+  const login = await api("/api/auth/login", {
+    method: "POST",
+    json: { email, password }
+  });
+  if (login.res.status === 200) {
+    const cookie = sessionCookiePairFromResponse(login.res);
+    assert.ok(cookie, `login ${email} should set session`);
+    return { cookie, created: false };
+  }
+  assert.equal(
+    login.res.status,
+    401,
+    `login ${email}: expected 200 or 401, got ${login.res.status} ${JSON.stringify(login.body)}`
+  );
+
+  const reg = await api("/api/auth/register", {
+    method: "POST",
+    json: { fullName, email, password, role }
+  });
+  assert.equal(reg.res.status, 201, `register ${email}: ${JSON.stringify(reg.body)}`);
+  const cookie = sessionCookiePairFromResponse(reg.res);
+  assert.ok(cookie, `register ${email} should set session`);
+  return { cookie, created: true };
+}
+
+async function ensureFreelancerBio(cookieFreelancer, bio) {
+  const patchBio = await mutateWithCsrf("PATCH", "/api/freelancer-profiles", cookieFreelancer, { bio });
+  assert.equal(
+    patchBio.res.status,
+    200,
+    formatMutationFailure("PATCH", "/api/freelancer-profiles", patchBio.res.status, patchBio.body)
+  );
+  return patchBio.cookieHeader;
+}
+
+test("fixture accounts: job, proposal, two-way chat (untuk cek manual)", async () => {
+  const fx = fixtureAccountsFromEnv();
+  const password = fx.client.password;
+
+  let cookieClient = (
+    await loginOrRegister({
+      email: fx.client.email,
+      password,
+      fullName: "E2E Client (fixture)",
+      role: "CLIENT"
+    })
+  ).cookie;
+
+  let cookieFreelancer = (
+    await loginOrRegister({
+      email: fx.freelancer.email,
+      password,
+      fullName: "E2E Freelancer (fixture)",
+      role: "FREELANCER"
+    })
+  ).cookie;
+
+  cookieFreelancer = await ensureFreelancerBio(
+    cookieFreelancer,
+    "Profil fixture E2E — bio cukup panjang untuk mengirim proposal dan chat dengan klien."
+  );
+
+  const flSession = await api("/api/auth/session", { cookie: cookieFreelancer });
+  assert.equal(flSession.res.status, 200, JSON.stringify(flSession.body));
+  const freelancerUserId = flSession.body.data.userId;
+  assert.ok(freelancerUserId);
+
+  const cats = await api("/api/categories?page=1&limit=5");
+  assert.equal(cats.res.status, 200);
+  assert.ok(cats.body.data.items?.length, "need categories (pnpm db:migrate && pnpm db:seed)");
+  const categoryId = cats.body.data.items[0].id;
+
+  const stamp = new Date().toISOString().slice(0, 16).replace("T", " ");
+  const jobRes = await mutateWithCsrf("POST", "/api/jobs", cookieClient, {
+    title: `E2E fixture job ${stamp}`,
+    description:
+      "Lowongan fixture untuk cek manual: klien dan freelancer seed, proposal, dan chat dua arah di Pesan.",
+    categoryId,
+    workMode: "REMOTE",
+    budgetType: "FIXED",
+    budgetMin: 80,
+    budgetMax: 400,
+    currency: "USD"
+  });
+  assert.equal(jobRes.res.status, 201, formatMutationFailure("POST", "/api/jobs", jobRes.res.status, jobRes.body));
+  cookieClient = jobRes.cookieHeader;
+  const jobId = jobRes.body.data.id;
+  assert.ok(jobId);
+
+  const bidRes = await mutateWithCsrf("POST", "/api/bids", cookieFreelancer, {
+    jobId,
+    coverLetter:
+      "Proposal fixture E2E: pengalaman relevan, rencana singkat, siap diskusi scope di utas lowongan.",
+    bidAmount: 180,
+    estimatedDays: 5
+  });
+  assert.equal(bidRes.res.status, 201, formatMutationFailure("POST", "/api/bids", bidRes.res.status, bidRes.body));
+  cookieFreelancer = bidRes.cookieHeader;
+  const bidId = bidRes.body.data.id;
+  assert.ok(bidId);
+
+  const threadCreate = await postWithCsrf("/api/messages", cookieClient, {
+    type: "JOB",
+    jobId,
+    withUserId: freelancerUserId
+  });
+  assert.equal(
+    threadCreate.res.status,
+    201,
+    formatMutationFailure("POST", "/api/messages", threadCreate.res.status, threadCreate.body)
+  );
+  cookieClient = threadCreate.cookieHeader;
+  const threadId = threadCreate.body.data?.threadId;
+  assert.ok(threadId);
+
+  const clientMsg = await postWithCsrf(`/api/messages/${threadId}`, cookieClient, {
+    body: "[E2E fixture] Klien: halo, kita selaraskan scope lewat utas ini."
+  });
+  assert.equal(
+    clientMsg.res.status,
+    201,
+    formatMutationFailure("POST", `/api/messages/${threadId}`, clientMsg.res.status, clientMsg.body)
+  );
+  cookieClient = clientMsg.cookieHeader;
+
+  const flMsg = await postWithCsrf(`/api/messages/${threadId}`, cookieFreelancer, {
+    body: "[E2E fixture] Freelancer: siap, saya sudah kirim proposal di lowongan ini."
+  });
+  assert.equal(
+    flMsg.res.status,
+    201,
+    formatMutationFailure("POST", `/api/messages/${threadId}`, flMsg.res.status, flMsg.body)
+  );
+
+  const threadMessages = await api(`/api/messages/${threadId}`, { cookie: cookieClient });
+  assert.equal(threadMessages.res.status, 200, JSON.stringify(threadMessages.body));
+  assert.ok(
+    threadMessages.body.data.items.some((m) => m.body.includes("[E2E fixture] Freelancer")),
+    "client inbox should show freelancer message"
+  );
+
+  recordScenario("Fixture seed: lowongan + proposal + chat dua arah", {
+    clientEmail: fx.client.email,
+    freelancerEmail: fx.freelancer.email,
+    password,
+    jobId,
+    bidId,
+    threadId,
+    chatNote:
+      'Pesan "[E2E fixture] Klien…" dan "[E2E fixture] Freelancer…" — cek di /en/messages atau /id/messages'
+  });
+});
 
 test("full marketplace flow (register → reviews & aggregates)", async () => {
   const suffix = `${Date.now()}_${Math.random().toString(16).slice(2, 8)}`;
@@ -532,6 +813,17 @@ test("full marketplace flow (register → reviews & aggregates)", async () => {
   assert.equal(listCl.res.status, 200);
   assert.equal(listCl.body.data.aggregate.reviewCount, 1);
   assert.equal(listCl.body.data.aggregate.averageReviewRating, 4);
+
+  recordScenario("Full flow: kontrak selesai + chat kontrak + review", {
+    clientEmail,
+    freelancerEmail,
+    password,
+    jobId,
+    bidId,
+    contractId,
+    threadId,
+    chatNote: "Chat utas kontrak: Hello from client / Hello from freelancer"
+  });
 });
 
 test("pre-hire proposal loop: JOB thread after bid + first message", async () => {
@@ -665,6 +957,16 @@ test("pre-hire proposal loop: JOB thread after bid + first message", async () =>
     jobThreadMessages.body.data.items.some((m) => m.body.includes("Freelancer follow-up with proposal clarifications")),
     "client should see freelancer follow-up in thread"
   );
+
+  recordScenario("Pre-hire: proposal + chat JOB (sebelum hire)", {
+    clientEmail,
+    freelancerEmail,
+    password,
+    jobId,
+    threadId,
+    chatNote:
+      "Client opening note + Freelancer follow-up — utas JOB sebelum accept bid"
+  });
 });
 
 test("auth register/login/session/logout contract checks", async () => {
@@ -726,4 +1028,11 @@ test("auth register/login/session/logout contract checks", async () => {
 
   const afterLogout = await api("/api/auth/session", { cookie: logout.cookieHeader });
   assert.equal(afterLogout.res.status, 401, JSON.stringify(afterLogout.body));
+
+  recordScenario("Auth contract (akun sekali pakai)", {
+    clientEmail,
+    freelancerEmail,
+    password,
+    chatNote: "Hanya tes login/register/logout — tidak ada job/chat"
+  });
 });

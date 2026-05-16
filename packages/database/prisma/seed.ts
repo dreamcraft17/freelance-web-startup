@@ -155,6 +155,115 @@ async function seedAdmin() {
   return user;
 }
 
+/** Stable client + freelancer for manual QA and `pnpm test:e2e` (login, job, bid, Messages). */
+async function seedE2eFixtures() {
+  const clientEmail = (process.env.SEED_E2E_CLIENT_EMAIL ?? "e2e.client@nearwork.local")
+    .toLowerCase()
+    .trim();
+  const freelancerEmail = (process.env.SEED_E2E_FREELANCER_EMAIL ?? "e2e.freelancer@nearwork.local")
+    .toLowerCase()
+    .trim();
+  const password = process.env.SEED_E2E_PASSWORD ?? "NearWorkE2eDev123!";
+  const freelancerUsername = (process.env.SEED_E2E_FREELANCER_USERNAME ?? "e2e_freelancer").trim();
+
+  if (password.length < 8) {
+    throw new Error("SEED_E2E_PASSWORD must be at least 8 characters");
+  }
+
+  const passwordHash = await bcrypt.hash(password, 12);
+
+  const clientUser = await prisma.user.upsert({
+    where: { email: clientEmail },
+    create: {
+      email: clientEmail,
+      passwordHash,
+      role: "CLIENT",
+      accountStatus: "ACTIVE"
+    },
+    update: {
+      passwordHash,
+      role: "CLIENT",
+      accountStatus: "ACTIVE",
+      deletedAt: null
+    }
+  });
+
+  await prisma.clientProfile.upsert({
+    where: { userId: clientUser.id },
+    create: {
+      userId: clientUser.id,
+      displayName: "E2E Client (seed)"
+    },
+    update: {
+      displayName: "E2E Client (seed)",
+      deletedAt: null
+    }
+  });
+
+  const freelancerUser = await prisma.user.upsert({
+    where: { email: freelancerEmail },
+    create: {
+      email: freelancerEmail,
+      passwordHash,
+      role: "FREELANCER",
+      accountStatus: "ACTIVE"
+    },
+    update: {
+      passwordHash,
+      role: "FREELANCER",
+      accountStatus: "ACTIVE",
+      deletedAt: null
+    }
+  });
+
+  const existingProfile = await prisma.freelancerProfile.findFirst({
+    where: { userId: freelancerUser.id, deletedAt: null },
+    select: { id: true, username: true }
+  });
+
+  const bio =
+    "Profil seed untuk tes E2E dan cek manual. Bio cukup panjang agar freelancer bisa mengirim proposal.";
+
+  if (existingProfile) {
+    await prisma.freelancerProfile.update({
+      where: { id: existingProfile.id },
+      data: {
+        fullName: "E2E Freelancer (seed)",
+        bio,
+        workMode: "REMOTE",
+        availabilityStatus: "AVAILABLE",
+        deletedAt: null
+      }
+    });
+  } else {
+    const usernameTaken = await prisma.freelancerProfile.findFirst({
+      where: {
+        username: { equals: freelancerUsername, mode: "insensitive" },
+        deletedAt: null,
+        NOT: { userId: freelancerUser.id }
+      },
+      select: { id: true }
+    });
+    if (usernameTaken) {
+      throw new Error(
+        `SEED_E2E_FREELANCER_USERNAME "${freelancerUsername}" is already used — set SEED_E2E_FREELANCER_USERNAME in env.`
+      );
+    }
+    await prisma.freelancerProfile.create({
+      data: {
+        userId: freelancerUser.id,
+        username: freelancerUsername,
+        fullName: "E2E Freelancer (seed)",
+        bio,
+        workMode: "REMOTE",
+        availabilityStatus: "AVAILABLE"
+      }
+    });
+  }
+
+  return { clientEmail, freelancerEmail, password, freelancerUsername };
+}
+
 async function main() {
   if (!process.env.DATABASE_URL?.trim()) {
     throw new Error(
@@ -164,6 +273,7 @@ async function main() {
 
   const { category, subcategory } = await seedTaxonomy();
   const admin = await seedAdmin();
+  const e2e = await seedE2eFixtures();
 
   // eslint-disable-next-line no-console
   console.log(
@@ -179,6 +289,13 @@ async function main() {
       `  userId:   ${admin.id}`,
       "",
       "  Log in at /login then open /admin",
+      "",
+      "[seed] E2E fixture accounts (manual + pnpm test:e2e):",
+      `  client:      ${e2e.clientEmail}`,
+      `  freelancer:  ${e2e.freelancerEmail} (@${e2e.freelancerUsername})`,
+      `  password:    ${e2e.password}`,
+      "",
+      "  After `pnpm test:e2e`, see e2e-test-accounts.local.md for job/thread links.",
       "  (change credentials in production; use env overrides — never commit secrets)"
     ].join("\n")
   );
