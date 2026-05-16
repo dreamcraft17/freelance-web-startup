@@ -1,7 +1,7 @@
 # Production deploy checklist (web + database)
 
-> **Doc revision:** v6  
-> Last synchronized: 2026-05-12 (public staging: synthetic listing filter, support email, test DB vs prod `DATABASE_URL`).
+> **Doc revision:** v7  
+> Last synchronized: 2026-05-16 (`jose` di `serverExternalPackages` Next web untuk mengurangi error dev `vendor-chunks/jose@…`).
 
 Checklist singkat sebelum merilis NearWork ke lingkungan produksi. Sesuaikan penyedia hosting (mis. Vercel) dengan variabel yang sama di dashboard mereka.
 
@@ -30,7 +30,7 @@ Dari root monorepo:
 
 ### Dev / CI: artefak `.next` tidak selaras
 
-Setelah mengganti dependensi atau jika beberapa route API mengembalikan **500 halaman HTML** (bukan JSON) dan log menunjukkan `Cannot find module './vendor-chunks/jose@…'`, hapus cache build lalu bangun ulang: `rm -rf apps/web/.next && pnpm --filter @acme/web build`. Untuk **`pnpm test:e2e`**, jalankan terhadap server yang memakai artefak segar (dev dimulai ulang setelah clean build, atau `next start` setelah `build`).
+Setelah mengganti dependensi atau jika beberapa route mengembalikan **500** dan log menunjukkan `Cannot find module './vendor-chunks/jose@…'` (atau chunk serupa), hapus cache lalu jalankan ulang dev: `pnpm --filter @acme/web clean && pnpm --filter @acme/web dev` (atau `dev:fresh`). `next.config.ts` memuat **`serverExternalPackages: ["jose", …]`** agar `jose` tidak di-bundle ke vendor chunk server yang rapuh saat Fast Refresh; bila error tetap muncul, tetap pakai clean di atas.
 
 ## Vercel monorepo settings (pilih salah satu)
 

@@ -39,10 +39,10 @@ const nextConfig: NextConfig = {
   outputFileTracingRoot: workspaceRoot,
   /**
    * `cn()` (`clsx` + `tailwind-merge`) is pulled into many server/client boundaries; bundling them as
-   * webpack vendor chunks can yield intermittent dev errors (`Cannot find module './vendor-chunks/tailwind-merge@…js'`)
-   * after Fast Refresh. Prefer Node resolution for these small libs.
+   * webpack vendor chunks can yield intermittent dev errors (`Cannot find module './vendor-chunks/tailwind-merge@…js'`,
+   * `./vendor-chunks/jose@…js`) after Fast Refresh. Prefer Node resolution for these.
    */
-  serverExternalPackages: ["clsx", "tailwind-merge"],
+  serverExternalPackages: ["clsx", "tailwind-merge", "jose"],
   typedRoutes: true,
   poweredByHeader: false,
   async headers() {
