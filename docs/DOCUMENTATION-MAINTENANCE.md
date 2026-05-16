@@ -1,7 +1,7 @@
 # Documentation maintenance (NearWork)
 
-> **Doc revision:** v25  
-> Last synchronized: 2026-05-11 (public marketplace copy tone; EN/ID i18n parity).
+> **Doc revision:** v26  
+> Last synchronized: 2026-05-11 (i18n: profesional manusiawi; CTA kontak; tanpa slang ID).
 
 ## AUTO — wajib untuk AI & kontributor
 

@@ -1,7 +1,7 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v112  
-> Last synchronized: 2026-05-11 (public marketplace copy tone; locale parity `public.jobs.liveFreelancerApply`).
+> **Doc revision:** v113  
+> Last synchronized: 2026-05-11 (voice pass: Contact freelancer / Hubungi freelancer; formal ID; messages not “discussion” hype).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
@@ -9,6 +9,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## Update terbaru (April 2026)
 
+- **2026-05-11 — Voice: profesional dan manusiawi (EN/ID):** microcopy aktivasi, pesan, dashboard, profil freelancer publik, dan detail job memakai bahasa operasional (Messages / Pesan, “Contact freelancer” / “Hubungi freelancer”) menggantikan frasa “start discussion” yang terdengar pitch; bahasa Indonesia formal (hindari “lo”, “nempel”, “diskusi” sebagai CTA); alur landing tetap singkat.
 - **2026-05-11 — Public marketplace copy (operational tone):** kamus `landing.*`, `public.jobs*`, `public.freelancers*`, blok pulse/trust/empty state, dan metadata SEO `/[locale]` dipadatkan agar terasa seperti papan hiring nyata (kurang frasa pemasaran abstrak); struktur `id.json` diselaraskan dengan `en.json` (termasuk `public.jobs.liveFreelancerApply` untuk build typecheck).
 - **2026-05-11 — Loading & skeleton system:** NearWork menambah primitive `nw-skeleton*` + helper komponen loading agar placeholder konsisten dengan hierarki final; route-level `loading.tsx` diperluas ke jobs/detail/freelancers/profile/dashboard/messages/notifications/settings/admin utama; pending feedback lokal diperhalus pada filter nearby freelancer, grouping notifikasi, dan composer messages.
 - **2026-05-09 — Konvergensi tipografi tahap 2:** detail page `/jobs/[jobId]` dan `/freelancers/[username]` diselaraskan ke `nw-type-*` + ritme card/chip bersama; onboarding cards (`ActivationChecklistCard`, `FreelancerProposalPlaybook`, `MarketplaceLiquidityHints`) dipadatkan dan dipoles editorial; tabel admin inti memakai pill/chip yang lebih konsisten untuk kepadatan operasional.

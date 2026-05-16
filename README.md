@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v104  
-> Last synchronized: 2026-05-11 — public marketplace copy refined in `locales/en.json` + `id.json` (operational tone); see `features.md`.
+> **Doc revision:** v105  
+> Last synchronized: 2026-05-11 — i18n voice: `Contact freelancer` / `Hubungi freelancer`, formal ID; see `features.md`.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)

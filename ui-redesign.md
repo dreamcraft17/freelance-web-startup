@@ -1,13 +1,17 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v97  
-> Last synchronized: 2026-05-11 (loading/skeleton + public i18n copy pass: shorter operational marketplace strings, same `nw-*` layouts).
+> **Doc revision:** v98  
+> Last synchronized: 2026-05-11 (voice pass: contact/message wording; formal Indonesian labels; same `nw-*`).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-11 — Professional marketplace voice (i18n)
+
+- **Copy:** Aktivasi, Messages, dashboard stats, profil freelancer (`public.freelancerProfile.primaryCta`), job detail / proposal CTAs: bahasa Inggris singkat dan dapat dipercaya; Indonesia formal tanpa slang (`Tujuan Anda`, bukan “lo”; `terikat pada`, bukan “nempel”). Tombol fokus ke **Contact / Hubungi** dan **Send message / Kirim pesan**, bukan “discussion” sebagai jargon produk.
 
 ### 2026-05-11 — Public marketplace copy (i18n only)
 

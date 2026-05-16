@@ -41,7 +41,7 @@
   },
   "activation": {
     "shared": {
-      "jobContextReminder": "Proposal dan chat tetap nempel ke lowongan—agar cakupan dan keputusan rekrut tetap bisa dilacak.",
+      "jobContextReminder": "Proposal dan chat tetap terikat pada lowongan sehingga cakupan pekerjaan dan keputusan rekrut mudah dilacak.",
       "clientLiquidityIntro": "Brief yang jelas menarik balasan lebih baik: sebutkan hasil akhir, tenggat, kendala, dan cara Anda memutuskan.",
       "freelancerLiquidityIntro": "Proposal kuat menyitir brief, menawarkan milestone, dan menunjukkan Anda memahami kendala."
     },
@@ -64,8 +64,8 @@
           "hint": "Buka job klien dan periksa bid—bandingkan kecocokan, timeline, dan harga berdampingan."
         },
         "discussion": {
-          "label": "Mulai diskusi",
-          "hint": "Balas dari Pesan atau dari peninjauan proposal—semuanya tetap tersaji per lowongan."
+          "label": "Balas lewat Pesan",
+          "hint": "Balas dari Pesan atau dari tinjauan proposal—semua tetap per lowongan."
         }
       },
       "liquidity": {
@@ -93,8 +93,8 @@
           "hint": "Bid dengan rencana, harga, dan timeline ringkas tertaut pada lowongan itu—bukan pitch generik."
         },
         "discussion": {
-          "label": "Buka diskusi",
-          "hint": "Pesan lewat alur job atau proposal agar konteks tetap tertaut pada proses hire."
+          "label": "Kirim pesan",
+          "hint": "Gunakan alur lowongan atau proposal agar konteks tetap pada proses rekrut."
         }
       },
       "liquidity": {
@@ -174,7 +174,7 @@
     "backToInbox": "Inbox",
     "previewEmpty": "Belum ada pesan — sapalah dulu",
     "awaitingReply": "Menunggu balasan Anda",
-    "threadDiscussionWarm": "Diskusi aktif",
+    "threadDiscussionWarm": "Percakapan aktif",
     "proposalChipInterviewing": "Shortlist · wawancara",
     "sent": "Terkirim",
     "emptyThreadsTitle": "Belum ada utas",
@@ -212,7 +212,7 @@
     "threadTiedHint": "Jaga pembahasan tetap di konteks hiring—klien membandingkan proposal di listing ini.",
     "backToJob": "Ke lowongan",
     "handoffFromProposal": "Percakapan dibuka dari proposal terbaru Anda.",
-    "handoffFromConversation": "Percakapan dibuka dari peninjauan proposal job. Lanjutkan diskusi dan pilih langkah berikutnya.",
+    "handoffFromConversation": "Percakapan dibuka dari tinjauan proposal. Lanjutkan di utas ini dan tentukan langkah berikutnya.",
     "hiringContextKicker": "Konteks hiring",
     "contextListingStatus": "Status listing",
     "contextProposalPending": "Status proposal masih menyinkron—muat ulang jika tampilan ini terasa salah.",
@@ -229,7 +229,7 @@
     "nextSuggestedFreelancerAwaitReview": "Proposal Anda sedang ditinjau—hindari obrolan santai sampai klien membuka percakapan.",
     "nextSuggestedFreelancerShortlisted": "Anda di-shortlist—balas cepat dengan kejelasan ruang lingkup dan ketersediaan.",
     "nextSuggestedFreelancerReply": "Klien sudah menghubungi—jawab dengan detail yang mengikat ke brief yang dipublikasi.",
-    "nextSuggestedFreelancerClarify": "Diskusi berjalan—ringkas komitmen tertulis supaya akuntabilitas hiring jelas.",
+    "nextSuggestedFreelancerClarify": "Percakapan berjalan—pastikan cakupan dan kesepakatan tertulis agar jelas bagi kedua pihak.",
     "nextSuggestedFreelancerAccepted": "Anda diterima di listing ini—arahkan langkah lanjutan di utas hiring yang sama.",
     "composeWorkplaceReminder": "Ruang kerja ini untuk koordinasi pekerjaan—hindari perkenalan di luar konteks job."
   },
@@ -264,9 +264,9 @@
       "summarySub": "Angka aktual dari aktivitas hiring Anda.",
       "statOpenJobs": "Lowongan aktif",
       "statIncomingProposals": "Proposal menunggu review",
-      "statUnreadThreads": "Diskusi menunggu balasan",
-      "statUnreadThreadsHint": "Ada utas freelancer menunggu—balas lewat Messages.",
-      "statUnreadThreadsClear": "Diskusi aktif—tidak ada balasan yang tertunda saat ini.",
+      "statUnreadThreads": "Utas menunggu balasan",
+      "statUnreadThreadsHint": "Ada utas freelancer menunggu—balas lewat Pesan.",
+      "statUnreadThreadsClear": "Percakapan aktif—tidak ada balasan yang tertunda saat ini.",
       "statUnreadThreadsNoProfileHint": "Pasang lowongan supaya proposal dan utas pesan bisa muncul di sini.",
       "statOpenJobsHintListing": "Menerima proposal",
       "statOpenJobsHintEmpty": "Pasang lowongan untuk membuka listing",
@@ -453,7 +453,7 @@
       "conversationsSubtitle": "Utas terikat job terbaru",
       "conversationsSeeAll": "Buka pesan",
       "conversationsEmptyTitle": "Belum ada percakapan",
-      "conversationsEmptyBody": "Diskusi dibuka saat Anda mengirim proposal atau diundang—semua tetap di Messages.",
+      "conversationsEmptyBody": "Percakapan terbuka setelah Anda mengirim proposal atau diundang—semuanya berada di Pesan.",
       "skillsTitle": "Fokus skill",
       "skillsSubtitle": "Batang mengikuti tahun pengalaman di profil.",
       "skillsEmptyBody": "Tambahkan skill pada profil agar klien lebih cepat cocokkan Anda.",
@@ -526,9 +526,9 @@
     "liveDirectory": "Direktori freelancer aktif",
     "title": "Temukan freelancer siap kerja dalam hitungan menit",
     "subtitle": "Cari berdasarkan skill dan kota, lihat profil yang relevan, lalu rekrut tanpa chat yang tercecer.",
-    "outcomeLine": "Cari, bandingkan, dan mulai diskusi dalam satu alur kerja - lokal atau remote.",
-    "marketplaceLiveLine": "Marketplace aktif - cari, bandingkan, lalu mulai dalam hitungan menit.",
-    "supportingLine": "Semua proposal dan percakapan tetap nempel ke lowongan.",
+    "outcomeLine": "Cari, bandingkan, dan hubungi freelancer dalam satu alur—lokal atau jarak jauh.",
+    "marketplaceLiveLine": "Marketplace aktif: bandingkan profil, lalu hubungi kandidat yang sesuai.",
+    "supportingLine": "Setiap proposal dan percakapan tetap terikat pada lowongan.",
     "locationNote": "Pakai kota untuk jasa freelancer terdekat, atau kosongkan untuk hasil remote freelancer.",
     "howTitle": "Alur merekrut",
     "howStep1": "Pasang lowongan atau cari freelancer.",
@@ -561,7 +561,7 @@
     "searchTrustLine": "Proposal, chat, dan keputusan tetap terhubung ke pekerjaan.",
     "searchTrustOne": "Proposal tetap terkait konteks lowongan.",
     "searchTrustTwo": "Bandingkan opsi sebelum mengambil keputusan.",
-    "modeSwitchLabel": "Tujuan lo",
+    "modeSwitchLabel": "Tujuan Anda",
     "modeHire": "Saya ingin rekrut",
     "modeWork": "Saya ingin kerja",
     "modeHirePrimary": "Pasang lowongan sekarang",
@@ -622,7 +622,7 @@
         "headlineLine1": "Cari kerja lepas",
         "headlineLine2": "dekat Anda, remote, atau hybrid",
         "subHeadline": "Hanya lowongan terbuka. Negosiasi tetap di listing.",
-        "flowLine": "Lamar · diskusi di lowongan · deal jika cocok",
+        "flowLine": "Lamar · pesan di utas lowongan · rekrut jika cocok",
         "primaryCta": "Cari pekerjaan",
         "secondaryCta": "Lengkapi profil",
         "searchPlaceholder": "Role, skill, atau jenis proyek",
@@ -631,7 +631,7 @@
       "neutral": {
         "headlineLine1": "Rekrut atau cari kerja",
         "headlineLine2": "di satu papan lowongan",
-        "subHeadline": "Klien pasang lowongan; freelancer kirim proposal; chat menempel di listing.",
+        "subHeadline": "Klien memasang lowongan; freelancer mengirim proposal; percakapan mengikuti setiap listing.",
         "flowLine": "Cari · proposal · chat per lowongan",
         "primaryCta": "Pasang lowongan",
         "secondaryCta": "Cari pekerjaan",
@@ -697,14 +697,14 @@
           },
           "proposals": {
             "title": "Terima proposal",
-            "body": "Tiap bid nempel ke ID lowongan Anda."
+            "body": "Setiap proposal terikat pada lowongan yang sama."
           },
           "chat": {
             "title": "Balas di satu utas",
             "body": "File dan tanya jawab tetap di listing."
           },
           "hire": {
-            "title": "Deal saat siap",
+            "title": "Rekrut jika cocok",
             "body": "Lanjutkan di NearWork."
           }
         }
@@ -828,7 +828,7 @@
       "subtitle": "Pakai nearby untuk kerja lokal, remote untuk kerja online, atau hybrid kalau dua-duanya kepakai.",
       "onsite": {
         "kicker": "On-site",
-        "title": "Fotografer event di kota lo",
+        "title": "Fotografer event di lokasi Anda",
         "body": "Pakai filter kota dan nearby buat shortlist freelancer yang bisa datang langsung."
       },
       "remote": {
@@ -847,7 +847,7 @@
     },
     "finalCta": {
       "kicker": "Lanjut",
-      "title": "Satu lowongan. Beberapa proposal. Hire kalau cocok.",
+      "title": "Satu lowongan, beberapa proposal—rekrut bila sesuai.",
       "subtitle": "Proposal dan chat tetap di listing.",
       "urgency": "Early access—pasang lowongan gratis.",
       "primary": "Pasang lowongan",
@@ -1072,7 +1072,7 @@
       "heroFeaturedProposals": "{{count}} proposal",
       "heroFeaturedProposalsZero": "Belum ada proposal",
       "searchExamplesHint": "Contoh: Figma, UI/UX, React, copywriting, video…",
-      "boardDescription": "Klien pasang lowongan; freelancer kirim proposal; chat menempel di listing.",
+      "boardDescription": "Klien memasang lowongan; freelancer mengirim proposal; percakapan mengikuti setiap listing.",
       "searchKeywordPlaceholder": "Cari pekerjaan atau skill",
       "searchLocationPlaceholder": "Lokasi (opsional)",
       "searchAction": "Cari",
@@ -1175,8 +1175,8 @@
       "demandProcessTitle": "Alur rekrut di sini",
       "demandProcessLead": "Papan sepi? Alurnya tetap sama—tanpa posting palsu.",
       "demandProcessStep1": "Pasang brief dengan anggaran, kota, dan mode kerja.",
-      "demandProcessStep2": "Bandingkan proposal yang menempel pada listing.",
-      "demandProcessStep3": "Diskusi di chat per lowongan, lalu rekrut.",
+      "demandProcessStep2": "Bandingkan proposal pada listing yang sama.",
+      "demandProcessStep3": "Selaras lewat chat per lowongan, lalu rekrut.",
       "viewAllSmall": "Lihat semua",
       "liveActivityTitle": "Pergerakan terbaru",
       "liveNewJob": "Lowongan baru: {{title}}",
@@ -1452,10 +1452,10 @@
       "locationNotListed": "Lokasi belum dicantumkan",
       "rateOnRequest": "Tarif sesuai kesepakatan",
       "ctaKicker": "Aksi berikutnya",
-      "ctaDescription": "Jika profil ini cocok dengan proyek Anda, mulai diskusi dan simpan semuanya tetap terikat pada keputusan hiring ini.",
-      "primaryCta": "Mulai diskusi",
-      "ctaReassurance": "Anda bisa membahas scope, timeline, dan terms sebelum berkomitmen.",
-      "ctaPreview": "Anda akan mulai diskusi dengan freelancer ini dulu - belum ada pembayaran.",
+      "ctaDescription": "Jika profil ini sesuai, hubungi freelancer lewat Pesan. Konteks tetap pada keputusan rekrut Anda.",
+      "primaryCta": "Hubungi freelancer",
+      "ctaReassurance": "Anda dapat membahas ruang lingkup, jadwal, dan ketentuan sebelum berkomitmen.",
+      "ctaPreview": "Anda akan membuka percakapan dengan freelancer ini. Belum ada pembayaran.",
       "secondaryBackToDirectory": "Kembali ke direktori",
       "whyChooseTitle": "Kenapa memilih freelancer ini",
       "reasonStrongReviewsCategory": "Ulasan kuat untuk pekerjaan {{category}}.",
@@ -1480,7 +1480,7 @@
       "reviewNoComment": "Rating dikirim tanpa ulasan tertulis detail.",
       "reviewsFallback": "Belum ada ulasan publik.",
       "finalCtaTitle": "Siap lanjut?",
-      "finalCtaBody": "Gunakan aksi kontak untuk diskusi scope, budget, dan ketersediaan langsung.",
+      "finalCtaBody": "Gunakan kontak di profil untuk menyepakati ruang lingkup, anggaran, dan ketersediaan.",
       "availability": {
         "available": "Tersedia",
         "limited": "Ketersediaan terbatas",
@@ -1523,9 +1523,9 @@
       "skillOverlapTitle": "Skill berpotongan dengan profilmu",
       "skillOverlapLine": "{{count}} cocok: {{skills}}",
       "skillOverlapNone": "Belum ada skill tersimpan yang cocok dengan tag ini—tetap bisa apply jika brief relevan.",
-      "ctaDiscussProject": "Diskusikan proyek",
-      "ctaDiscussHint": "Setelah kirim proposal, lanjutkan utas di lowongan ini agar konteks tetap jelas.",
-      "ctaDiscussShort": "Diskusi",
+      "ctaDiscussProject": "Tanyakan proyek",
+      "ctaDiscussHint": "Setelah mengirim proposal, lanjutkan utas pada lowongan ini agar konteks tetap jelas.",
+      "ctaDiscussShort": "Pesan",
       "sidebarOpportunityKicker": "Ringkasan lowongan",
       "sidebarStatProposals": "Proposal masuk",
       "sidebarStatPosted": "Diposting",
@@ -1542,8 +1542,8 @@
       "locationLabel": "Lokasi",
       "postedLabel": "Diposting",
       "applyKicker": "Langkah apply",
-      "applyDescription": "Jika brief ini cocok dengan skill Anda, kirim proposal untuk memulai diskusi yang langsung terikat ke lowongan ini.",
-      "applyReassurance": "Anda bisa kirim proposal dan diskusikan detail dulu. Tidak ada komitmen sampai kedua pihak sepakat.",
+      "applyDescription": "Jika brief ini sesuai keahlian Anda, kirim proposal. Percakapan berikutnya tetap pada lowongan ini.",
+      "applyReassurance": "Anda dapat mengirim proposal dan membahas detail lebih dulu. Tidak ada komitmen hingga kedua pihak sepakat.",
       "formGuideTitle": "Struktur proposal",
       "formGuideSubtitle": "Tulis ringkas dan spesifik ke brief supaya klien mudah meninjau.",
       "formGuidanceKicker": "Isi proposal yang dibaca klien dengan cepat",
@@ -1553,7 +1553,7 @@
       "formGuidanceBullet3": "Rencana eksekusi—sebut hal yang Anda asumsikan atau sudah Anda klarifikasi.",
       "formGuidanceBullet4": "Timeline jujur + kapan Anda bisa mulai atau menghadiri milestone.",
       "formGuidanceBullet5": "Penawaran yang selaras cue budget dan apa saja yang termasuk.",
-      "formGuidanceBullet6": "Ajak klien membalas di thread hiring ini—semua tetap nempel ke listing.",
+      "formGuidanceBullet6": "Ajak klien membalas di utas lowongan ini—semua tetap terikat pada listing.",
       "formIntroLabel": "Intro singkat",
       "formIntroHint": "1–3 kalimat tentang Anda untuk role ini—tanpa jargon promosi kosong.",
       "formIntroPlaceholder": "Kenalkan diri singkat dan sambungkan ke kebutuhan di posting ini.",
@@ -1575,14 +1575,14 @@
       "formSubmitCtaSubtitle": "Anda bisa memperjelas ruang lingkup setelah klien menjawab; semua tetap terikat pada job ini.",
       "sendingProposal": "Mengirim proposal...",
       "sendingProposalOverlay": "Sedang mengirim proposal Anda...",
-      "proposalSent": "Proposal berhasil dikirim. Anda bisa melanjutkan diskusi saat klien membalas.",
+      "proposalSent": "Proposal terkirim. Lanjutkan percakapan setelah klien membalas.",
       "proposalError": "Proposal belum bisa dikirim. Periksa input lalu coba lagi.",
       "proposalNetworkError": "Tidak dapat menjangkau server. Periksa koneksi lalu coba lagi.",
       "draftRestored": "Draf dipulihkan.",
       "savedLocally": "Tersimpan lokal.",
       "clearDraft": "Hapus draf",
       "draftCleared": "Draf lokal dihapus.",
-      "afterProposalHint": "Proposal terkirim dan jalur diskusi sudah siap.",
+      "afterProposalHint": "Proposal terkirim; utas pesan siap digunakan.",
       "conversationUnavailableHint": "Proposal terkirim. Buka halaman Pesan jika tautan percakapan belum siap.",
       "lowCompetitionHint": "Baru ada {{count}} proposal sejauh ini.",
       "signalActiveHiring": "Hiring aktif",
@@ -1666,19 +1666,19 @@
       "proposalsEmptySecondary": "Dasbor lowongan saya",
       "proposalCompletenessFine": "Terbaca lengkap—cepat untuk memutuskan.",
       "proposalCompletenessOk": "Cukup untuk shortlist—kirim satu klarifikasi jika ada celah penting.",
-      "proposalCompletenessThin": "Kurang detail—diskusikan lebih dulu sebelum memilih.",
+      "proposalCompletenessThin": "Kurang detail—bahas lebih dulu sebelum memutuskan.",
       "profileCompletenessPct": "{{percent}}% lengkap",
-      "discussInviteDetail": "Mulai Messages untuk menyelaraskan scope—percakapan tetap menempel pada job ini.",
+      "discussInviteDetail": "Gunakan Pesan untuk menyelaraskan cakupan pekerjaan—percakapan tetap terikat pada lowongan ini.",
       "threadReadyDetail": "Thread sudah ada—kirim pembuka yang ringkas dan mengacu ke proposal mereka.",
       "ownerReviewMobileKicker": "Bandingkan proposal (tap kartu)",
-      "discussProminentLabel": "Diskusi di utas hiring ini",
-      "discussProminentHint": "Mulai atau lanjutkan Pesan untuk menyelaraskan scope, budget, atau jadwal—tetap tertaut ke posting ini.",
+      "discussProminentLabel": "Percakapan pada utas rekrutmen ini",
+      "discussProminentHint": "Buka atau lanjutkan Pesan untuk menyepakati cakupan, anggaran, atau jadwal—tetap pada posting ini.",
       "reportSecondaryNote": "Gunakan laporan hanya untuk masalah kepercayaan—aksi rekrut utama tetap di atas.",
       "mobileBrowseFreelancer": "Profil",
       "mobileBackToJob": "Posting",
       "freelancerProfileAria": "Buka profil freelancer",
-      "bidDiscussOpen": "Buka diskusi",
-      "bidDiscussStart": "Mulai diskusi",
+      "bidDiscussOpen": "Buka percakapan",
+      "bidDiscussStart": "Kirim pesan",
       "bidDiscussStarting": "Membuka…",
       "bidDiscussError": "Tidak bisa memulai percakapan.",
       "bidHintShortlisted": "Siap merekrut saat Anda yakin",
@@ -1840,7 +1840,7 @@
       "clientsStep1Body": "Jelaskan hasil, anggaran, dan timeline. Tentukan apakah butuh talenta nearby, remote, atau hybrid—klien menggunakan field lokasi saat pekerjaan tidak sepenuhnya online.",
       "clientsStep2Title": "Terima proposal",
       "clientsStep2Body": "Freelancer merespons lowongan Anda dengan proposal. Anda bisa membandingkan ruang lingkup, harga, dan waktu di satu tempat, bukan di thread terpisah.",
-      "clientsStep3Title": "Rekrut dan kolaborasi",
+      "clientsStep3Title": "Rekrut dan koordinasi pekerjaan",
       "clientsStep3Body": "Pilih yang paling pas, selaraskan milestone, dan simpan keputusan dekat dengan pekerjaan. Detail bergantung proyek Anda—NearWork adalah garis start bersama, bukan pengganti cara Anda menjalankan delivery harian.",
       "freelancersTitle": "Untuk freelancer",
       "freelancersSubtitle": "Saat Anda ingin brief yang menghormati cara dan lokasi kerja Anda.",
