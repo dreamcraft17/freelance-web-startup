@@ -12,9 +12,78 @@ import { clampLimit, clampPage, offsetFromPage } from "@acme/utils";
 import { isFreelancerBoostActiveAt, isJobFeaturedActiveAt } from "../lib/promotion-expiry";
 import type { AppLocale } from "@/lib/i18n/types";
 import {
+  excludeSyntheticPublicFreelancersWhere,
   excludeSyntheticPublicJobsWhere,
   publicSyntheticListingsHidden
 } from "@/lib/server/synthetic-public-content";
+
+const FREELANCER_SEARCH_WORK_MODES = new Set<string>(["REMOTE", "ONSITE", "HYBRID"]);
+
+/** Narrow runtime shapes so raw SQL never binds objects as jsonb (Postgres 42804). */
+function sanitizeFreelancerSearchInput(input: SearchFreelancersQueryDto): SearchFreelancersQueryDto {
+  const rawPage =
+    typeof input.page === "number" && Number.isFinite(input.page) ? input.page : Number(input.page);
+  const page = clampPage(Number.isFinite(rawPage) ? rawPage : 1);
+
+  const rawLimit =
+    typeof input.limit === "number" && Number.isFinite(input.limit) ? input.limit : Number(input.limit);
+  const limit = clampLimit(Number.isFinite(rawLimit) ? rawLimit : 20);
+
+  const keyword = typeof input.keyword === "string" ? input.keyword : undefined;
+  const city = typeof input.city === "string" ? input.city : undefined;
+  const categoryId = typeof input.categoryId === "string" ? input.categoryId : undefined;
+  const skillId = typeof input.skillId === "string" ? input.skillId : undefined;
+
+  let workMode: SearchFreelancersQueryDto["workMode"] = undefined;
+  if (typeof input.workMode === "string" && FREELANCER_SEARCH_WORK_MODES.has(input.workMode)) {
+    workMode = input.workMode as SearchFreelancersQueryDto["workMode"];
+  }
+
+  return { page, limit, keyword, city, workMode, categoryId, skillId };
+}
+
+/** Mirrors {@link buildFreelancerPublicWhereSql} for `count` — avoids embedding the same `Sql` twice in raw queries. */
+function buildFreelancerDirectoryWhereInput(input: SearchFreelancersQueryDto): Prisma.FreelancerProfileWhereInput {
+  const and: Prisma.FreelancerProfileWhereInput[] = [{ deletedAt: null }];
+
+  if (input.workMode) {
+    and.push({ workMode: input.workMode });
+  }
+
+  const cityTrimmed = input.city?.trim();
+  if (cityTrimmed) {
+    and.push({ city: { contains: cityTrimmed, mode: "insensitive" } });
+  }
+
+  if (input.categoryId?.trim()) {
+    const categoryId = input.categoryId.trim();
+    and.push({
+      skills: { some: { skill: { categoryId, isActive: true } } }
+    });
+  }
+
+  if (input.skillId?.trim()) {
+    const skillId = input.skillId.trim();
+    and.push({ skills: { some: { skillId } } });
+  }
+
+  const kwTrimmed = input.keyword?.trim();
+  if (kwTrimmed) {
+    and.push({
+      OR: [
+        { username: { contains: kwTrimmed, mode: "insensitive" } },
+        { fullName: { contains: kwTrimmed, mode: "insensitive" } },
+        { headline: { contains: kwTrimmed, mode: "insensitive" } },
+        { bio: { contains: kwTrimmed, mode: "insensitive" } }
+      ]
+    });
+  }
+
+  const synthetic = excludeSyntheticPublicFreelancersWhere();
+  if (synthetic) and.push(synthetic);
+
+  return { AND: and };
+}
 
 /**
  * **`$queryRaw`:** digunakan hanya untuk pencarian **freelancer** (JOIN subquery ranking).
@@ -436,11 +505,12 @@ export class SearchService {
   async searchFreelancers(
     input: SearchFreelancersQueryDto
   ): Promise<{ items: FreelancerSearchItem[]; total: number }> {
-    const page = clampPage(input.page);
-    const limit = clampLimit(input.limit);
+    const safe = sanitizeFreelancerSearchInput(input);
+    const page = safe.page;
+    const limit = safe.limit;
     const skip = offsetFromPage({ page, limit });
     const now = new Date();
-    const whereSql = buildFreelancerPublicWhereSql(input);
+    const whereSql = buildFreelancerPublicWhereSql(safe);
 
     const listSql = db.$queryRaw<
       {
@@ -510,16 +580,10 @@ export class SearchService {
       LIMIT ${limit} OFFSET ${skip}
     `;
 
-    const countSql = db.$queryRaw<{ count: bigint }[]>`
-      SELECT COUNT(*)::bigint AS count
-      FROM "FreelancerProfile" fp
-      WHERE ${whereSql}
-    `;
-
-    const countRows = await countSql;
+    const total = await db.freelancerProfile.count({
+      where: buildFreelancerDirectoryWhereInput(safe)
+    });
     const rows = await listSql;
-
-    const total = Number(countRows[0]?.count ?? 0n);
     return {
       items: rows.map((r) => mapFreelancer(r, now)),
       total
