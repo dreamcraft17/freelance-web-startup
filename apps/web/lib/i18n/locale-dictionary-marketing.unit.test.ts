@@ -44,6 +44,6 @@ describe("locale dictionaries — marketing EN/ID split", () => {
   });
 
   it("Indonesian jobs browse dictionary uses Indonesian section title", () => {
-    expect(id.public.jobs.sectionTitle).toMatch(/Eksplorasi/);
+    expect(id.public.jobs.sectionTitle).toMatch(/lowongan/i);
   });
 });

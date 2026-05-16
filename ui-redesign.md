@@ -1,13 +1,17 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v96  
-> Last synchronized: 2026-05-11 (loading/skeleton convergence: shared `nw-skeleton*`, route `loading.tsx` for key surfaces, calmer pending states in messages/notifications/filters).
+> **Doc revision:** v97  
+> Last synchronized: 2026-05-11 (loading/skeleton + public i18n copy pass: shorter operational marketplace strings, same `nw-*` layouts).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-11 — Public marketplace copy (i18n only)
+
+- **Tone:** `apps/web/locales/en.json` + `id.json` untuk landing, jobs board, freelancers directory, pulse/snapshot labels, empty states, dan trust chips—lebih pendek dan “papan hiring” tanpa mengganti hierarki komponen atau token `nw-*`.
 
 ### 2026-05-09 — Convergence pass 2 (detail pages + onboarding + admin)
 

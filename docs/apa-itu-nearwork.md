@@ -1,7 +1,7 @@
 # Apa itu NearWork?
 
-> **Doc revision:** v6  
-> Last synchronized: 2026-05-08 (UX proposal/review/diskusi lebih terarah; tanpa billing).
+> **Doc revision:** v7  
+> Last synchronized: 2026-05-11 (positioning copy: marketplace hiring operasional, bukan jargon “structured/AI”).
 
 Dokumen ini menjawab secara singkat: **produk ini apa**, **untuk siapa**, dan **apa yang dilakukan user di dalamnya**—tanpa detail teknis implementasi.
 
@@ -9,7 +9,7 @@ Dokumen ini menjawab secara singkat: **produk ini apa**, **untuk siapa**, dan **
 
 ## NearWork dalam satu kalimat
 
-**NearWork** adalah **structured freelance marketplace**: tempat **client** memasang kebutuhan kerja (job), **freelancer** mengajukan penawaran (proposal), dan semua proposal + percakapan tetap terikat pada lowongan yang sama—untuk kerja **jarak jauh (remote)** maupun **di lokasi (on-site / hybrid)**.
+**NearWork** adalah **marketplace freelance untuk merekrut**: **klien** memasang lowongan (job), **freelancer** mengirim proposal, dan percakapan tetap terikat pada lowongan yang sama—untuk kerja **remote** maupun **di lokasi (on-site / hybrid)**.
 
 Repo monorepo ini (nama kerja: **Freelance-web**) adalah **aplikasi web** yang menjalankan produk NearWork (UI, API, database, autentikasi).
 

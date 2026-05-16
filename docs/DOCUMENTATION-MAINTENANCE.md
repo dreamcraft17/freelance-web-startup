@@ -1,7 +1,7 @@
 # Documentation maintenance (NearWork)
 
-> **Doc revision:** v24  
-> Last synchronized: 2026-05-11 (currency/locale product rules; job posting IDR/USD).
+> **Doc revision:** v25  
+> Last synchronized: 2026-05-11 (public marketplace copy tone; EN/ID i18n parity).
 
 ## AUTO — wajib untuk AI & kontributor
 

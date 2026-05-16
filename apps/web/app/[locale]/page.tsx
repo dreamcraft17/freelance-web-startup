@@ -6,14 +6,14 @@ import { localizedMetadata, normalizeLocale } from "@/lib/i18n/seo";
 
 const copy = {
   en: {
-    title: "NearWork — Structured Freelance Marketplace (Local, Remote, Hybrid)",
+    title: "NearWork — Hire freelancers & find work (Indonesia-first)",
     description:
-      "Post jobs, collect proposals, and hire through job-thread chat. Browse freelancers or open roles with keyword, category, city, and work mode filters."
+      "Post a job or browse open roles. Proposals and messages stay on the job thread. Filter by skill, category, city, and work mode."
   },
   id: {
-    title: "NearWork — Marketplace Freelance Terstruktur (Lokal, Remote, Hybrid)",
+    title: "NearWork — Rekrut freelancer & cari kerja lepas",
     description:
-      "Pasang lowongan, terima proposal, dan rekrut lewat chat pada utas pekerjaan. Jelajahi freelancer atau role dengan filter kata kunci, kategori, kota, dan mode kerja."
+      "Pasang lowongan atau cari role terbuka. Proposal dan chat menempel ke utas lowongan. Filter skill, kategori, kota, dan mode kerja."
   }
 } as const;
 
