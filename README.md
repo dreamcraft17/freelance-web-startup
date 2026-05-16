@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v99  
-> Last synchronized: 2026-05-12 — public staging: hide automation-shaped listings on Vercel (`VERCEL=1` + `synthetic-public-content`), support email `NEARWORK_SUPPORT_EMAIL` for `/help`, E2E/HTTP harness must use disposable DB only (never prod/staging public `DATABASE_URL`).
+> **Doc revision:** v100  
+> Last synchronized: 2026-05-12 — E2E runner loads monorepo `.env`, `.env.local`, and `apps/web/.env.local` before requiring `DATABASE_URL` / `DATABASE_URL_TEST`.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -316,7 +316,7 @@ pnpm exec tsc --noEmit -p apps/web
 | `pnpm db:studio` | Prisma Studio |
 | `pnpm test` | Alias to unit tests |
 | `pnpm test:unit` | Vitest unit tests for policies/services/helpers/validators |
-| `pnpm test:e2e` | Build web + `next start` (port **3041** default), lalu HTTP smoke CSRF auth→job→bid→messages→report (`SKIP_E2E_BUILD=1`/`E2E_PORT`). Prefer **`DATABASE_URL_TEST`** (isolated DB); runner meng-override `DATABASE_URL` untuk proses build + server. |
+| `pnpm test:e2e` | Build web + `next start` (port **3041** default), lalu HTTP smoke CSRF auth→job→bid→messages→report (`SKIP_E2E_BUILD=1`/`E2E_PORT`). Prefer **`DATABASE_URL_TEST`** (isolated DB); runner meng-override `DATABASE_URL` untuk proses build + server. Memuat otomatis **`.env`**, **`.env.local`** (root), dan **`apps/web/.env.local`** bila variabel belum ada di shell. |
 | `pnpm test:all` | Run unit then e2e |
 
 ### Testing quickstart

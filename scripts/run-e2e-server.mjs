@@ -5,17 +5,59 @@
  *   - E2E_PORT (default 3041)
  *   - SKIP_E2E_BUILD=1  skip `pnpm --filter @acme/web build` when `.next` is already trustworthy
  *   - **`DATABASE_URL_TEST` (recommended)** — isolated Postgres for automation; when set, the runner **overrides `DATABASE_URL`** for build + `next start` so you never hit staging/prod by mistake.
- *   - `DATABASE_URL`, `SESSION_SECRET` (>=16) — required when `DATABASE_URL_TEST` is unset (same as manual dev)
+ *   - `DATABASE_URL`, `SESSION_SECRET` (>=16) — required when `DATABASE_URL_TEST` is unset (same as manual dev). Loaded from monorepo **`.env`**, **`.env.local`**, **`apps/web/.env.local`** if not already in the environment (shell/CI wins).
  *
  * Usage: `node scripts/run-e2e-server.mjs` (invoked by root `pnpm test:e2e`)
  */
 
 import { spawn } from "node:child_process";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+
+/** Same idea as `packages/database/prisma/seed.ts`: load `.env` so `pnpm test:e2e` works without manual `export`. Shell / CI vars win. */
+function loadMonorepoDotenvForE2e() {
+  function parseFile(filePath) {
+    const out = {};
+    const text = readFileSync(filePath, "utf8");
+    for (const rawLine of text.split("\n")) {
+      const line = rawLine.trim();
+      if (!line || line.startsWith("#")) continue;
+      const exportPrefix = "export ";
+      const decl = line.startsWith(exportPrefix) ? line.slice(exportPrefix.length).trim() : line;
+      const eq = decl.indexOf("=");
+      if (eq === -1) continue;
+      const key = decl.slice(0, eq).trim();
+      let val = decl.slice(eq + 1).trim();
+      if (!key) continue;
+      if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+        val = val.slice(1, -1);
+      }
+      out[key] = val;
+    }
+    return out;
+  }
+
+  const merged = {};
+  const files = [
+    path.resolve(root, ".env"),
+    path.resolve(root, ".env.local"),
+    path.resolve(root, "apps/web/.env.local")
+  ];
+  for (const filePath of files) {
+    if (existsSync(filePath)) Object.assign(merged, parseFile(filePath));
+  }
+  for (const [key, val] of Object.entries(merged)) {
+    if (process.env[key] === undefined) {
+      process.env[key] = val;
+    }
+  }
+}
+
+loadMonorepoDotenvForE2e();
 const port = String(Number(process.env.E2E_PORT ?? "3041") || 3041);
 const baseUrl = `http://127.0.0.1:${port}`;
 
@@ -75,7 +117,11 @@ async function main() {
   const childEnv = e2eProcessEnv();
   if (!childEnv.DATABASE_URL?.trim()) {
     throw new Error(
-      "E2E requires DATABASE_URL (or DATABASE_URL_TEST pointing at an isolated Postgres). Never use production or shared public staging."
+      [
+        "E2E needs a Postgres URL: set DATABASE_URL_TEST (recommended, isolated DB) or DATABASE_URL.",
+        "This script loads monorepo `.env`, `.env.local`, and `apps/web/.env.local` if keys are not already in the environment.",
+        "Never point automated tests at production or a shared public staging database."
+      ].join(" ")
     );
   }
 
