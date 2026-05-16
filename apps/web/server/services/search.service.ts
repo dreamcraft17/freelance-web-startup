@@ -94,57 +94,58 @@ function buildFreelancerDirectoryWhereInput(input: SearchFreelancersQueryDto): P
 type JobSearchOptions = { publicVisibilityOnly: boolean; locale: AppLocale };
 
 /**
- * Single composed WHERE for freelancer directory raw SQL.
- * Uses Prisma.join (string separator `" AND "`) — do not pass `Prisma.sql` as the separator
- * or it stringifies to `[object Object]` and breaks the query.
+ * Dynamic `WHERE` for freelancer directory raw SQL, built by chaining `Prisma.sql` fragments.
+ * Avoids `Prisma.join` here: nesting `join` output inside `db.$queryRaw` has caused parameter
+ * mis-binding (Postgres `42804` — boolean vs `jsonb`) in some Next/webpack builds.
  */
 function buildFreelancerPublicWhereSql(input: SearchFreelancersQueryDto): Prisma.Sql {
-  const parts: Prisma.Sql[] = [Prisma.sql`fp."deletedAt" IS NULL`];
+  let clause = Prisma.sql`fp."deletedAt" IS NULL`;
 
   if (input.workMode) {
-    parts.push(Prisma.sql`fp."workMode" = CAST(${input.workMode} AS "WorkMode")`);
+    clause = Prisma.sql`${clause} AND fp."workMode" = CAST(${input.workMode} AS "WorkMode")`;
   }
 
   const cityTrimmed = input.city?.trim();
   if (cityTrimmed) {
-    parts.push(Prisma.sql`fp."city" ILIKE ${"%" + cityTrimmed + "%"}`);
+    clause = Prisma.sql`${clause} AND fp."city" ILIKE ${"%" + cityTrimmed + "%"}`;
   }
 
-  if (input.categoryId) {
-    parts.push(Prisma.sql`EXISTS (
+  const categoryId = input.categoryId?.trim();
+  if (categoryId) {
+    clause = Prisma.sql`${clause} AND EXISTS (
       SELECT 1 FROM "FreelancerSkill" fs
       INNER JOIN "Skill" s ON s."id" = fs."skillId"
       WHERE fs."freelancerProfileId" = fp."id"
-        AND s."categoryId" = ${input.categoryId}
+        AND s."categoryId" = ${categoryId}
         AND s."isActive" = true
-    )`);
+    )`;
   }
 
-  if (input.skillId) {
-    parts.push(Prisma.sql`EXISTS (
+  const skillId = input.skillId?.trim();
+  if (skillId) {
+    clause = Prisma.sql`${clause} AND EXISTS (
       SELECT 1 FROM "FreelancerSkill" fs
       WHERE fs."freelancerProfileId" = fp."id"
-        AND fs."skillId" = ${input.skillId}
-    )`);
+        AND fs."skillId" = ${skillId}
+    )`;
   }
 
   const kwTrimmed = input.keyword?.trim();
   if (kwTrimmed) {
-    parts.push(
-      Prisma.sql`(fp."username" ILIKE ${"%" + kwTrimmed + "%"} OR fp."fullName" ILIKE ${"%" + kwTrimmed + "%"} OR fp."headline" ILIKE ${"%" + kwTrimmed + "%"} OR fp."bio" ILIKE ${"%" + kwTrimmed + "%"})`
-    );
+    const a = "%" + kwTrimmed + "%";
+    clause = Prisma.sql`${clause} AND (fp."username" ILIKE ${a} OR fp."fullName" ILIKE ${a} OR fp."headline" ILIKE ${a} OR fp."bio" ILIKE ${a})`;
   }
 
   if (publicSyntheticListingsHidden()) {
-    parts.push(Prisma.sql`NOT (
+    clause = Prisma.sql`${clause} AND NOT (
       fp."username" ILIKE 'pw_%'
       OR fp."username" ILIKE 'e2e_%'
       OR fp."fullName" ILIKE '%playwright%'
-      OR COALESCE(fp."headline", '') ILIKE '%playwright%'
-    )`);
+      OR COALESCE(fp."headline"::text, '') ILIKE '%playwright%'
+    )`;
   }
 
-  return Prisma.join(parts, " AND ");
+  return clause;
 }
 
 /** Open jobs listing filters for public discovery APIs (moderation-visible only). */
@@ -512,7 +513,11 @@ export class SearchService {
     const now = new Date();
     const whereSql = buildFreelancerPublicWhereSql(safe);
 
-    const listSql = db.$queryRaw<
+    const total = await db.freelancerProfile.count({
+      where: buildFreelancerDirectoryWhereInput(safe)
+    });
+
+    const rows = await db.$queryRaw<
       {
         id: string;
         userId: string;
@@ -534,7 +539,7 @@ export class SearchService {
         isBoosted: boolean;
         boostedUntil: Date | null;
       }[]
-    >`
+    >(Prisma.sql`
       SELECT
         fp."id",
         fp."userId",
@@ -577,13 +582,9 @@ export class SearchService {
         ) DESC,
         (CASE WHEN fp."isFeatured" = true THEN 1 ELSE 0 END) DESC,
         fp."createdAt" DESC
-      LIMIT ${limit} OFFSET ${skip}
-    `;
+      LIMIT ${Number(limit)} OFFSET ${Number(skip)}
+    `);
 
-    const total = await db.freelancerProfile.count({
-      where: buildFreelancerDirectoryWhereInput(safe)
-    });
-    const rows = await listSql;
     return {
       items: rows.map((r) => mapFreelancer(r, now)),
       total
