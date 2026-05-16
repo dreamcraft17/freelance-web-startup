@@ -11,7 +11,7 @@ const copy = {
       "Post a job or browse open roles. Proposals and messages stay on the job thread. Filter by skill, category, city, and work mode."
   },
   id: {
-    title: "NearWork — Rekrut freelancer & cari kerja lepas",
+    title: "NearWork — Rekrut freelancer & cari kerja Lepas / Freelancer",
     description:
       "Pasang lowongan atau cari role terbuka. Proposal dan chat menempel ke utas lowongan. Filter skill, kategori, kota, dan mode kerja."
   }
