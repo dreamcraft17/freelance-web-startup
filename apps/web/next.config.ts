@@ -38,9 +38,13 @@ const nextConfig: NextConfig = {
   /** Prefer monorepo lockfile (`pnpm-lock.yaml`) over stray lockfiles higher in the tree during tracing/lint inference. */
   outputFileTracingRoot: workspaceRoot,
   /**
-   * `cn()` (`clsx` + `tailwind-merge`) is pulled into many server/client boundaries; bundling them as
-   * webpack vendor chunks can yield intermittent dev errors (`Cannot find module './vendor-chunks/tailwind-merge@…js'`,
-   * `./vendor-chunks/jose@…js`) after Fast Refresh. Prefer Node resolution for these.
+   * Small libs cross many server/client boundaries; bundling them as webpack vendor chunks can yield
+   * intermittent dev errors (`vendor-chunks/tailwind-merge@…js`, `jose@…js`) after Fast Refresh.
+   * Prefer Node resolution for these.
+   *
+   * Do **not** add `lucide-react` here — Next 15 optimizes/transpiles it and reports a conflict with
+   * `serverExternalPackages`. For `vendor-chunks/lucide-react@…` MODULE_NOT_FOUND, clear `apps/web/.next`
+   * (`pnpm --filter @acme/web dev:fresh`).
    */
   serverExternalPackages: ["clsx", "tailwind-merge", "jose"],
   typedRoutes: true,

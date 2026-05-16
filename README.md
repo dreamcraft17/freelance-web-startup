@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v101  
-> Last synchronized: 2026-05-16 — Next web: `serverExternalPackages` includes `jose` to avoid dev `vendor-chunks/jose@…` MODULE_NOT_FOUND after Fast Refresh (still use `dev:fresh` if cache is stale).
+> **Doc revision:** v103  
+> Last synchronized: 2026-05-16 — `lucide-react` vendor-chunk errors: use `dev:fresh` (not `serverExternalPackages`; Next 15 transpile conflict).
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -295,7 +295,7 @@ pnpm --filter @acme/web dev
 |--------|------------------------|
 | `DATABASE_URL` / Prisma errors in **`@acme/worker`** | Root env missing or worker not needed — use root `.env` with `DATABASE_URL`, or run web-only (above). Without DB, the worker idles after a clear warning. |
 | `EMAXCONNSESSION` / `max clients reached` (pool ~15) | Hosted Postgres pooler session limit; reduce concurrent dev tabs/processes, or use a connection string / tier with a higher pool, or a **direct** (non-pooler) URL for local dev. |
-| `Cannot find module './…js'` / **`MODULE_NOT_FOUND`** (mis. **`vendor-chunks/jose@…`**, chunk `tailwind-merge`) pada route marketing (`/pricing`) atau API (500 HTML) | Stale atau chunk server webpack tidak selaras — **`pnpm --filter @acme/web dev:fresh`**. `apps/web/next.config.ts` memuat **`serverExternalPackages`** untuk `jose`, `clsx`, `tailwind-merge` agar dev lebih stabil; setelah upgrade deps tetap bersihkan **`.next`** jika error masih muncul. |
+| `Cannot find module './…js'` / **`MODULE_NOT_FOUND`** (mis. **`vendor-chunks/jose@…`**, **`lucide-react@…`**, `tailwind-merge`) pada route publik (`/help`, `/pricing`) atau API (500 HTML) | **Umumnya cache `.next` rusak setelah Fast Refresh / upgrade** — **`pnpm --filter @acme/web dev:fresh`**. `serverExternalPackages` memuat `jose`, `clsx`, `tailwind-merge`; **`lucide-react` tidak di-externalize** (Next 15: konflik `transpilePackages`) — untuk chunk lucide, **clean + restart**. |
 
 ### Type checking
 

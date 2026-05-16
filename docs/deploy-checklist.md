@@ -1,7 +1,7 @@
 # Production deploy checklist (web + database)
 
-> **Doc revision:** v7  
-> Last synchronized: 2026-05-16 (`jose` di `serverExternalPackages` Next web untuk mengurangi error dev `vendor-chunks/jose@…`).
+> **Doc revision:** v9  
+> Last synchronized: 2026-05-16 (`lucide-react` **tidak** di `serverExternalPackages` — konflik `transpilePackages` Next 15; troubleshooting chunk `lucide` = `dev:fresh`).
 
 Checklist singkat sebelum merilis NearWork ke lingkungan produksi. Sesuaikan penyedia hosting (mis. Vercel) dengan variabel yang sama di dashboard mereka.
 
@@ -30,7 +30,7 @@ Dari root monorepo:
 
 ### Dev / CI: artefak `.next` tidak selaras
 
-Setelah mengganti dependensi atau jika beberapa route mengembalikan **500** dan log menunjukkan `Cannot find module './vendor-chunks/jose@…'` (atau chunk serupa), hapus cache lalu jalankan ulang dev: `pnpm --filter @acme/web clean && pnpm --filter @acme/web dev` (atau `dev:fresh`). `next.config.ts` memuat **`serverExternalPackages: ["jose", …]`** agar `jose` tidak di-bundle ke vendor chunk server yang rapuh saat Fast Refresh; bila error tetap muncul, tetap pakai clean di atas.
+Setelah mengganti dependensi atau jika beberapa route mengembalikan **500** dan log menunjukkan `Cannot find module './vendor-chunks/jose@…'` / **`vendor-chunks/lucide-react@…`** (atau chunk serupa), hapus cache lalu jalankan ulang dev: `pnpm --filter @acme/web clean && pnpm --filter @acme/web dev` (atau `dev:fresh`). **`jose`**, **`clsx`**, **`tailwind-merge`** ada di **`serverExternalPackages`** agar tidak di-bundle rapuh; **`lucide-react`** tidak bisa di-externalize di Next 15 (konflik transpile) — untuk error lucide, **bersihkan `.next`**; bila masih ganggu, restart dev setelah clean.
 
 ## Vercel monorepo settings (pilih salah satu)
 
