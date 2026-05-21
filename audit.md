@@ -1,14 +1,21 @@
 # Audit teknis — Freelance-web (monorepo)
 
-> **Doc revision:** v14  
-> Last synchronized: 2026-05-10 (middleware: rewrite workspace ber-prefix locale + redirect dari path internal legacy; sanitasi return URL login/register mengenali `/<locale>/client` dll.).
+> **Doc revision:** v15  
+> Last synchronized: 2026-05-22 (sinkron trust & safety MVP, harness E2E/seed, loading system, gap billing/CI yang masih terbuka).
 
 **Lingkup:** `apps/web`, `packages/*`, dan jalur operasional yang mempengaruhi produksi.  
-**Tanggal referensi:** April 2026 (sinkron dengan update terakhir implementasi).
+**Tanggal referensi:** Mei 2026 (sinkron dengan update terakhir implementasi).
 
-## Addendum update (April 2026)
+## Addendum update (April–Mei 2026)
 
+- **2026-05-16 — Listing sintetis di marketplace publik:** di lingkungan Vercel (`VERCEL=1`), job/profil yang cocok pola otomasi (judul E2E/Playwright, username `pw_`, dll.) disembunyikan dari board publik dan agregat marketing via `synthetic-public-content.ts`; override debug `NEARWORK_SHOW_SYNTHETIC_PUBLIC_LISTINGS=1`, paksa sembunyikan lokal `NEARWORK_HIDE_SYNTHETIC_PUBLIC_LISTINGS=1`.
+- **2026-05-12 — E2E DB terisolasi:** `pnpm test:e2e` (`scripts/run-e2e-server.mjs`) memetakan **`DATABASE_URL_TEST`** → `DATABASE_URL` untuk build + `next start` agar smoke tidak menulis ke DB dev/staging bersama; tanpa itu wajib `DATABASE_URL` eksplisit ke DB throwaway.
+- **2026-05-11 — Voice & copy operasional:** microcopy EN/ID (Messages/Pesan, “Contact freelancer” / “Hubungi freelancer”) menggantikan frasa pitch; bahasa Indonesia formal di CTA dashboard dan profil publik.
+- **2026-05-11 — Loading & skeleton:** primitive `nw-skeleton*` + `LoadingSkeleton`; `loading.tsx` di route utama (jobs, freelancers, detail, dashboard client/freelancer, messages, notifications, settings, admin jobs/users/reports/verification).
+- **2026-05-11 — Mata uang job vs locale UI:** anggaran/proposal/kontrak mengikuti **`Job.currency`** (IDR/USD); path `/en` vs `/id` hanya memengaruhi format angka (`format-money.ts`), bukan konversi mata uang.
+- **2026-05-10 — Notifikasi in-app terlokalisasi:** `NotificationService` menyimpan `_nwCopy`; `listForActor(actor, locale)` + `GET /api/notifications` mem-format judul/bodi dari kamus aktif.
 - **2026-05-10 — Workspace routing parity:** middleware mendeteksi `/(en|id)/(client|freelancer|messages|notifications|settings)` → rewrite ke path `/client`… yang sama seperti sebelumnya (tanpa menduplikasi tree App Router). Permintaan ke `/client`… tanpa prefix dialihkan ke `/<preferredLocale>/…` sebelum gate sesi; return URL ke `/login` dapat berupa URL bermerek locale penuh. Deep link lama tanpa prefix tetap valid via redirect.
+- **2026-05-08 — Trust & safety MVP:** model **`ModerationReport`** + **`ModerationReportNote`**; status `OPEN` / `IN_REVIEW` / `RESOLVED` / `DISMISSED`; subjek `USER` / `JOB` / `BID` / `REVIEW` / `MESSAGE_THREAD` / `MESSAGE`; intake **`POST /api/reports`**; antrean **`/admin/reports`** (assign, catatan internal, resolve/dismiss); job **`moderationHiddenAt`** untuk sembunyikan dari discovery publik; **`ADMIN`/`SUPPORT_ADMIN`** suspend/reactivate **`CLIENT`/`FREELANCER`** di `/admin/users`. UI intake: `ModerationReportButton` di profil freelancer, owner job, proposal, Messages. E2E smoke memverifikasi laporan BID muncul di **`GET /api/admin/reports`** (butuh admin seed).
 - **2026-05-09 — Pool pressure / `EMAXCONNSESSION` (read path):** halaman publik `/jobs` dan `/freelancers` memanggil **satu** transaksi Prisma untuk **`PublicStatsService.getPulseAndHeroForPublicBrowse`** (pulse + **momentum** + hero panels), bukan beberapa transaksi paralel terpisah. `SearchService` menyerialkan pasangan **`count` → `findMany`** untuk job list dan **`COUNT` → list** untuk freelancer `$queryRaw`; `CategoryService.list` juga menyerialkan pasangan tersebut. Layout freelancer menyerialkan **notifikasi unread** dan **inbox awaiting reply** (bukan `Promise.all`). Tujuan: menurunkan checkout koneksi bersamaan terhadap pool session (`pool_size` kecil di penyedia managed Postgres).
 - **2026-05-09 — Nav badges & awaiting-reply (lanjutan):** `MarketingShell` (semua rute marketing/publik dengan sesi) tidak lagi memakai `Promise.all` untuk dua count badge. **`react` `cache()`** mem-dedupe hitungan notifikasi / thread awaiting reply per request antara **layout freelancer** dan **halaman dashboard** (`navigation-badges-cache.ts`), sehingga query berat tidak dijalankan dua kali per navigasi. `MessageService.countAwaitingReplyThreadsForUser` diganti **satu** `$queryRaw` agregat (bukan `findMany` peserta + nested message). Dashboard **client** dan **freelancer** menyerialkan blok query yang sebelumnya `Promise.all` (hingga 6 parallel).
 - **2026-04-27 — Source tree consistency hardening:** struktur runtime `apps/web` dinormalisasi ke root-level folders (`app`, `components`, `features`, `lib`, `server`) dan ketergantungan pada `apps/web/src` dihapus untuk mengurangi ambiguitas path/alias yang rawan salah import.
@@ -27,7 +34,7 @@
   - `/client/jobs` memunculkan indikator attention (pending decision/new bids/stale open jobs),
   - job detail menyediakan compact bid comparison untuk owner,
   - next action (**Hire** pada proposal) tidak tersembunyi di layer yang dalam.
-- Risiko tersisa tetap sama: integrasi billing produksi, trust & safety report backend penuh, dan hardening operasional.
+- Risiko tersisa utama: **billing provider nyata**, **penyempurnaan trust & safety** (eskalasi/SLA/notifikasi staff), **CI otomatis di repo**, dan **konsistensi brand/visual** lintas rilis.
 
 ### Addendum 2026-04-18
 
@@ -48,7 +55,8 @@ NearWork sudah berada di fase **MVP+ operasional**:
 
 Perubahan besar sejak audit sebelumnya:
 
-- `/admin` sekarang fully integrated di `apps/web` (overview + users/jobs/bids/contracts/verification/reviews/reports/donations/subscriptions/feature-flags/settings),
+- `/admin` fully integrated di `apps/web` (overview + users/jobs/bids/contracts/verification/reviews/**reports (moderasi)** /donations/subscriptions/feature-flags/settings),
+- **Trust & safety MVP:** `ModerationReport`, intake `POST /api/reports`, sembunyikan job publik, suspend user,
 - guard staff sudah konsisten antara middleware, server guard, dan API (`protectStaff`),
 - navbar public sudah auth-aware (tidak lagi selalu menampilkan login/register saat sesi valid),
 - redirect post-login dipusatkan (`resolvePostLoginRedirect`) dan staff default ke `/admin`.
@@ -57,7 +65,7 @@ Status umum:
 
 - **Typecheck `apps/web` bersih** pada perubahan terbaru.
 - Arsitektur service/policy/repository tetap rapi.
-- Risiko utama tersisa: billing provider nyata, ekspansi trust/safety reports backend, dan hardening operasional lanjutan.
+- Risiko utama tersisa: billing provider nyata, moderasi lanjutan (eskalasi, notifikasi staff, kebijakan abuse), dan CI/hardening operasional otomatis.
 
 ---
 
@@ -116,14 +124,16 @@ Sudah benar-benar staff-only:
 - UI shell internal terstruktur (sidebar grouped + topbar + role badge + account menu).
 - Halaman operasional read-first sudah kaya data:
   - users, jobs, bids, contracts, reviews, donations, subscriptions, feature flags.
+- **`/admin/reports`:** antrean moderasi nyata (filter, assign, catatan, resolve/dismiss) terhubung `ModerationReportService`.
 - Verification queue sudah punya aksi moderasi nyata (approve/reject) ke endpoint yang ada.
+- **`/admin/users`:** suspend/reactivate akun klien/freelancer untuk staff `ADMIN`/`SUPPORT_ADMIN`.
 - Overview dashboard sudah memakai data real (bukan fake metrics) + panel aktivitas.
 
 ### 4.2 Gap yang masih ada
 
-- `reports` masih placeholder readiness (struktur bagus, backend report entity belum ada).
+- **Moderasi lanjutan:** antrean `/admin/reports` sudah real (triage, assign, catatan, resolve/dismiss), tetapi belum ada SLA/escalation otomatis, notifikasi staff real-time, atau policy engine abuse yang lebih granular.
 - Feature flags page masih read-only (sudah tepat untuk tahap sekarang).
-- Belum ada aksi destructive/admin mutation besar (suspend user, hard moderation workflows, dsb.) — by design read-first.
+- Mutasi admin selain verifikasi/suspend/moderasi masih terbatas (mis. bulk actions, audit log terpusat untuk setiap aksi staff) — sengaja read-first di banyak halaman.
 
 ---
 
@@ -134,13 +144,13 @@ Sudah benar-benar staff-only:
 - Skema domain sudah luas: users/profiles/jobs/bids/contracts/messages/notifications/reviews/subscriptions/donations/verification, dll.
 - Indeks dan model terbaru sudah dipakai oleh halaman admin.
 
-### 5.2 Seed admin
+### 5.2 Seed dev & E2E
 
-- `packages/database/prisma/seed.ts` sudah menyiapkan akun admin dev via upsert.
-- Root script `pnpm db:seed` sudah tersedia.
-- Default seed credential didokumentasikan dan bisa di-override via env.
+- `packages/database/prisma/seed.ts`: admin dev (`admin@nearwork.local` default), **taxonomy** (kategori/skill untuk create job), dan **akun E2E tetap** (`e2e.client@nearwork.local`, `e2e.freelancer@nearwork.local`, password `NearWorkE2eDev123!` default) — override via `SEED_ADMIN_*`, `SEED_E2E_*`.
+- Root script `pnpm db:seed` sudah tersedia; wajib di DB test yang sama sebelum `pnpm test:e2e` (kategori + admin untuk assert laporan).
+- Setelah E2E, `e2e-test-accounts.local.md` (gitignored) mencatat URL/thread dari run terakhir untuk cek manual browser.
 
-**Catatan keamanan:** credential default dev tidak boleh dipakai di shared/staging/prod.
+**Catatan keamanan:** credential default dev tidak boleh dipakai di shared/staging/prod; jangan jalankan harness E2E terhadap `DATABASE_URL` produksi.
 
 ---
 
@@ -165,6 +175,18 @@ Perlu perhatian:
 
 Rekomendasi: freeze satu brand source-of-truth (PNG atau SVG final) + token ukuran resmi untuk navbar/auth/dashboard.
 
+### 6.3 Loading & perceived performance
+
+Sudah ada:
+
+- `app/loading.tsx` global + route-level skeleton di discovery, workspace, dan admin utama,
+- utilitas `nw-skeleton*` / `LoadingSkeleton` selaras token NearWork.
+
+Residual:
+
+- tidak semua sub-route admin/client punya `loading.tsx` (mis. bids/contracts overview),
+- beberapa interaksi client-only (filter, composer) masih mengandalkan pending state lokal — konsistensi bisa ditingkatkan.
+
 ---
 
 ## 7) Monetisasi & trust/safety readiness
@@ -188,13 +210,16 @@ Belum ada:
 Sudah ada:
 
 - verification workflow staff (approved/rejected),
-- moderation-ready reports page scaffold.
+- **`ModerationReport`** persist + **`POST /api/reports`** + antrean **`/admin/reports`** (status, assignee, catatan internal),
+- sembunyikan job dari discovery publik (`moderationHiddenAt`),
+- suspend/reactivate akun `CLIENT`/`FREELANCER` dari `/admin/users`,
+- intake UI konsisten (`ModerationReportButton` / `ReportJobButton`) di surface publik dan Messages.
 
-Belum ada:
+Belum ada / partial:
 
-- report entity + triage lifecycle persisted,
-- assignment/escalation workflow,
-- policy engine yang lebih granular untuk abuse handling.
+- eskalasi otomatis, SLA, dan notifikasi staff untuk antrean moderasi,
+- audit trail terpusat untuk setiap aksi moderasi (di luar catatan per laporan),
+- policy engine abuse yang lebih granular (rate limit laporan, dedupe, auto-triage).
 
 ---
 
@@ -202,25 +227,28 @@ Belum ada:
 
 - `apps/web` typecheck: lulus di update terbaru.
 - Lints file yang disentuh: bersih.
-- E2E script (`pnpm test:e2e`) membutuhkan server hidup, DB bermigrasi + seed (kategori), dan mem-behavior-kan browser pada mutasi terlindungi CSRF (mint token lewat `GET /api/auth/csrf`, kirim `Cookie` + `X-CSRF-Token`, simpan header cookie terbaru setelah respons karena sesi dapat berputar).
+- **Unit:** `pnpm test:unit` (Vitest, mis. `format-money.unit.test.ts`, validators).
+- **E2E HTTP:** `pnpm test:e2e` → `run-e2e-server.mjs` (build + `next start` port **3041**) → `e2e-marketplace-flow.mjs`: register/login, job, bid, accept, kontrak, messages pre-hire & kontrak, **laporan moderasi BID** + assert admin queue, auth contract. Disarankan **`DATABASE_URL_TEST`**; butuh migrasi + **`pnpm db:seed`** pada DB yang sama. Mutasi memakai CSRF (`GET /api/auth/csrf`, `X-CSRF-Token`, rotasi cookie sesi).
+- **CI di repo:** belum ada workflow GitHub Actions (`.github/workflows` kosong) — gate `typecheck` / `lint` / `build` / `test:unit` / `test:e2e` masih manual atau di panel hosting (lihat `docs/deploy-checklist.md`).
 
 Ops checklist yang tetap wajib:
 
 1. set `SESSION_SECRET` kuat,
-2. set `DATABASE_URL` benar,
+2. set `DATABASE_URL` benar (E2E: **`DATABASE_URL_TEST`** atau DB throwaway eksplisit),
 3. jalankan migrasi deploy sebelum startup app,
 4. pastikan HTTPS prod untuk cookie security behavior,
-5. hindari commit file kredensial/rahasia real.
+5. hindari commit file kredensial/rahasia real (`e2e-test-accounts.local.md`, `credential.md` lokal),
+6. produksi: pertimbangkan `NEARWORK_HIDE_SYNTHETIC_PUBLIC_LISTINGS` / perilaku default Vercel untuk menyembunyikan data otomasi dari board publik.
 
 ---
 
 ## 9) Prioritas rekomendasi berikutnya
 
-1. **Billing real integration** (provider + webhook + audit trail finansial).
-2. **Reports backend** (model, API, status lifecycle, assignment).
-3. **Admin action layer** bertahap (safe mutations + audit logs).
-4. **Stabilisasi design system navbar/brand** (token final supaya iterasi tidak regress).
-5. **CI hardening**: jalankan typecheck/lint/e2e smoke secara otomatis.
+1. **Billing real integration** (Stripe/Midtrans/Xendit: checkout, webhook, rekonsiliasi; ganti `/checkout/mock` dan provider `MOCK` pada donation/subscription).
+2. **Moderasi lanjutan** (notifikasi staff, SLA/escalation, audit log aksi moderasi terpusat, kebijakan dedupe/rate limit laporan).
+3. **CI pipeline** di repo: `typecheck` + `lint` + `build` + `test:unit` + `test:e2e` dengan `DATABASE_URL_TEST` pada PR.
+4. **Admin action layer** bertahap (mutasi aman + jejak audit untuk operasi sensitif di luar verifikasi/suspend yang sudah ada).
+5. **Stabilisasi design system** (`nw-*`, brand/logo, spacing) agar iterasi UI tidak regress antar halaman marketing vs workspace.
 
 ---
 
@@ -228,4 +256,4 @@ Ops checklist yang tetap wajib:
 
 Freelance-web saat ini sudah lebih dari “backend MVP”: sekarang ada **internal admin workspace yang usable**, **RBAC yang terpusat**, **redirect/auth flow yang lebih benar**, dan **UI publik yang session-aware**. Fondasi teknisnya kuat untuk lanjut ke fase operasi awal.
 
-Utang utama bukan lagi core CRUD, melainkan **operasional produksi**: billing nyata, trust/safety reports backend, dan standardisasi visual brand agar stabil lintas rilis.
+Utang utama bukan lagi core CRUD atau intake laporan dasar, melainkan **operasional produksi**: billing nyata, moderasi/SLA staff, CI otomatis, dan standardisasi visual brand agar stabil lintas rilis.
