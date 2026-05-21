@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v105  
-> Last synchronized: 2026-05-11 — i18n voice: `Contact freelancer` / `Hubungi freelancer`, formal ID; see `features.md`.
+> **Doc revision:** v106  
+> Last synchronized: 2026-05-22 — GitHub Actions CI (`.github/workflows/ci.yml`) on push/PR to `main`.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -318,6 +318,8 @@ pnpm exec tsc --noEmit -p apps/web
 | `pnpm test:unit` | Vitest unit tests for policies/services/helpers/validators |
 | `pnpm test:e2e` | Build web + `next start` (port **3041** default), lalu HTTP smoke CSRF auth→job→bid→messages→report (`SKIP_E2E_BUILD=1`/`E2E_PORT`). Prefer **`DATABASE_URL_TEST`** (isolated DB); runner meng-override `DATABASE_URL` untuk proses build + server. Memuat otomatis **`.env`**, **`.env.local`** (root), dan **`apps/web/.env.local`** bila variabel belum ada di shell. |
 | `pnpm test:all` | Run unit then e2e |
+
+**CI (GitHub):** push atau PR ke `main` menjalankan workflow **CI** — typecheck, lint web, unit tests, lalu job integrasi (Postgres service, migrate, seed, build web, E2E HTTP). Detail: `docs/deploy-checklist.md`, `audit.md`.
 
 ### Testing quickstart
 

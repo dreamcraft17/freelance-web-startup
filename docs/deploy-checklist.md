@@ -1,7 +1,7 @@
 # Production deploy checklist (web + database)
 
-> **Doc revision:** v9  
-> Last synchronized: 2026-05-16 (`lucide-react` **tidak** di `serverExternalPackages` — konflik `transpilePackages` Next 15; troubleshooting chunk `lucide` = `dev:fresh`).
+> **Doc revision:** v10  
+> Last synchronized: 2026-05-22 (GitHub Actions CI pada push/PR `main`).
 
 Checklist singkat sebelum merilis NearWork ke lingkungan produksi. Sesuaikan penyedia hosting (mis. Vercel) dengan variabel yang sama di dashboard mereka.
 
@@ -58,10 +58,12 @@ Setelah mengganti dependensi atau jika beberapa route mengembalikan **500** dan 
 
 ## CI / test DB guidance
 
+- [ ] **GitHub Actions** (`.github/workflows/ci.yml`): pada push/PR ke `main`, job **Lint & unit** lalu **Build & E2E** dengan Postgres service (`DATABASE_URL_TEST` → DB `nearwork_ci`). Lokal: perintah yang sama seperti di bawah.
 - [ ] Gunakan DB terpisah untuk pengujian otomatis: set **`DATABASE_URL_TEST`** (disarankan) — `pnpm test:e2e` memetakan nilai ini ke `DATABASE_URL` untuk build + server. Tanpa itu, pastikan `DATABASE_URL` eksplisit ke DB throwaway saat menjalankan harness; **jangan** menempatkan data tes HTTP E2E pada database staging publik yang dipakai pengunjung.
-- [ ] Jalankan unit + e2e smoke sebelum release:
+- [ ] Jalankan unit + e2e smoke sebelum release (atau pastikan workflow CI hijau):
   - `pnpm test:unit`
   - `pnpm test:e2e` (app harus berjalan; skrip memanggil `GET /api/auth/csrf` + header `X-CSRF-Token` per mutasi; **`pnpm db:seed`** di DB test agar ada kategori untuk pembuatan job)
+- [ ] Opsional: aktifkan **branch protection** di GitHub — wajibkan status check CI sebelum merge ke `main`.
 
 ## Tambahan yang sering dilupakan
 

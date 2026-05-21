@@ -1,13 +1,14 @@
 # Audit teknis — Freelance-web (monorepo)
 
-> **Doc revision:** v15  
-> Last synchronized: 2026-05-22 (sinkron trust & safety MVP, harness E2E/seed, loading system, gap billing/CI yang masih terbuka).
+> **Doc revision:** v16  
+> Last synchronized: 2026-05-22 (GitHub Actions CI: quality + Postgres integration/E2E).
 
 **Lingkup:** `apps/web`, `packages/*`, dan jalur operasional yang mempengaruhi produksi.  
 **Tanggal referensi:** Mei 2026 (sinkron dengan update terakhir implementasi).
 
 ## Addendum update (April–Mei 2026)
 
+- **2026-05-22 — CI GitHub Actions:** workflow `.github/workflows/ci.yml` — job **quality** (`typecheck`, lint `@acme/web`, `test:unit`) dan **integration** (Postgres 16 service, `db:migrate:deploy`, `db:seed`, build web, `SKIP_E2E_BUILD=1` + `pnpm test:e2e` dengan `DATABASE_URL_TEST`).
 - **2026-05-16 — Listing sintetis di marketplace publik:** di lingkungan Vercel (`VERCEL=1`), job/profil yang cocok pola otomasi (judul E2E/Playwright, username `pw_`, dll.) disembunyikan dari board publik dan agregat marketing via `synthetic-public-content.ts`; override debug `NEARWORK_SHOW_SYNTHETIC_PUBLIC_LISTINGS=1`, paksa sembunyikan lokal `NEARWORK_HIDE_SYNTHETIC_PUBLIC_LISTINGS=1`.
 - **2026-05-12 — E2E DB terisolasi:** `pnpm test:e2e` (`scripts/run-e2e-server.mjs`) memetakan **`DATABASE_URL_TEST`** → `DATABASE_URL` untuk build + `next start` agar smoke tidak menulis ke DB dev/staging bersama; tanpa itu wajib `DATABASE_URL` eksplisit ke DB throwaway.
 - **2026-05-11 — Voice & copy operasional:** microcopy EN/ID (Messages/Pesan, “Contact freelancer” / “Hubungi freelancer”) menggantikan frasa pitch; bahasa Indonesia formal di CTA dashboard dan profil publik.
@@ -34,7 +35,7 @@
   - `/client/jobs` memunculkan indikator attention (pending decision/new bids/stale open jobs),
   - job detail menyediakan compact bid comparison untuk owner,
   - next action (**Hire** pada proposal) tidak tersembunyi di layer yang dalam.
-- Risiko tersisa utama: **billing provider nyata**, **penyempurnaan trust & safety** (eskalasi/SLA/notifikasi staff), **CI otomatis di repo**, dan **konsistensi brand/visual** lintas rilis.
+- Risiko tersisa utama: **billing provider nyata**, **penyempurnaan trust & safety** (eskalasi/SLA/notifikasi staff), dan **konsistensi brand/visual** lintas rilis.
 
 ### Addendum 2026-04-18
 
@@ -65,7 +66,7 @@ Status umum:
 
 - **Typecheck `apps/web` bersih** pada perubahan terbaru.
 - Arsitektur service/policy/repository tetap rapi.
-- Risiko utama tersisa: billing provider nyata, moderasi lanjutan (eskalasi, notifikasi staff, kebijakan abuse), dan CI/hardening operasional otomatis.
+- Risiko utama tersisa: billing provider nyata, moderasi lanjutan (eskalasi, notifikasi staff, kebijakan abuse), dan hardening operasional lanjutan (branch protection, staging gate).
 
 ---
 
@@ -229,7 +230,7 @@ Belum ada / partial:
 - Lints file yang disentuh: bersih.
 - **Unit:** `pnpm test:unit` (Vitest, mis. `format-money.unit.test.ts`, validators).
 - **E2E HTTP:** `pnpm test:e2e` → `run-e2e-server.mjs` (build + `next start` port **3041**) → `e2e-marketplace-flow.mjs`: register/login, job, bid, accept, kontrak, messages pre-hire & kontrak, **laporan moderasi BID** + assert admin queue, auth contract. Disarankan **`DATABASE_URL_TEST`**; butuh migrasi + **`pnpm db:seed`** pada DB yang sama. Mutasi memakai CSRF (`GET /api/auth/csrf`, `X-CSRF-Token`, rotasi cookie sesi).
-- **CI di repo:** belum ada workflow GitHub Actions (`.github/workflows` kosong) — gate `typecheck` / `lint` / `build` / `test:unit` / `test:e2e` masih manual atau di panel hosting (lihat `docs/deploy-checklist.md`).
+- **CI di repo:** GitHub Actions `.github/workflows/ci.yml` pada push/PR ke `main` — **quality** (typecheck, lint web, unit) lalu **integration** (Postgres service, migrate, seed, build `@acme/web`, E2E HTTP). Set `DATABASE_URL_TEST` di job integration; jangan arahkan workflow ke DB produksi.
 
 Ops checklist yang tetap wajib:
 
@@ -246,7 +247,7 @@ Ops checklist yang tetap wajib:
 
 1. **Billing real integration** (Stripe/Midtrans/Xendit: checkout, webhook, rekonsiliasi; ganti `/checkout/mock` dan provider `MOCK` pada donation/subscription).
 2. **Moderasi lanjutan** (notifikasi staff, SLA/escalation, audit log aksi moderasi terpusat, kebijakan dedupe/rate limit laporan).
-3. **CI pipeline** di repo: `typecheck` + `lint` + `build` + `test:unit` + `test:e2e` dengan `DATABASE_URL_TEST` pada PR.
+3. **Branch protection** — wajibkan status check CI hijau sebelum merge ke `main`; pertimbangkan job staging deploy terpisah.
 4. **Admin action layer** bertahap (mutasi aman + jejak audit untuk operasi sensitif di luar verifikasi/suspend yang sudah ada).
 5. **Stabilisasi design system** (`nw-*`, brand/logo, spacing) agar iterasi UI tidak regress antar halaman marketing vs workspace.
 
@@ -256,4 +257,4 @@ Ops checklist yang tetap wajib:
 
 Freelance-web saat ini sudah lebih dari “backend MVP”: sekarang ada **internal admin workspace yang usable**, **RBAC yang terpusat**, **redirect/auth flow yang lebih benar**, dan **UI publik yang session-aware**. Fondasi teknisnya kuat untuk lanjut ke fase operasi awal.
 
-Utang utama bukan lagi core CRUD atau intake laporan dasar, melainkan **operasional produksi**: billing nyata, moderasi/SLA staff, CI otomatis, dan standardisasi visual brand agar stabil lintas rilis.
+Utang utama bukan lagi core CRUD, intake laporan dasar, atau CI dasar di repo, melainkan **operasional produksi**: billing nyata, moderasi/SLA staff, dan standardisasi visual brand agar stabil lintas rilis.

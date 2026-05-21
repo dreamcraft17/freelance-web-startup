@@ -1,0 +1,101 @@
+# NearWork monorepo — typecheck, lint, unit tests, web build, HTTP E2E smoke.
+# Requires Postgres service; uses DATABASE_URL_TEST (mapped to DATABASE_URL for build + server).
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PNPM_VERSION: "9.15.9"
+  NODE_VERSION: "20"
+  # CI-only secrets — never use production DATABASE_URL in GitHub env.
+  SESSION_SECRET: ci-nearwork-session-secret-min-16
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_DB: nearwork_ci
+  DATABASE_URL_TEST: postgresql://postgres:postgres@localhost:5432/nearwork_ci
+
+jobs:
+  quality:
+    name: Lint & unit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint web
+        run: pnpm --filter @acme/web lint
+
+      - name: Unit tests
+        run: pnpm test:unit
+
+  integration:
+    name: Build & E2E
+    runs-on: ubuntu-latest
+    needs: quality
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d nearwork_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: ${{ env.DATABASE_URL_TEST }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Apply migrations
+        run: pnpm db:migrate:deploy
+
+      - name: Seed taxonomy, admin, E2E fixtures
+        run: pnpm db:seed
+
+      - name: Build web
+        run: pnpm --filter @acme/web build
+
+      - name: E2E HTTP smoke
+        run: SKIP_E2E_BUILD=1 pnpm test:e2e
