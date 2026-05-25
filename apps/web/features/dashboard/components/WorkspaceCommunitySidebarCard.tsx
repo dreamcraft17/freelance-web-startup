@@ -12,7 +12,7 @@ export function WorkspaceCommunitySidebarCard() {
   const helpPath = withPublicLocale(locale, "/help");
 
   return (
-    <div className="mx-3 mb-2 rounded-2xl border border-[#3525cd]/14 bg-gradient-to-br from-[#3525cd]/[0.09] via-white to-slate-50/40 p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
+    <div className="mx-3 mb-2 rounded-lg border border-slate-200 bg-slate-50 p-3.5">
       <div className="flex items-start gap-2.5">
         <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#3525cd]/12 text-[#3525cd]">
           <Sparkles className="h-4 w-4" strokeWidth={2} aria-hidden />

@@ -106,7 +106,7 @@ export function ClientNearbyTalentView({
 
   return (
     <div className="space-y-8">
-      <section className="overflow-hidden rounded-2xl border border-slate-200/80 bg-gradient-to-br from-[#3525cd]/[0.07] via-white to-slate-50/90 p-6 shadow-sm ring-1 ring-slate-900/[0.03] md:p-7">
+      <section className="nw-card-trust overflow-hidden p-6 md:p-7">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div className="flex min-w-0 gap-4">
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#3525cd] text-white shadow-lg shadow-[#3525cd]/25">
@@ -125,7 +125,7 @@ export function ClientNearbyTalentView({
             </div>
           </div>
           {areaLabel ? (
-            <div className="flex shrink-0 flex-col rounded-xl border border-slate-200/90 bg-white/95 px-4 py-3 shadow-sm lg:min-w-[12rem] lg:text-right">
+            <div className="flex shrink-0 flex-col rounded-lg border border-slate-200 bg-white px-4 py-3 shadow-sm lg:min-w-[12rem] lg:text-right">
               <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-slate-500 lg:justify-end">
                 <MapPin className="h-3.5 w-3.5 text-[#3525cd]" aria-hidden />
                 Your anchor
@@ -250,7 +250,7 @@ export function ClientNearbyTalentView({
                   )}
                 >
                   <div className="flex items-start gap-3">
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#3525cd]/15 to-violet-500/10 text-sm font-bold text-[#3525cd] ring-1 ring-[#3525cd]/15">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#3525cd]/10 text-sm font-bold text-[#3525cd] ring-1 ring-[#3525cd]/15">
                       {initials(f.fullName)}
                     </span>
                     <div className="min-w-0 flex-1">

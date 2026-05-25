@@ -491,7 +491,7 @@ export function ClientNewJobForm({ categories }: ClientNewJobFormProps) {
         </form>
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200/90 bg-white/95 px-4 py-3 shadow-[0_-8px_30px_rgba(15,23,42,0.08)] backdrop-blur-md md:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white px-4 py-3 shadow-[0_-2px_12px_rgba(15,23,42,0.06)] md:hidden">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-3">
           <p className="min-w-0 flex-1 truncate text-xs text-slate-500">Publish when your brief feels complete</p>
           <Button

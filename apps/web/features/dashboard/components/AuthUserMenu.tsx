@@ -117,7 +117,7 @@ export function AuthUserMenu({ compact = false, variant = "default" }: AuthUserM
           "inline-flex items-center gap-2 rounded-lg border text-slate-700 transition hover:text-slate-900",
           adminChrome
             ? "border-slate-200/90 bg-white shadow-none hover:border-slate-300 hover:bg-slate-50"
-            : "border-slate-200 bg-white/95 shadow-sm hover:border-slate-300 hover:bg-white",
+            : "border-slate-200 bg-white shadow-sm hover:border-slate-300 hover:bg-slate-50",
           compact ? "h-8 px-2.5 text-xs font-semibold" : "h-9 px-3 text-sm font-medium"
         )}
         aria-haspopup="menu"
@@ -136,7 +136,7 @@ export function AuthUserMenu({ compact = false, variant = "default" }: AuthUserM
             "absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white p-1",
             adminChrome
               ? "shadow-md shadow-slate-900/[0.06]"
-              : "shadow-md shadow-slate-900/[0.08] ring-1 ring-slate-900/[0.03] backdrop-blur-[2px]"
+              : "border border-slate-200 bg-white shadow-md"
           )}
         >
           <div className="border-b border-slate-100 px-3 pb-2 pt-2">

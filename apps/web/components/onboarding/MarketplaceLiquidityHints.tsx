@@ -12,7 +12,7 @@ export function MarketplaceLiquidityHints({ title, intro, bullets, footer }: Pro
   return (
     <section
       aria-label={title}
-      className="nw-card rounded-3xl border-slate-200/82 bg-gradient-to-b from-[#faf9ff] to-white px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] md:px-5 md:py-5"
+      className="nw-card rounded-xl border-slate-200 bg-white px-4 py-4 md:px-5 md:py-5"
     >
       <h2 className="nw-type-section text-slate-900">{title}</h2>
       <p className="nw-type-body mt-1.5">{intro}</p>

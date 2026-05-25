@@ -513,7 +513,6 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
 
       <header className={`${NW_HERO_WRAP} relative mb-5 p-5 sm:p-6`}>
         <div
-          className="pointer-events-none absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-[#3525cd]/35 to-transparent"
           aria-hidden
         />
         {showPostedFeedback ? (
@@ -548,9 +547,9 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
                   : t("public.jobDetail.proposalActivity_plural", { count: publicBidCount })}
               </span>
             ) : (
-              <span className={`${NW_BADGE_NEUTRAL} bg-white/90`}>{t("public.jobDetail.proposalAwaiting")}</span>
+              <span className={NW_BADGE_NEUTRAL}>{t("public.jobDetail.proposalAwaiting")}</span>
             )}
-            <span className={`${NW_BADGE_NEUTRAL} inline-flex items-center gap-1 bg-white/90 font-medium`}>
+            <span className={`${NW_BADGE_NEUTRAL} inline-flex items-center gap-1 font-medium`}>
               <Clock3 className="h-3 w-3 text-slate-400" aria-hidden />
               {postedAtLabel}
             </span>

@@ -124,7 +124,7 @@ export function DashboardNav({ items, variant, appearance = "default" }: Dashboa
                   "border border-transparent hover:border-slate-200/80 hover:bg-slate-50/90",
                 isActive
                   ? appearance === "premium"
-                    ? "border-[#3525cd]/22 bg-gradient-to-r from-[#3525cd]/13 to-transparent font-semibold text-[#3525cd] shadow-sm shadow-[#3525cd]/14"
+                    ? "border-[#3525cd]/25 bg-[#3525cd]/[0.08] font-semibold text-[#3525cd]"
                     : "border-l-[3px] border-l-[#3525cd] bg-[#3525cd]/[0.09] font-semibold text-[#3525cd] shadow-sm ring-1 ring-[#3525cd]/10"
                   : appearance === "default"
                     ? "border-l-[3px] border-l-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900"

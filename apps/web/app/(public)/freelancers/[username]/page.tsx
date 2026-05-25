@@ -240,7 +240,6 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
         <div className="min-w-0 space-y-5">
           <header className={`${NW_HERO_WRAP} relative overflow-hidden p-5 sm:p-6`}>
             <div
-              className="pointer-events-none absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-[#3525cd]/30 to-transparent"
               aria-hidden
             />
 
@@ -634,7 +633,7 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
           </section>
 
           {!isProfileOwner ? (
-            <section className={`${NW_CARD} border-[#3525cd]/15 bg-gradient-to-br from-[#faf9ff] to-white p-4 sm:p-5`}>
+            <section className={`${NW_CARD} nw-card-trust p-4 sm:p-5`}>
               <p className="nw-type-section text-slate-900">{t("public.freelancerProfile.finalCtaTitle")}</p>
               <p className="nw-type-body mt-2 max-w-xl">{t("public.freelancerProfile.finalCtaBody")}</p>
               <AuthAwareCtaLink

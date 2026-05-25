@@ -284,7 +284,7 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
         <section aria-labelledby="notif-unread-heading" className="space-y-3">
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-[#3525cd] shadow-sm shadow-[#3525cd]/30" aria-hidden />
+              <span className="h-2 w-2 rounded-full bg-[#3525cd]" aria-hidden />
               <h2 id="notif-unread-heading" className="nw-type-section">
                 {t("notifications.unreadLabel")}
               </h2>

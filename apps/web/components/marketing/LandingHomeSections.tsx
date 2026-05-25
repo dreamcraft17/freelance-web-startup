@@ -119,24 +119,24 @@ export async function LandingHomeSections() {
               </Link>
             </div>
 
-            <div className="rounded-2xl border border-slate-800 bg-[#0f172a] p-6 text-white shadow-sm sm:p-8">
-              <div className="inline-flex items-center gap-2 rounded-full border border-slate-600 bg-slate-800 px-3 py-1 text-xs font-semibold text-slate-100">
-                <Sparkles className="h-3.5 w-3.5" aria-hidden />
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+              <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
+                <Sparkles className="h-3.5 w-3.5 text-[#3525cd]" aria-hidden />
                 {t("landing.home.freelancers.kicker")}
               </div>
-              <h3 className="mt-4 text-xl font-bold">{t("landing.home.freelancers.title")}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-white/75">{t("landing.home.freelancers.lead")}</p>
+              <h3 className="mt-4 text-xl font-bold text-[#071027]">{t("landing.home.freelancers.title")}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600">{t("landing.home.freelancers.lead")}</p>
               <ul className="mt-5 space-y-3">
                 {freelancerBenefits.map((key) => (
-                  <li key={key} className="flex gap-3 text-sm text-white/85">
-                    <BadgeCheck className="mt-0.5 h-5 w-5 shrink-0 text-emerald-400" aria-hidden />
+                  <li key={key} className="flex gap-3 text-sm text-slate-700">
+                    <BadgeCheck className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" aria-hidden />
                     <span>{t(key)}</span>
                   </li>
                 ))}
               </ul>
               <Link
                 href={pub("/jobs")}
-                className="mt-6 inline-flex min-h-11 items-center justify-center rounded-xl bg-white px-5 text-sm font-semibold text-[#071027] transition hover:bg-slate-100"
+                className="mt-6 inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
               >
                 {t("landing.home.freelancers.cta")}
               </Link>
@@ -160,15 +160,15 @@ export async function LandingHomeSections() {
               </Link>
             </div>
 
-            <div className="flex flex-col justify-between rounded-2xl border border-[#2b1da8] bg-[#3525cd] p-6 text-white shadow-sm sm:p-8 lg:col-span-5">
+            <div className="nw-card-trust flex flex-col justify-between p-6 sm:p-8 lg:col-span-5">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-indigo-100">{t("landing.home.early.kicker")}</p>
-                <h3 className="mt-2 text-xl font-bold sm:text-2xl">{t("landing.home.early.title")}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-white/85">{t("landing.home.early.body")}</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#3525cd]">{t("landing.home.early.kicker")}</p>
+                <h3 className="mt-2 text-xl font-bold text-slate-900 sm:text-2xl">{t("landing.home.early.title")}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-slate-600">{t("landing.home.early.body")}</p>
               </div>
               <Link
                 href={pub("/early-access")}
-                className="mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-white px-5 text-center text-sm font-semibold text-[#3525cd] transition hover:bg-slate-100 lg:w-auto"
+                className="mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-[#3525cd] px-5 text-center text-sm font-semibold text-white transition hover:bg-[#2b1da8] lg:w-auto"
               >
                 {t("landing.home.early.cta")}
               </Link>

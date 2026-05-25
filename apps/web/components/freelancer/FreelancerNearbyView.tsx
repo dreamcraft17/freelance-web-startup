@@ -91,7 +91,7 @@ export function FreelancerNearbyView({
 
   return (
     <div className="space-y-6">
-      <div className="rounded-xl border border-slate-200/90 bg-gradient-to-br from-[#3525cd]/[0.06] via-white to-slate-50/80 p-5 shadow-sm ring-1 ring-slate-100/90 md:p-6">
+      <div className="nw-card-trust p-5 md:p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex min-w-0 gap-3">
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#3525cd] text-white shadow-md">
@@ -108,7 +108,7 @@ export function FreelancerNearbyView({
             </div>
           </div>
           {areaLabel ? (
-            <div className="flex shrink-0 flex-col items-stretch rounded-lg border border-slate-200/90 bg-white/90 px-4 py-3 text-left shadow-sm sm:items-end sm:text-right">
+            <div className="flex shrink-0 flex-col items-stretch rounded-lg border border-slate-200 bg-white px-4 py-3 text-left shadow-sm sm:items-end sm:text-right">
               <span className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-slate-500">
                 <MapPin className="h-3.5 w-3.5 text-[#3525cd]" aria-hidden />
                 Your area

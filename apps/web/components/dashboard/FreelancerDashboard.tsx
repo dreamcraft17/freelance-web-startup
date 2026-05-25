@@ -296,7 +296,7 @@ export function FreelancerDashboard({
 
       <section
         aria-label={copy.marketplacePulseTitle}
-        className="nw-card-trust border-[#3525cd]/14 bg-gradient-to-r from-[#3525cd]/[0.05] to-white px-5 py-4 md:px-6"
+        className="nw-card-trust px-5 py-4 md:px-6"
       >
         <div className="flex flex-wrap items-start gap-3">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#3525cd] shadow-sm ring-1 ring-slate-200/80">
@@ -364,7 +364,7 @@ export function FreelancerDashboard({
       </section>
 
       {hasProfile && attention.awaitingReplyThreads > 0 ? (
-        <div className="nw-card-trust flex flex-col gap-3 border-amber-200/75 bg-gradient-to-r from-amber-50/95 to-white px-5 py-4 sm:flex-row sm:items-center sm:justify-between md:px-6">
+        <div className="nw-card flex flex-col gap-3 border-amber-200 bg-amber-50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between md:px-6">
           <div className="flex items-start gap-3">
             <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100/90 text-amber-900 ring-1 ring-amber-200/70">
               <MessageCircle className="h-5 w-5" aria-hidden />
@@ -391,7 +391,7 @@ export function FreelancerDashboard({
             variant="journey"
           />
           {showStrongProfileCard ? (
-            <div className="nw-card-trust flex flex-col gap-4 border-[#3525cd]/18 bg-gradient-to-br from-[#3525cd]/[0.06] to-white p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-5 md:p-6">
+            <div className="nw-card-trust flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-5 md:p-6">
               <div className="flex min-w-0 gap-3">
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-[#3525cd] shadow-sm ring-1 ring-slate-200/85">
                   <Sparkles className="h-[22px] w-[22px]" strokeWidth={1.75} aria-hidden />
@@ -733,7 +733,7 @@ export function FreelancerDashboard({
                       </div>
                       <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200/80">
                         <div
-                          className="h-full rounded-full bg-gradient-to-r from-[#3525cd] to-indigo-400"
+                          className="h-full rounded-full bg-[#3525cd]"
                           style={{ width: `${pct}%` }}
                         />
                       </div>

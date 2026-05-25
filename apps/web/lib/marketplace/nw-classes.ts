@@ -23,4 +23,4 @@ export const NW_BADGE_NEUTRAL =
   "inline-flex items-center rounded-full border border-slate-200/90 bg-white px-2.5 py-0.5 text-[11px] font-semibold text-slate-700";
 
 export const NW_CHIP_SKILL =
-  "inline-flex rounded-lg border border-slate-200/80 bg-slate-50/90 px-2.5 py-1 text-xs font-medium text-slate-800 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]";
+  "inline-flex rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-800";

@@ -37,7 +37,7 @@ export function ActivationChecklistCard({
       <div
         className={cn(
           "flex items-start gap-3 border border-emerald-200/80 bg-emerald-50/55 px-3.5 py-2.5 md:px-4",
-          variant === "journey" ? "rounded-3xl shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]" : "rounded-xl"
+          "rounded-xl"
         )}
       >
         <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-700" aria-hidden />
@@ -53,7 +53,7 @@ export function ActivationChecklistCard({
       aria-labelledby="nw-activation-checklist"
       className={cn(
         variant === "journey"
-          ? "nw-card-elevated rounded-3xl border-slate-200/70 bg-gradient-to-b from-white to-slate-50/40 p-5 md:p-6"
+          ? "nw-card-elevated rounded-xl border-slate-200 bg-white p-5 md:p-6"
           : "nw-card p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5"
       )}
     >
@@ -82,7 +82,7 @@ export function ActivationChecklistCard({
               aria-labelledby="nw-activation-checklist"
             >
               <div
-                className="h-full rounded-full bg-gradient-to-r from-[#3525cd] to-indigo-500 transition-[width] duration-300"
+                className="h-full rounded-full bg-[#3525cd] transition-[width] duration-300"
                 style={{ width: `${progressPct}%` }}
               />
             </div>
@@ -104,7 +104,7 @@ export function ActivationChecklistCard({
                 step.done
                   ? "border-emerald-200/80 bg-emerald-50/[0.42] shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]"
                   : variant === "journey"
-                    ? "border-slate-200/80 bg-white/95 shadow-[0_10px_32px_-30px_rgba(15,23,42,0.5)] hover:border-[#3525cd]/38 hover:bg-white hover:shadow-md"
+                    ? "border-slate-200 bg-white shadow-sm hover:border-[#3525cd]/35 hover:bg-slate-50"
                     : "border-slate-200 bg-slate-50/50 hover:border-[#433C93]/30 hover:bg-white active:bg-white"
               )}
             >

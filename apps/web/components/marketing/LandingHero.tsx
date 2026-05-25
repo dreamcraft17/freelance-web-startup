@@ -193,7 +193,7 @@ export function LandingHero({
                 <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5 lg:justify-start">
                   <Link
                     href={modeContent.primaryCtaHref}
-                    className="inline-flex min-h-11 min-w-[10rem] items-center justify-center rounded-xl bg-[#3525cd] px-6 py-2.5 text-sm font-semibold text-white shadow-[0_12px_40px_-16px_rgba(53,37,205,0.65)] transition hover:bg-[#2b1da8]"
+                    className="inline-flex min-h-11 min-w-[10rem] items-center justify-center rounded-lg bg-[#3525cd] px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#2b1da8]"
                   >
                     {modeContent.primaryCtaLabel}
                   </Link>

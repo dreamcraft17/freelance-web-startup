@@ -1,13 +1,18 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v98  
-> Last synchronized: 2026-05-11 (voice pass: contact/message wording; formal Indonesian labels; same `nw-*`).
+> **Doc revision:** v99  
+> Last synchronized: 2026-05-16 (anti-glass pass: hapus backdrop-blur, gradien dekoratif, panel gelap/glow di landing & dashboard).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-05-16 — Anti-glass / anti-template CSS pass
+
+- **Dihapus:** `backdrop-blur`, panel `bg-white/90–95`, hero gradien ungu + blob fuchsia/cyan, sidebar `rounded-3xl` mengambang dengan glow, kartu gelap di landing, gradien lavender `#faf9ff`, avatar gradien violet.
+- **Diganti:** permukaan solid `white` / `slate-50`, `nw-card-trust`, border `slate-200`, `shadow-sm` ringan; hero freelancer dashboard sama pola kartu terang seperti klien.
 
 ### 2026-05-11 — Professional marketplace voice (i18n)
 

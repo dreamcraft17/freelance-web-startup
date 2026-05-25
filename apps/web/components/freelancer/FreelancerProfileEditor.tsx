@@ -175,7 +175,7 @@ export function FreelancerProfileEditor({
   return (
     <div className="space-y-6">
       {isIncomplete ? (
-        <div className="flex flex-col gap-3 rounded-xl border border-indigo-200/80 bg-gradient-to-r from-indigo-50/90 via-white to-violet-50/40 p-4 shadow-sm ring-1 ring-indigo-100/60 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+        <div className="nw-card-trust flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           <div className="flex min-w-0 gap-3">
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#3525cd] text-white shadow-sm">
               <Sparkles className="h-5 w-5" aria-hidden />
@@ -421,7 +421,7 @@ export function FreelancerProfileEditor({
 
       <div
         className={cn(
-          "sticky bottom-4 z-10 flex flex-col gap-3 rounded-xl border border-slate-200/90 bg-white/95 p-4 shadow-lg shadow-slate-900/[0.08] backdrop-blur sm:flex-row sm:items-center sm:justify-between",
+          "sticky bottom-4 z-10 flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between",
           dirty ? "ring-1 ring-[#3525cd]/15" : ""
         )}
       >

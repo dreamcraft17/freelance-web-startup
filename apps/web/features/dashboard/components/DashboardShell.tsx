@@ -59,7 +59,7 @@ export function DashboardShell({
     unreadNotifications !== undefined && typeof unreadNotifications === "number" && unreadNotifications > 0;
 
   return (
-    <div className={cn("nw-page min-h-screen", appearance === "premium" ? "bg-[#f4f5fb]" : "")}>
+    <div className="nw-page min-h-screen">
       <header className="nw-app-header md:hidden">
         <div className="flex items-start justify-between gap-3 border-b border-slate-100/80 px-3 pb-2.5 pt-3">
           <div>
@@ -83,8 +83,8 @@ export function DashboardShell({
             <div className="mx-auto flex min-h-[100dvh] w-full justify-center px-4 py-7 lg:py-10">
               <div
                 className={cn(
-                  "flex max-h-[calc(100dvh-3.5rem)] w-full flex-col overflow-hidden rounded-3xl",
-                  "border border-slate-200/65 bg-white/90 shadow-[12px_12px_48px_-24px_rgba(53,37,205,0.35)] backdrop-blur-md"
+                  "flex max-h-[calc(100dvh-3.5rem)] w-full flex-col overflow-hidden rounded-xl",
+                  "border border-slate-200 bg-white shadow-sm"
                 )}
               >
                 <div className="min-h-0 flex-1 overflow-y-auto">
@@ -190,7 +190,7 @@ export function DashboardShell({
                 <div
                   className={cn(
                     "overflow-hidden border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]",
-                    appearance === "premium" ? "rounded-3xl" : "rounded-xl"
+                    "rounded-xl"
                   )}
                 >
                   <div className="border-b border-slate-100 px-4 py-2 sm:px-5">

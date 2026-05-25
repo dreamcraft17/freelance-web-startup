@@ -263,11 +263,11 @@
   }
 
   .nw-section-mist {
-    @apply border-y border-[#3525cd]/[0.12] bg-[#3525cd]/[0.04];
+    @apply border-y border-slate-200 bg-slate-50;
   }
 
   .nw-section-slab {
-    @apply border-y border-slate-200/90 bg-slate-100/80;
+    @apply border-y border-slate-200 bg-slate-100;
   }
 
   /** Workspace chrome — subtle depth without glass everywhere */

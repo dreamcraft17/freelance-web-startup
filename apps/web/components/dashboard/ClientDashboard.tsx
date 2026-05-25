@@ -253,7 +253,7 @@ export function ClientDashboard({
 
       <section
         aria-label={copy.marketplacePulseTitle}
-        className="nw-card-trust border-[#3525cd]/14 bg-gradient-to-r from-[#3525cd]/[0.05] to-white px-4 py-3 md:px-5 md:py-3.5"
+        className="nw-card-trust px-4 py-3 md:px-5 md:py-3.5"
       >
         <div className="flex flex-wrap items-start gap-2.5">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#3525cd] shadow-sm ring-1 ring-slate-200/80">

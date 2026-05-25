@@ -25,10 +25,6 @@ export function DashboardStatCard({
           "nw-card-hover sm:px-5 sm:py-3.5"
         )}
       >
-        <div
-          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#3525cd]/20 to-transparent"
-          aria-hidden
-        />
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
             <p className="nw-type-micro">{label}</p>

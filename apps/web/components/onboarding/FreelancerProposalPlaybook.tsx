@@ -18,7 +18,7 @@ export function FreelancerProposalPlaybook({ title, intro, sections, footerHint 
   return (
     <section
       aria-label={title}
-      className="nw-card-elevated rounded-3xl border border-[#3525cd]/14 bg-gradient-to-b from-[#faf9ff] via-white to-slate-50/30 p-5 md:p-6"
+      className="nw-card-trust rounded-xl p-5 md:p-6"
     >
       <div className="border-b border-slate-200/60 pb-4">
         <h2 className="nw-type-title text-slate-900">{title}</h2>
@@ -27,7 +27,7 @@ export function FreelancerProposalPlaybook({ title, intro, sections, footerHint 
       <ul className="mt-4 space-y-4">
         {sections.map(({ Icon, title: st, body }, idx) => (
           <li key={`${idx}-${st}`} className="flex gap-3.5">
-            <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#3525cd]/14 bg-[#3525cd]/10 text-[#3525cd] shadow-[inset_0_1px_0_rgba(255,255,255,0.75)]">
+            <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[#3525cd]/15 bg-[#3525cd]/10 text-[#3525cd]">
               <Icon className="h-5 w-5" strokeWidth={1.75} aria-hidden />
             </span>
             <div className="min-w-0">

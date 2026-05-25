@@ -105,7 +105,7 @@ export function AdminSidebar({ items, pathname, mobileOpen, onCloseMobile }: Adm
     <>
       <div
         className={cn(
-          "fixed inset-0 z-40 bg-slate-900/25 backdrop-blur-[1px] transition-opacity lg:hidden",
+          "fixed inset-0 z-40 bg-slate-900/40 transition-opacity lg:hidden",
           mobileOpen ? "opacity-100" : "pointer-events-none opacity-0"
         )}
         aria-hidden={!mobileOpen}

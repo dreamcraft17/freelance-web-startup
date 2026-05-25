@@ -20,7 +20,7 @@ const workModes: { value: WorkMode; label: string }[] = [
 
 export function PublicBrowseFilters({ action, keyword, city, workMode, nearbyHint }: PublicBrowseFiltersProps) {
   return (
-    <div className="mb-10 rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-sm sm:p-5">
+    <div className="mb-10 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
       <form method="get" action={action} className="flex flex-col gap-4 lg:flex-row lg:flex-wrap lg:items-end">
         <div className="min-w-0 flex-1 lg:max-w-xs">
           <label htmlFor="kw" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">

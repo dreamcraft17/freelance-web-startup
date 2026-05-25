@@ -242,7 +242,7 @@ export function JobProposalForm({
     <>
       <AuthSubmitOverlay active={submitting} message={labels.loadingOverlay} />
       <form className="space-y-3" onSubmit={onSubmit}>
-        <div className="space-y-1 rounded-lg border border-indigo-100 bg-indigo-50/65 px-3 py-2.5 sm:px-3.5">
+        <div className="space-y-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 sm:px-3.5">
           <p className="text-[11px] font-semibold uppercase tracking-wide text-indigo-700">{labels.guidanceKicker}</p>
           <p className="text-[11px] leading-relaxed text-slate-700">{labels.guidanceIntro}</p>
           <ul className="mt-1.5 list-disc space-y-0.5 pl-4 text-[11px] leading-relaxed text-slate-600">
@@ -386,7 +386,7 @@ export function JobProposalForm({
         {success && !conversationThreadId && clientUserId ? (
           <p className="text-[11px] text-slate-500">{labels.conversationError}</p>
         ) : null}
-        <div className="sticky bottom-0 z-10 rounded-t-xl border border-slate-200/90 bg-white/95 pb-[max(0.85rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-8px_28px_rgba(15,23,42,0.08)] backdrop-blur-md sm:rounded-none sm:border-0 sm:bg-transparent sm:pb-0 sm:pt-2 sm:shadow-none sm:backdrop-blur-none md:static md:z-0">
+        <div className="sticky bottom-0 z-10 rounded-t-xl border border-slate-200 bg-white pb-[max(0.85rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-2px_12px_rgba(15,23,42,0.06)] sm:rounded-none sm:border-0 sm:bg-transparent sm:pb-0 sm:pt-2 sm:shadow-none md:static md:z-0">
           <div className="flex flex-col gap-2">
             <button
               type="button"

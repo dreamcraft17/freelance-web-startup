@@ -173,7 +173,7 @@ export function MessagesWorkspace({
   return (
     <div
       className={cn(
-        "nw-card flex overflow-hidden rounded-xl shadow-nw-elevated",
+        "nw-card flex overflow-hidden rounded-xl shadow-sm",
         "min-h-[min(82dvh,860px)] max-h-[calc(100dvh-9.5rem)] md:max-h-[min(82dvh,860px)]"
       )}
     >
@@ -247,8 +247,8 @@ export function MessagesWorkspace({
                           className={cn(
                             "flex h-11 w-11 items-center justify-center rounded-full text-xs font-bold ring-2 ring-white",
                             unread
-                              ? "bg-gradient-to-br from-[#3525cd]/20 to-violet-500/15 text-[#3525cd]"
-                              : "bg-gradient-to-br from-slate-100 to-slate-50 text-slate-600 ring-slate-200/80"
+                              ? "bg-[#3525cd]/10 text-[#3525cd] ring-1 ring-[#3525cd]/15"
+                              : "bg-slate-100 text-slate-600 ring-1 ring-slate-200"
                           )}
                         >
                           {peerInitials(thread.peers, threadTitleFallback)}
@@ -349,7 +349,7 @@ export function MessagesWorkspace({
               </Link>
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="flex min-w-0 items-start gap-3">
-                  <div className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#3525cd]/15 to-violet-500/10 text-sm font-bold text-[#3525cd] ring-1 ring-[#3525cd]/15 sm:flex">
+                  <div className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#3525cd]/10 text-sm font-bold text-[#3525cd] ring-1 ring-[#3525cd]/15 sm:flex">
                     {selectedThread ? peerInitials(selectedThread.peers, threadTitleFallback) : "?"}
                   </div>
                   <div className="min-w-0">
