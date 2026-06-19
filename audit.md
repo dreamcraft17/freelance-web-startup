@@ -1,12 +1,14 @@
 # Audit teknis — Freelance-web (monorepo)
 
-> **Doc revision:** v16  
-> Last synchronized: 2026-05-22 (GitHub Actions CI: quality + Postgres integration/E2E).
+> **Doc revision:** v17
+> Last synchronized: 2026-06-19 (moderation SLA, escalation, dedupe, staff notifications, audit trail).
 
 **Lingkup:** `apps/web`, `packages/*`, dan jalur operasional yang mempengaruhi produksi.  
 **Tanggal referensi:** Mei 2026 (sinkron dengan update terakhir implementasi).
 
 ## Addendum update (April–Mei 2026)
+
+- **2026-06-19 — Moderation operations:** laporan mendapat priority + SLA berbasis kategori, active-report dedupe atomik, notifikasi in-app ke moderation desk, audit log terpusat untuk create/assign/note/status, dan eskalasi overdue idempotent dari worker. `/admin/reports` menampilkan queue metrics, filter priority/attention, deadline, dan escalation badge. Loading skeleton admin dilengkapi untuk seluruh sub-route tabel.
 
 - **2026-05-22 — CI GitHub Actions:** workflow `.github/workflows/ci.yml` — job **quality** (`typecheck`, lint `@acme/web`, `test:unit`) dan **integration** (Postgres 16 service, `db:migrate:deploy`, `db:seed`, build web, `SKIP_E2E_BUILD=1` + `pnpm test:e2e` dengan `DATABASE_URL_TEST`).
 - **2026-05-16 — Listing sintetis di marketplace publik:** di lingkungan Vercel (`VERCEL=1`), job/profil yang cocok pola otomasi (judul E2E/Playwright, username `pw_`, dll.) disembunyikan dari board publik dan agregat marketing via `synthetic-public-content.ts`; override debug `NEARWORK_SHOW_SYNTHETIC_PUBLIC_LISTINGS=1`, paksa sembunyikan lokal `NEARWORK_HIDE_SYNTHETIC_PUBLIC_LISTINGS=1`.
@@ -35,7 +37,7 @@
   - `/client/jobs` memunculkan indikator attention (pending decision/new bids/stale open jobs),
   - job detail menyediakan compact bid comparison untuk owner,
   - next action (**Hire** pada proposal) tidak tersembunyi di layer yang dalam.
-- Risiko tersisa utama: **billing provider nyata**, **penyempurnaan trust & safety** (eskalasi/SLA/notifikasi staff), dan **konsistensi brand/visual** lintas rilis.
+- Risiko tersisa utama: **billing provider nyata**, trust & safety lanjutan (outbound real-time alert, appeal workflow, multi-level escalation), dan **konsistensi brand/visual** lintas rilis.
 
 ### Addendum 2026-04-18
 
@@ -132,7 +134,7 @@ Sudah benar-benar staff-only:
 
 ### 4.2 Gap yang masih ada
 
-- **Moderasi lanjutan:** antrean `/admin/reports` sudah real (triage, assign, catatan, resolve/dismiss), tetapi belum ada SLA/escalation otomatis, notifikasi staff real-time, atau policy engine abuse yang lebih granular.
+- **Moderasi lanjutan:** SLA, satu level eskalasi otomatis, dedupe, audit trail, dan notifikasi in-app sudah aktif. Belum ada outbound push/email real-time, multi-level on-call escalation, appeal workflow, atau policy engine lintas sinyal.
 - Feature flags page masih read-only (sudah tepat untuk tahap sekarang).
 - Mutasi admin selain verifikasi/suspend/moderasi masih terbatas (mis. bulk actions, audit log terpusat untuk setiap aksi staff) — sengaja read-first di banyak halaman.
 
@@ -185,8 +187,7 @@ Sudah ada:
 
 Residual:
 
-- tidak semua sub-route admin/client punya `loading.tsx` (mis. bids/contracts overview),
-- beberapa interaksi client-only (filter, composer) masih mengandalkan pending state lokal — konsistensi bisa ditingkatkan.
+- sub-route tabel admin sudah memakai loading skeleton bersama; beberapa interaksi client-only (filter, composer) masih mengandalkan pending state lokal.
 
 ---
 
@@ -218,9 +219,9 @@ Sudah ada:
 
 Belum ada / partial:
 
-- eskalasi otomatis, SLA, dan notifikasi staff untuk antrean moderasi,
-- audit trail terpusat untuk setiap aksi moderasi (di luar catatan per laporan),
-- policy engine abuse yang lebih granular (rate limit laporan, dedupe, auto-triage).
+- outbound push/email untuk alert moderasi dan eskalasi on-call bertingkat,
+- appeal workflow untuk user serta policy engine abuse lintas akun/perangkat,
+- dashboard histori audit khusus (record `AuditLog` sudah ditulis untuk seluruh lifecycle laporan).
 
 ---
 
@@ -246,7 +247,7 @@ Ops checklist yang tetap wajib:
 ## 9) Prioritas rekomendasi berikutnya
 
 1. **Billing real integration** (Stripe/Midtrans/Xendit: checkout, webhook, rekonsiliasi; ganti `/checkout/mock` dan provider `MOCK` pada donation/subscription).
-2. **Moderasi lanjutan** (notifikasi staff, SLA/escalation, audit log aksi moderasi terpusat, kebijakan dedupe/rate limit laporan).
+2. **Moderasi lanjutan tahap 2** (outbound alert, multi-level on-call escalation, appeal workflow, kebijakan abuse lintas sinyal).
 3. **Branch protection** — wajibkan status check CI hijau sebelum merge ke `main`; pertimbangkan job staging deploy terpisah.
 4. **Admin action layer** bertahap (mutasi aman + jejak audit untuk operasi sensitif di luar verifikasi/suspend yang sudah ada).
 5. **Stabilisasi design system** (`nw-*`, brand/logo, spacing) agar iterasi UI tidak regress antar halaman marketing vs workspace.

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  adminReportsQuerySchema,
   createJobSchema,
   createModerationReportSchema,
   loginSchema,
@@ -90,5 +91,16 @@ describe("validators", () => {
       description: "short"
     });
     expect(bad.success).toBe(false);
+  });
+
+  it("validates moderation queue SLA filters", () => {
+    const parsed = adminReportsQuerySchema.parse({
+      page: "1",
+      limit: "20",
+      priority: "URGENT",
+      attention: "overdue"
+    });
+    expect(parsed).toMatchObject({ page: 1, limit: 20, priority: "URGENT", attention: "overdue" });
+    expect(adminReportsQuerySchema.safeParse({ attention: "unknown" }).success).toBe(false);
   });
 });

@@ -9,6 +9,8 @@ import { ModerationReportService } from "@/server/services/moderation-report.ser
 
 type SearchParams = {
   status?: string;
+  priority?: string;
+  attention?: string;
   subjectType?: string;
   assigned?: string;
   q?: string;
@@ -48,6 +50,8 @@ export default async function AdminReportsPage({ searchParams }: { searchParams:
     page: sp.page ?? "1",
     limit: sp.limit ?? "40",
     status: sp.status,
+    priority: sp.priority,
+    attention: sp.attention,
     subjectType: sp.subjectType,
     assignedToStaffUserId: sp.assigned || undefined,
     q: sp.q
@@ -58,6 +62,7 @@ export default async function AdminReportsPage({ searchParams }: { searchParams:
   const actor = sessionToActor(session);
   const svc = new ModerationReportService();
   const { items, total, page, limit } = await svc.listForStaff(actor, query);
+  const queueStats = await svc.getQueueStats(actor);
 
   const rows = (
     items as Array<
@@ -71,6 +76,10 @@ export default async function AdminReportsPage({ searchParams }: { searchParams:
     id: r.id,
     createdAt: r.createdAt,
     status: r.status,
+    priority: r.priority,
+    slaDueAt: r.slaDueAt,
+    escalatedAt: r.escalatedAt,
+    escalationLevel: r.escalationLevel,
     subjectType: r.subjectType,
     subjectRef: subjectSummary(r),
     category: r.category,
@@ -89,6 +98,21 @@ export default async function AdminReportsPage({ searchParams }: { searchParams:
         description="Operational triage for user-submitted reports. Assign, annotate, resolve or dismiss—with audit timestamps and actor references stored on each ticket."
         badge="Trust & safety"
       />
+
+      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {([
+          ["Active", queueStats.open, "Open and in review"],
+          ["Overdue", queueStats.overdue, "Past the SLA deadline"],
+          ["Escalated", queueStats.escalated, "Raised automatically"],
+          ["Unassigned", queueStats.unassigned, "Needs an owner"]
+        ] as const).map(([label, value, copy]) => (
+          <div key={label} className="rounded-lg border border-slate-200 bg-white px-3.5 py-3">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{label}</p>
+            <p className="mt-1 text-2xl font-semibold tabular-nums text-slate-950">{value}</p>
+            <p className="text-[11px] text-slate-500">{copy}</p>
+          </div>
+        ))}
+      </section>
 
       <AdminReportsFilterBar query={{ ...query, page, limit }} total={total} />
 

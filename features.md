@@ -1,13 +1,15 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v113  
-> Last synchronized: 2026-05-11 (voice pass: Contact freelancer / Hubungi freelancer; formal ID; messages not “discussion” hype).
+> **Doc revision:** v114
+> Last synchronized: 2026-06-19 (moderation SLA/escalation and complete admin loading states).
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
 > Catatan: penjelasan **produk ini apa** (non-teknis) ada di `docs/apa-itu-nearwork.md`. Detail risiko, gap, dan technical debt tetap di `audit.md`.
 
 ## Update terbaru (April 2026)
+
+- **2026-06-19 — Trust & safety operations:** intake laporan memakai dedupe aktif per reporter/subjek, auto-priority dan SLA per kategori. Staff desk menerima notifikasi create/assignment/overdue; worker mengeskalasi tiket overdue secara idempotent; seluruh lifecycle ditulis ke `AuditLog`. Queue admin memiliki metrics, priority/attention filters, SLA deadline, escalation badge, dan loading skeleton di semua sub-route tabel.
 
 - **2026-05-11 — Voice: profesional dan manusiawi (EN/ID):** microcopy aktivasi, pesan, dashboard, profil freelancer publik, dan detail job memakai bahasa operasional (Messages / Pesan, “Contact freelancer” / “Hubungi freelancer”) menggantikan frasa “start discussion” yang terdengar pitch; bahasa Indonesia formal (hindari “lo”, “nempel”, “diskusi” sebagai CTA); alur landing tetap singkat.
 - **2026-05-11 — Public marketplace copy (operational tone):** kamus `landing.*`, `public.jobs*`, `public.freelancers*`, blok pulse/trust/empty state, dan metadata SEO `/[locale]` dipadatkan agar terasa seperti papan hiring nyata (kurang frasa pemasaran abstrak); struktur `id.json` diselaraskan dengan `en.json` (termasuk `public.jobs.liveFreelancerApply` untuk build typecheck).

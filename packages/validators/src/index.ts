@@ -290,6 +290,8 @@ export const staffSetUserModerationSchema = z.object({
 
 export const adminReportsQuerySchema = paginationSchema.extend({
   status: z.enum(["OPEN", "IN_REVIEW", "RESOLVED", "DISMISSED"]).optional(),
+  priority: z.enum(["LOW", "NORMAL", "HIGH", "URGENT"]).optional(),
+  attention: z.enum(["overdue", "escalated"]).optional(),
   subjectType: z.enum(["USER", "JOB", "BID", "REVIEW", "MESSAGE_THREAD", "MESSAGE"]).optional(),
   assignedToStaffUserId: z.string().max(72).optional(),
   q: z.string().max(200).optional()

@@ -6,6 +6,8 @@ export default defineConfig({
     environment: "node",
     include: [
       "apps/web/**/*.unit.test.ts",
+      "apps/worker/**/*.unit.test.ts",
+      "packages/config/**/*.unit.test.ts",
       "packages/validators/**/*.unit.test.ts"
     ]
   },

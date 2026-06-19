@@ -21,3 +21,9 @@ export class NotFoundError extends DomainError {
     super(message, "NOT_FOUND", 404);
   }
 }
+
+export class ConflictError extends DomainError {
+  constructor(message = "Resource already exists", code = "CONFLICT") {
+    super(message, code, 409);
+  }
+}

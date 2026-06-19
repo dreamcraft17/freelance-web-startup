@@ -121,6 +121,13 @@ export enum ModerationReportStatus {
   DISMISSED = "DISMISSED"
 }
 
+export enum ModerationReportPriority {
+  LOW = "LOW",
+  NORMAL = "NORMAL",
+  HIGH = "HIGH",
+  URGENT = "URGENT"
+}
+
 export enum ModerationReportSubjectType {
   USER = "USER",
   JOB = "JOB",

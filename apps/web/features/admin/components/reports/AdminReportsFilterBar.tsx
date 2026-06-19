@@ -17,6 +17,8 @@ export function AdminReportsFilterBar({ query, total }: Props) {
     q.set("page", String(merged.page));
     q.set("limit", String(merged.limit));
     if (merged.status) q.set("status", merged.status);
+    if (merged.priority) q.set("priority", merged.priority);
+    if (merged.attention) q.set("attention", merged.attention);
     if (merged.subjectType) q.set("subjectType", merged.subjectType);
     if (merged.assignedToStaffUserId) q.set("assigned", merged.assignedToStaffUserId);
     if (merged.q) q.set("q", merged.q);
@@ -40,6 +42,21 @@ export function AdminReportsFilterBar({ query, total }: Props) {
                 {s.replace(/_/g, " ")}
               </option>
             ))}
+          </select>
+        </label>
+        <label className="flex min-w-[8rem] flex-col gap-0.5 text-[11px] font-semibold text-slate-600">
+          Priority
+          <select name="priority" defaultValue={query.priority ?? ""} className="rounded border border-slate-200 px-2 py-1.5 text-xs text-slate-900">
+            <option value="">Any</option>
+            {(["URGENT", "HIGH", "NORMAL", "LOW"] as const).map((value) => <option key={value} value={value}>{value}</option>)}
+          </select>
+        </label>
+        <label className="flex min-w-[8rem] flex-col gap-0.5 text-[11px] font-semibold text-slate-600">
+          Attention
+          <select name="attention" defaultValue={query.attention ?? ""} className="rounded border border-slate-200 px-2 py-1.5 text-xs text-slate-900">
+            <option value="">Any</option>
+            <option value="overdue">Overdue</option>
+            <option value="escalated">Escalated</option>
           </select>
         </label>
         <label className="flex min-w-[8rem] flex-col gap-0.5 text-[11px] font-semibold text-slate-600">

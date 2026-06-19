@@ -47,8 +47,8 @@ export class ModerationPolicy {
   }
 
   static assertAssigneeMustBeStaff(assigneeRole: UserRole): void {
-    if (!ALL_STAFF_ROLES.includes(assigneeRole)) {
-      throw new PolicyDeniedError("Assignee must be a staff account");
+    if (!REPORT_DESK_ROLES.includes(assigneeRole)) {
+      throw new PolicyDeniedError("Assignee must have access to the reports desk");
     }
   }
 

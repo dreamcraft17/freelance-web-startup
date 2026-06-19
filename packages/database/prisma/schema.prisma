@@ -158,6 +158,13 @@ enum ModerationReportStatus {
   DISMISSED
 }
 
+enum ModerationReportPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
 enum ModerationReportSubjectType {
   USER
   JOB
@@ -920,6 +927,8 @@ model ModerationReport {
 
   reporterUserId String
   subjectType    ModerationReportSubjectType
+  /// Canonical subject id used for active-report deduplication across polymorphic columns.
+  subjectKey     String                      @db.VarChar(191)
 
   subjectUserId    String?
   subjectJobId     String?
@@ -931,7 +940,12 @@ model ModerationReport {
   category    String @db.VarChar(96)
   description String @db.Text
 
-  status ModerationReportStatus @default(OPEN)
+  status   ModerationReportStatus   @default(OPEN)
+  priority ModerationReportPriority @default(NORMAL)
+
+  slaDueAt        DateTime
+  escalatedAt     DateTime?
+  escalationLevel Int       @default(0)
 
   assignedToStaffUserId String?
 
@@ -953,6 +967,8 @@ model ModerationReport {
   notes ModerationReportNote[]
 
   @@index([status, createdAt])
+  @@index([status, slaDueAt])
+  @@index([priority, status, createdAt])
   @@index([subjectType])
   @@index([assignedToStaffUserId])
   @@index([reporterUserId, createdAt])

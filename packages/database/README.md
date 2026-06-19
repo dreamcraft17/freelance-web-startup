@@ -1,9 +1,11 @@
 # @acme/database
 
-> **Doc revision:** v11  
-> Last synchronized: 2026-05-11 (migration `job_currency_default_idr`: `Job.currency` default IDR).
+> **Doc revision:** v12
+> Last synchronized: 2026-06-19 (migration `moderation_sla_escalation`).
 
 PostgreSQL access via **Prisma**: schema, migrations, and generated client.
+
+Migration `20260619090000_moderation_sla_escalation` menambah canonical subject key, priority, deadline SLA, dan escalation state pada laporan. Partial unique index menjamin satu laporan aktif per reporter/subjek; duplikat legacy ditutup sebagai `DISMISSED` tetapi tetap disimpan untuk audit.
 
 ## Prerequisites
 

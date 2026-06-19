@@ -16,3 +16,5 @@ export {
   type MonetizationFlags,
   type ResolvedPlanEntitlements
 } from "./monetization";
+
+export { moderationTriageForCategory, type ModerationTriage } from "./moderation";

@@ -58,6 +58,9 @@ function linkForNotification(item: NotificationListItem, locale: AppLocale): str
   const p = item.payload;
   if (!p || typeof p !== "object") return null;
   const o = p as Record<string, unknown>;
+  if (typeof o.reportId === "string") {
+    return `/admin/reports?q=${encodeURIComponent(o.reportId)}`;
+  }
   if (typeof o.threadId === "string") {
     return withWorkspaceLocale(locale, `/messages?thread=${encodeURIComponent(o.threadId)}`);
   }

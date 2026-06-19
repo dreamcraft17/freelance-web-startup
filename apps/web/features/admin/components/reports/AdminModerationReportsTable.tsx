@@ -14,6 +14,10 @@ export type AdminModerationReportRow = {
   id: string;
   createdAt: Date | string;
   status: string;
+  priority: string;
+  slaDueAt: Date | string;
+  escalatedAt: Date | string | null;
+  escalationLevel: number;
   subjectType: string;
   subjectRef: string;
   category: string;
@@ -38,6 +42,7 @@ export function AdminModerationReportsTable({
           <AdminTr variant="head">
             <AdminTh>When</AdminTh>
             <AdminTh>Status</AdminTh>
+            <AdminTh>SLA</AdminTh>
             <AdminTh>Subject</AdminTh>
             <AdminTh>Reporter</AdminTh>
             <AdminTh>Assignee</AdminTh>
@@ -56,6 +61,17 @@ export function AdminModerationReportsTable({
                 <span className="nw-chip nw-chip-muted font-mono normal-case tracking-normal text-slate-800">
                   {r.status.replace(/_/g, " ")}
                 </span>
+                <p className="mt-1 text-[10px] font-semibold text-slate-600">{r.priority}</p>
+              </AdminTd>
+              <AdminTd className="whitespace-nowrap text-[11px]">
+                <p className={new Date(r.slaDueAt).getTime() < Date.now() && !["RESOLVED", "DISMISSED"].includes(r.status) ? "font-semibold text-rose-700" : "text-slate-700"}>
+                  {formatAdminDateTime(typeof r.slaDueAt === "string" ? new Date(r.slaDueAt) : r.slaDueAt)}
+                </p>
+                {r.escalationLevel > 0 ? (
+                  <span className="mt-1 inline-flex rounded bg-rose-50 px-1.5 py-0.5 font-semibold text-rose-700">
+                    Escalated L{r.escalationLevel}
+                  </span>
+                ) : null}
               </AdminTd>
               <AdminTd>
                 <p className="break-all font-mono text-[11px] text-slate-900">{r.subjectRef}</p>

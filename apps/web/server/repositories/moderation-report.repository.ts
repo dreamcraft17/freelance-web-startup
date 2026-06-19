@@ -3,12 +3,15 @@ import {
   Prisma,
   type ModerationReport,
   type ModerationReportNote,
+  type ModerationReportPriority,
   type ModerationReportStatus,
   type ModerationReportSubjectType
 } from "@acme/database";
 
 export type ModerationReportListFilters = {
   status?: ModerationReportStatus;
+  priority?: ModerationReportPriority;
+  attention?: "overdue" | "escalated";
   subjectType?: ModerationReportSubjectType;
   assignedToStaffUserId?: string;
   unassignedOnly?: boolean;
@@ -46,6 +49,13 @@ export class ModerationReportRepository {
     const where: Prisma.ModerationReportWhereInput = {};
 
     if (filters.status) where.status = filters.status;
+    if (filters.priority) where.priority = filters.priority;
+    if (filters.attention === "overdue") {
+      where.status = { in: ["OPEN", "IN_REVIEW"] };
+      where.slaDueAt = { lt: new Date() };
+    } else if (filters.attention === "escalated") {
+      where.escalationLevel = { gt: 0 };
+    }
     if (filters.subjectType) where.subjectType = filters.subjectType;
     if (filters.unassignedOnly) {
       where.assignedToStaffUserId = null;
@@ -65,7 +75,7 @@ export class ModerationReportRepository {
     const [items, total] = await Promise.all([
       db.moderationReport.findMany({
         where,
-        orderBy: { createdAt: "desc" },
+        orderBy: [{ escalationLevel: "desc" }, { slaDueAt: "asc" }, { createdAt: "desc" }],
         skip,
         take: filters.limit,
         include: {
@@ -78,6 +88,17 @@ export class ModerationReportRepository {
     ]);
 
     return { items, total };
+  }
+
+  async getQueueStats(now = new Date()) {
+    const active = { status: { in: ["OPEN", "IN_REVIEW"] as ModerationReportStatus[] } };
+    const [open, overdue, escalated, unassigned] = await Promise.all([
+      db.moderationReport.count({ where: active }),
+      db.moderationReport.count({ where: { ...active, slaDueAt: { lt: now } } }),
+      db.moderationReport.count({ where: { ...active, escalationLevel: { gt: 0 } } }),
+      db.moderationReport.count({ where: { ...active, assignedToStaffUserId: null } })
+    ]);
+    return { open, overdue, escalated, unassigned };
   }
 
   async update(id: string, data: Prisma.ModerationReportUpdateInput): Promise<ModerationReport> {

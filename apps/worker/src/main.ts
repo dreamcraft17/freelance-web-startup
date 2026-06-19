@@ -1,10 +1,17 @@
 import "./load-env";
 import { clearExpiredPromotionFlags } from "./promotionSweep";
+import { escalateOverdueModerationReports } from "./moderationEscalationSweep";
 
 const DEFAULT_SWEEP_MS = 6 * 60 * 60 * 1000;
 const sweepIntervalMs = Number(process.env.PROMOTION_SWEEP_INTERVAL_MS);
 const intervalMs =
   Number.isFinite(sweepIntervalMs) && sweepIntervalMs > 0 ? sweepIntervalMs : DEFAULT_SWEEP_MS;
+const DEFAULT_MODERATION_SWEEP_MS = 5 * 60 * 1000;
+const configuredModerationSweepMs = Number(process.env.MODERATION_ESCALATION_SWEEP_INTERVAL_MS);
+const moderationSweepMs =
+  Number.isFinite(configuredModerationSweepMs) && configuredModerationSweepMs > 0
+    ? configuredModerationSweepMs
+    : DEFAULT_MODERATION_SWEEP_MS;
 
 async function runWorker() {
   const first = await clearExpiredPromotionFlags();
@@ -16,6 +23,8 @@ async function runWorker() {
     setInterval(() => {}, 24 * 60 * 60 * 1000);
     return;
   }
+
+  const firstModeration = await escalateOverdueModerationReports();
 
   const sweep = async () => {
     try {
@@ -29,9 +38,23 @@ async function runWorker() {
     }
   };
 
+  const moderationSweep = async () => {
+    try {
+      const result = await escalateOverdueModerationReports();
+      if (!("skippedNoDatabase" in result)) {
+        console.log("[moderationEscalationSweep]", new Date().toISOString(), result);
+      }
+    } catch (error) {
+      console.error("[moderationEscalationSweep] failed", error);
+    }
+  };
+
   console.log("[promotionSweep]", new Date().toISOString(), first);
+  console.log("[moderationEscalationSweep]", new Date().toISOString(), firstModeration);
   setInterval(sweep, intervalMs);
+  setInterval(moderationSweep, moderationSweepMs);
   console.log(`Worker started; promotion expiry sweep every ${intervalMs}ms (set PROMOTION_SWEEP_INTERVAL_MS to override)`);
+  console.log(`Moderation escalation sweep every ${moderationSweepMs}ms (set MODERATION_ESCALATION_SWEEP_INTERVAL_MS to override)`);
 }
 
 runWorker().catch((error) => {

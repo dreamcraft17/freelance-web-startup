@@ -118,4 +118,9 @@ describe("moderation policy", () => {
     expect(() => ModerationPolicy.assertMayAccessReportsQueue(financeActor)).toThrowError(PolicyDeniedError);
     expect(() => ModerationPolicy.assertMayAccessReportsQueue(moderatorActor)).not.toThrow();
   });
+
+  it("only assigns reports to staff who can open the queue", () => {
+    expect(() => ModerationPolicy.assertAssigneeMustBeStaff(UserRole.FINANCE_ADMIN)).toThrowError(PolicyDeniedError);
+    expect(() => ModerationPolicy.assertAssigneeMustBeStaff(UserRole.MODERATOR)).not.toThrow();
+  });
 });

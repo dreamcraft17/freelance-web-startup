@@ -1,7 +1,7 @@
 # Production deploy checklist (web + database)
 
-> **Doc revision:** v10  
-> Last synchronized: 2026-05-22 (GitHub Actions CI pada push/PR `main`).
+> **Doc revision:** v11
+> Last synchronized: 2026-06-19 (moderation escalation worker readiness).
 
 Checklist singkat sebelum merilis NearWork ke lingkungan produksi. Sesuaikan penyedia hosting (mis. Vercel) dengan variabel yang sama di dashboard mereka.
 
@@ -17,6 +17,7 @@ Checklist singkat sebelum merilis NearWork ke lingkungan produksi. Sesuaikan pen
 - [ ] `pnpm install` (repo root).
 - [ ] `pnpm db:migrate:deploy` — terapkan migrasi ke DB produksi.
 - [ ] `pnpm db:generate` — pastikan client Prisma/generated types selaras (juga dipicu `postinstall` jika sudah dikonfigurasi).
+- [ ] Jalankan `@acme/worker` bersama web agar laporan melewati SLA dieskalasi. Interval default 5 menit; override opsional `MODERATION_ESCALATION_SWEEP_INTERVAL_MS`.
 
 ## Web app quality gate
 
@@ -69,4 +70,3 @@ Setelah mengganti dependensi atau jika beberapa route mengembalikan **500** dan 
 
 - Variabel aplikasi lain yang dipakai fitur aktual (mis. kunci translasi server-only) sesuai `README.md` / `audit.md`.
 - Review `NEXT_PUBLIC_*` tidak membocorkan rahasia.
-

@@ -1,8 +1,9 @@
 import type { PatchModerationReportDto, CreateModerationReportDto, AdminReportsQueryDto } from "@acme/validators";
-import { ModerationReportStatus, UserRole } from "@acme/types";
+import { moderationTriageForCategory } from "@acme/config";
+import { ModerationReportStatus, NotificationType, UserRole } from "@acme/types";
 import { db, Prisma } from "@acme/database";
 import type { AuthActor } from "../domain/auth-actor";
-import { NotFoundError, PolicyDeniedError } from "../errors/domain-errors";
+import { ConflictError, NotFoundError, PolicyDeniedError } from "../errors/domain-errors";
 import { ModerationPolicy } from "../policies/moderation.policy";
 import { ModerationReportRepository } from "../repositories/moderation-report.repository";
 
@@ -31,6 +32,30 @@ function isDeskStaff(role: UserRole): boolean {
   return [UserRole.ADMIN, UserRole.MODERATOR, UserRole.SUPPORT_ADMIN].includes(role);
 }
 
+const REPORT_DESK_ROLES = [UserRole.ADMIN, UserRole.MODERATOR, UserRole.SUPPORT_ADMIN];
+
+function subjectKeyFor(dto: CreateModerationReportDto): string {
+  switch (dto.subjectType) {
+    case "USER": return dto.subjectUserId;
+    case "JOB": return dto.subjectJobId;
+    case "BID": return dto.subjectBidId;
+    case "REVIEW": return dto.subjectReviewId;
+    case "MESSAGE_THREAD": return dto.subjectThreadId;
+    case "MESSAGE": return dto.subjectMessageId;
+  }
+}
+
+function subjectLinkFor(dto: CreateModerationReportDto): Partial<Prisma.ModerationReportCreateInput> {
+  switch (dto.subjectType) {
+    case "USER": return { subjectUserId: dto.subjectUserId };
+    case "JOB": return { subjectJobId: dto.subjectJobId };
+    case "BID": return { subjectBidId: dto.subjectBidId };
+    case "REVIEW": return { subjectReviewId: dto.subjectReviewId };
+    case "MESSAGE_THREAD": return { subjectThreadId: dto.subjectThreadId };
+    case "MESSAGE": return { subjectMessageId: dto.subjectMessageId };
+  }
+}
+
 /**
  * Trust & safety: reporter intake + staff triage/resolution/dismissal + internal notes.
  */
@@ -39,49 +64,74 @@ export class ModerationReportService {
 
   async createReport(actor: AuthActor, dto: CreateModerationReportDto) {
     await this.assertSubjectAndPermissions(actor, dto);
+    const subjectKey = subjectKeyFor(dto);
+    const duplicate = await db.moderationReport.findFirst({
+      where: {
+        reporterUserId: actor.userId,
+        subjectType: dto.subjectType,
+        subjectKey,
+        status: { in: [ModerationReportStatus.OPEN, ModerationReportStatus.IN_REVIEW] }
+      },
+      select: { id: true }
+    });
+    if (duplicate) {
+      throw new ConflictError("You already have an active report for this subject", "DUPLICATE_ACTIVE_REPORT");
+    }
 
-    const base = {
-      reporter: { connect: { id: actor.userId } },
-      subjectType: dto.subjectType,
-      category: dto.category,
-      description: dto.description.trim()
-    } as const;
+    const triage = moderationTriageForCategory(dto.category);
+    const slaDueAt = new Date(Date.now() + triage.slaHours * 60 * 60 * 1000);
+    try {
+      return await db.$transaction(async (tx) => {
+        const report = await tx.moderationReport.create({
+          data: {
+            reporter: { connect: { id: actor.userId } },
+            subjectType: dto.subjectType,
+            subjectKey,
+            ...subjectLinkFor(dto),
+            category: dto.category,
+            description: dto.description.trim(),
+            priority: triage.priority,
+            slaDueAt
+          }
+        });
 
-    switch (dto.subjectType) {
-      case "USER":
-        return this.repo.create({
-          ...base,
-          subjectUserId: dto.subjectUserId
+        const desk = await tx.user.findMany({
+          where: { role: { in: REPORT_DESK_ROLES }, accountStatus: "ACTIVE", deletedAt: null },
+          select: { id: true }
         });
-      case "JOB":
-        return this.repo.create({
-          ...base,
-          subjectJobId: dto.subjectJobId
+        if (desk.length) {
+          await tx.notification.createMany({
+            data: desk.map(({ id }) => ({
+              userId: id,
+              type: NotificationType.ADMIN_MODERATION_EVENT,
+              title: `${triage.priority} moderation report`,
+              body: `A ${dto.category} report requires triage by ${slaDueAt.toISOString()}.`,
+              payload: { reportId: report.id, priority: triage.priority, event: "REPORT_CREATED" }
+            }))
+          });
+        }
+        await tx.auditLog.create({
+          data: {
+            actorId: actor.userId,
+            action: "MODERATION_REPORT_CREATED",
+            targetType: "ModerationReport",
+            targetId: report.id,
+            metadata: {
+              subjectType: dto.subjectType,
+              subjectKey,
+              category: dto.category,
+              priority: triage.priority,
+              slaDueAt: slaDueAt.toISOString()
+            }
+          }
         });
-      case "BID":
-        return this.repo.create({
-          ...base,
-          subjectBidId: dto.subjectBidId
-        });
-      case "REVIEW":
-        return this.repo.create({
-          ...base,
-          subjectReviewId: dto.subjectReviewId
-        });
-      case "MESSAGE_THREAD":
-        return this.repo.create({
-          ...base,
-          subjectThreadId: dto.subjectThreadId
-        });
-      case "MESSAGE":
-        return this.repo.create({
-          ...base,
-          subjectMessageId: dto.subjectMessageId
-        });
-      default: {
-        const _exhaustive: never = dto;
-        return _exhaustive;
+        return report;
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+        throw new ConflictError("You already have an active report for this subject", "DUPLICATE_ACTIVE_REPORT");
       }
+      throw error;
     }
   }
 
@@ -174,6 +224,8 @@ export class ModerationReportService {
       page: query.page,
       limit: query.limit,
       status: query.status as ModerationReportStatus | undefined,
+      priority: query.priority,
+      attention: query.attention,
       subjectType: query.subjectType,
       assignedToStaffUserId: assignedFilter,
       unassignedOnly,
@@ -183,48 +235,47 @@ export class ModerationReportService {
     return { items, total, page: query.page, limit: query.limit };
   }
 
+  async getQueueStats(actor: AuthActor) {
+    ModerationPolicy.assertMayAccessReportsQueue(actor);
+    return this.repo.getQueueStats();
+  }
+
   async patchReport(actor: AuthActor, reportId: string, dto: PatchModerationReportDto) {
     ModerationPolicy.assertMayMutateReports(actor);
     const report = await this.repo.findById(reportId);
     if (!report) throw new NotFoundError("Report not found");
-
-    if (dto.addNote) {
-      ModerationPolicy.assertMayWriteReportNotes(actor);
-      await this.repo.createNote({
-        report: { connect: { id: reportId } },
-        authorStaff: { connect: { id: actor.userId } },
-        body: dto.addNote.trim()
-      });
-    }
 
     const shouldTouchReport =
       dto.status !== undefined ||
       dto.assignedToStaffUserId !== undefined ||
       dto.resolutionSummary !== undefined;
 
-    if (!shouldTouchReport) {
-      return this.repo.findByIdWithRelations(reportId);
+    if (dto.addNote) ModerationPolicy.assertMayWriteReportNotes(actor);
+
+    let validatedAssignee: { id: string; role: string } | null | undefined;
+    if (dto.assignedToStaffUserId !== undefined && dto.assignedToStaffUserId !== null) {
+      validatedAssignee = await db.user.findFirst({
+        where: { id: dto.assignedToStaffUserId, deletedAt: null },
+        select: { id: true, role: true }
+      });
+      if (!validatedAssignee) throw new NotFoundError("Assignee not found");
+      ModerationPolicy.assertAssigneeMustBeStaff(validatedAssignee.role as UserRole);
+    } else if (dto.assignedToStaffUserId === null) {
+      validatedAssignee = null;
     }
 
-    const data: Prisma.ModerationReportUpdateInput = {
-      statusUpdatedBy: { connect: { id: actor.userId } }
-    };
+    const data: Prisma.ModerationReportUpdateInput = {};
+    if (shouldTouchReport) data.statusUpdatedBy = { connect: { id: actor.userId } };
 
     if (dto.resolutionSummary !== undefined) {
       data.resolutionSummary = dto.resolutionSummary ?? null;
     }
 
     if (dto.assignedToStaffUserId !== undefined) {
-      if (dto.assignedToStaffUserId === null) {
+      if (validatedAssignee === null) {
         data.assignedToStaff = { disconnect: true };
       } else {
-        const assignee = await db.user.findFirst({
-          where: { id: dto.assignedToStaffUserId, deletedAt: null },
-          select: { id: true, role: true }
-        });
-        if (!assignee) throw new NotFoundError("Assignee not found");
-        ModerationPolicy.assertAssigneeMustBeStaff(assignee.role as UserRole);
-        data.assignedToStaff = { connect: { id: assignee.id } };
+        data.assignedToStaff = { connect: { id: validatedAssignee!.id } };
       }
     }
 
@@ -236,7 +287,50 @@ export class ModerationReportService {
       data.dismissedAt = dismissedAt;
     }
 
-    await this.repo.update(reportId, data);
+    await db.$transaction(async (tx) => {
+      if (dto.addNote) {
+        await tx.moderationReportNote.create({
+          data: {
+            report: { connect: { id: reportId } },
+            authorStaff: { connect: { id: actor.userId } },
+            body: dto.addNote.trim()
+          }
+        });
+      }
+      if (shouldTouchReport) {
+        await tx.moderationReport.update({ where: { id: reportId }, data });
+      }
+      await tx.auditLog.create({
+        data: {
+          actorId: actor.userId,
+          action: "MODERATION_REPORT_UPDATED",
+          targetType: "ModerationReport",
+          targetId: reportId,
+          metadata: {
+            previousStatus: report.status,
+            status: dto.status ?? report.status,
+            previousAssigneeId: report.assignedToStaffUserId,
+            assignedToStaffUserId:
+              dto.assignedToStaffUserId !== undefined
+                ? dto.assignedToStaffUserId
+                : report.assignedToStaffUserId,
+            noteAdded: Boolean(dto.addNote),
+            resolutionUpdated: dto.resolutionSummary !== undefined
+          }
+        }
+      });
+      if (validatedAssignee && validatedAssignee.id !== report.assignedToStaffUserId) {
+        await tx.notification.create({
+          data: {
+            userId: validatedAssignee.id,
+            type: NotificationType.ADMIN_MODERATION_EVENT,
+            title: "Moderation report assigned",
+            body: `Report ${reportId} has been assigned to you.`,
+            payload: { reportId, event: "REPORT_ASSIGNED" }
+          }
+        });
+      }
+    });
     return this.repo.findByIdWithRelations(reportId);
   }
 }

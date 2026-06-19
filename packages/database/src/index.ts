@@ -19,6 +19,7 @@ export type { ClientProfile, FreelancerProfile } from "@prisma/client";
 export type {
   ModerationReport,
   ModerationReportNote,
+  ModerationReportPriority,
   ModerationReportStatus,
   ModerationReportSubjectType
 } from "@prisma/client";

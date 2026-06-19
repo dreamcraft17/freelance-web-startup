@@ -1,7 +1,7 @@
 # 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
 
-> **Doc revision:** v106  
-> Last synchronized: 2026-05-22 — GitHub Actions CI (`.github/workflows/ci.yml`) on push/PR to `main`.
+> **Doc revision:** v107
+> Last synchronized: 2026-06-19 — moderation SLA, escalation worker, dedupe, and staff audit trail.
 
 Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
 - Upwork / Freelancer (bidding system)
@@ -17,6 +17,8 @@ Platform ini dirancang untuk mendukung **semua jenis freelance**, bukan hanya pr
 ---
 
 ## ✨ Core Features
+
+- **Trust & safety operations:** report intake dengan active-ticket dedupe, priority/SLA berbasis kategori, moderation desk notifications, audit trail, dan worker escalation untuk tiket overdue. Queue `/admin/reports` menampilkan deadline serta status attention.
 
 ### 🔹 Locale / i18n (apps/web)
 
