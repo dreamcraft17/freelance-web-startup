@@ -7,8 +7,25 @@ dist
 coverage
 *.log
 
+# OS / editor artifacts
+.DS_Store
+**/.DS_Store
+*.tsbuildinfo
+
+# pnpm local store (tidak perlu di-commit)
+.pnpm-store/
+
+# Temp / scratch files
+asdasdasd.txt
+
 # Local-only secrets / notes — never commit
 credential.md
 **/credential.md
 e2e-test-accounts.local.md
 **/e2e-test-accounts.local.md
+
+# Credential & recovery files — jangan pernah commit
+*credentials*.csv
+*credentials*.txt
+github-recovery-codes.txt
+**/github-recovery-codes.txt
