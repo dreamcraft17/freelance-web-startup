@@ -334,3 +334,77 @@ export type PatchModerationReportDto = z.infer<typeof patchModerationReportSchem
 export type StaffSetJobModerationDto = z.infer<typeof staffSetJobModerationSchema>;
 export type StaffSetUserModerationDto = z.infer<typeof staffSetUserModerationSchema>;
 export type AdminReportsQueryDto = z.infer<typeof adminReportsQuerySchema>;
+
+// --- NearWork V2 ---
+
+export const createStripeIntentSchema = z.object({
+  contractId: z.string().min(1),
+  amount: z.number().int().positive().optional(),
+  currency: z.enum(["usd", "idr", "USD", "IDR"]).optional()
+});
+
+export const createMidtransSnapSchema = z.object({
+  contractId: z.string().min(1),
+  amount: z.number().int().positive().optional()
+});
+
+export const upgradeSubscriptionSchema = z.object({
+  planId: z.string().min(1),
+  paymentMethod: z.enum(["stripe", "midtrans", "mock"]).default("mock")
+});
+
+export const purchaseBoostSchema = z.object({
+  productCode: z.string().min(1),
+  targetType: z.enum(["JOB", "PROFILE"]),
+  targetId: z.string().min(1),
+  paymentMethod: z.enum(["stripe", "midtrans", "mock"]).default("mock")
+});
+
+export const submitWorkSchema = z.object({
+  message: z.string().max(4000).optional()
+});
+
+export const reviewWorkSchema = z.object({
+  action: z.enum(["approve", "request_revision", "dispute"]),
+  message: z.string().max(4000).optional()
+});
+
+export const createDisputeSchema = z.object({
+  reason: z.string().min(10).max(4000),
+  evidence: z.array(z.string().url()).max(10).default([])
+});
+
+export const createAppealSchema = z.object({
+  appealReason: z.string().min(20).max(4000),
+  evidence: z.array(z.string().url()).max(10).default([])
+});
+
+export const reviewAppealSchema = z.object({
+  status: z.enum(["APPROVED", "DENIED", "PENDING_MORE_INFO"]),
+  decisionNote: z.string().max(4000).optional()
+});
+
+export const createPayoutRequestSchema = z.object({
+  amountCents: z.number().int().positive(),
+  bankAccountId: z.string().min(1).optional()
+});
+
+export const createBankAccountSchema = z.object({
+  bankCode: z.string().min(2).max(32),
+  bankName: z.string().min(2).max(120),
+  accountNumber: z.string().min(4).max(64),
+  accountName: z.string().min(2).max(120),
+  isDefault: z.boolean().optional()
+});
+
+export type CreateStripeIntentDto = z.infer<typeof createStripeIntentSchema>;
+export type CreateMidtransSnapDto = z.infer<typeof createMidtransSnapSchema>;
+export type UpgradeSubscriptionDto = z.infer<typeof upgradeSubscriptionSchema>;
+export type PurchaseBoostDto = z.infer<typeof purchaseBoostSchema>;
+export type SubmitWorkDto = z.infer<typeof submitWorkSchema>;
+export type ReviewWorkDto = z.infer<typeof reviewWorkSchema>;
+export type CreateDisputeDto = z.infer<typeof createDisputeSchema>;
+export type CreateAppealDto = z.infer<typeof createAppealSchema>;
+export type ReviewAppealDto = z.infer<typeof reviewAppealSchema>;
+export type CreatePayoutRequestDto = z.infer<typeof createPayoutRequestSchema>;
+export type CreateBankAccountDto = z.infer<typeof createBankAccountSchema>;
