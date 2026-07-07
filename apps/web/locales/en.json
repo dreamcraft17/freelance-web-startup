@@ -748,6 +748,65 @@
         "cta": "Early-access notes"
       }
     },
+    "v2": {
+      "categories": {
+        "kicker": "Quick browse",
+        "title": "Find work by category",
+        "subtitle": "Jump into active listings—filter by city or work mode on the board.",
+        "viewAll": "View all categories →"
+      },
+      "social": {
+        "kicker": "Social proof",
+        "title": "Trusted by freelancers and clients",
+        "body": "Real profiles, job-thread messaging, and escrow-ready checkout as V2 rolls out.",
+        "quote": "I posted a brief in the morning and had three comparable proposals the same day.",
+        "quoteAuthor": "NearWork early-access client",
+        "stats": {
+          "freelancers": "Freelancers",
+          "jobs": "Open jobs",
+          "proposals": "Proposals · 24h"
+        }
+      },
+      "trust": {
+        "kicker": "Trust & safety",
+        "title": "Hire with confidence",
+        "subtitle": "Transparent fees, escrow protection, and moderation when something goes wrong.",
+        "escrow": {
+          "title": "Escrow protection",
+          "body": "Funds stay locked until work is delivered and approved."
+        },
+        "moderation": {
+          "title": "Moderation queue",
+          "body": "Staff review appeals and reports with SLA tracking."
+        },
+        "verify": {
+          "title": "Verification signals",
+          "body": "Badges reflect identity checks—not vanity metrics."
+        },
+        "reviews": {
+          "title": "Job-linked reviews",
+          "body": "Ratings tie to completed contracts on real listings."
+        }
+      },
+      "cta": {
+        "kicker": "Get started",
+        "title": "Ready to post or bid?",
+        "body": "Create a free account, post a job, or browse open listings in minutes.",
+        "primary": "Sign up free",
+        "secondary": "Browse jobs",
+        "help": "Help center →"
+      },
+      "faq": {
+        "q1": "How does escrow work?",
+        "a1": "When you pay for a contract, funds are held until you approve delivered work or a dispute is resolved.",
+        "q2": "What fees does NearWork charge?",
+        "a2": "Escrow and payout fees are shown before checkout—no hidden charges at the last step.",
+        "q3": "Can I work remotely or on-site?",
+        "a3": "Yes. Each job lists work mode and location so you can filter for remote, hybrid, or on-site work.",
+        "q4": "How do I appeal a suspension?",
+        "a4": "Open Settings → Suspension appeal, explain your case, and our team responds within seven business days."
+      }
+    },
     "categories": {
       "kicker": "Browse by category",
       "title": "Find freelancers by category",

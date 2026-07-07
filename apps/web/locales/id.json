@@ -748,6 +748,65 @@
         "cta": "Catatan early access"
       }
     },
+    "v2": {
+      "categories": {
+        "kicker": "Jelajah cepat",
+        "title": "Temukan pekerjaan per kategori",
+        "subtitle": "Langsung ke listing aktif—filter kota atau mode kerja di papan.",
+        "viewAll": "Lihat semua kategori →"
+      },
+      "social": {
+        "kicker": "Kepercayaan komunitas",
+        "title": "Dipercaya freelancer dan klien",
+        "body": "Profil nyata, chat di thread job, dan checkout siap escrow seiring peluncuran V2.",
+        "quote": "Saya posting brief pagi hari dan dapat tiga proposal sebanding di hari yang sama.",
+        "quoteAuthor": "Klien early access NearWork",
+        "stats": {
+          "freelancers": "Freelancer",
+          "jobs": "Lowongan terbuka",
+          "proposals": "Proposal · 24j"
+        }
+      },
+      "trust": {
+        "kicker": "Keamanan & kepercayaan",
+        "title": "Rekrut dengan percaya diri",
+        "subtitle": "Biaya transparan, escrow, dan moderasi bila ada masalah.",
+        "escrow": {
+          "title": "Perlindungan escrow",
+          "body": "Dana terkunci sampai pekerjaan disetujui."
+        },
+        "moderation": {
+          "title": "Antrian moderasi",
+          "body": "Tim meninjau banding dan laporan dengan SLA."
+        },
+        "verify": {
+          "title": "Sinyal verifikasi",
+          "body": "Badge mencerminkan pemeriksaan identitas—bukan angka kosmetik."
+        },
+        "reviews": {
+          "title": "Ulasan terikat job",
+          "body": "Rating dari kontrak selesai di listing nyata."
+        }
+      },
+      "cta": {
+        "kicker": "Mulai",
+        "title": "Siap posting atau bid?",
+        "body": "Buat akun gratis, pasang lowongan, atau jelajahi listing terbuka.",
+        "primary": "Daftar gratis",
+        "secondary": "Jelajahi lowongan",
+        "help": "Pusat bantuan →"
+      },
+      "faq": {
+        "q1": "Bagaimana escrow bekerja?",
+        "a1": "Saat Anda membayar kontrak, dana ditahan sampai pekerjaan disetujui atau sengketa diselesaikan.",
+        "q2": "Biaya apa yang dikenakan NearWork?",
+        "a2": "Biaya escrow dan payout ditampilkan sebelum checkout—tanpa biaya tersembunyi.",
+        "q3": "Bisa kerja remote atau on-site?",
+        "a3": "Ya. Setiap job menampilkan mode kerja dan lokasi untuk filter remote, hybrid, atau on-site.",
+        "q4": "Bagaimana mengajukan banding suspensi?",
+        "a4": "Buka Settings → Suspension appeal, jelaskan kasus Anda; tim merespons dalam tujuh hari kerja."
+      }
+    },
     "categories": {
       "kicker": "Jelajah kategori",
       "title": "Cari freelancer per kategori",
