@@ -4,6 +4,8 @@ import {
 } from "@/components/settings/SettingsOverviewSections";
 import { SettingsCompanyProfileSection } from "@/components/settings/SettingsCompanyProfileSection";
 import { SettingsSupportBlock } from "@/components/settings/SettingsSupportBlock";
+import { AppealSuspensionPanel } from "@/components/design-system/AppealSuspensionPanel";
+import { SubscriptionUpgradeModal } from "@/components/design-system/SubscriptionUpgradeModal";
 import { SavedListsSection } from "./saved-lists";
 
 export default function SettingsPage() {
@@ -34,6 +36,19 @@ export default function SettingsPage() {
         </div>
 
         <PreferencesSettingsSection />
+
+        <section aria-labelledby="settings-v2-heading" className="space-y-4">
+          <div className="border-b border-slate-100 pb-3">
+            <p id="settings-v2-heading" className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+              V2 workspace
+            </p>
+            <p className="mt-0.5 text-sm text-slate-600">Theme, subscription, and account appeals</p>
+          </div>
+          <div className="flex flex-wrap items-center gap-4">
+            <SubscriptionUpgradeModal />
+          </div>
+          <AppealSuspensionPanel />
+        </section>
 
         <SettingsSupportBlock />
       </div>

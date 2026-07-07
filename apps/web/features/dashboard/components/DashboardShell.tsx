@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { BrandLogo } from "@/features/shared/components/BrandLogo";
 import { DashboardNav } from "./DashboardNav";
 import { AuthUserMenu } from "./AuthUserMenu";
+import { MobileBottomNav } from "./MobileBottomNav";
 import { SidebarAccountActions } from "./SidebarAccountActions";
 import { WorkspaceCommunitySidebarCard } from "./WorkspaceCommunitySidebarCard";
 import type { DashboardNavItem } from "../nav-types";
@@ -141,8 +142,8 @@ export function DashboardShell({
                     name="keyword"
                     placeholder={t("workspace.dashboardSearchPlaceholder")}
                     className={cn(
-                      "w-full rounded-2xl border border-slate-200/85 bg-white py-3 pl-11 pr-4 text-sm text-slate-900 shadow-sm outline-none ring-[#3525cd]/25 transition",
-                      "placeholder:text-slate-400 focus-visible:border-[#3525cd]/55 focus-visible:ring-[3px]"
+                      "w-full rounded-2xl border border-slate-200/85 bg-white py-3 pl-11 pr-4 text-sm text-slate-900 shadow-sm outline-none ring-nw-brand/25 transition",
+                      "placeholder:text-slate-400 focus-visible:border-nw-brand/55 focus-visible:ring-[3px]"
                     )}
                   />
                 </form>
@@ -153,12 +154,12 @@ export function DashboardShell({
                   <Link
                     href={withWorkspaceLocale(locale, "/messages") as Route}
                     prefetch
-                    className="relative flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200/80 bg-white text-slate-700 shadow-[0_2px_8px_-4px_rgba(15,23,42,0.12)] transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/35 focus-visible:ring-offset-2"
+                    className="relative flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200/80 bg-white text-slate-700 shadow-[0_2px_8px_-4px_rgba(15,23,42,0.12)] transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-nw-brand/35 focus-visible:ring-offset-2"
                     aria-label={t("workspace.inboxAria")}
                   >
                     <MessageSquare className="h-5 w-5" aria-hidden />
                     {showMessageBadge ? (
-                      <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 translate-x-0.5 items-center justify-center rounded-full bg-[#3525cd] px-1 text-[10px] font-bold text-white shadow-sm">
+                      <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 translate-x-0.5 items-center justify-center rounded-full bg-nw-brand px-1 text-[10px] font-bold text-white shadow-sm">
                         {badgeChip(unreadMessages)}
                       </span>
                     ) : null}
@@ -169,7 +170,7 @@ export function DashboardShell({
                   <Link
                     href={withWorkspaceLocale(locale, "/notifications") as Route}
                     prefetch
-                    className="relative flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200/80 bg-white text-slate-700 shadow-[0_2px_8px_-4px_rgba(15,23,42,0.12)] transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/35 focus-visible:ring-offset-2"
+                    className="relative flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200/80 bg-white text-slate-700 shadow-[0_2px_8px_-4px_rgba(15,23,42,0.12)] transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-nw-brand/35 focus-visible:ring-offset-2"
                     aria-label={t("workspace.notificationsAria")}
                   >
                     <Bell className="h-5 w-5" aria-hidden />
@@ -203,10 +204,11 @@ export function DashboardShell({
               </div>
             ) : null}
 
-            <div>{children}</div>
+            <div className="pb-20 md:pb-0">{children}</div>
           </div>
         </main>
       </div>
+      <MobileBottomNav navItems={navItems} unreadMessages={unreadMessages} />
     </div>
   );
 }

@@ -242,6 +242,8 @@ function buildActivity(bids: FreelancerDashboardBid[], contracts: FreelancerDash
   return items.slice(0, 8);
 }
 
+import { SubscriptionLimitsBanner } from "@/components/design-system/SubscriptionLimitsBanner";
+
 const linkClass = "nw-link-action text-sm";
 
 const surfaceCard = "nw-card-elevated p-4 md:p-5";
@@ -283,6 +285,7 @@ export function FreelancerDashboard({
 
   return (
     <div className="mx-auto max-w-6xl nw-page-stack">
+      <SubscriptionLimitsBanner activeBids={Number(stats.activeBids) || 0} bidLimit={5} planName="Free" />
       <FreelancerDashboardHero
         welcomeTitle={welcomeTitle}
         subtitle={subtitle}
@@ -299,7 +302,7 @@ export function FreelancerDashboard({
         className="nw-card-trust px-5 py-4 md:px-6"
       >
         <div className="flex flex-wrap items-start gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#3525cd] shadow-sm ring-1 ring-slate-200/80">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-nw-brand shadow-sm ring-1 ring-slate-200/80">
             <Waves className="h-5 w-5" strokeWidth={1.75} aria-hidden />
           </span>
           <div className="min-w-0 flex-1">
@@ -393,7 +396,7 @@ export function FreelancerDashboard({
           {showStrongProfileCard ? (
             <div className="nw-card-trust flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-5 md:p-6">
               <div className="flex min-w-0 gap-3">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-[#3525cd] shadow-sm ring-1 ring-slate-200/85">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-nw-brand shadow-sm ring-1 ring-slate-200/85">
                   <Sparkles className="h-[22px] w-[22px]" strokeWidth={1.75} aria-hidden />
                 </span>
                 <div className="min-w-0">
@@ -423,7 +426,7 @@ export function FreelancerDashboard({
                 <h2 className="nw-type-micro">{copy.pulseStripTitle}</h2>
                 <div className="mt-4 flex flex-wrap gap-2 md:gap-3">
                   <span className="nw-chip nw-chip-muted inline-flex items-center gap-2 px-3 py-2 text-xs normal-case tracking-normal md:text-[13px]">
-                    <Target className="h-4 w-4 text-[#3525cd]" aria-hidden />
+                    <Target className="h-4 w-4 text-nw-brand" aria-hidden />
                     <span className="font-medium text-slate-700">{copy.statActiveBids}</span>
                     <span className="font-semibold tabular-nums text-slate-900">{stats.activeBids}</span>
                   </span>
@@ -433,7 +436,7 @@ export function FreelancerDashboard({
                     <span className="font-semibold tabular-nums text-slate-900">{stats.bidQuotaRemaining}</span>
                   </span>
                   <span className="nw-chip nw-chip-muted inline-flex items-center gap-2 px-3 py-2 text-xs normal-case tracking-normal md:text-[13px]">
-                    <UserRound className="h-4 w-4 text-[#3525cd]" aria-hidden />
+                    <UserRound className="h-4 w-4 text-nw-brand" aria-hidden />
                     <span className="font-medium text-slate-700">{copy.pulseProfileLabel}</span>
                     <span className="font-semibold tabular-nums text-slate-900">{stats.profileReadiness}</span>
                   </span>
@@ -466,11 +469,11 @@ export function FreelancerDashboard({
                       href={item.href}
                       className={cn(
                         "nw-card-inset nw-card-inset-hover flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-colors duration-200",
-                        item.primary ? "border-[#3525cd]/20 bg-[#3525cd]/[0.06] text-[#3525cd]" : "text-slate-700"
+                        item.primary ? "border-nw-brand/20 bg-nw-brand/[0.06] text-nw-brand" : "text-slate-700"
                       )}
                     >
                       <item.icon
-                        className={cn("h-4 w-4 shrink-0", item.primary ? "text-[#3525cd]" : "text-slate-400")}
+                        className={cn("h-4 w-4 shrink-0", item.primary ? "text-nw-brand" : "text-slate-400")}
                         strokeWidth={1.5}
                         aria-hidden
                       />
@@ -536,7 +539,7 @@ export function FreelancerDashboard({
                 />
                 {marketplacePulse.hotCategories.filter((c) => c.name.trim().length > 0 && c.openJobCount > 0).length >
                 0 ? (
-                  <div className="nw-card-inset rounded-xl border-[#3525cd]/12 px-4 py-3">
+                  <div className="nw-card-inset rounded-xl border-nw-brand/12 px-4 py-3">
                     <p className="nw-type-micro">{copy.activityEmptyMomentumTitle}</p>
                     <p className="nw-type-body mt-1 text-slate-600">{copy.activityEmptyMomentumBody}</p>
                     <div className="mt-3 flex flex-wrap gap-2">
@@ -583,7 +586,7 @@ export function FreelancerDashboard({
                         <p className="nw-type-micro">{copy.activityKindProposal}</p>
                         <Link
                           href={`${jobsBrowseRoot}/${item.bid.job.id}` as Route}
-                          className="mt-0.5 block text-sm font-semibold text-slate-900 hover:text-[#3525cd]"
+                          className="mt-0.5 block text-sm font-semibold text-slate-900 hover:text-nw-brand"
                         >
                           {item.bid.job.title}
                         </Link>
@@ -611,7 +614,7 @@ export function FreelancerDashboard({
                         <p className="nw-type-micro">{copy.activityKindContract}</p>
                         <Link
                           href={`${jobsBrowseRoot}/${item.contract.bid.job.id}` as Route}
-                          className="mt-0.5 block text-sm font-semibold text-slate-900 hover:text-[#3525cd]"
+                          className="mt-0.5 block text-sm font-semibold text-slate-900 hover:text-nw-brand"
                         >
                           {item.contract.bid.job.title}
                         </Link>
@@ -647,7 +650,7 @@ export function FreelancerDashboard({
                 </div>
               </li>
               <li className="nw-card-inset flex items-start gap-3 rounded-xl p-3">
-                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#3525cd]/12 text-[#3525cd] ring-1 ring-[#3525cd]/20">
+                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-nw-brand/12 text-nw-brand ring-1 ring-nw-brand/20">
                   <BadgeCheck className="h-[18px] w-[18px]" aria-hidden />
                 </span>
                 <div>
@@ -733,7 +736,7 @@ export function FreelancerDashboard({
                       </div>
                       <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200/80">
                         <div
-                          className="h-full rounded-full bg-[#3525cd]"
+                          className="h-full rounded-full bg-nw-brand"
                           style={{ width: `${pct}%` }}
                         />
                       </div>

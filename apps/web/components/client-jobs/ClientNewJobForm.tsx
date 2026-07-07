@@ -34,7 +34,7 @@ export type ClientNewJobCategoryOption = {
 };
 
 const inputClass =
-  "flex h-10 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition placeholder:text-slate-400 focus-visible:border-[#3525cd]/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/20 disabled:opacity-50";
+  "flex h-10 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition placeholder:text-slate-400 focus-visible:border-nw-brand/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-nw-brand/20 disabled:opacity-50";
 
 const selectClass = cn(inputClass, "cursor-pointer appearance-none bg-[length:1rem] bg-[right_0.6rem_center] bg-no-repeat pr-9");
 
@@ -53,7 +53,7 @@ function sectionCard(
   return (
     <section className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-900/[0.03] ring-1 ring-slate-900/[0.02] md:p-7">
       <div className="mb-6 flex gap-3 border-b border-slate-100 pb-5">
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#3525cd]/[0.08] text-[#3525cd] ring-1 ring-[#3525cd]/10">
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-nw-brand/[0.08] text-nw-brand ring-1 ring-nw-brand/10">
           {icon}
         </span>
         <div className="min-w-0">
@@ -81,9 +81,21 @@ export function ClientNewJobForm({ categories }: ClientNewJobFormProps) {
   const [workMode, setWorkMode] = useState<WorkMode>(WorkMode.REMOTE);
   const [city, setCity] = useState("");
   const [bidDeadlineLocal, setBidDeadlineLocal] = useState("");
+  const [screeningQuestions, setScreeningQuestions] = useState("");
+  const [step, setStep] = useState(1);
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const totalSteps = 6;
+  const stepTitles = [
+    "Basic info",
+    "Category",
+    "Budget",
+    "Location",
+    "Screening",
+    "Review"
+  ];
 
   const subcategories = useMemo(() => {
     const cat = categories.find((c) => c.id === categoryId);
@@ -105,6 +117,10 @@ export function ClientNewJobForm({ categories }: ClientNewJobFormProps) {
       budgetType,
       currency
     };
+
+    if (screeningQuestions.trim()) {
+      payload.description = `${description.trim()}\n\n---\nScreening questions:\n${screeningQuestions.trim()}`;
+    }
 
     if (subcategoryId) payload.subcategoryId = subcategoryId;
     if (city.trim()) payload.city = city.trim();
@@ -179,7 +195,7 @@ export function ClientNewJobForm({ categories }: ClientNewJobFormProps) {
           <div>
             <Link
               href={withWorkspaceLocale(locale, "/client/jobs") as Route}
-              className="mb-3 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition hover:text-[#3525cd]"
+              className="mb-3 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition hover:text-nw-brand"
             >
               <ArrowLeft className="h-4 w-4" aria-hidden />
               Back to my jobs
@@ -204,15 +220,38 @@ export function ClientNewJobForm({ categories }: ClientNewJobFormProps) {
           </div>
         ) : null}
 
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="flex items-center justify-between gap-2 text-xs font-medium text-slate-500">
+            <span>
+              Step {step} of {totalSteps}
+            </span>
+            <span>{stepTitles[step - 1]}</span>
+          </div>
+          <div className="mt-2 flex gap-1">
+            {Array.from({ length: totalSteps }, (_, i) => (
+              <div
+                key={i}
+                className={cn("h-1.5 flex-1 rounded-full", i + 1 <= step ? "bg-nw-brand" : "bg-slate-200")}
+                aria-hidden
+              />
+            ))}
+          </div>
+        </div>
+
         <form
           id="new-job-form"
           className="space-y-8"
           onSubmit={(e) => {
             e.preventDefault();
+            if (step < totalSteps) {
+              setStep((s) => Math.min(totalSteps, s + 1));
+              return;
+            }
             void submit();
           }}
         >
-          {sectionCard(
+          {step === 1 &&
+          sectionCard(
             <FileText className="h-5 w-5" strokeWidth={1.75} aria-hidden />,
             "Basic job info",
             "Give freelancers a crisp title and enough context to decide if they are a fit.",
@@ -253,7 +292,8 @@ export function ClientNewJobForm({ categories }: ClientNewJobFormProps) {
             </>
           )}
 
-          {sectionCard(
+          {step === 2 &&
+          sectionCard(
             <Layers className="h-5 w-5" strokeWidth={1.75} aria-hidden />,
             "Category & skills",
             "Choose where this role belongs. Mention must-have tools or seniority in the description for now—structured skill tags will connect here in a future release.",
@@ -306,7 +346,7 @@ export function ClientNewJobForm({ categories }: ClientNewJobFormProps) {
               </div>
               <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/60 px-4 py-3 text-sm text-slate-600">
                 <span className="inline-flex items-center gap-2 font-medium text-slate-700">
-                  <Sparkles className="h-4 w-4 text-[#3525cd]" aria-hidden />
+                  <Sparkles className="h-4 w-4 text-nw-brand" aria-hidden />
                   Skills & stack
                 </span>
                 <p className="mt-1.5 leading-relaxed">
@@ -317,7 +357,8 @@ export function ClientNewJobForm({ categories }: ClientNewJobFormProps) {
             </>
           )}
 
-          {sectionCard(
+          {step === 3 &&
+          sectionCard(
             <Wallet className="h-5 w-5" strokeWidth={1.75} aria-hidden />,
             "Budget",
             "Set how you want to engage. Request quote is fine when scope still needs discovery.",
@@ -404,7 +445,8 @@ export function ClientNewJobForm({ categories }: ClientNewJobFormProps) {
             </>
           )}
 
-          {sectionCard(
+          {step === 4 &&
+          sectionCard(
             <MapPin className="h-5 w-5" strokeWidth={1.75} aria-hidden />,
             "Location & work mode",
             "Clarify how and where work happens so expectations stay aligned.",
@@ -445,11 +487,25 @@ export function ClientNewJobForm({ categories }: ClientNewJobFormProps) {
             </>
           )}
 
-          {sectionCard(
+          {step === 5 &&
+          sectionCard(
             <CalendarClock className="h-5 w-5" strokeWidth={1.75} aria-hidden />,
-            "Deadline & requirements",
-            "Optional proposal deadline. Other requirements belong in your description for now.",
+            "Screening & deadline",
+            "Optional questions for applicants and a proposal deadline.",
             <>
+              <div className="space-y-2">
+                <Label htmlFor="screening-questions" className="text-slate-700">
+                  Screening questions <span className="font-normal text-slate-400">(optional)</span>
+                </Label>
+                <textarea
+                  id="screening-questions"
+                  value={screeningQuestions}
+                  onChange={(e) => setScreeningQuestions(e.target.value)}
+                  placeholder="e.g. Share a link to similar work. What is your typical turnaround?"
+                  rows={5}
+                  className={cn(inputClass, "min-h-[8rem] resize-y py-3")}
+                />
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="bid-deadline" className="text-slate-700">
                   Proposal deadline <span className="font-normal text-slate-400">(optional)</span>
@@ -462,27 +518,62 @@ export function ClientNewJobForm({ categories }: ClientNewJobFormProps) {
                   onChange={(e) => setBidDeadlineLocal(e.target.value)}
                   className={inputClass}
                 />
-                <p className="text-xs text-slate-500">
-                  Stored in UTC. Leave blank if you are still calibrating timing with candidates.
-                </p>
+                <p className="text-xs text-slate-500">Stored in UTC. Leave blank if timing is flexible.</p>
               </div>
             </>
           )}
 
+          {step === 6 && (
+            <section className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm md:p-7">
+              <h2 className="text-base font-semibold text-slate-900">Review & publish</h2>
+              <p className="mt-1 text-sm text-slate-500">Confirm your listing before it goes live.</p>
+              <dl className="mt-6 space-y-3 text-sm">
+                <div>
+                  <dt className="font-medium text-slate-500">Title</dt>
+                  <dd className="text-slate-900">{title || "—"}</dd>
+                </div>
+                <div>
+                  <dt className="font-medium text-slate-500">Category</dt>
+                  <dd className="text-slate-900">{categories.find((c) => c.id === categoryId)?.name ?? "—"}</dd>
+                </div>
+                <div>
+                  <dt className="font-medium text-slate-500">Budget</dt>
+                  <dd className="text-slate-900">
+                    {budgetType} · {currency}
+                    {budgetMin || budgetMax ? ` (${budgetMin || "—"} – ${budgetMax || "—"})` : ""}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="font-medium text-slate-500">Work mode</dt>
+                  <dd className="text-slate-900">
+                    {workMode}
+                    {city ? ` · ${city}` : ""}
+                  </dd>
+                </div>
+              </dl>
+            </section>
+          )}
+
           <div className="hidden items-center justify-between gap-4 rounded-2xl border border-slate-200/80 bg-slate-50/80 px-6 py-4 md:flex">
-            <p className="text-sm text-slate-600">
-              Ready? Publishing sends the job live for freelancers to discover.
-            </p>
+            <div className="flex gap-2">
+              {step > 1 ? (
+                <Button type="button" variant="outline" className="min-h-11" onClick={() => setStep((s) => s - 1)}>
+                  Back
+                </Button>
+              ) : null}
+            </div>
             <Button
               type="submit"
               disabled={submitting}
-              className="h-11 rounded-xl bg-[#3525cd] px-8 text-base font-semibold shadow-md shadow-[#3525cd]/20 hover:bg-[#2d1fb0]"
+              className="h-11 rounded-xl bg-nw-brand px-8 text-base font-semibold shadow-md shadow-nw-brand/20 hover:bg-nw-brand/90"
             >
               {submitting ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
                   Publishing…
                 </>
+              ) : step < totalSteps ? (
+                "Continue"
               ) : (
                 "Publish listing"
               )}
@@ -493,14 +584,28 @@ export function ClientNewJobForm({ categories }: ClientNewJobFormProps) {
 
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white px-4 py-3 shadow-[0_-2px_12px_rgba(15,23,42,0.06)] md:hidden">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-3">
-          <p className="min-w-0 flex-1 truncate text-xs text-slate-500">Publish when your brief feels complete</p>
+          {step > 1 ? (
+            <Button type="button" variant="outline" className="min-h-11" onClick={() => setStep((s) => s - 1)}>
+              Back
+            </Button>
+          ) : (
+            <p className="min-w-0 flex-1 truncate text-xs text-slate-500">
+              Step {step} of {totalSteps}
+            </p>
+          )}
           <Button
             type="submit"
             form="new-job-form"
             disabled={submitting}
-            className="h-11 shrink-0 rounded-xl bg-[#3525cd] px-5 text-sm font-semibold shadow-md shadow-[#3525cd]/20 hover:bg-[#2d1fb0]"
+            className="h-11 shrink-0 rounded-xl bg-nw-brand px-5 text-sm font-semibold shadow-md shadow-nw-brand/20 hover:bg-nw-brand/90"
           >
-            {submitting ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : "Publish"}
+            {submitting ? (
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+            ) : step < totalSteps ? (
+              "Continue"
+            ) : (
+              "Publish"
+            )}
           </Button>
         </div>
       </div>

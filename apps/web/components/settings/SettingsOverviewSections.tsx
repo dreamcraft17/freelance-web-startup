@@ -2,6 +2,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { Bell, SlidersHorizontal, User } from "lucide-react";
 import { SettingsSectionCard } from "@/components/settings/SettingsSectionCard";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 export function AccountSettingsSection() {
   return (
@@ -54,14 +55,14 @@ export function PreferencesSettingsSection() {
       >
         <div className="space-y-4 text-sm leading-relaxed text-slate-600">
           <p>
-            Email digests, theme, and locale will land here. For now, time-sensitive updates still arrive in
-            your notification center.
+            Email digests and locale will land here. Theme preference is available now—stored locally on this device.
           </p>
+          <ThemeToggle />
           <Link
             href={"/notifications" as Route}
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-800 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
+            className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-800 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
           >
-            <Bell className="h-4 w-4 text-[#3525cd]" aria-hidden />
+            <Bell className="h-4 w-4 text-nw-brand" aria-hidden />
             Open notifications
           </Link>
         </div>
