@@ -12,13 +12,17 @@ const buttonVariants = cva(
         secondary: "border border-slate-200 bg-white text-slate-900 shadow-sm hover:border-slate-300 hover:bg-slate-50",
         outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         ghost: "font-medium hover:bg-accent hover:text-accent-foreground",
-        link: "h-auto rounded-md p-0 font-medium text-primary underline-offset-4 shadow-none hover:underline"
+        link: "h-auto rounded-md p-0 font-medium text-primary underline-offset-4 shadow-none hover:underline",
+        success: "bg-nw-success text-white shadow-sm hover:bg-nw-success/90",
+        warning: "bg-nw-warning text-slate-900 shadow-sm hover:bg-nw-warning/90",
+        danger: "bg-nw-danger text-white shadow-sm hover:bg-nw-danger/90"
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3 text-xs",
-        lg: "h-11 rounded-lg px-8 text-[15px]",
-        icon: "h-10 w-10"
+        default: "h-10 min-h-10 px-4 py-2 sm:min-h-10",
+        sm: "h-9 min-h-9 rounded-md px-3 text-xs",
+        lg: "h-11 min-h-11 rounded-lg px-8 text-[15px]",
+        touch: "h-11 min-h-11 min-w-11 rounded-lg px-5",
+        icon: "h-10 w-10 min-h-10 min-w-10"
       }
     },
     defaultVariants: {

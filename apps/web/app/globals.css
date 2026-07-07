@@ -9,8 +9,8 @@
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
-    /* Align shadcn primary with NearWork indigo — same hue as --nw-brand */
-    --primary: 249 69% 46%;
+    /* V2 primary blue #0066CC — action, CTA */
+    --primary: 210 100% 40%;
     --primary-foreground: 0 0% 98%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
@@ -20,7 +20,7 @@
     --accent-foreground: 240 5.9% 10%;
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 249 69% 46%;
+    --ring: 210 100% 40%;
     --radius: 0.625rem;
     --nw-bg: 215 27% 97%;
     --nw-surface: 0 0% 100%;
@@ -28,16 +28,22 @@
     --nw-text: 226 24% 13%;
     --nw-text-muted: 220 10% 41%;
     --nw-border: 220 16% 87%;
-    /* NearWork indigo — matches #3525cd */
-    --nw-brand: 249 69% 46%;
+    /* V2 brand palette */
+    --nw-brand: 210 100% 40%;
+    --nw-teal: 174 100% 36%;
+    --nw-accent-orange: 16 100% 60%;
+    --nw-success: 160 84% 39%;
+    --nw-warning: 38 92% 50%;
+    --nw-danger: 0 84% 60%;
+    --nw-info: 217 91% 60%;
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --primary: 249 63% 58%;
+    --background: 222 47% 6%;
+    --foreground: 210 20% 98%;
+    --card: 222 40% 8%;
+    --card-foreground: 210 20% 98%;
+    --primary: 210 100% 55%;
     --primary-foreground: 0 0% 98%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
@@ -47,7 +53,14 @@
     --accent-foreground: 0 0% 98%;
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 249 63% 58%;
+    --ring: 210 100% 55%;
+    --nw-brand: 210 100% 55%;
+    --nw-teal: 174 80% 42%;
+    --nw-accent-orange: 16 90% 58%;
+    --nw-success: 160 70% 42%;
+    --nw-warning: 38 85% 55%;
+    --nw-danger: 0 75% 58%;
+    --nw-info: 217 85% 62%;
   }
 }
 
@@ -94,7 +107,7 @@
   }
 
   .nw-card-trust {
-    @apply rounded-xl border border-slate-200 border-l-[3px] border-l-[#3525cd] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.05)];
+    @apply rounded-xl border border-slate-200 border-l-[3px] border-l-nw-brand bg-white shadow-[0_1px_2px_rgba(15,23,42,0.05)];
   }
 
   .nw-card-inset {
@@ -155,7 +168,7 @@
   }
 
   .nw-section-title {
-    @apply text-[10px] font-bold uppercase tracking-[0.12em] text-[#3525cd];
+    @apply text-[10px] font-bold uppercase tracking-[0.12em] text-[hsl(var(--nw-brand))];
   }
 
   .nw-page-header {
@@ -171,7 +184,7 @@
   }
 
   .nw-cta-primary {
-    @apply rounded-lg bg-[#3525cd] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-[#2b1f9e] active:bg-[#261a87];
+    @apply rounded-lg bg-[hsl(var(--nw-brand))] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-[hsl(var(--nw-brand))]/90 active:bg-[hsl(var(--nw-brand))]/85 min-h-11;
   }
 
   .nw-cta-secondary {
@@ -184,7 +197,7 @@
   }
 
   .nw-chip-brand {
-    @apply border-[#3525cd]/20 bg-[#3525cd]/[0.08] text-[#2b24a8];
+    @apply border-[hsl(var(--nw-brand))]/20 bg-[hsl(var(--nw-brand))]/[0.08] text-[hsl(var(--nw-brand))];
   }
 
   .nw-chip-success {
@@ -197,16 +210,16 @@
 
   /** Discovery / trending — editorial sentence case */
   .nw-chip-quiet {
-    @apply inline-flex items-center rounded-lg border border-slate-200 bg-slate-50 px-2 py-[5px] text-[13px] font-medium leading-snug tracking-normal text-slate-800 transition-colors duration-150 hover:border-[#3525cd]/35 hover:bg-white;
+    @apply inline-flex items-center rounded-lg border border-slate-200 bg-slate-50 px-2 py-[5px] text-[13px] font-medium leading-snug tracking-normal text-slate-800 transition-colors duration-150 hover:border-[hsl(var(--nw-brand))]/35 hover:bg-white;
   }
 
   /** Text CTAs — slightly smaller than body for hierarchy */
   .nw-link-action {
-    @apply inline-flex items-center gap-1 text-[13px] font-semibold text-[#3525cd] underline-offset-[3px] transition hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/25 focus-visible:ring-offset-2 rounded-sm;
+    @apply inline-flex items-center gap-1 text-[13px] font-semibold text-[hsl(var(--nw-brand))] underline-offset-[3px] transition hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--nw-brand))]/25 focus-visible:ring-offset-2 rounded-sm min-h-11 sm:min-h-0;
   }
 
   .nw-input {
-    @apply rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#3525cd] focus:outline-none focus:ring-2 focus:ring-[#3525cd]/25;
+    @apply rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[hsl(var(--nw-brand))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--nw-brand))]/25 min-h-11 sm:min-h-10;
   }
 
   /** Loading primitives — calm, layout-faithful placeholders. */
@@ -236,25 +249,25 @@
   }
 
   .nw-empty-state {
-    @apply rounded-xl border border-dashed border-slate-300/95 bg-white p-5 shadow-[inset_2px_0_0_0_#3525cd] sm:p-6;
+    @apply rounded-xl border border-dashed border-slate-300/95 bg-white p-5 shadow-[inset_2px_0_0_0_hsl(var(--nw-brand))] sm:p-6;
   }
 
   .nw-text-brand {
-    @apply font-semibold text-[#3525cd];
+    @apply font-semibold text-[hsl(var(--nw-brand))];
   }
 
   /** Hero / discovery — brand rail, no gradients */
   .nw-hero-panel {
-    @apply rounded-xl border border-slate-200 border-l-[3px] border-l-[#3525cd] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)] sm:p-6;
+    @apply rounded-xl border border-slate-200 border-l-[3px] border-l-[hsl(var(--nw-brand))] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)] sm:p-6;
   }
 
   /** Filter blocks — “live” product surface */
   .nw-discovery-panel {
-    @apply rounded-xl border border-slate-200 border-t-[3px] border-t-[#3525cd] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.05)] sm:p-4;
+    @apply rounded-xl border border-slate-200 border-t-[3px] border-t-[hsl(var(--nw-brand))] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.05)] sm:p-4;
   }
 
   .nw-results-toolbar {
-    @apply flex flex-wrap items-center justify-between gap-2.5 border border-slate-200 border-l-[3px] border-l-[#3525cd] bg-white px-3.5 py-3 text-[13px] shadow-[0_1px_2px_rgba(15,23,42,0.04)];
+    @apply flex flex-wrap items-center justify-between gap-2.5 border border-slate-200 border-l-[3px] border-l-[hsl(var(--nw-brand))] bg-white px-3.5 py-3 text-[13px] shadow-[0_1px_2px_rgba(15,23,42,0.04)];
   }
 
   /** Full-width landing bands — rhythm without cards-everywhere */
@@ -273,5 +286,42 @@
   /** Workspace chrome — subtle depth without glass everywhere */
   .nw-app-header {
     @apply sticky top-0 z-40 border-b border-slate-200/80 bg-white shadow-[0_1px_0_rgba(15,23,42,0.04)];
+  }
+
+  /** V2 typography scale (NEARWORK_V2_DESIGN_SYSTEM) */
+  .nw-v2-h1 {
+    @apply text-[2.5rem] font-bold leading-[1.2] tracking-tight text-[#1A1A1A] dark:text-slate-50;
+  }
+
+  .nw-v2-h2 {
+    @apply text-[2rem] font-bold leading-[1.25] tracking-tight text-[#1A1A1A] dark:text-slate-50;
+  }
+
+  .nw-v2-h3 {
+    @apply text-2xl font-semibold leading-[1.33] text-[#1A1A1A] dark:text-slate-50;
+  }
+
+  .nw-v2-body {
+    @apply text-base leading-6 text-slate-700 dark:text-slate-300;
+  }
+
+  .nw-v2-caption {
+    @apply text-xs font-medium leading-4 text-slate-500 dark:text-slate-400;
+  }
+
+  .nw-v2-price {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .nw-touch-target {
+    @apply inline-flex min-h-11 min-w-11 items-center justify-center;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nw-motion-safe {
+      animation: none !important;
+      transition: none !important;
+    }
   }
 }
