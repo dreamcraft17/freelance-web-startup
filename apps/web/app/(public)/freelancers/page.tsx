@@ -470,7 +470,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
                   href={
                     `${flBase}${freelancersQueryString({ keyword, city, workMode, categoryId, availability, budget, minRating, responseTime, page: page - 1 })}` as Route
                   }
-                  className="font-bold text-[#3525cd] hover:underline"
+                  className="font-bold text-nw-brand hover:underline"
                 >
                   {t("public.pagination.previous")}
                 </Link>
@@ -485,7 +485,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
                   href={
                     `${flBase}${freelancersQueryString({ keyword, city, workMode, categoryId, availability, budget, minRating, responseTime, page: page + 1 })}` as Route
                   }
-                  className="font-bold text-[#3525cd] hover:underline"
+                  className="font-bold text-nw-brand hover:underline"
                 >
                   {t("public.pagination.next")}
                 </Link>
@@ -514,7 +514,7 @@ export default async function FreelancersDirectoryPage({ searchParams }: { searc
                 </li>
               ) : null}
               {momentum.contractsCompletedLast7d > 0 ? (
-                <li className="rounded-md border border-[#3525cd]/20 bg-[#3525cd]/[0.06] px-2.5 py-2 text-[#2b1ea8]">
+                <li className="rounded-md border border-nw-brand/20 bg-nw-brand/[0.06] px-2.5 py-2 text-[#2b1ea8]">
                   {t("public.jobs.momentumHiresWrapped7d", { count: momentum.contractsCompletedLast7d })}
                 </li>
               ) : null}

@@ -174,7 +174,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
   const workModeChipClass = (active: boolean) =>
     cn(
       "nw-chip min-h-9 px-2.5 py-1 text-[11px] transition-colors duration-150",
-      active ? "border-transparent bg-[#3525cd] text-white shadow-sm" : "text-slate-700 hover:border-slate-300"
+      active ? "border-transparent bg-nw-brand text-white shadow-sm" : "text-slate-700 hover:border-slate-300"
     );
 
   const workModeT = (wm: string) =>
@@ -241,14 +241,14 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
               <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500">{t("public.jobs.sectionTitle")}</p>
               <h1 className="mt-2 text-balance text-3xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-4xl md:text-[2.65rem]">
                 <span className="text-slate-900">{t("public.jobs.heroHeadlineBefore")}</span>{" "}
-                <span className="text-[#3525cd]">{t("public.jobs.heroHeadlineAccent")}</span>
+                <span className="text-nw-brand">{t("public.jobs.heroHeadlineAccent")}</span>
               </h1>
               <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-600 sm:text-[15px]">{t("public.jobs.boardDescription")}</p>
 
               <div className="mt-5 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center">
                 <Link
                   href={`${jobsBase}#nw-jobs-list` as Route}
-                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#3525cd] px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#2b1daa]"
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-nw-brand px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#2b1daa]"
                 >
                   {t("public.jobs.heroCtaFindWork")}
                   <ArrowRight className="h-4 w-4 shrink-0" aria-hidden />
@@ -266,7 +266,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
 
               <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-y border-slate-200 py-3.5 text-[11px] font-semibold tabular-nums text-slate-800 sm:text-xs">
                 <span className="inline-flex items-center gap-1.5">
-                  <Sparkles className="h-3.5 w-3.5 text-[#3525cd]" aria-hidden />
+                  <Sparkles className="h-3.5 w-3.5 text-nw-brand" aria-hidden />
                   {t("public.jobs.heroStatOpen", { count: pulse.openPublicJobs })}
                 </span>
                 <span className="text-slate-300" aria-hidden>
@@ -288,7 +288,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                   ) : null}
                   {momentum.contractsCompletedLast7d > 0 ? (
                     <span className="inline-flex items-center gap-1">
-                      <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#3525cd]" aria-hidden />
+                      <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-nw-brand" aria-hidden />
                       {t("public.jobs.momentumHiresWrapped7d", { count: momentum.contractsCompletedLast7d })}
                     </span>
                   ) : null}
@@ -313,7 +313,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
               {trendingChips.length > 0 ? (
                 <div className="mt-5">
                   <p className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                    <TrendingUp className="h-3.5 w-3.5 text-[#3525cd]" aria-hidden />
+                    <TrendingUp className="h-3.5 w-3.5 text-nw-brand" aria-hidden />
                     {topDemandCategories.length > 0 ? t("public.jobs.heroTrendingLabel") : t("public.jobs.heroBrowseCategories")}
                   </p>
                   <div className="mt-2 flex flex-wrap gap-2">
@@ -341,9 +341,9 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
               {featuredJob ? (
                 <Link
                   href={`${jobsBase}/${featuredJob.id}` as Route}
-                  className="mt-3 block rounded-xl border border-slate-200 bg-white p-3 transition hover:border-[#3525cd]/40"
+                  className="mt-3 block rounded-xl border border-slate-200 bg-white p-3 transition hover:border-nw-brand/40"
                 >
-                  <p className="text-[10px] font-bold uppercase tracking-wide text-[#3525cd]">{t("public.jobs.heroFeaturedLabel")}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wide text-nw-brand">{t("public.jobs.heroFeaturedLabel")}</p>
                   <div className="mt-2 flex gap-3">
                     <div
                       className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-200 text-[11px] font-bold text-slate-800"
@@ -373,7 +373,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                 {heroPanelActivity.proposalRows.slice(0, 2).map((row) => (
                   <div key={`${row.freelancerName}-${row.createdAt}`} className="flex gap-2.5 px-3 py-2.5 first:rounded-t-xl last:rounded-b-xl sm:px-3">
                     <div
-                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#ede9fe] text-[10px] font-bold text-[#3525cd]"
+                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#ede9fe] text-[10px] font-bold text-nw-brand"
                       aria-hidden
                     >
                       {initialsFromName(row.freelancerName)}
@@ -436,7 +436,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                     defaultValue={keyword}
                     placeholder={t("public.jobs.searchKeywordPlaceholder")}
                     autoComplete="off"
-                    className="h-10 w-full rounded-lg border border-slate-200 bg-white pl-9 pr-2.5 text-sm text-slate-900 outline-none transition focus:border-[#3525cd] focus:ring-1 focus:ring-[#3525cd]/30"
+                    className="h-10 w-full rounded-lg border border-slate-200 bg-white pl-9 pr-2.5 text-sm text-slate-900 outline-none transition focus:border-nw-brand focus:ring-1 focus:ring-nw-brand/30"
                   />
                 </div>
                 <div>
@@ -447,7 +447,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                     name="city"
                     defaultValue={city}
                     placeholder={t("public.jobs.searchLocationPlaceholder")}
-                    className="h-10 w-full rounded-lg border border-slate-200 bg-white px-2.5 text-sm text-slate-900 outline-none focus:border-[#3525cd] focus:ring-1 focus:ring-[#3525cd]/30"
+                    className="h-10 w-full rounded-lg border border-slate-200 bg-white px-2.5 text-sm text-slate-900 outline-none focus:border-nw-brand focus:ring-1 focus:ring-nw-brand/30"
                   />
                 </div>
                 <div>
@@ -457,7 +457,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                   <select
                     name="categoryId"
                     defaultValue={categoryId}
-                    className="h-10 w-full rounded-lg border border-slate-200 bg-white px-2 text-sm text-slate-900 outline-none focus:border-[#3525cd] focus:ring-1 focus:ring-[#3525cd]/30"
+                    className="h-10 w-full rounded-lg border border-slate-200 bg-white px-2 text-sm text-slate-900 outline-none focus:border-nw-brand focus:ring-1 focus:ring-nw-brand/30"
                   >
                     <option value="">{t("public.filters.allCategories")}</option>
                     {categories.map((c) => (
@@ -469,7 +469,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                 </div>
                 <button
                   type="submit"
-                  className="inline-flex h-10 items-center justify-center rounded-lg bg-[#3525cd] px-5 text-sm font-semibold text-white transition hover:bg-[#2b1daa]"
+                  className="inline-flex h-10 items-center justify-center rounded-lg bg-nw-brand px-5 text-sm font-semibold text-white transition hover:bg-[#2b1daa]"
                 >
                   {t("public.jobs.searchAction")}
                 </button>
@@ -524,7 +524,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
             <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-md ring-1 ring-slate-900/[0.03]">
               <div className="mb-3 flex items-center justify-between border-b border-slate-100 pb-3">
                 <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500">{t("public.filters.title")}</h2>
-                <Link href={jobsBase as Route} className="text-xs font-bold text-[#3525cd] hover:underline">
+                <Link href={jobsBase as Route} className="text-xs font-bold text-nw-brand hover:underline">
                   {t("public.filters.reset")}
                 </Link>
               </div>
@@ -543,7 +543,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                     <Link
                       key={c.id}
                       href={`${jobsBase}${jobsBrowseQueryString({ ...filterBase, categoryId: c.id, page: 1 })}` as Route}
-                      className={`block rounded-lg px-2.5 py-2 ${categoryId === c.id ? "bg-[#3525cd] font-semibold text-white shadow-sm" : "text-slate-700 hover:bg-slate-50"}`}
+                      className={`block rounded-lg px-2.5 py-2 ${categoryId === c.id ? "bg-nw-brand font-semibold text-white shadow-sm" : "text-slate-700 hover:bg-slate-50"}`}
                     >
                       {c.name}
                     </Link>
@@ -563,7 +563,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                     <Link
                       key={item.value}
                       href={`${jobsBase}${jobsBrowseQueryString({ ...filterBase, minBudget: item.value, page: 1 })}` as Route}
-                      className={`block rounded-lg px-2.5 py-2 ${minBudget === item.value ? "bg-[#3525cd] font-semibold text-white shadow-sm" : "text-slate-700 hover:bg-slate-50"}`}
+                      className={`block rounded-lg px-2.5 py-2 ${minBudget === item.value ? "bg-nw-brand font-semibold text-white shadow-sm" : "text-slate-700 hover:bg-slate-50"}`}
                     >
                       {item.label}
                     </Link>
@@ -583,7 +583,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                     <Link
                       key={item.value}
                       href={`${jobsBase}${jobsBrowseQueryString({ ...filterBase, postedWithinDays: item.value, page: 1 })}` as Route}
-                      className={`block rounded-lg px-2.5 py-2 ${postedWithinDays === item.value ? "bg-[#3525cd] font-semibold text-white shadow-sm" : "text-slate-700 hover:bg-slate-50"}`}
+                      className={`block rounded-lg px-2.5 py-2 ${postedWithinDays === item.value ? "bg-nw-brand font-semibold text-white shadow-sm" : "text-slate-700 hover:bg-slate-50"}`}
                     >
                       {item.label}
                     </Link>
@@ -597,19 +597,19 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                 <div className="mt-2.5 space-y-0.5 text-sm">
                   <Link
                     href={`${jobsBase}${jobsBrowseQueryString({ ...filterBase, workMode: "REMOTE", page: 1 })}` as Route}
-                    className={`block rounded-lg px-2.5 py-2 ${workMode === "REMOTE" ? "bg-[#3525cd] font-semibold text-white shadow-sm" : "text-slate-700 hover:bg-slate-50"}`}
+                    className={`block rounded-lg px-2.5 py-2 ${workMode === "REMOTE" ? "bg-nw-brand font-semibold text-white shadow-sm" : "text-slate-700 hover:bg-slate-50"}`}
                   >
                     {t("public.filters.workModeRemote")}
                   </Link>
                   <Link
                     href={`${jobsBase}${jobsBrowseQueryString({ ...filterBase, workMode: "ONSITE", page: 1 })}` as Route}
-                    className={`block rounded-lg px-2.5 py-2 ${workMode === "ONSITE" ? "bg-[#3525cd] font-semibold text-white shadow-sm" : "text-slate-700 hover:bg-slate-50"}`}
+                    className={`block rounded-lg px-2.5 py-2 ${workMode === "ONSITE" ? "bg-nw-brand font-semibold text-white shadow-sm" : "text-slate-700 hover:bg-slate-50"}`}
                   >
                     {t("public.filters.workModeOnSite")}
                   </Link>
                   <Link
                     href={`${jobsBase}${jobsBrowseQueryString({ ...filterBase, workMode: "HYBRID", page: 1 })}` as Route}
-                    className={`block rounded-lg px-2.5 py-2 ${workMode === "HYBRID" ? "bg-[#3525cd] font-semibold text-white shadow-sm" : "text-slate-700 hover:bg-slate-50"}`}
+                    className={`block rounded-lg px-2.5 py-2 ${workMode === "HYBRID" ? "bg-nw-brand font-semibold text-white shadow-sm" : "text-slate-700 hover:bg-slate-50"}`}
                   >
                     {t("public.filters.workModeHybrid")}
                   </Link>
@@ -673,7 +673,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                   {topDemandCategories.length > 0 ? t("public.jobs.demandTrendTitle") : t("public.jobs.demandProcessTitle")}
                 </h2>
                 {topDemandCategories.length > 0 ? (
-                  <Link href={jobsBase as Route} className="text-xs font-bold text-[#3525cd] hover:underline">
+                  <Link href={jobsBase as Route} className="text-xs font-bold text-nw-brand hover:underline">
                     {t("public.jobs.viewAllSmall")}
                   </Link>
                 ) : null}
@@ -709,7 +709,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                     href={
                       `${jobsBase}${jobsBrowseQueryString({ ...filterBase, page: page - 1 })}` as Route
                     }
-                    className="font-bold text-[#3525cd] hover:underline"
+                    className="font-bold text-nw-brand hover:underline"
                   >
                     {t("public.pagination.previous")}
                   </Link>
@@ -724,7 +724,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                     href={
                       `${jobsBase}${jobsBrowseQueryString({ ...filterBase, page: page + 1 })}` as Route
                     }
-                    className="font-bold text-[#3525cd] hover:underline"
+                    className="font-bold text-nw-brand hover:underline"
                   >
                     {t("public.pagination.next")}
                   </Link>
@@ -741,7 +741,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
             <section className="nw-card-elevated rounded-2xl p-4 shadow-md ring-1 ring-slate-900/[0.03]">
               <div className="flex items-center justify-between gap-2">
                 <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500">{t("public.jobs.pulseTitle")}</h2>
-                <Link href={notificationsHref as Route} className="text-xs font-bold text-[#3525cd] hover:underline">
+                <Link href={notificationsHref as Route} className="text-xs font-bold text-nw-brand hover:underline">
                   {t("public.jobs.viewAllSmall")}
                 </Link>
               </div>
@@ -783,7 +783,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                     </li>
                   ) : (
                     heroPanelActivity.proposalRows.map((row) => (
-                      <li key={`${row.freelancerName}-${row.createdAt}-${row.jobTitle}`} className="border-l-2 border-[#3525cd]/25 py-2 pl-3">
+                      <li key={`${row.freelancerName}-${row.createdAt}-${row.jobTitle}`} className="border-l-2 border-nw-brand/25 py-2 pl-3">
                         <p className="text-slate-800">{t("public.jobs.liveProposalLine", { name: row.freelancerName })}</p>
                         <p className="mt-1 text-xs text-slate-500 line-clamp-1">{row.jobTitle}</p>
                         <p className="mt-0.5 text-[11px] font-medium text-slate-400">
@@ -818,7 +818,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                   </div>
                 ) : null}
                 {momentum.contractsCompletedLast7d > 0 ? (
-                  <div className="nw-card-inset border-[#3525cd]/15 bg-[#3525cd]/[0.04] px-3 py-2.5">
+                  <div className="nw-card-inset border-nw-brand/15 bg-nw-brand/[0.04] px-3 py-2.5">
                     <p className="text-xl font-bold tabular-nums text-slate-900">{momentum.contractsCompletedLast7d}</p>
                     <p className="text-[11px] font-medium text-slate-600">{t("public.jobs.insightContractsCompleted7d")}</p>
                   </div>
@@ -827,12 +827,12 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
               <p className="mt-2 text-[11px] leading-snug text-slate-500">{t("public.jobs.insightFootnote")}</p>
             </section>
 
-            <section className="rounded-2xl border border-[#2b1da8] bg-[#3525cd] p-4 text-white shadow-md">
+            <section className="rounded-2xl border border-[#2b1da8] bg-nw-brand p-4 text-white shadow-md">
               <p className="text-sm font-bold">{t("public.jobs.notifyCardTitle")}</p>
               <p className="mt-2 text-sm leading-relaxed text-indigo-100">{t("public.jobs.notifyCardBody")}</p>
               <Link
                 href={notificationsHref as Route}
-                className="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-white px-3 py-2.5 text-sm font-bold text-[#3525cd] transition hover:bg-slate-100"
+                className="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-white px-3 py-2.5 text-sm font-bold text-nw-brand transition hover:bg-slate-100"
               >
                 {t("public.jobs.notifyCardCta")}
               </Link>
@@ -850,7 +850,7 @@ export default async function JobsBrowsePage({ searchParams }: { searchParams: P
                 intent="post-job"
                 unauthenticatedTo="register"
                 registerRoleHint="client"
-                className="mt-2 inline-flex w-full items-center justify-center rounded-xl bg-[#3525cd] px-3 py-2.5 text-sm font-bold text-white transition hover:bg-[#2b1daa]"
+                className="mt-2 inline-flex w-full items-center justify-center rounded-xl bg-nw-brand px-3 py-2.5 text-sm font-bold text-white transition hover:bg-[#2b1daa]"
               >
                 {t("public.jobs.smallCtaPrimary")}
               </AuthAwareCtaLink>

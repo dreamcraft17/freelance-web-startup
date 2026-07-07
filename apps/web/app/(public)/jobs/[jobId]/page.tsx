@@ -21,6 +21,8 @@ import { AuthAwareCtaLink } from "@/features/auth/components/AuthAwareCtaLink";
 import { registerFreelancerReturnToJob } from "@/features/auth/lib/register-intents";
 import { SaveJobButton } from "@/features/saved/components/SaveJobButton";
 import { JobProposalForm } from "@/features/public/components/JobProposalForm";
+import { JobDetailMobileApplyBar } from "@/features/public/components/JobDetailMobileApplyBar";
+import { EscrowStatus } from "@/components/design-system/EscrowStatus";
 import { BidDecisionAction } from "@/components/client-jobs/BidDecisionAction";
 import { BidConversationAction } from "@/components/client-jobs/BidConversationAction";
 import { JobService } from "@/server/services/job.service";
@@ -504,7 +506,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
   return (
     <div className={`${NW_PAGE_WRAP} nw-page-stack`}>
       <nav className="mb-4 text-sm text-slate-500">
-        <Link href={jobBrowseRoot as Route} className="font-medium text-[#3525cd] underline-offset-4 hover:underline">
+        <Link href={jobBrowseRoot as Route} className="font-medium text-nw-brand underline-offset-4 hover:underline">
           {t("public.jobs.pageTitle")}
         </Link>
         <span className="mx-2 text-slate-300">/</span>
@@ -520,7 +522,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
             <p className="text-sm font-bold text-emerald-900">{t("public.jobDetail.jobPostedBannerTitle")}</p>
             <p className="mt-1 text-xs leading-relaxed text-emerald-800">{t("public.jobDetail.jobPostedBannerBody")}</p>
             <div className="mt-2 flex flex-wrap items-center gap-3 text-xs font-bold">
-              <Link href={"/client/jobs?review=needs-review" as Route} className="text-[#3525cd] hover:underline">
+              <Link href={"/client/jobs?review=needs-review" as Route} className="text-nw-brand hover:underline">
                 {t("public.jobDetail.jobPostedBannerPrimary")}
               </Link>
               <Link href={"/client/jobs" as Route} className="text-slate-700 hover:underline">
@@ -562,11 +564,11 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
         </div>
 
         <div className="mt-5 min-w-0">
-          <p className={`${NW_SECTION_KICKER} text-[#3525cd]/90`}>{t("public.jobDetail.heroKicker")}</p>
+          <p className={`${NW_SECTION_KICKER} text-nw-brand/90`}>{t("public.jobDetail.heroKicker")}</p>
           <h1 className="nw-type-display mt-2 text-balance text-slate-950 sm:text-[2rem]">
             {job.title}
           </h1>
-          <p className="mt-3 text-xl font-semibold tabular-nums tracking-tight text-[#3525cd] sm:text-[1.45rem]">
+          <p className="mt-3 text-xl font-semibold tabular-nums tracking-tight text-nw-brand sm:text-[1.45rem]">
             {budgetLine(job, t, locale)}
           </p>
           <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] font-medium text-slate-600">
@@ -610,7 +612,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
               intent="submit-bid"
               unauthenticatedTo="register"
               registerRoleHint="freelancer"
-              className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl bg-[#3525cd] px-4 text-sm font-bold text-white transition hover:bg-[#2b1daa]"
+              className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl bg-nw-brand px-4 text-sm font-bold text-white transition hover:bg-[#2b1daa]"
             >
               {t("public.jobDetail.sendProposal")}
             </AuthAwareCtaLink>
@@ -634,11 +636,11 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
               : t("public.jobDetail.originalLanguageOnly")}
           </span>
           <div className="flex items-center gap-2 font-bold">
-            <Link href={`${returnToThisJob}?view=translated` as Route} className="text-[#3525cd] hover:underline">
+            <Link href={`${returnToThisJob}?view=translated` as Route} className="text-nw-brand hover:underline">
               {t("public.jobDetail.showTranslated")}
             </Link>
             <span>·</span>
-            <Link href={`${returnToThisJob}?view=original` as Route} className="text-[#3525cd] hover:underline">
+            <Link href={`${returnToThisJob}?view=original` as Route} className="text-nw-brand hover:underline">
               {t("public.jobDetail.showOriginal")}
             </Link>
           </div>
@@ -656,7 +658,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
                 <p className={NW_SECTION_KICKER}>{t("public.jobDetail.clientTrustTitle")}</p>
                 <p className="nw-type-meta mt-1 font-medium normal-case tracking-normal">{t("public.jobDetail.clientTrustLead")}</p>
               </div>
-              <Sparkles className="hidden h-8 w-8 text-[#3525cd]/25 sm:block" aria-hidden />
+              <Sparkles className="hidden h-8 w-8 text-nw-brand/25 sm:block" aria-hidden />
             </div>
             <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-start">
               <div
@@ -1090,7 +1092,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
                     href={`${jobBrowseRoot}/${row.id}` as Route}
                     className="group flex flex-col gap-1 py-3 transition hover:bg-slate-50/80 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:rounded-lg sm:px-2"
                   >
-                    <span className="min-w-0 text-[13px] font-semibold text-slate-900 group-hover:text-[#3525cd]">
+                    <span className="min-w-0 text-[13px] font-semibold text-slate-900 group-hover:text-nw-brand">
                       {pickLocalizedJobTitle(row, forceOriginal ? "source" : locale)}
                     </span>
                     <span className="shrink-0 text-[12px] font-semibold tabular-nums text-slate-600">
@@ -1123,7 +1125,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
               <div className="mt-2 space-y-1.5 text-[12px] font-semibold text-slate-700">
                 <p className="flex items-center justify-between gap-2">
                   <span className="inline-flex items-center gap-1.5 text-slate-500">
-                    <Users className="h-3.5 w-3.5 text-[#3525cd]" aria-hidden />
+                    <Users className="h-3.5 w-3.5 text-nw-brand" aria-hidden />
                     {t("public.jobDetail.sidebarStatProposals")}
                   </span>
                   <span className="tabular-nums text-slate-900">{publicBidCount}</span>
@@ -1142,6 +1144,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
             <p className="nw-type-body font-medium">{t("public.jobDetail.applyDescription")}</p>
 
             <div className="flex flex-col gap-2">
+              <EscrowStatus phase="locked" showTimeline className="mb-2 hidden lg:block" />
               {isFreelancerViewer ? (
                 <JobProposalForm
                   jobId={job.id}
@@ -1205,7 +1208,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
                     intent="submit-bid"
                     unauthenticatedTo="register"
                     registerRoleHint="freelancer"
-                    className="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-[#3525cd] px-4 text-sm font-bold text-white transition hover:bg-[#2b1daa]"
+                    className="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-nw-brand px-4 text-sm font-bold text-white transition hover:bg-[#2b1daa]"
                   >
                     {t("public.jobDetail.sendProposal")}
                   </AuthAwareCtaLink>
@@ -1221,7 +1224,7 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
               )}
               {publicBidCount > 0 && publicBidCount <= 3 ? (
                 <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-[#3525cd]" aria-hidden />
+                  <CheckCircle2 className="h-3.5 w-3.5 text-nw-brand" aria-hidden />
                   {t("public.jobDetail.lowCompetitionHint", { count: publicBidCount })}
                 </p>
               ) : null}
@@ -1237,36 +1240,69 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
       </div>
 
       {showFreelancerApplyPanel ? (
-        <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white px-4 py-3 shadow-[0_-8px_30px_-12px_rgba(15,23,42,0.14)] md:hidden">
-          <div className="mx-auto flex max-w-lg gap-2">
-            {isFreelancerViewer ? (
-              <Link
-                href="#nw-proposal-section"
-                className="inline-flex min-h-12 flex-1 items-center justify-center rounded-xl bg-[#3525cd] px-4 text-sm font-bold text-white transition hover:bg-[#2b1daa]"
-              >
-                {t("public.jobDetail.sendProposal")}
-              </Link>
-            ) : (
-              <AuthAwareCtaLink
-                href={proposalAnchor}
-                intent="submit-bid"
-                unauthenticatedTo="register"
-                registerRoleHint="freelancer"
-                className="inline-flex min-h-12 flex-1 items-center justify-center rounded-xl bg-[#3525cd] px-4 text-sm font-bold text-white transition hover:bg-[#2b1daa]"
-              >
-                {t("public.jobDetail.sendProposal")}
-              </AuthAwareCtaLink>
-            )}
-            <Link
-              href={proposalAnchor}
-              className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-xl border-2 border-slate-200 bg-white px-3 text-xs font-bold text-slate-900"
-            >
-              {t("public.jobDetail.ctaDiscussShort")}
-            </Link>
-          </div>
-        </div>
+        <JobDetailMobileApplyBar
+          jobId={job.id}
+          currency={job.currency}
+          userId={session?.userId ?? null}
+          clientUserId={owner?.clientProfile.userId ?? null}
+          isFreelancerViewer={isFreelancerViewer}
+          proposalAnchor={proposalAnchor}
+          registerHref={registerFreelancerReturnToJob(job.id, locale) as Route}
+          sendProposalLabel={t("public.jobDetail.sendProposal")}
+          discussLabel={t("public.jobDetail.ctaDiscussShort")}
+          registerLabel={t("public.jobDetail.registerAsFreelancer")}
+          labels={{
+            title: t("public.jobDetail.formGuideTitle"),
+            subtitle: t("public.jobDetail.formGuideSubtitle"),
+            guidanceKicker: t("public.jobDetail.formGuidanceKicker"),
+            guidanceIntro: t("public.jobDetail.formGuidanceIntro"),
+            guidanceBullets: [
+              t("public.jobDetail.formGuidanceBullet1"),
+              t("public.jobDetail.formGuidanceBullet2"),
+              t("public.jobDetail.formGuidanceBullet3"),
+              t("public.jobDetail.formGuidanceBullet4"),
+              t("public.jobDetail.formGuidanceBullet5"),
+              t("public.jobDetail.formGuidanceBullet6")
+            ],
+            introLabel: t("public.jobDetail.formIntroLabel"),
+            introHint: t("public.jobDetail.formIntroHint"),
+            introPlaceholder: t("public.jobDetail.formIntroPlaceholder"),
+            experienceLabel: t("public.jobDetail.formExperienceLabel"),
+            experienceHint: t("public.jobDetail.formExperienceHint"),
+            experiencePlaceholder: t("public.jobDetail.formExperiencePlaceholder"),
+            approachLabel: t("public.jobDetail.formApproachLabel"),
+            approachHint: t("public.jobDetail.formApproachHint"),
+            approachPlaceholder: t("public.jobDetail.formApproachPlaceholder"),
+            timelineLabel: t("public.jobDetail.formTimelineLabel"),
+            timelineHint: t("public.jobDetail.formTimelineHint"),
+            timelinePlaceholder: t("public.jobDetail.formTimelinePlaceholder"),
+            quoteSectionKicker: t("public.jobDetail.formQuoteSectionKicker"),
+            amountLabel: t("public.jobDetail.formAmountLabel"),
+            amountHint: t("public.jobDetail.formAmountHint", {
+              currency: normalizeCurrencyCode(job.currency)
+            }),
+            daysLabel: t("public.jobDetail.formDaysLabel"),
+            daysHint: t("public.jobDetail.formDaysHint"),
+            reassurance: t("public.jobDetail.formReassurance"),
+            firstStep: t("public.jobDetail.formFirstStep"),
+            submitCtaSubtitle: t("public.jobDetail.formSubmitCtaSubtitle"),
+            send: t("public.jobDetail.sendProposal"),
+            sending: t("public.jobDetail.formSending"),
+            loadingOverlay: t("public.jobDetail.formLoadingOverlay"),
+            success: t("public.jobDetail.formSuccess"),
+            genericError: t("public.jobDetail.formGenericError"),
+            networkError: t("public.jobDetail.formNetworkError"),
+            draftRestored: t("public.jobDetail.formDraftRestored"),
+            savedLocally: t("public.jobDetail.formSavedLocally"),
+            clearDraft: t("public.jobDetail.formClearDraft"),
+            draftCleared: t("public.jobDetail.formDraftCleared"),
+            openConversation: t("public.jobDetail.formOpenConversation"),
+            conversationHint: t("public.jobDetail.formConversationHint"),
+            conversationError: t("public.jobDetail.formConversationError")
+          }}
+        />
       ) : null}
-      {showFreelancerApplyPanel ? <div className="h-14 md:h-0" aria-hidden /> : null}
+      {showFreelancerApplyPanel ? <div className="h-20 md:h-0" aria-hidden /> : null}
     </div>
   );
 }

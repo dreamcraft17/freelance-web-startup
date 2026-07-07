@@ -3,6 +3,7 @@ import type { Route } from "next";
 import { Sparkles } from "lucide-react";
 import { RecommendationService } from "@/server/services/recommendation.service";
 import { Card } from "@/components/ui/card";
+import { RecommendationScore } from "@/components/design-system/RecommendationScore";
 import type { AppLocale } from "@/lib/i18n/types";
 import { withPublicLocale } from "@/lib/i18n/locale-path";
 
@@ -19,7 +20,7 @@ export async function RecommendedJobsWidget({ freelancerUserId, locale, title = 
   if (items.length === 0) {
     return (
       <Card className="nw-card p-4">
-        <div className="flex items-center gap-2 text-[#3525cd]">
+        <div className="flex items-center gap-2 text-nw-brand">
           <Sparkles className="h-4 w-4" aria-hidden />
           <h2 className="nw-type-section-title">{title}</h2>
         </div>
@@ -35,27 +36,20 @@ export async function RecommendedJobsWidget({ freelancerUserId, locale, title = 
 
   return (
     <Card className="nw-card p-4">
-      <div className="flex items-center gap-2 text-[#3525cd]">
+      <div className="flex items-center gap-2 text-nw-brand">
         <Sparkles className="h-4 w-4" aria-hidden />
         <h2 className="nw-type-section-title">{title}</h2>
       </div>
-      <ul className="mt-3 space-y-2">
+      <ul className="mt-3 space-y-3">
         {items.map((item) => (
-          <li key={item.id} className="rounded-lg border border-slate-200 p-3">
-            <div className="flex items-start justify-between gap-2">
-              <div>
-                <Link
-                  href={withPublicLocale(locale, `/jobs/${item.jobId}`) as Route}
-                  className="nw-type-body font-medium text-slate-900 hover:text-[#3525cd]"
-                >
-                  {item.job?.title ?? "Job"}
-                </Link>
-                {item.matchReasons.length > 0 && (
-                  <p className="nw-type-caption mt-1 text-slate-500">{item.matchReasons.join(" · ")}</p>
-                )}
-              </div>
-              <span className="nw-chip shrink-0 bg-indigo-50 text-[#3525cd]">{item.score}%</span>
-            </div>
+          <li key={item.id} className="rounded-lg border border-slate-200 p-3 dark:border-slate-700">
+            <Link
+              href={withPublicLocale(locale, `/jobs/${item.jobId}`) as Route}
+              className="nw-type-body font-medium text-slate-900 hover:text-nw-brand dark:text-slate-100"
+            >
+              {item.job?.title ?? "Job"}
+            </Link>
+            <RecommendationScore score={item.score} reasons={item.matchReasons} compact className="mt-3" />
           </li>
         ))}
       </ul>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { ModeratorQueueItem } from "@/components/design-system/ModeratorQueueItem";
 
 type AppealRow = {
   id: string;
@@ -14,6 +14,19 @@ type AppealRow = {
     user: { id: string; email: string };
   };
 };
+
+function urgencyFromLevel(level: string): "low" | "medium" | "high" {
+  const key = level.toUpperCase();
+  if (key.includes("PERMANENT") || key.includes("BAN")) return "high";
+  if (key.includes("TEMP") || key.includes("LIMIT")) return "medium";
+  return "low";
+}
+
+function slaHoursRemaining(createdAt: string) {
+  const created = new Date(createdAt).getTime();
+  const deadline = created + 7 * 24 * 60 * 60 * 1000;
+  return (deadline - Date.now()) / (60 * 60 * 1000);
+}
 
 export function AdminAppealsClient({ initialAppeals }: { initialAppeals: AppealRow[] }) {
   const [appeals, setAppeals] = useState(initialAppeals);
@@ -39,43 +52,30 @@ export function AdminAppealsClient({ initialAppeals }: { initialAppeals: AppealR
   }
 
   if (appeals.length === 0) {
-    return <p className="nw-type-body text-slate-600">No appeals in queue.</p>;
+    return (
+      <div className="nw-empty-state">
+        <p className="font-medium text-slate-900">No appeals in queue</p>
+        <p className="mt-2 text-sm text-slate-600">Suspension appeals from users will appear here for review.</p>
+      </div>
+    );
   }
 
   return (
-    <ul className="divide-y divide-slate-200">
+    <ul className="space-y-3">
       {appeals.map((appeal) => (
-        <li key={appeal.id} className="py-4 space-y-2">
-          <div className="flex flex-wrap items-start justify-between gap-2">
-            <div>
-              <p className="nw-type-body font-medium text-slate-900">{appeal.suspension.user.email}</p>
-              <p className="nw-type-caption text-slate-500">
-                {appeal.suspension.level} · {appeal.status}
-              </p>
-            </div>
-            {appeal.status === "PENDING" && (
-              <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  disabled={busyId === appeal.id}
-                  onClick={() => review(appeal.id, "APPROVED")}
-                >
-                  Approve
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  disabled={busyId === appeal.id}
-                  onClick={() => review(appeal.id, "DENIED")}
-                >
-                  Deny
-                </Button>
-              </div>
-            )}
-          </div>
-          <p className="nw-type-caption text-slate-600">{appeal.suspension.reason}</p>
-          <p className="nw-type-body text-slate-800">{appeal.appealReason}</p>
-        </li>
+        <ModeratorQueueItem
+          key={appeal.id}
+          id={appeal.id}
+          category="Suspension appeal"
+          urgency={urgencyFromLevel(appeal.suspension.level)}
+          slaHoursRemaining={slaHoursRemaining(appeal.createdAt)}
+          subject={appeal.suspension.user.email}
+          summary={`${appeal.suspension.reason} — ${appeal.appealReason}`}
+          status={appeal.status}
+          busy={busyId === appeal.id}
+          onApprove={appeal.status === "PENDING" ? () => review(appeal.id, "APPROVED") : undefined}
+          onDeny={appeal.status === "PENDING" ? () => review(appeal.id, "DENIED") : undefined}
+        />
       ))}
     </ul>
   );

@@ -91,7 +91,7 @@ export function JobsMarketplaceMobileFilters(props: {
                     href={`${jobsBase}${jobsBrowseQueryString({ ...q, categoryId: "" })}` as Route}
                     onClick={() => setOpen(false)}
                     className={`block rounded-xl px-3 py-2.5 text-sm font-semibold ${
-                      props.categoryId === "" ? "bg-[#3525cd] text-white shadow-sm" : "text-slate-800 hover:bg-slate-50"
+                      props.categoryId === "" ? "bg-nw-brand text-white shadow-sm" : "text-slate-800 hover:bg-slate-50"
                     }`}
                   >
                     {t("public.filters.allCategories")}
@@ -102,7 +102,7 @@ export function JobsMarketplaceMobileFilters(props: {
                       href={`${jobsBase}${jobsBrowseQueryString({ ...q, categoryId: c.id })}` as Route}
                       onClick={() => setOpen(false)}
                       className={`block rounded-xl px-3 py-2.5 text-sm font-semibold ${
-                        props.categoryId === c.id ? "bg-[#3525cd] text-white shadow-sm" : "text-slate-800 hover:bg-slate-50"
+                        props.categoryId === c.id ? "bg-nw-brand text-white shadow-sm" : "text-slate-800 hover:bg-slate-50"
                       }`}
                     >
                       {c.name}
@@ -113,6 +113,26 @@ export function JobsMarketplaceMobileFilters(props: {
 
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">{t("public.jobs.budgetFilterLabel")}</p>
+                <label className="mt-3 block text-xs text-slate-600" htmlFor="budget-range">
+                  Min budget (IDR)
+                </label>
+                <input
+                  id="budget-range"
+                  type="range"
+                  min={0}
+                  max={5000000}
+                  step={50000}
+                  defaultValue={Number(props.minBudget) || 500000}
+                  className="mt-2 h-2 w-full min-h-11 cursor-pointer accent-nw-brand"
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    const label = document.getElementById("budget-range-value");
+                    if (label) label.textContent = `Rp ${Number(v).toLocaleString(locale === "id" ? "id-ID" : "en-US")}`;
+                  }}
+                />
+                <p id="budget-range-value" className="mt-1 text-sm font-semibold text-slate-900">
+                  Rp {Number(props.minBudget || 500000).toLocaleString(locale === "id" ? "id-ID" : "en-US")}
+                </p>
                 <div className="mt-2 space-y-1">
                   {[
                     { value: "500000", label: t("public.jobs.budgetFilter500k") },
@@ -124,7 +144,7 @@ export function JobsMarketplaceMobileFilters(props: {
                       href={`${jobsBase}${jobsBrowseQueryString({ ...q, minBudget: item.value })}` as Route}
                       onClick={() => setOpen(false)}
                       className={`block rounded-xl px-3 py-2.5 text-sm font-semibold ${
-                        props.minBudget === item.value ? "bg-[#3525cd] text-white shadow-sm" : "text-slate-800 hover:bg-slate-50"
+                        props.minBudget === item.value ? "bg-nw-brand text-white shadow-sm" : "text-slate-800 hover:bg-slate-50"
                       }`}
                     >
                       {item.label}
@@ -146,7 +166,7 @@ export function JobsMarketplaceMobileFilters(props: {
                       href={`${jobsBase}${jobsBrowseQueryString({ ...q, postedWithinDays: item.value })}` as Route}
                       onClick={() => setOpen(false)}
                       className={`block rounded-xl px-3 py-2.5 text-sm font-semibold ${
-                        props.postedWithinDays === item.value ? "bg-[#3525cd] text-white shadow-sm" : "text-slate-800 hover:bg-slate-50"
+                        props.postedWithinDays === item.value ? "bg-nw-brand text-white shadow-sm" : "text-slate-800 hover:bg-slate-50"
                       }`}
                     >
                       {item.label}
@@ -163,7 +183,7 @@ export function JobsMarketplaceMobileFilters(props: {
                     onClick={() => setOpen(false)}
                     className={`min-h-10 rounded-full px-3.5 py-2 text-xs font-bold ${
                       props.workMode === "REMOTE"
-                        ? "bg-[#3525cd] text-white shadow-sm"
+                        ? "bg-nw-brand text-white shadow-sm"
                         : "border border-slate-200 bg-white text-slate-800"
                     }`}
                   >
@@ -174,7 +194,7 @@ export function JobsMarketplaceMobileFilters(props: {
                     onClick={() => setOpen(false)}
                     className={`min-h-10 rounded-full px-3.5 py-2 text-xs font-bold ${
                       props.workMode === "ONSITE"
-                        ? "bg-[#3525cd] text-white shadow-sm"
+                        ? "bg-nw-brand text-white shadow-sm"
                         : "border border-slate-200 bg-white text-slate-800"
                     }`}
                   >
@@ -185,7 +205,7 @@ export function JobsMarketplaceMobileFilters(props: {
                     onClick={() => setOpen(false)}
                     className={`min-h-10 rounded-full px-3.5 py-2 text-xs font-bold ${
                       props.workMode === "HYBRID"
-                        ? "bg-[#3525cd] text-white shadow-sm"
+                        ? "bg-nw-brand text-white shadow-sm"
                         : "border border-slate-200 bg-white text-slate-800"
                     }`}
                   >
