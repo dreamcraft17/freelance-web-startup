@@ -1,13 +1,32 @@
 # NearWork UI Redesign Audit + Design Language
 
-> **Doc revision:** v99  
-> Last synchronized: 2026-05-16 (anti-glass pass: hapus backdrop-blur, gradien dekoratif, panel gelap/glow di landing & dashboard).
+> **Doc revision:** v101  
+> Last synchronized: 2026-07-07 (V2 full pass: global brand migration, shadcn primitives, mobile nav, wizard, public surfaces).
 
 ## Goal
 
 Build a grounded, practical, product-first UI across public and authenticated surfaces without changing core business logic.
 
 ## Progress update (April 2026)
+
+### 2026-07-07 — NearWork V2 full implementation pass
+
+- **Brand migration:** seluruh `#3525cd` → token `nw-brand` / CSS vars di `apps/web`.
+- **UI primitives:** `dialog`, `alert`, `badge`, `select`, `toast` (+ `ToastProvider` di root layout).
+- **Mobile:** `MobileBottomNav` di `DashboardShell`; sticky bid modal di job detail (`BidSubmitModal`); budget range slider di filter sheet.
+- **Job posting:** `ClientNewJobForm` → wizard 6 langkah (basic → category → budget → location → screening → review).
+- **Public marketplace:** `/jobs` memakai `JobsPublicJobCard` + `JobCard`; `/freelancers` memakai `FreelancersPublicProfileCard` + `ProfileCard`; job detail + `EscrowStatus`.
+- **Freelancer dashboard:** `SubscriptionLimitsBanner` + upgrade CTA.
+- **Theme:** dark mode toggle tetap di Settings.
+
+### 2026-07-07 — NearWork V2 design system (implementation)
+
+- **Tokens:** `globals.css` + `tailwind.config.ts` — primary blue `#0066CC`, teal/orange/semantic palette, 8px spacing scale, V2 typography utilities (`nw-v2-h1`…), touch targets (min 44px), dark mode CSS vars.
+- **Fonts:** Inter (sans) + Fira Code (prices) via root `layout.tsx`.
+- **Components:** `apps/web/components/design-system/` — `TrustBadge`, `PriceDisplay`, `EscrowStatus`, `StatusBadge`, `SkillTag`, `RecommendationScore`, `JobCard`, `ProfileCard`, `BidCard`, `ModeratorQueueItem`, `PaymentCheckoutPanel`, `SubscriptionUpgradeModal`, `AppealSuspensionPanel`.
+- **Landing V2 flow:** category browse → featured (existing preview) → how it works → social proof → trust → CTA/FAQ (`LandingV2Sections`).
+- **Flows:** mock checkout uses `PaymentCheckoutPanel`; Settings adds theme toggle, upgrade modal, appeal form; admin appeals use `ModeratorQueueItem`.
+- **Spec:** `docs/NEARWORK_V2_DESIGN_SYSTEM.md`.
 
 ### 2026-05-16 — Anti-glass / anti-template CSS pass
 

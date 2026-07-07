@@ -1,11 +1,15 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v115
-> Last synchronized: 2026-07-07 (NearWork V2 foundation: payments, escrow, boosts, recommendations, appeals).
+> **Doc revision:** v117
+> Last synchronized: 2026-07-07 (V2 design system full UI pass).
 
 ## NearWork V2 (Juli 2026)
 
 Foundation V2 sudah land di monorepo — lihat `docs/NEARWORK_V2_*.md` untuk spec lengkap.
+
+**UI V2 (design system — implemented):** token `#0066CC` global, komponen `components/design-system/*`, landing V2 sections, checkout/appeals/subscription UI, mobile bottom nav, 6-step job wizard, public jobs/freelancers/job-detail integration, toast + dialog primitives.
+
+**Backlog UI:** Storybook, PWA manifest, Avatar/Tabs/Tooltip shadcn pack, automated WCAG/visual regression.
 
 | Area | Status |
 |------|--------|
