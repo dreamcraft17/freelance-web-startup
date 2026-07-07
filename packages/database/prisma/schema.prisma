@@ -93,12 +93,102 @@ enum BidStatus {
 
 enum ContractStatus {
   PENDING
+  PAYMENT_PENDING
+  PAYMENT_FAILED
   ACTIVE
   IN_PROGRESS
+  IN_REVIEW
   COMPLETED
   CANCELLED
   DISPUTED
   ARCHIVED
+}
+
+enum ContractPaymentStatus {
+  NONE
+  PENDING
+  CONFIRMED
+  FAILED
+  EXPIRED
+}
+
+enum EscrowStatus {
+  NONE
+  LOCKED
+  PARTIAL_RELEASED
+  FULLY_RELEASED
+  DISPUTED
+  REFUNDED
+}
+
+enum PaymentTransactionType {
+  CHARGE
+  REFUND
+  PAYOUT
+}
+
+enum PaymentTransactionStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+}
+
+enum BoostTargetType {
+  JOB
+  PROFILE
+}
+
+enum BoostStatus {
+  ACTIVE
+  EXPIRED
+  PAUSED
+}
+
+enum SuspensionLevel {
+  WARNING
+  SOFT_SUSPEND
+  HARD_SUSPEND
+}
+
+enum SuspensionStatus {
+  ACTIVE
+  APPEALED
+  RESOLVED
+}
+
+enum AppealStatus {
+  PENDING
+  APPROVED
+  DENIED
+  PENDING_MORE_INFO
+}
+
+enum DisputeStatus {
+  OPEN
+  REVIEWING
+  RESOLVED
+  APPEALED
+}
+
+enum DisputeDecision {
+  FAVOR_CLIENT
+  FAVOR_FREELANCER
+  SPLIT
+}
+
+enum PayoutRequestStatus {
+  PENDING
+  PROCESSING
+  SENT
+  FAILED
+  CANCELLED
+}
+
+enum EscrowTransactionType {
+  LOCK
+  PARTIAL_RELEASE
+  FULL_RELEASE
+  REFUND
 }
 
 enum SubscriptionStatus {
@@ -119,6 +209,8 @@ enum PaymentIntentKind {
   SUBSCRIPTION_PLAN
   JOB_FEATURED
   FREELANCER_BOOST
+  CONTRACT_ESCROW
+  BOOST_PURCHASE
 }
 
 enum PaymentIntentStatus {
@@ -138,6 +230,12 @@ enum NotificationType {
   VERIFICATION_UPDATED
   BILLING_UPDATED
   ADMIN_MODERATION_EVENT
+  ESCROW_PAYMENT_REQUIRED
+  ESCROW_WORK_SUBMITTED
+  ESCROW_RELEASED
+  PAYOUT_SENT
+  APPEAL_UPDATED
+  RECOMMENDATION_DIGEST
 }
 
 enum MessageThreadType {
@@ -225,6 +323,17 @@ model User {
 
   donations        Donation[]
   paymentIntents   PaymentIntent[]
+
+  bankAccounts     BankAccount[]
+  boosts           Boost[]
+  recommendations  Recommendation[]
+  payoutRequests   PayoutRequest[]
+  walletBalance    FreelancerWallet?
+
+  userSuspension   UserSuspension?
+  suspensionsApplied UserSuspension[] @relation("SuspensionAppliedBy")
+  suspensionAppealsReviewed SuspensionAppeal[] @relation("AppealReviewer")
+  contractDisputesAssigned ContractDispute[] @relation("DisputeModerator")
 
   moderationReportsFiled ModerationReport[] @relation("ModerationReportReporter")
   moderationReportsAssigned ModerationReport[] @relation("ModerationReportAssignee")
@@ -477,6 +586,7 @@ model Job {
 
   messageThreads MessageThread[] @relation("ThreadJob")
   savedByUsers   SavedJob[]
+  recommendations Recommendation[]
 
   @@index([clientProfileId, status, deletedAt])
   @@index([categoryId, subcategoryId])
@@ -565,6 +675,14 @@ model Contract {
 
   status ContractStatus @default(PENDING)
 
+  paymentStatus      ContractPaymentStatus @default(NONE)
+  escrowStatus       EscrowStatus          @default(NONE)
+  escrowAmountCents  Int?
+  escrowReleasedAt   DateTime?
+  workSubmittedAt    DateTime?
+  workReviewDeadline DateTime?
+  paymentDueAt       DateTime?
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
@@ -576,6 +694,11 @@ model Contract {
 
   reviews        Review[]
   messageThreads MessageThread[] @relation("ThreadContract")
+
+  paymentIntent    PaymentIntent?
+  paymentTransactions PaymentTransaction[]
+  escrowTransactions  EscrowTransaction[]
+  dispute             ContractDispute?
 
   @@index([freelancerUserId, status, deletedAt])
   @@index([clientUserId, status, deletedAt])
@@ -646,6 +769,8 @@ model PaymentIntent {
   id     String @id @default(cuid())
   userId String
 
+  contractId String? @unique
+
   kind   PaymentIntentKind
   status PaymentIntentStatus @default(PENDING)
 
@@ -653,17 +778,24 @@ model PaymentIntent {
   currency String @db.VarChar(3)
   amountCents Int
 
+  stripeIntentId  String? @unique @db.VarChar(128)
+  midtransOrderId String? @unique @db.VarChar(128)
+
   checkoutUrl String @db.Text
+
+  idempotencyKey String? @unique @db.VarChar(128)
 
   metadata Json?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contract Contract? @relation(fields: [contractId], references: [id], onDelete: SetNull)
 
   @@index([userId, status])
   @@index([status, createdAt])
+  @@index([contractId])
 }
 
 /// Optional platform support payment (mock provider today; swap for Stripe/Midtrans/Xendit).
@@ -987,4 +1119,281 @@ model ModerationReportNote {
   authorStaff User            @relation("ModerationReportNoteAuthor", fields: [authorStaffUserId], references: [id], onDelete: Restrict)
 
   @@index([reportId, createdAt])
+}
+
+// -----------------------------------------------------------------------------
+// NearWork V2 — payments, escrow, boosts, recommendations, appeals
+// -----------------------------------------------------------------------------
+
+model PaymentTransaction {
+  id         String @id @default(cuid())
+  contractId String?
+
+  type     PaymentTransactionType
+  amount   Int
+  currency String @db.VarChar(3)
+  fee      Int    @default(0)
+  status   PaymentTransactionStatus @default(PENDING)
+
+  provider      String @db.VarChar(32)
+  providerTxnId String @db.VarChar(191)
+
+  metadata Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  contract Contract? @relation(fields: [contractId], references: [id], onDelete: SetNull)
+
+  @@index([contractId])
+  @@index([provider, providerTxnId])
+  @@index([status, createdAt])
+}
+
+model EscrowTransaction {
+  id         String @id @default(cuid())
+  contractId String
+
+  type      EscrowTransactionType
+  amount    Int
+  reason    String? @db.Text
+  createdBy String? @db.VarChar(72)
+
+  createdAt DateTime @default(now())
+
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@index([contractId])
+  @@index([createdAt])
+}
+
+model ContractDispute {
+  id         String @id @default(cuid())
+  contractId String @unique
+
+  initiatedByUserId String
+  reason            String @db.Text
+  evidence          String[]
+
+  assignedToStaffUserId String?
+  assignedModerator     User? @relation("DisputeModerator", fields: [assignedToStaffUserId], references: [id], onDelete: SetNull)
+
+  status     DisputeStatus  @default(OPEN)
+  decision   DisputeDecision?
+  resolution String? @db.Text
+
+  resolutionAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+  @@index([assignedToStaffUserId])
+}
+
+model BoostProduct {
+  id           String @id @default(cuid())
+  code         String @unique
+  name         String
+  type         String @db.VarChar(64)
+  durationDays Int
+  priceCents   Int
+  currency     String @default("IDR") @db.VarChar(3)
+  config       Json?
+  isActive     Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  boosts Boost[]
+
+  @@index([isActive, type])
+}
+
+model Boost {
+  id        String @id @default(cuid())
+  userId    String
+  productId String
+
+  targetType BoostTargetType
+  targetId   String
+
+  status    BoostStatus @default(ACTIVE)
+  expiresAt DateTime
+  expiredAt DateTime?
+
+  paymentTxnId String? @db.VarChar(72)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product BoostProduct @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@index([targetType, targetId, status])
+}
+
+model Recommendation {
+  id           String @id @default(cuid())
+  freelancerId String
+  jobId        String
+
+  score        Int
+  matchReasons String[]
+
+  viewedAt  DateTime?
+  clickedAt DateTime?
+  bidSentAt DateTime?
+
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  freelancer User @relation(fields: [freelancerId], references: [id], onDelete: Cascade)
+  job        Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([freelancerId, jobId])
+  @@index([freelancerId, score])
+  @@index([expiresAt])
+}
+
+model RecommendationMetric {
+  id             String   @id @default(cuid())
+  date           DateTime @unique @db.Date
+  totalGenerated Int      @default(0)
+  totalViewed    Int      @default(0)
+  totalClicked   Int      @default(0)
+  totalBids      Int      @default(0)
+  ctrRate        Float?
+
+  createdAt DateTime @default(now())
+}
+
+model UserSuspension {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  level    SuspensionLevel
+  reason   String @db.Text
+  reportId String? @db.VarChar(72)
+
+  status    SuspensionStatus @default(ACTIVE)
+  expiresAt DateTime?
+
+  appliedByUserId String
+  appliedBy       User @relation("SuspensionAppliedBy", fields: [appliedByUserId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appeal SuspensionAppeal?
+
+  @@index([status, level])
+}
+
+model SuspensionAppeal {
+  id           String @id @default(cuid())
+  suspensionId String @unique
+
+  appealReason String @db.Text
+  evidence     String[]
+
+  status AppealStatus @default(PENDING)
+
+  reviewedByUserId String?
+  reviewer         User? @relation("AppealReviewer", fields: [reviewedByUserId], references: [id], onDelete: SetNull)
+
+  decision     String? @db.Text
+  decisionNote String? @db.Text
+
+  createdAt DateTime  @default(now())
+  decidedAt DateTime?
+
+  suspension UserSuspension @relation(fields: [suspensionId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+}
+
+model BankAccount {
+  id     String @id @default(cuid())
+  userId String
+
+  bankCode      String @db.VarChar(32)
+  bankName      String @db.VarChar(120)
+  accountNumber String @db.VarChar(64)
+  accountName   String @db.VarChar(120)
+  isDefault     Boolean @default(false)
+  isVerified    Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isDefault])
+}
+
+model FreelancerWallet {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  balanceCents Int @default(0)
+  currency     String @default("IDR") @db.VarChar(3)
+
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PayoutRequest {
+  id     String @id @default(cuid())
+  userId String
+
+  amountCents Int
+  currency    String @default("IDR") @db.VarChar(3)
+  feeCents    Int    @default(0)
+
+  bankAccountId String?
+
+  status      PayoutRequestStatus @default(PENDING)
+  receiptId   String? @db.VarChar(128)
+  retryCount  Int     @default(0)
+  nextRetryAt DateTime?
+  lastError   String? @db.Text
+
+  requestedAt DateTime @default(now())
+  sentAt      DateTime?
+  processedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([status, requestedAt])
+}
+
+model WebhookEvent {
+  id          String @id @default(cuid())
+  provider    String @db.VarChar(32)
+  externalId  String @db.VarChar(191)
+  eventType   String @db.VarChar(128)
+  processedAt DateTime @default(now())
+
+  @@unique([provider, externalId])
+  @@index([provider, eventType])
+}
+
+model UserExperiment {
+  id             String @id @default(cuid())
+  userId         String
+  experimentKey  String @db.VarChar(64)
+  variant        String @db.VarChar(32)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, experimentKey])
+  @@index([experimentKey, variant])
 }

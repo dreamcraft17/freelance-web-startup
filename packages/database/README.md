@@ -1,11 +1,13 @@
 # @acme/database
 
-> **Doc revision:** v12
-> Last synchronized: 2026-06-19 (migration `moderation_sla_escalation`).
+> **Doc revision:** v13
+> Last synchronized: 2026-07-07 (migration `nearwork_v2`: escrow, boosts, recommendations, appeals).
 
 PostgreSQL access via **Prisma**: schema, migrations, and generated client.
 
-Migration `20260619090000_moderation_sla_escalation` menambah canonical subject key, priority, deadline SLA, dan escalation state pada laporan. Partial unique index menjamin satu laporan aktif per reporter/subjek; duplikat legacy ditutup sebagai `DISMISSED` tetapi tetap disimpan untuk audit.
+Migration `20260707120000_nearwork_v2` adds NearWork V2 tables: `PaymentTransaction`, `EscrowTransaction`, `ContractDispute`, `BoostProduct`, `Boost`, `Recommendation`, `UserSuspension`, `SuspensionAppeal`, `BankAccount`, `FreelancerWallet`, `PayoutRequest`, `WebhookEvent`, `UserExperiment`; extends `Contract` with escrow/payment fields and `PaymentIntent` with PSP ids.
+
+Migration `20260619090000_moderation_sla_escalation` menambah canonical subject key, priority, deadline SLA, dan escalation state pada laporan.
 
 ## Prerequisites
 

@@ -264,6 +264,22 @@ async function seedE2eFixtures() {
   return { clientEmail, freelancerEmail, password, freelancerUsername };
 }
 
+async function seedBoostProducts() {
+  const products = [
+    { code: "JOB_BOOST_7D", name: "Job Boost (7 days)", type: "JOB_BOOST", durationDays: 7, priceCents: 50_000 },
+    { code: "CLIENT_JOB_BOOST_7D", name: "Client Job Boost (7 days)", type: "CLIENT_JOB_BOOST", durationDays: 7, priceCents: 75_000 },
+    { code: "PROFILE_FEATURED_30D", name: "Featured Profile (30 days)", type: "PROFILE_FEATURE", durationDays: 30, priceCents: 150_000 },
+    { code: "TOP_FREELANCER_30D", name: "Top Freelancer Badge (30 days)", type: "TOP_FREELANCER_BADGE", durationDays: 30, priceCents: 300_000 }
+  ];
+  for (const p of products) {
+    await prisma.boostProduct.upsert({
+      where: { code: p.code },
+      create: { ...p, currency: "IDR", isActive: true },
+      update: { name: p.name, priceCents: p.priceCents, durationDays: p.durationDays, isActive: true }
+    });
+  }
+}
+
 async function main() {
   if (!process.env.DATABASE_URL?.trim()) {
     throw new Error(
@@ -274,6 +290,7 @@ async function main() {
   const { category, subcategory } = await seedTaxonomy();
   const admin = await seedAdmin();
   const e2e = await seedE2eFixtures();
+  await seedBoostProducts();
 
   // eslint-disable-next-line no-console
   console.log(
