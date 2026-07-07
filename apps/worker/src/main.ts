@@ -1,6 +1,12 @@
 import "./load-env";
 import { clearExpiredPromotionFlags } from "./promotionSweep";
 import { escalateOverdueModerationReports } from "./moderationEscalationSweep";
+import {
+  processBatchPayouts,
+  processBoostExpiry,
+  processDailyRecommendations,
+  processEscrowAutoReleases
+} from "./v2Jobs";
 
 const DEFAULT_SWEEP_MS = 6 * 60 * 60 * 1000;
 const sweepIntervalMs = Number(process.env.PROMOTION_SWEEP_INTERVAL_MS);
@@ -25,6 +31,30 @@ async function runWorker() {
   }
 
   const firstModeration = await escalateOverdueModerationReports();
+
+  const v2Sweep = async () => {
+    try {
+      const [escrow, boosts, recommendations] = await Promise.all([
+        processEscrowAutoReleases(),
+        processBoostExpiry(),
+        processDailyRecommendations()
+      ]);
+      console.log("[v2Sweep]", new Date().toISOString(), { escrow, boosts, recommendations });
+    } catch (error) {
+      console.error("[v2Sweep] failed", error);
+    }
+  };
+
+  const payoutSweep = async () => {
+    try {
+      const result = await processBatchPayouts();
+      console.log("[payoutSweep]", new Date().toISOString(), result);
+    } catch (error) {
+      console.error("[payoutSweep] failed", error);
+    }
+  };
+
+  await v2Sweep();
 
   const sweep = async () => {
     try {
@@ -53,6 +83,8 @@ async function runWorker() {
   console.log("[moderationEscalationSweep]", new Date().toISOString(), firstModeration);
   setInterval(sweep, intervalMs);
   setInterval(moderationSweep, moderationSweepMs);
+  setInterval(v2Sweep, intervalMs);
+  setInterval(payoutSweep, 24 * 60 * 60 * 1000);
   console.log(`Worker started; promotion expiry sweep every ${intervalMs}ms (set PROMOTION_SWEEP_INTERVAL_MS to override)`);
   console.log(`Moderation escalation sweep every ${moderationSweepMs}ms (set MODERATION_ESCALATION_SWEEP_INTERVAL_MS to override)`);
 }
