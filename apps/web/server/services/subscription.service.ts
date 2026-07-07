@@ -144,4 +144,57 @@ export class SubscriptionService {
       featureFlags: getPublicMonetizationFlags()
     };
   }
+
+  async upgradeSubscription(userId: string, planId: string, paymentMethod: "stripe" | "midtrans" | "mock") {
+    const plan = await db.subscriptionPlan.findFirst({
+      where: { id: planId, isActive: true }
+    });
+    if (!plan) {
+      throw new NotFoundError("Subscription plan not found");
+    }
+
+    if (paymentMethod !== "mock") {
+      const session = await this.payments.createPendingCheckoutSession({
+        userId,
+        kind: PaymentIntentKind.SUBSCRIPTION_PLAN,
+        amountCents: plan.priceCents,
+        currency: plan.currency,
+        metadata: { planId: plan.id, planCode: plan.code, paymentMethod }
+      });
+      return { paymentRequired: true, checkoutUrl: session.checkoutUrl, paymentIntentId: session.paymentIntentId };
+    }
+
+    const now = new Date();
+    const periodEnd = new Date(now);
+    periodEnd.setUTCMonth(periodEnd.getUTCMonth() + 1);
+
+    const existing = await db.userSubscription.findFirst({
+      where: { userId, status: SubscriptionStatus.ACTIVE },
+      orderBy: { currentPeriodEnd: "desc" }
+    });
+
+    const subscription = existing
+      ? await db.userSubscription.update({
+          where: { id: existing.id },
+          data: {
+            planId: plan.id,
+            status: SubscriptionStatus.ACTIVE,
+            currentPeriodStart: now,
+            currentPeriodEnd: periodEnd,
+            snapshot: { planCode: plan.code, entitlements: plan.entitlements }
+          }
+        })
+      : await db.userSubscription.create({
+          data: {
+            userId,
+            planId: plan.id,
+            status: SubscriptionStatus.ACTIVE,
+            currentPeriodStart: now,
+            currentPeriodEnd: periodEnd,
+            snapshot: { planCode: plan.code, entitlements: plan.entitlements }
+          }
+        });
+
+    return { paymentRequired: false, subscription };
+  }
 }

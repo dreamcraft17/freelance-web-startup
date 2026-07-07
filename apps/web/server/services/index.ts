@@ -15,3 +15,13 @@ export { VerificationService } from "./verification.service";
 export { NotificationService } from "./notification.service";
 export { ContractService } from "./contract.service";
 export { DonationService } from "./donation.service";
+export { StripePaymentService } from "./stripe-payment.service";
+export { MidtransPaymentService } from "./midtrans-payment.service";
+export { EscrowService } from "./escrow.service";
+export { BoostService } from "./boost.service";
+export { RecommendationService } from "./recommendation.service";
+export {
+  SuspensionAppealService,
+  PayoutService,
+  AnalyticsService
+} from "./v2-commerce.service";

@@ -1,0 +1,37 @@
+import { upgradeSubscriptionSchema } from "@acme/validators";
+import { SubscriptionService } from "@/server/services/subscription.service";
+import { parseJson } from "@/server/http/route-helpers";
+import { protectAnyActiveUser } from "@/server/http/protect";
+import { jsonOk, withApiHandler } from "@/server/http/api-response";
+import { assertMutationCsrf } from "@/server/security";
+
+const subscriptionService = new SubscriptionService();
+
+export async function GET(request: Request) {
+  return withApiHandler(async () => {
+    const gate = await protectAnyActiveUser(request);
+    if (!gate.ok) return gate.response;
+    const data = await subscriptionService.getActiveSubscriptionSummary(gate.actor.userId);
+    return jsonOk(data);
+  });
+}
+
+export async function POST(request: Request) {
+  return withApiHandler(async () => {
+    const gate = await protectAnyActiveUser(request);
+    if (!gate.ok) return gate.response;
+
+    const csrf = assertMutationCsrf(request);
+    if (csrf) return csrf;
+
+    const parsed = await parseJson(request, upgradeSubscriptionSchema);
+    if (!parsed.ok) return parsed.response;
+
+    const data = await subscriptionService.upgradeSubscription(
+      gate.actor.userId,
+      parsed.data.planId,
+      parsed.data.paymentMethod
+    );
+    return jsonOk(data);
+  });
+}
