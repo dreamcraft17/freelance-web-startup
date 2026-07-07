@@ -1,7 +1,21 @@
 # Fitur — seluruh proyek (Freelance-web)
 
-> **Doc revision:** v114
-> Last synchronized: 2026-06-19 (moderation SLA/escalation and complete admin loading states).
+> **Doc revision:** v115
+> Last synchronized: 2026-07-07 (NearWork V2 foundation: payments, escrow, boosts, recommendations, appeals).
+
+## NearWork V2 (Juli 2026)
+
+Foundation V2 sudah land di monorepo — lihat `docs/NEARWORK_V2_*.md` untuk spec lengkap.
+
+| Area | Status |
+|------|--------|
+| Stripe/Midtrans contract payment | API + webhook; MOCK tanpa env PSP |
+| Escrow lifecycle | submit work, client review, dispute, auto-release worker |
+| Boost listings | `BoostProduct` catalog, `/api/boosts`, ranking via featured flags |
+| AI recommendations | daily worker batch + `/api/recommendations` + freelancer widget |
+| Appeals | `/api/moderation/appeals`, `/admin/appeals` |
+| Payouts | wallet + `/api/payouts/wallet`, worker batch |
+| Admin analytics | `/admin/analytics`, `/api/admin/analytics/overview` |
 
 Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
