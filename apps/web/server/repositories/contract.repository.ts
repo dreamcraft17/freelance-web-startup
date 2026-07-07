@@ -13,6 +13,13 @@ const contractSelect = {
   currency: true,
   startDate: true,
   endDate: true,
+  paymentStatus: true,
+  escrowStatus: true,
+  escrowAmountCents: true,
+  escrowReleasedAt: true,
+  workSubmittedAt: true,
+  workReviewDeadline: true,
+  paymentDueAt: true,
   createdAt: true,
   updatedAt: true
 } as const;
