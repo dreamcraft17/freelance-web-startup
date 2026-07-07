@@ -61,7 +61,7 @@ const categories: CategoryChip[] = [
 ];
 
 const toneIconWrap: Record<CategoryChip["tone"], string> = {
-  brand: "border-[#3525cd]/25 bg-[#3525cd]/[0.12] text-[#3525cd]",
+  brand: "border-nw-brand/25 bg-nw-brand/[0.12] text-nw-brand",
   slate: "border-slate-200 bg-slate-100 text-slate-800",
   amber: "border-amber-200/90 bg-amber-50 text-amber-950"
 };
@@ -80,7 +80,7 @@ export function LandingCategoryChips({ t, locale }: { t: Translator; locale: App
               {t("landing.categories.subtitle")}
             </p>
           </div>
-          <Link href={jobsBrowse as Route} className="text-sm font-bold text-[#3525cd] hover:underline sm:shrink-0">
+          <Link href={jobsBrowse as Route} className="text-sm font-bold text-nw-brand hover:underline sm:shrink-0">
             {t("landing.categories.viewAllCategories")}
           </Link>
         </div>
@@ -99,10 +99,10 @@ export function LandingCategoryChips({ t, locale }: { t: Translator; locale: App
                   <Icon className="h-6 w-6" strokeWidth={2} aria-hidden />
                 </span>
                 <span className="mt-2.5 block text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t("landing.categories.entryLabel")}</span>
-                <span className="mt-1 block text-base font-bold leading-tight text-slate-900 group-hover:text-[#3525cd]">{t(labelKey)}</span>
+                <span className="mt-1 block text-base font-bold leading-tight text-slate-900 group-hover:text-nw-brand">{t(labelKey)}</span>
                 <span className="mt-1.5 block text-xs font-medium leading-snug text-slate-600">{t(useCaseKey)}</span>
               </div>
-              <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wide text-slate-500 group-hover:text-[#3525cd]">
+              <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wide text-slate-500 group-hover:text-nw-brand">
                 {t("landing.categories.entrySubline")}
                 <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
               </span>

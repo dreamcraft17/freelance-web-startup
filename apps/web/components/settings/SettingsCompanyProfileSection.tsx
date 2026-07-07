@@ -72,7 +72,7 @@ export async function SettingsCompanyProfileSection() {
             <div className="mt-4 flex flex-wrap gap-2">
               <Link
                 href={"/client" as Route}
-                className="inline-flex items-center rounded-lg bg-[#3525cd] px-3 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#2d1fb0]"
+                className="inline-flex items-center rounded-lg bg-nw-brand px-3 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-nw-brand/90"
               >
                 Open client workspace
               </Link>
@@ -97,7 +97,7 @@ export async function SettingsCompanyProfileSection() {
               </p>
               <Link
                 href={"/client" as Route}
-                className="mt-3 inline-flex items-center rounded-lg bg-[#3525cd] px-3 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#2d1fb0]"
+                className="mt-3 inline-flex items-center rounded-lg bg-nw-brand px-3 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-nw-brand/90"
               >
                 Go to client dashboard
               </Link>

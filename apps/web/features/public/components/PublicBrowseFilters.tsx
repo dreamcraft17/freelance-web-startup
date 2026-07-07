@@ -32,7 +32,7 @@ export function PublicBrowseFilters({ action, keyword, city, workMode, nearbyHin
             type="search"
             defaultValue={keyword}
             placeholder="Skill, title, or name"
-            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-[#3525cd]/30 focus:ring-2"
+            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-nw-brand/30 focus:ring-2"
           />
         </div>
         <div className="min-w-0 flex-1 lg:max-w-[220px]">
@@ -45,7 +45,7 @@ export function PublicBrowseFilters({ action, keyword, city, workMode, nearbyHin
             type="text"
             defaultValue={city}
             placeholder="e.g. Jakarta"
-            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-[#3525cd]/30 focus:ring-2"
+            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-nw-brand/30 focus:ring-2"
           />
           {nearbyHint ? (
             <p className="mt-1.5 text-[11px] leading-snug text-slate-500">
@@ -61,7 +61,7 @@ export function PublicBrowseFilters({ action, keyword, city, workMode, nearbyHin
             id="wm"
             name="workMode"
             defaultValue={workMode}
-            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-[#3525cd]/30 focus:ring-2"
+            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-nw-brand/30 focus:ring-2"
           >
             {workModes.map((o) => (
               <option key={o.value || "any"} value={o.value}>
@@ -73,7 +73,7 @@ export function PublicBrowseFilters({ action, keyword, city, workMode, nearbyHin
         <div className="flex flex-wrap gap-2 lg:pb-0.5">
           <button
             type="submit"
-            className="rounded-lg bg-[#3525cd] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#4f46e5]"
+            className="rounded-lg bg-nw-brand px-5 py-2 text-sm font-semibold text-white transition hover:bg-nw-brand/90"
           >
             Apply filters
           </button>

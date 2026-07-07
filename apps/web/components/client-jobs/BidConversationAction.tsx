@@ -50,14 +50,14 @@ export function BidConversationAction({
   }
 
   const primaryCls =
-    "inline-flex min-h-[44px] w-full touch-manipulation items-center justify-center rounded-xl bg-[#3525cd] px-4 text-sm font-semibold text-white shadow-md shadow-[#3525cd]/25 transition hover:bg-[#2d1fb0] disabled:cursor-not-allowed disabled:opacity-65 sm:w-auto";
+    "inline-flex min-h-[44px] w-full touch-manipulation items-center justify-center rounded-xl bg-nw-brand px-4 text-sm font-semibold text-white shadow-md shadow-nw-brand/25 transition hover:bg-nw-brand/90 disabled:cursor-not-allowed disabled:opacity-65 sm:w-auto";
 
   const secondaryOpenCls =
     "inline-flex min-h-[44px] touch-manipulation items-center text-xs font-semibold text-slate-600 underline-offset-2 hover:text-slate-900 hover:underline";
   const secondaryStartCls =
     "inline-flex min-h-[44px] touch-manipulation items-center justify-start text-left text-xs font-semibold text-[#433C93] underline-offset-2 hover:underline disabled:cursor-not-allowed disabled:opacity-60";
   const linkPrimaryCls =
-    "inline-flex min-h-[44px] w-full touch-manipulation items-center justify-center rounded-xl border border-[#3525cd]/35 bg-white px-4 text-sm font-semibold text-[#3525cd] shadow-sm hover:bg-[#3525cd]/[0.05] sm:w-auto";
+    "inline-flex min-h-[44px] w-full touch-manipulation items-center justify-center rounded-xl border border-nw-brand/35 bg-white px-4 text-sm font-semibold text-nw-brand shadow-sm hover:bg-nw-brand/[0.05] sm:w-auto";
 
   if (threadId) {
     return (

@@ -103,7 +103,7 @@ export async function SavedListsSection() {
               No saved jobs yet.{" "}
               <Link
                 href={jobsBrowseRoot as Route}
-                className="font-medium text-[#3525cd] underline-offset-4 hover:underline"
+                className="font-medium text-nw-brand underline-offset-4 hover:underline"
               >
                 Browse jobs
               </Link>

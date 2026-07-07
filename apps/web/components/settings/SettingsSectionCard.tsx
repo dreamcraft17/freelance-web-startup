@@ -30,7 +30,7 @@ export function SettingsSectionCard({
       <CardHeader className="space-y-0 border-b border-slate-100 bg-slate-50 pb-4 pt-5">
         <div className="flex gap-3.5">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-slate-200/70">
-            <Icon className="h-5 w-5 text-[#3525cd]" strokeWidth={2} aria-hidden />
+            <Icon className="h-5 w-5 text-nw-brand" strokeWidth={2} aria-hidden />
           </div>
           <div className="min-w-0 space-y-1 pt-0.5">
             <CardTitle

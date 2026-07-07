@@ -265,7 +265,7 @@ export function JobProposalForm({
           <p className="text-[11px] text-slate-500">{labels.introHint}</p>
           <textarea
             id="proposal-intro"
-            className="min-h-[5.25rem] w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-[15px] text-slate-900 outline-none transition focus:border-[#3525cd]/40 focus:ring-2 focus:ring-[#3525cd]/20 sm:min-h-20 sm:text-sm"
+            className="min-h-[5.25rem] w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-[15px] text-slate-900 outline-none transition focus:border-nw-brand/40 focus:ring-2 focus:ring-nw-brand/20 sm:min-h-20 sm:text-sm"
             placeholder={labels.introPlaceholder}
             value={intro}
             onChange={(e) => setIntro(e.target.value)}
@@ -282,7 +282,7 @@ export function JobProposalForm({
           <p className="text-[11px] text-slate-500">{labels.experienceHint}</p>
           <textarea
             id="proposal-experience"
-            className="min-h-[5.25rem] w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-[15px] text-slate-900 outline-none transition focus:border-[#3525cd]/40 focus:ring-2 focus:ring-[#3525cd]/20 sm:min-h-20 sm:text-sm"
+            className="min-h-[5.25rem] w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-[15px] text-slate-900 outline-none transition focus:border-nw-brand/40 focus:ring-2 focus:ring-nw-brand/20 sm:min-h-20 sm:text-sm"
             placeholder={labels.experiencePlaceholder}
             value={experience}
             onChange={(e) => setExperience(e.target.value)}
@@ -299,7 +299,7 @@ export function JobProposalForm({
           <p className="text-[11px] text-slate-500">{labels.approachHint}</p>
           <textarea
             id="proposal-approach"
-            className="min-h-[6rem] w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-[15px] text-slate-900 outline-none transition focus:border-[#3525cd]/40 focus:ring-2 focus:ring-[#3525cd]/20 sm:min-h-24 sm:text-sm"
+            className="min-h-[6rem] w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-[15px] text-slate-900 outline-none transition focus:border-nw-brand/40 focus:ring-2 focus:ring-nw-brand/20 sm:min-h-24 sm:text-sm"
             placeholder={labels.approachPlaceholder}
             value={approach}
             onChange={(e) => setApproach(e.target.value)}
@@ -316,7 +316,7 @@ export function JobProposalForm({
           <p className="text-[11px] text-slate-500">{labels.timelineHint}</p>
           <textarea
             id="proposal-timeline"
-            className="min-h-[5.25rem] w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-[15px] text-slate-900 outline-none transition focus:border-[#3525cd]/40 focus:ring-2 focus:ring-[#3525cd]/20 sm:min-h-20 sm:text-sm"
+            className="min-h-[5.25rem] w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-[15px] text-slate-900 outline-none transition focus:border-nw-brand/40 focus:ring-2 focus:ring-nw-brand/20 sm:min-h-20 sm:text-sm"
             placeholder={labels.timelinePlaceholder}
             value={timeline}
             onChange={(e) => setTimeline(e.target.value)}
@@ -340,7 +340,7 @@ export function JobProposalForm({
                 inputMode="decimal"
                 placeholder={exampleNumericMoneyPlaceholder(currency)}
                 title={locale === "id" ? `Angka penuh dalam ${currency}` : `Full number in ${currency}`}
-                className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-[15px] text-slate-900 outline-none transition focus:border-[#3525cd]/40 focus:ring-2 focus:ring-[#3525cd]/20 sm:h-10 sm:text-sm"
+                className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-[15px] text-slate-900 outline-none transition focus:border-nw-brand/40 focus:ring-2 focus:ring-nw-brand/20 sm:h-10 sm:text-sm"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 disabled={submitting}
@@ -356,7 +356,7 @@ export function JobProposalForm({
                 max={365}
                 step="1"
                 inputMode="numeric"
-                className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-[15px] text-slate-900 outline-none transition focus:border-[#3525cd]/40 focus:ring-2 focus:ring-[#3525cd]/20 sm:h-10 sm:text-sm"
+                className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-[15px] text-slate-900 outline-none transition focus:border-nw-brand/40 focus:ring-2 focus:ring-nw-brand/20 sm:h-10 sm:text-sm"
                 value={estimatedDays}
                 onChange={(e) => setEstimatedDays(e.target.value)}
                 disabled={submitting}
@@ -377,7 +377,7 @@ export function JobProposalForm({
             {labels.conversationHint}{" "}
             <a
               href={`/messages?thread=${encodeURIComponent(conversationThreadId)}&from=proposal`}
-              className="font-semibold text-[#3525cd] hover:underline"
+              className="font-semibold text-nw-brand hover:underline"
             >
               {labels.openConversation}
             </a>

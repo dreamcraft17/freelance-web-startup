@@ -82,7 +82,7 @@ export function ActivationChecklistCard({
               aria-labelledby="nw-activation-checklist"
             >
               <div
-                className="h-full rounded-full bg-[#3525cd] transition-[width] duration-300"
+                className="h-full rounded-full bg-nw-brand transition-[width] duration-300"
                 style={{ width: `${progressPct}%` }}
               />
             </div>
@@ -104,7 +104,7 @@ export function ActivationChecklistCard({
                 step.done
                   ? "border-emerald-200/80 bg-emerald-50/[0.42] shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]"
                   : variant === "journey"
-                    ? "border-slate-200 bg-white shadow-sm hover:border-[#3525cd]/35 hover:bg-slate-50"
+                    ? "border-slate-200 bg-white shadow-sm hover:border-nw-brand/35 hover:bg-slate-50"
                     : "border-slate-200 bg-slate-50/50 hover:border-[#433C93]/30 hover:bg-white active:bg-white"
               )}
             >
@@ -124,7 +124,7 @@ export function ActivationChecklistCard({
                 </span>
               </span>
               {!step.done ? (
-                <span className={cn(variant === "journey" ? "text-[#3525cd]" : "text-[#433C93]", "shrink-0 self-center text-xs font-semibold")}>
+                <span className={cn(variant === "journey" ? "text-nw-brand" : "text-[#433C93]", "shrink-0 self-center text-xs font-semibold")}>
                   →
                 </span>
               ) : null}

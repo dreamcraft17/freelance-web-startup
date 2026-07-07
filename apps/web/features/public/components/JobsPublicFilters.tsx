@@ -95,7 +95,7 @@ export function JobsPublicFilters({
               <Link
                 key={term}
                 href={`${jobsBase}?keyword=${encodeURIComponent(term)}` as Route}
-                className="text-[11px] font-semibold text-[#3525cd] hover:underline"
+                className="text-[11px] font-semibold text-nw-brand hover:underline"
               >
                 {term}
               </Link>

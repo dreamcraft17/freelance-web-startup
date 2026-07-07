@@ -25,7 +25,7 @@ export function SettingsSupportBlock() {
             Questions, feedback, and roadmap notes belong in our{" "}
             <Link
               href={helpPath as Route}
-              className="font-medium text-[#3525cd] underline-offset-4 hover:underline"
+              className="font-medium text-nw-brand underline-offset-4 hover:underline"
             >
               help center
             </Link>

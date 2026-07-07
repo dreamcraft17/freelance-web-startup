@@ -262,7 +262,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
             <label
               className={`flex flex-1 cursor-pointer gap-3 rounded-xl border px-4 py-3 transition-all focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 sm:border-0 sm:py-3 ${
                 role === "FREELANCER"
-                  ? "border-[#3525cd] bg-white shadow-md ring-1 ring-[#3525cd]/20 sm:bg-white sm:shadow-sm sm:ring-0"
+                  ? "border-nw-brand bg-white shadow-md ring-1 ring-nw-brand/20 sm:bg-white sm:shadow-sm sm:ring-0"
                   : "border-slate-200 bg-white hover:border-slate-300 sm:bg-transparent sm:hover:bg-white/70"
               }`}
             >
@@ -281,7 +281,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
               <span className="min-w-0 flex-1">
                 <span className="flex items-center gap-2">
                   <UserRound
-                    className={`h-5 w-5 shrink-0 ${role === "FREELANCER" ? "text-[#3525cd]" : "text-slate-500"}`}
+                    className={`h-5 w-5 shrink-0 ${role === "FREELANCER" ? "text-nw-brand" : "text-slate-500"}`}
                     aria-hidden
                   />
                   <span
@@ -298,7 +298,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
             <label
               className={`flex flex-1 cursor-pointer gap-3 rounded-xl border px-4 py-3 transition-all focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 sm:border-0 sm:py-3 ${
                 role === "CLIENT"
-                  ? "border-[#3525cd] bg-white shadow-md ring-1 ring-[#3525cd]/20 sm:bg-white sm:shadow-sm sm:ring-0"
+                  ? "border-nw-brand bg-white shadow-md ring-1 ring-nw-brand/20 sm:bg-white sm:shadow-sm sm:ring-0"
                   : "border-slate-200 bg-white hover:border-slate-300 sm:bg-transparent sm:hover:bg-white/70"
               }`}
             >
@@ -317,7 +317,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
               <span className="min-w-0 flex-1">
                 <span className="flex items-center gap-2">
                   <Briefcase
-                    className={`h-5 w-5 shrink-0 ${role === "CLIENT" ? "text-[#3525cd]" : "text-slate-500"}`}
+                    className={`h-5 w-5 shrink-0 ${role === "CLIENT" ? "text-nw-brand" : "text-slate-500"}`}
                     aria-hidden
                   />
                   <span
@@ -337,7 +337,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
           <ul className="mt-2 space-y-1.5 text-xs leading-relaxed text-slate-600">
             {roleOutcome.bullets.map((item) => (
               <li key={item} className="flex gap-2">
-                <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#3525cd]/60" aria-hidden />
+                <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-nw-brand/60" aria-hidden />
                 <span>{item}</span>
               </li>
             ))}
@@ -409,7 +409,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
           type="submit"
           data-testid="register-submit"
           disabled={loading}
-          className="flex w-full items-center justify-center rounded-lg bg-[#3525cd] px-4 py-3 text-sm font-semibold text-white shadow-md transition-colors hover:bg-[#4f46e5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3525cd] disabled:pointer-events-none disabled:opacity-60"
+          className="flex w-full items-center justify-center rounded-lg bg-nw-brand px-4 py-3 text-sm font-semibold text-white shadow-md transition-colors hover:bg-nw-brand/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nw-brand disabled:pointer-events-none disabled:opacity-60"
         >
           {loading ? (
             <span className="mr-2 h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/60 border-t-white" aria-hidden />
@@ -440,7 +440,7 @@ function RegisterFormInner({ initialNext, initialRoleHint, initialIntent = "cont
 
       <p className="text-center text-sm text-slate-500">
         {t("auth.registerForm.haveAccount")}{" "}
-        <Link href={loginHref as Route} className="font-semibold text-[#3525cd] hover:text-[#4f46e5]">
+        <Link href={loginHref as Route} className="font-semibold text-nw-brand hover:text-[#4f46e5]">
           {t("auth.login.submit")}
         </Link>
       </p>

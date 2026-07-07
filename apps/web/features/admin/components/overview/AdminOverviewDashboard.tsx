@@ -235,7 +235,7 @@ export function AdminOverviewDashboard({ data }: { data: AdminOverviewData }) {
           <li>
             Donation total sums numeric <code className="rounded bg-slate-200/80 px-1 py-0.5 font-mono text-[11px]">amount</code>{" "}
             fields; confirm currency mix on the{" "}
-            <Link href={"/admin/donations" as Route} className="font-medium text-[#3525cd] hover:underline">
+            <Link href={"/admin/donations" as Route} className="font-medium text-nw-brand hover:underline">
               donations
             </Link>{" "}
             page before reporting.

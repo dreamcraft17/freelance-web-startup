@@ -193,7 +193,7 @@ export function ModerationReportButton({
                 onChange={(e) => setDescription(e.target.value)}
                 disabled={busy}
                 rows={4}
-                className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900 outline-none focus:border-[#3525cd]/35 focus:ring-2 focus:ring-[#3525cd]/20"
+                className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900 outline-none focus:border-nw-brand/35 focus:ring-2 focus:ring-nw-brand/20"
                 placeholder={t("public.moderation.descriptionHint")}
                 required
               />
@@ -222,7 +222,7 @@ export function ModerationReportButton({
                 type="button"
                 disabled={busy || description.trim().length < 10}
                 onClick={() => submit()}
-                className="rounded-lg bg-[#3525cd] px-4 py-2 text-sm font-semibold text-white hover:bg-[#2d20b0] disabled:cursor-not-allowed disabled:opacity-60"
+                className="rounded-lg bg-nw-brand px-4 py-2 text-sm font-semibold text-white hover:bg-[#2d20b0] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {t("public.moderation.submit")}
               </button>

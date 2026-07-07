@@ -22,7 +22,7 @@ export function UserSubscriptionsFilters({ status, planCode, plans }: Props) {
         <select
           name="status"
           defaultValue={status ?? ""}
-          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-slate-900 shadow-sm focus:border-[#3525cd] focus:outline-none focus:ring-1 focus:ring-[#3525cd]"
+          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-slate-900 shadow-sm focus:border-nw-brand focus:outline-none focus:ring-1 focus:ring-nw-brand"
         >
           <option value="">All</option>
           {STATUS_OPTIONS.map((s) => (
@@ -38,7 +38,7 @@ export function UserSubscriptionsFilters({ status, planCode, plans }: Props) {
         <select
           name="plan"
           defaultValue={planCode ?? ""}
-          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-slate-900 shadow-sm focus:border-[#3525cd] focus:outline-none focus:ring-1 focus:ring-[#3525cd]"
+          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-slate-900 shadow-sm focus:border-nw-brand focus:outline-none focus:ring-1 focus:ring-nw-brand"
         >
           <option value="">All plans</option>
           {plans.map((p) => (

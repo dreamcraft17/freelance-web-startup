@@ -187,7 +187,7 @@ export function MessagesWorkspace({
       >
         <div className="border-b border-slate-100 bg-slate-50/80 px-3.5 py-3 md:px-4">
           <div className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#3525cd]/10 text-[#3525cd] ring-1 ring-[#3525cd]/15">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-nw-brand/10 text-nw-brand ring-1 ring-nw-brand/15">
               <Inbox className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
             </span>
             <div>
@@ -239,7 +239,7 @@ export function MessagesWorkspace({
                       scroll={false}
                       className={cn(
                         "flex gap-2.5 px-3 py-3 transition hover:bg-slate-50/90 sm:px-3.5",
-                        active && "bg-[#3525cd]/[0.06] ring-1 ring-inset ring-[#3525cd]/12"
+                        active && "bg-nw-brand/[0.06] ring-1 ring-inset ring-nw-brand/12"
                       )}
                     >
                       <div className="relative shrink-0">
@@ -247,7 +247,7 @@ export function MessagesWorkspace({
                           className={cn(
                             "flex h-11 w-11 items-center justify-center rounded-full text-xs font-bold ring-2 ring-white",
                             unread
-                              ? "bg-[#3525cd]/10 text-[#3525cd] ring-1 ring-[#3525cd]/15"
+                              ? "bg-nw-brand/10 text-nw-brand ring-1 ring-nw-brand/15"
                               : "bg-slate-100 text-slate-600 ring-1 ring-slate-200"
                           )}
                         >
@@ -255,7 +255,7 @@ export function MessagesWorkspace({
                         </div>
                         {unread ? (
                           <span
-                            className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-[#3525cd] shadow-sm"
+                            className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-nw-brand shadow-sm"
                             aria-hidden
                           />
                         ) : null}
@@ -349,7 +349,7 @@ export function MessagesWorkspace({
               </Link>
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="flex min-w-0 items-start gap-3">
-                  <div className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#3525cd]/10 text-sm font-bold text-[#3525cd] ring-1 ring-[#3525cd]/15 sm:flex">
+                  <div className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-full bg-nw-brand/10 text-sm font-bold text-nw-brand ring-1 ring-nw-brand/15 sm:flex">
                     {selectedThread ? peerInitials(selectedThread.peers, threadTitleFallback) : "?"}
                   </div>
                   <div className="min-w-0">
@@ -431,13 +431,13 @@ export function MessagesWorkspace({
                   )}
                   <Link
                     href={`${jobsBrowseRoot}/${selectedContext.jobId}` as Route}
-                    className="font-semibold text-[#3525cd] hover:underline"
+                    className="font-semibold text-nw-brand hover:underline"
                   >
                     {t("messages.backToJob")}
                   </Link>
                 </div>
                 <p className="mt-2 text-[11px] text-slate-500">{t("messages.threadTiedHint")}</p>
-                <div className="nw-card-trust mt-3 border-[#3525cd]/18 px-3 py-2.5">
+                <div className="nw-card-trust mt-3 border-nw-brand/18 px-3 py-2.5">
                   <p className="nw-section-title text-[10px]">{t("messages.nextSuggestedKicker")}</p>
                   <p className="nw-type-body mt-1 text-slate-800">{selectedContext.nextSuggested}</p>
                 </div>
@@ -448,18 +448,18 @@ export function MessagesWorkspace({
               {messages.length === 0 ? (
                 <div className="flex flex-1 flex-col justify-center px-4 py-8 md:px-8">
                   <div className="nw-empty-state mx-auto w-full max-w-lg text-center">
-                    <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#3525cd]/10 text-[#3525cd] ring-1 ring-[#3525cd]/15">
+                    <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-nw-brand/10 text-nw-brand ring-1 ring-nw-brand/15">
                       <Sparkles className="h-6 w-6" aria-hidden />
                     </span>
                     <h3 className="mt-4 text-base font-semibold text-slate-900">{t("messages.startThreadTitle")}</h3>
                     <p className="nw-type-body mt-2">{t("messages.startThreadBody")}</p>
                     <ul className="mt-5 space-y-2 text-left text-xs text-slate-500">
                       <li className="flex gap-2">
-                        <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#3525cd]/50" aria-hidden />
+                        <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-nw-brand/50" aria-hidden />
                         {t("messages.startBullet1")}
                       </li>
                       <li className="flex gap-2">
-                        <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#3525cd]/50" aria-hidden />
+                        <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-nw-brand/50" aria-hidden />
                         {t("messages.startBullet2")}
                       </li>
                     </ul>
@@ -482,7 +482,7 @@ export function MessagesWorkspace({
                             m.isSystem
                               ? "border border-amber-200/80 bg-amber-50/95 text-amber-950"
                               : mine
-                                ? "bg-[#3525cd] text-white shadow-md shadow-[#3525cd]/15"
+                                ? "bg-nw-brand text-white shadow-md shadow-nw-brand/15"
                                 : "border border-slate-200/90 bg-white text-slate-900 ring-1 ring-slate-100/80"
                           )}
                         >
@@ -532,7 +532,7 @@ export function MessagesWorkspace({
                     onChange={(e) => setBody(e.target.value)}
                     placeholder={t("messages.composePlaceholder")}
                     rows={3}
-                    className="min-h-[5.25rem] flex-1 resize-y rounded-xl border border-slate-200 bg-slate-50/40 px-3.5 py-2.5 text-base text-slate-900 placeholder:text-slate-400 focus:border-[#3525cd]/35 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3525cd]/20 sm:text-sm"
+                    className="min-h-[5.25rem] flex-1 resize-y rounded-xl border border-slate-200 bg-slate-50/40 px-3.5 py-2.5 text-base text-slate-900 placeholder:text-slate-400 focus:border-nw-brand/35 focus:bg-white focus:outline-none focus:ring-2 focus:ring-nw-brand/20 sm:text-sm"
                     disabled={isPending}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && !e.shiftKey) {
@@ -544,7 +544,7 @@ export function MessagesWorkspace({
                   <Button
                     type="button"
                     data-testid="messages-send"
-                    className="h-11 shrink-0 rounded-xl bg-[#3525cd] px-6 text-sm font-semibold text-white shadow-md shadow-[#3525cd]/20 hover:bg-[#2d1fb0] sm:min-w-[7.5rem]"
+                    className="h-11 shrink-0 rounded-xl bg-nw-brand px-6 text-sm font-semibold text-white shadow-md shadow-nw-brand/20 hover:bg-nw-brand/90 sm:min-w-[7.5rem]"
                     disabled={isPending || !body.trim()}
                     onClick={submit}
                   >

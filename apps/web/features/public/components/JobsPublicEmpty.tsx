@@ -169,7 +169,7 @@ export function JobsPublicEmpty({
       </div>
 
       {platformHotCategories && platformHotCategories.length > 0 ? (
-        <div className="nw-card-trust mt-5 border-[#3525cd]/12 px-4 py-3">
+        <div className="nw-card-trust mt-5 border-nw-brand/12 px-4 py-3">
           <p className="nw-type-micro">{t("public.jobs.emptyMomentumCategoriesTitle")}</p>
           <p className="nw-type-body mt-1 text-slate-600">{t("public.jobs.emptyMomentumCategoriesBody")}</p>
           <div className="mt-3 flex flex-wrap gap-2">

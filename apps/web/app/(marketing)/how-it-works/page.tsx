@@ -66,7 +66,7 @@ export default async function HowItWorksPage() {
           <h2 className="text-base font-semibold text-slate-900">{t("marketing.how.earlyAccessTitle")}</h2>
           <p className="mt-3">{t("marketing.how.earlyAccessBody")}</p>
           <p className="mt-3">
-            <Link href={earlyAccessPath as Route} className="font-semibold text-[#3525cd] hover:underline">
+            <Link href={earlyAccessPath as Route} className="font-semibold text-nw-brand hover:underline">
               {t("marketing.how.earlyAccessLink")}
             </Link>
           </p>

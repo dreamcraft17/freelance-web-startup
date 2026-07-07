@@ -39,7 +39,7 @@ export function AdminSidebar({ items, pathname, mobileOpen, onCloseMobile }: Adm
     cn(
       "flex items-center gap-2 rounded-md border border-transparent px-2.5 py-1.5 text-[13px] leading-snug transition-colors",
       active
-        ? "border-[#3525cd]/25 bg-[#3525cd]/[0.08] font-semibold text-[#2d1fa8]"
+        ? "border-nw-brand/25 bg-nw-brand/[0.08] font-semibold text-[#2d1fa8]"
         : "font-medium text-slate-600 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-900"
     );
 
@@ -84,7 +84,7 @@ export function AdminSidebar({ items, pathname, mobileOpen, onCloseMobile }: Adm
                         onClick={onCloseMobile}
                       >
                         {active ? (
-                          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#3525cd]" aria-hidden />
+                          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-nw-brand" aria-hidden />
                         ) : (
                           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-transparent" aria-hidden />
                         )}

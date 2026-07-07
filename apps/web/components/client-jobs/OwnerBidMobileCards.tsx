@@ -95,7 +95,7 @@ export function OwnerBidMobileCards({
               <div className="min-w-0">
                 <Link
                   href={`${flRoot}/${bid.freelancerUsername}` as Route}
-                  className="block truncate text-base font-semibold text-slate-900 hover:text-[#3525cd]"
+                  className="block truncate text-base font-semibold text-slate-900 hover:text-nw-brand"
                   aria-label={`${freelancerProfileAriaName} @${bid.freelancerUsername}`}
                 >
                   {bid.freelancerName}
@@ -137,8 +137,8 @@ export function OwnerBidMobileCards({
               </div>
             </div>
 
-            <div className="mt-4 rounded-xl border border-[#3525cd]/25 bg-[#3525cd]/[0.04] px-3 py-3">
-              <p className="text-xs font-semibold text-[#3525cd]">{copy.quickActionsLabel}</p>
+            <div className="mt-4 rounded-xl border border-nw-brand/25 bg-nw-brand/[0.04] px-3 py-3">
+              <p className="text-xs font-semibold text-nw-brand">{copy.quickActionsLabel}</p>
               <p className="mt-1 text-[11px] leading-relaxed text-slate-600">{copy.discussHint}</p>
               <p
                 className={cn(

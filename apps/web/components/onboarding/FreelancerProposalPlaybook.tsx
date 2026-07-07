@@ -27,7 +27,7 @@ export function FreelancerProposalPlaybook({ title, intro, sections, footerHint 
       <ul className="mt-4 space-y-4">
         {sections.map(({ Icon, title: st, body }, idx) => (
           <li key={`${idx}-${st}`} className="flex gap-3.5">
-            <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[#3525cd]/15 bg-[#3525cd]/10 text-[#3525cd]">
+            <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-nw-brand/15 bg-nw-brand/10 text-nw-brand">
               <Icon className="h-5 w-5" strokeWidth={1.75} aria-hidden />
             </span>
             <div className="min-w-0">

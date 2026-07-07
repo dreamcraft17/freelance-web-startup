@@ -31,7 +31,7 @@ export function DashboardStatCard({
             <p className="mt-1 text-2xl font-semibold tabular-nums tracking-tight text-slate-900">{value}</p>
             {hint ? <p className="nw-type-meta mt-1.5">{hint}</p> : null}
           </div>
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#3525cd]/[0.09] text-[#3525cd] ring-1 ring-[#3525cd]/12">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-nw-brand/[0.09] text-nw-brand ring-1 ring-nw-brand/12">
             <Icon className="h-5 w-5" strokeWidth={1.75} aria-hidden />
           </span>
         </div>

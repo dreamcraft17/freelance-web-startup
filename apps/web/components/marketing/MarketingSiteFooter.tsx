@@ -29,7 +29,7 @@ function LinkColumn({ titleKey, links, t }: { titleKey: string; links: FooterLin
       <ul className="mt-2 space-y-1.5">
         {links.map(({ href, labelKey }) => (
           <li key={href}>
-            <Link href={href} className="text-xs font-medium text-slate-600 transition hover:text-[#3525cd]">
+            <Link href={href} className="text-xs font-medium text-slate-600 transition hover:text-nw-brand">
               {t(labelKey)}
             </Link>
           </li>
@@ -48,7 +48,7 @@ export async function MarketingSiteFooter() {
       <div className="mx-auto max-w-[1180px] px-4 py-8 sm:px-6">
         <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-3">
-            <Link href="/" className="text-sm font-bold tracking-tight text-slate-900 hover:text-[#3525cd]">
+            <Link href="/" className="text-sm font-bold tracking-tight text-slate-900 hover:text-nw-brand">
               NearWork
             </Link>
             <p className="mt-2 max-w-xs text-sm leading-relaxed text-slate-500">{t("footer.tagline")}</p>
@@ -98,25 +98,25 @@ export async function MarketingSiteFooter() {
         <div className="mt-6 flex flex-col gap-2 border-t border-slate-200/90 pt-4 text-[11px] font-medium text-slate-500 sm:flex-row sm:items-center sm:justify-between">
           <p>{t("footer.copyright", { year })}</p>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <Link href="/privacy" className="hover:text-[#3525cd]">
+            <Link href="/privacy" className="hover:text-nw-brand">
               {t("footer.privacy")}
             </Link>
             <span className="text-slate-300" aria-hidden>
               ·
             </span>
-            <Link href="/terms" className="hover:text-[#3525cd]">
+            <Link href="/terms" className="hover:text-nw-brand">
               {t("footer.terms")}
             </Link>
             <span className="text-slate-300" aria-hidden>
               ·
             </span>
-            <Link href="/login" className="hover:text-[#3525cd]">
+            <Link href="/login" className="hover:text-nw-brand">
               {t("nav.logIn")}
             </Link>
             <span className="text-slate-300" aria-hidden>
               ·
             </span>
-            <Link href="/register" className="hover:text-[#3525cd]">
+            <Link href="/register" className="hover:text-nw-brand">
               {t("nav.register")}
             </Link>
             <span className="text-slate-300" aria-hidden>

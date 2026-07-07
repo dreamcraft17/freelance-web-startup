@@ -17,7 +17,7 @@ export function AdminReviewsFilters({ targetType, q }: Props) {
         <select
           name="targetType"
           defaultValue={targetType ?? ""}
-          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-slate-900 shadow-sm focus:border-[#3525cd] focus:outline-none focus:ring-1 focus:ring-[#3525cd]"
+          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-slate-900 shadow-sm focus:border-nw-brand focus:outline-none focus:ring-1 focus:ring-nw-brand"
         >
           <option value="">All</option>
           <option value={ReviewTargetType.CLIENT}>Client</option>
@@ -33,7 +33,7 @@ export function AdminReviewsFilters({ targetType, q }: Props) {
           defaultValue={q ?? ""}
           placeholder="Search review text…"
           autoComplete="off"
-          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-[#3525cd] focus:outline-none focus:ring-1 focus:ring-[#3525cd]"
+          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-nw-brand focus:outline-none focus:ring-1 focus:ring-nw-brand"
         />
       </label>
 

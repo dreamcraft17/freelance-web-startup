@@ -169,7 +169,7 @@ export function MarketingNavBar({
             >
               <Bell className="h-4 w-4" aria-hidden />
               {unreadNotifications > 0 ? (
-                <span className="absolute -right-1 -top-1 flex min-h-[1.125rem] min-w-[1.125rem] items-center justify-center rounded-full bg-[#3525cd] px-1 text-[10px] font-bold leading-none text-white ring-2 ring-white">
+                <span className="absolute -right-1 -top-1 flex min-h-[1.125rem] min-w-[1.125rem] items-center justify-center rounded-full bg-nw-brand px-1 text-[10px] font-bold leading-none text-white ring-2 ring-white">
                   {unreadNotifications > 9 ? "9+" : unreadNotifications}
                 </span>
               ) : null}
@@ -269,7 +269,7 @@ export function MarketingNavBar({
                 >
                   <span>{t("nav.notifications")}</span>
                   {unreadNotifications > 0 ? (
-                    <span className="rounded-full bg-[#3525cd] px-2 py-0.5 text-[11px] font-semibold text-white">
+                    <span className="rounded-full bg-nw-brand px-2 py-0.5 text-[11px] font-semibold text-white">
                       {unreadNotifications > 9 ? "9+" : unreadNotifications}
                     </span>
                   ) : null}

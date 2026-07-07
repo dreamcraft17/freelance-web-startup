@@ -37,7 +37,7 @@ export function DashboardEmptyState({
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-3.5">
         {elevated ? (
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#3525cd]/[0.08] text-[#3525cd] ring-1 ring-[#3525cd]/10">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-nw-brand/[0.08] text-nw-brand ring-1 ring-nw-brand/10">
             <Icon className="h-5 w-5" strokeWidth={1.75} aria-hidden />
           </span>
         ) : (
@@ -61,7 +61,7 @@ export function DashboardEmptyState({
                   href={action.href}
                   className={cn(
                     "inline-flex min-h-10 items-center justify-center rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition-colors duration-200",
-                    elevated ? "nw-cta-primary shadow-sm shadow-[#3525cd]/20" : "bg-[#3525cd] hover:bg-[#2d1fb0]"
+                    elevated ? "nw-cta-primary shadow-sm shadow-nw-brand/20" : "bg-nw-brand hover:bg-nw-brand/90"
                   )}
                 >
                   {action.label}

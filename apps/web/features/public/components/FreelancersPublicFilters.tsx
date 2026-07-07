@@ -197,7 +197,7 @@ export function FreelancersPublicFilters({
               <Link
                 key={term}
                 href={`${flBase}?keyword=${encodeURIComponent(term)}` as Route}
-                className="text-[11px] font-semibold text-[#3525cd] hover:underline"
+                className="text-[11px] font-semibold text-nw-brand hover:underline"
               >
                 {term}
               </Link>
@@ -276,10 +276,10 @@ export function FreelancersPublicFilters({
         </p>
       </form>
 
-      <div className="mt-4 border border-slate-200 border-l-[3px] border-l-[#3525cd] bg-slate-50/90 p-3.5">
+      <div className="mt-4 border border-slate-200 border-l-[3px] border-l-nw-brand bg-slate-50/90 p-3.5">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-2">
-            <Navigation className="h-4 w-4 shrink-0 text-[#3525cd]" aria-hidden />
+            <Navigation className="h-4 w-4 shrink-0 text-nw-brand" aria-hidden />
             <p className="text-sm font-bold text-slate-900">{t("public.freelancers.nearbyTitle")}</p>
             {locationState === "granted" ? (
               <span className="nw-chip nw-chip-brand inline-flex items-center normal-case tracking-normal">
@@ -315,7 +315,7 @@ export function FreelancersPublicFilters({
                 </option>
               ))}
             </select>
-            <button type="button" onClick={onApplyLocation} disabled={isNavigating} className="rounded-md bg-[#3525cd] px-2.5 py-1.5 text-xs font-semibold text-white transition hover:bg-[#4f46e5] disabled:cursor-wait disabled:opacity-70">
+            <button type="button" onClick={onApplyLocation} disabled={isNavigating} className="rounded-md bg-nw-brand px-2.5 py-1.5 text-xs font-semibold text-white transition hover:bg-nw-brand/90 disabled:cursor-wait disabled:opacity-70">
               {t("public.freelancers.nearbyApply")}
             </button>
             <button

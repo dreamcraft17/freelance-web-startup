@@ -143,14 +143,14 @@ export function LandingHero({
                   <button
                     type="button"
                     onClick={() => onIntentChange("hire")}
-                    className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${toggleIntent === "hire" ? "bg-[#3525cd] text-white shadow-sm" : "text-slate-700 hover:bg-slate-100"}`}
+                    className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${toggleIntent === "hire" ? "bg-nw-brand text-white shadow-sm" : "text-slate-700 hover:bg-slate-100"}`}
                   >
                     {t("landing.hero.intentHire")}
                   </button>
                   <button
                     type="button"
                     onClick={() => onIntentChange("work")}
-                    className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${toggleIntent === "work" ? "bg-[#3525cd] text-white shadow-sm" : "text-slate-700 hover:bg-slate-100"}`}
+                    className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${toggleIntent === "work" ? "bg-nw-brand text-white shadow-sm" : "text-slate-700 hover:bg-slate-100"}`}
                   >
                     {t("landing.hero.intentWork")}
                   </button>
@@ -162,8 +162,8 @@ export function LandingHero({
                   {modeContent.headline}
                 </h1>
                 <p className="mx-auto mt-3 max-w-2xl text-[15px] leading-[1.52] text-slate-600 sm:text-base lg:mx-0">{modeContent.subHeadline}</p>
-                <p className="mx-auto mt-2 max-w-2xl text-[13px] font-semibold leading-snug text-[#3525cd] lg:mx-0">{modeContent.flowLine}</p>
-                <div className="nw-card-trust mx-auto mt-5 max-w-2xl border-[#3525cd]/12 px-3.5 py-2.5 lg:mx-0">
+                <p className="mx-auto mt-2 max-w-2xl text-[13px] font-semibold leading-snug text-nw-brand lg:mx-0">{modeContent.flowLine}</p>
+                <div className="nw-card-trust mx-auto mt-5 max-w-2xl border-nw-brand/12 px-3.5 py-2.5 lg:mx-0">
                   <p className="nw-type-micro">{t("landing.hero.marketplacePulseTitle")}</p>
                   <div className="mt-1.5 flex flex-wrap gap-1.5">
                     <span className="nw-chip-quiet tabular-nums">
@@ -193,7 +193,7 @@ export function LandingHero({
                 <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5 lg:justify-start">
                   <Link
                     href={modeContent.primaryCtaHref}
-                    className="inline-flex min-h-11 min-w-[10rem] items-center justify-center rounded-lg bg-[#3525cd] px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#2b1da8]"
+                    className="inline-flex min-h-11 min-w-[10rem] items-center justify-center rounded-lg bg-nw-brand px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#2b1da8]"
                   >
                     {modeContent.primaryCtaLabel}
                   </Link>
@@ -209,7 +209,7 @@ export function LandingHero({
 
             <aside className="hidden lg:col-span-4 lg:block">
               <div className="sticky top-24 rounded-2xl border border-slate-200 bg-white p-4 shadow-md sm:p-5">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#3525cd]">{t("landing.hero.process.kicker")}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-nw-brand">{t("landing.hero.process.kicker")}</p>
                 <p className="mt-1.5 text-[15px] font-semibold leading-snug text-[#071027]">{t("landing.hero.process.title")}</p>
                 <p className="mt-1 text-[11px] leading-relaxed text-slate-500">{t("landing.hero.process.subtitle")}</p>
                 <ul className="mt-4 space-y-2">
@@ -220,7 +220,7 @@ export function LandingHero({
                         key={key}
                         className="flex gap-2.5 rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-2.5"
                       >
-                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#3525cd]/10 text-[#3525cd]">
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-nw-brand/10 text-nw-brand">
                           <Icon className="h-4 w-4" aria-hidden />
                         </span>
                         <div className="min-w-0">
@@ -237,14 +237,14 @@ export function LandingHero({
 
           <div className="mt-8 lg:hidden">
             <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#3525cd]">{t("landing.hero.process.kicker")}</p>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-nw-brand">{t("landing.hero.process.kicker")}</p>
               <p className="mt-1 text-sm font-bold text-[#071027]">{t("landing.hero.process.title")}</p>
               <ul className="mt-4 grid gap-2.5 sm:grid-cols-2">
                 {PROCESS_KEYS.map((key, i) => {
                   const Icon = processIcons[i]!;
                   return (
                     <li key={key} className="flex gap-2.5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5">
-                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#3525cd]/10 text-[#3525cd]">
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-nw-brand/10 text-nw-brand">
                         <Icon className="h-3.5 w-3.5" aria-hidden />
                       </span>
                       <div className="min-w-0">
@@ -262,7 +262,7 @@ export function LandingHero({
             <form action={modeContent.searchAction} method="get" className="flex flex-col gap-3">
               <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-12 lg:gap-3 lg:[&>*]:min-h-[3.15rem]">
                 <label className="flex min-h-[3.15rem] items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 lg:col-span-4">
-                  <Search className="h-4 w-4 shrink-0 text-[#3525cd]" aria-hidden />
+                  <Search className="h-4 w-4 shrink-0 text-nw-brand" aria-hidden />
                   <input
                     name="keyword"
                     type="search"
@@ -271,7 +271,7 @@ export function LandingHero({
                   />
                 </label>
                 <label className="flex min-h-[3.15rem] items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 lg:col-span-3">
-                  <MapPin className="h-4 w-4 shrink-0 text-[#3525cd]" aria-hidden />
+                  <MapPin className="h-4 w-4 shrink-0 text-nw-brand" aria-hidden />
                   <input
                     name="city"
                     type="text"
@@ -280,7 +280,7 @@ export function LandingHero({
                   />
                 </label>
                 <label className="flex min-h-[3.15rem] items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 lg:col-span-3">
-                  <Grid2X2 className="h-4 w-4 shrink-0 text-[#3525cd]" aria-hidden />
+                  <Grid2X2 className="h-4 w-4 shrink-0 text-nw-brand" aria-hidden />
                   <select name="categoryId" className="w-full border-0 bg-transparent text-sm text-slate-900 focus:outline-none focus:ring-0">
                     <option value="">{t("landing.hero.categoryAll")}</option>
                     {categories.map((c) => (
@@ -306,7 +306,7 @@ export function LandingHero({
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <button
                   type="submit"
-                  className="inline-flex min-h-[3.15rem] w-full items-center justify-center rounded-xl bg-[#3525cd] px-6 text-sm font-semibold text-white transition hover:bg-[#2b1da8] sm:w-auto sm:min-w-[9rem]"
+                  className="inline-flex min-h-[3.15rem] w-full items-center justify-center rounded-xl bg-nw-brand px-6 text-sm font-semibold text-white transition hover:bg-[#2b1da8] sm:w-auto sm:min-w-[9rem]"
                 >
                   {t("landing.hero.searchSubmit")}
                 </button>
@@ -325,7 +325,7 @@ export function LandingHero({
               ))}
               <Link
                 href={modeContent.searchAction}
-                className="inline-flex items-center gap-1 px-1 text-[11px] font-semibold text-[#3525cd] hover:underline"
+                className="inline-flex items-center gap-1 px-1 text-[11px] font-semibold text-nw-brand hover:underline"
               >
                 {t("landing.hero.seeAll")}
                 <Sparkles className="h-3 w-3" />
@@ -333,14 +333,14 @@ export function LandingHero({
             </div>
           </div>
 
-          <div className="mt-8 rounded-2xl border border-[#3525cd]/25 bg-[#f4f2fb] p-5 sm:flex sm:items-center sm:justify-between sm:gap-6 sm:p-6">
+          <div className="mt-8 rounded-2xl border border-nw-brand/25 bg-[#f4f2fb] p-5 sm:flex sm:items-center sm:justify-between sm:gap-6 sm:p-6">
             <div>
               <p className="text-xl font-bold tracking-tight text-[#071027] sm:text-2xl">{t("landing.hero.bottomStripTitle")}</p>
               <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-600">{t("landing.hero.bottomStripBody")}</p>
             </div>
             <Link
               href={modeContent.ctaBandHref}
-              className="mt-4 inline-flex min-h-11 w-full shrink-0 items-center justify-center rounded-xl bg-[#3525cd] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#2b1da8] sm:mt-0 sm:w-auto"
+              className="mt-4 inline-flex min-h-11 w-full shrink-0 items-center justify-center rounded-xl bg-nw-brand px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#2b1da8] sm:mt-0 sm:w-auto"
             >
               {modeContent.ctaBandLabel}
             </Link>

@@ -19,7 +19,7 @@ export function AuthSubmitOverlay({ active, message }: AuthSubmitOverlayProps) {
       }`}
     >
       <div className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3 shadow-sm">
-        <span className="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-[#3525cd]" aria-hidden />
+        <span className="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-nw-brand" aria-hidden />
         <span className="text-sm font-semibold text-slate-700">{message}</span>
       </div>
     </div>

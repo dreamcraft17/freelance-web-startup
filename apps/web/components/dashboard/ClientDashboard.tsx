@@ -256,7 +256,7 @@ export function ClientDashboard({
         className="nw-card-trust px-4 py-3 md:px-5 md:py-3.5"
       >
         <div className="flex flex-wrap items-start gap-2.5">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#3525cd] shadow-sm ring-1 ring-slate-200/80">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-nw-brand shadow-sm ring-1 ring-slate-200/80">
             <Waves className="h-5 w-5" strokeWidth={1.75} aria-hidden />
           </span>
           <div className="min-w-0 flex-1">
@@ -357,7 +357,7 @@ export function ClientDashboard({
       {!hasProfile ? (
         <div className="nw-card-trust p-5 md:flex md:items-center md:justify-between md:gap-6 md:p-6">
           <div className="flex min-w-0 gap-4">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[#3525cd]/[0.08] text-[#3525cd] ring-1 ring-[#3525cd]/12">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-nw-brand/[0.08] text-nw-brand ring-1 ring-nw-brand/12">
               <Sparkles className="h-5 w-5" strokeWidth={1.75} aria-hidden />
             </span>
             <div className="min-w-0">
@@ -391,7 +391,7 @@ export function ClientDashboard({
               className={cn(
                 "group relative flex flex-col gap-3 rounded-xl border p-4 transition-[border-color,box-shadow,background-color] duration-200 md:p-5",
                 item.emphasize
-                  ? "border-[#3525cd]/20 bg-[#3525cd]/[0.04] hover:border-[#3525cd]/40 hover:shadow-nw-card"
+                  ? "border-nw-brand/20 bg-nw-brand/[0.04] hover:border-nw-brand/40 hover:shadow-nw-card"
                   : "border border-slate-200/90 bg-white shadow-nw-card transition-[border-color,box-shadow] duration-200 hover:border-slate-300/85 hover:shadow-nw-card-hover"
               )}
             >
@@ -400,7 +400,7 @@ export function ClientDashboard({
                   className={cn(
                     "flex h-11 w-11 items-center justify-center rounded-xl ring-1 transition-colors duration-200",
                     item.emphasize
-                      ? "bg-[#3525cd] text-white ring-[#3525cd]/25"
+                      ? "bg-nw-brand text-white ring-nw-brand/25"
                       : "bg-slate-50 text-slate-700 ring-slate-200/80 group-hover:bg-white"
                   )}
                 >
@@ -409,7 +409,7 @@ export function ClientDashboard({
                 <ArrowUpRight
                   className={cn(
                     "h-4 w-4 shrink-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100",
-                    item.emphasize ? "text-[#3525cd]" : "text-slate-400"
+                    item.emphasize ? "text-nw-brand" : "text-slate-400"
                   )}
                   aria-hidden
                 />
@@ -468,7 +468,7 @@ export function ClientDashboard({
                     <div className="min-w-0">
                       <Link
                         href={`${jobsBrowseRoot}/${job.id}` as Route}
-                        className="text-sm font-semibold text-slate-900 transition hover:text-[#3525cd]"
+                        className="text-sm font-semibold text-slate-900 transition hover:text-nw-brand"
                       >
                         {job.title}
                       </Link>
@@ -549,7 +549,7 @@ export function ClientDashboard({
                   >
                     <Link
                       href={`${jobsBrowseRoot}/${bid.job.id}` as Route}
-                      className="text-sm font-semibold text-slate-900 hover:text-[#3525cd]"
+                      className="text-sm font-semibold text-slate-900 hover:text-nw-brand"
                     >
                       {bid.job.title}
                     </Link>
@@ -608,7 +608,7 @@ export function ClientDashboard({
                 <li key={c.id} className="nw-card-inset nw-card-inset-hover rounded-lg p-4">
                   <Link
                     href={`${jobsBrowseRoot}/${c.bid.job.id}` as Route}
-                    className="text-sm font-semibold text-slate-900 hover:text-[#3525cd]"
+                    className="text-sm font-semibold text-slate-900 hover:text-nw-brand"
                   >
                     {c.bid.job.title}
                   </Link>

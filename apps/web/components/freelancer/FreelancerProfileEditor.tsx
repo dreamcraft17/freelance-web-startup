@@ -177,13 +177,13 @@ export function FreelancerProfileEditor({
       {isIncomplete ? (
         <div className="nw-card-trust flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           <div className="flex min-w-0 gap-3">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#3525cd] text-white shadow-sm">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-nw-brand text-white shadow-sm">
               <Sparkles className="h-5 w-5" aria-hidden />
             </span>
             <div>
               <p className="text-sm font-semibold text-slate-900">Complete your profile</p>
               <p className="mt-0.5 text-sm text-slate-600">
-                You are at <span className="font-semibold text-[#3525cd]">{completeness}%</span>.
+                You are at <span className="font-semibold text-nw-brand">{completeness}%</span>.
                 Add headline, bio, and clear work preferences so clients hire with confidence.
               </p>
             </div>
@@ -191,7 +191,7 @@ export function FreelancerProfileEditor({
           <Button
             type="button"
             variant="outline"
-            className="shrink-0 border-[#3525cd]/30 text-[#3525cd] hover:bg-[#3525cd]/10"
+            className="shrink-0 border-nw-brand/30 text-nw-brand hover:bg-nw-brand/10"
             onClick={() => document.getElementById("section-headline")?.scrollIntoView({ behavior: "smooth" })}
           >
             Fill in details
@@ -203,7 +203,7 @@ export function FreelancerProfileEditor({
       <Card className="overflow-hidden rounded-xl border-slate-200/90 shadow-sm shadow-slate-900/[0.04]">
         <CardHeader className="border-b border-slate-100 bg-slate-50/50 pb-4 pt-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-white text-[#3525cd] ring-1 ring-slate-200/90">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-white text-nw-brand ring-1 ring-slate-200/90">
               <User className="h-8 w-8" strokeWidth={1.5} aria-hidden />
             </div>
             <div className="min-w-0 flex-1">
@@ -217,7 +217,7 @@ export function FreelancerProfileEditor({
                 <p className="mt-2 text-sm">
                   <Link
                     href={`/freelancers/${form.username}` as Route}
-                    className="font-medium text-[#3525cd] underline-offset-4 hover:underline"
+                    className="font-medium text-nw-brand underline-offset-4 hover:underline"
                   >
                     View public profile
                   </Link>
@@ -227,7 +227,7 @@ export function FreelancerProfileEditor({
             {mode === "edit" ? (
               <div className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-center sm:text-right">
                 <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Completion</p>
-                <p className="text-2xl font-semibold tabular-nums text-[#3525cd]">{form.profileCompleteness}%</p>
+                <p className="text-2xl font-semibold tabular-nums text-nw-brand">{form.profileCompleteness}%</p>
               </div>
             ) : null}
           </div>
@@ -422,7 +422,7 @@ export function FreelancerProfileEditor({
       <div
         className={cn(
           "sticky bottom-4 z-10 flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between",
-          dirty ? "ring-1 ring-[#3525cd]/15" : ""
+          dirty ? "ring-1 ring-nw-brand/15" : ""
         )}
       >
         <div className="min-w-0 text-sm text-slate-600">
@@ -455,7 +455,7 @@ export function FreelancerProfileEditor({
           ) : null}
           <Button
             type="button"
-            className="min-w-[9rem] bg-[#3525cd] text-white hover:bg-[#2d1fb0]"
+            className="min-w-[9rem] bg-nw-brand text-white hover:bg-nw-brand/90"
             disabled={
               isPending ||
               (mode === "create"

@@ -33,7 +33,7 @@ export default async function HelpPage() {
           <p className="mt-4">
             <a
               href={`mailto:${supportEmail}`}
-              className="inline-block rounded-md border border-slate-200 bg-slate-50 px-4 py-3 font-mono text-sm font-medium text-[#3525cd] hover:bg-white"
+              className="inline-block rounded-md border border-slate-200 bg-slate-50 px-4 py-3 font-mono text-sm font-medium text-nw-brand hover:bg-white"
             >
               {supportEmail}
             </a>
@@ -41,7 +41,7 @@ export default async function HelpPage() {
         ) : (
           <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
             <p>{t("marketing.help.contactNoEmail")}</p>
-            <Link href={earlyAccessPath as Route} className="mt-2 inline-block font-semibold text-[#3525cd] hover:underline">
+            <Link href={earlyAccessPath as Route} className="mt-2 inline-block font-semibold text-nw-brand hover:underline">
               {t("marketing.help.contactEarlyAccessCta")}
             </Link>
           </div>
@@ -69,19 +69,19 @@ export default async function HelpPage() {
         <h2 className="text-base font-semibold text-slate-900">{t("marketing.help.selfServeTitle")}</h2>
         <ul className="mt-3 list-inside list-disc space-y-1.5">
           <li>
-            <Link href={howPath as Route} className="font-medium text-[#3525cd] hover:underline">
+            <Link href={howPath as Route} className="font-medium text-nw-brand hover:underline">
               {t("nav.howItWorks")}
             </Link>{" "}
             — {t("marketing.help.selfServeItem1Suffix")}
           </li>
           <li>
-            <Link href={earlyAccessPath as Route} className="font-medium text-[#3525cd] hover:underline">
+            <Link href={earlyAccessPath as Route} className="font-medium text-nw-brand hover:underline">
               {t("marketing.help.earlyAccess")}
             </Link>{" "}
             — {t("marketing.help.selfServeItem2Suffix")}
           </li>
           <li>
-            <Link href={pricingPath as Route} className="font-medium text-[#3525cd] hover:underline">
+            <Link href={pricingPath as Route} className="font-medium text-nw-brand hover:underline">
               {t("nav.pricing")}
             </Link>{" "}
             — {t("marketing.help.selfServeItem3Suffix")}
@@ -90,11 +90,11 @@ export default async function HelpPage() {
       </section>
 
       <p className="mt-10 text-xs text-slate-400">
-        <Link href={withPublicLocale(locale, "/privacy") as Route} className="text-[#3525cd] hover:underline">
+        <Link href={withPublicLocale(locale, "/privacy") as Route} className="text-nw-brand hover:underline">
           {t("footer.privacy")}
         </Link>
         {" · "}
-        <Link href={withPublicLocale(locale, "/terms") as Route} className="text-[#3525cd] hover:underline">
+        <Link href={withPublicLocale(locale, "/terms") as Route} className="text-nw-brand hover:underline">
           {t("footer.terms")}
         </Link>
       </p>

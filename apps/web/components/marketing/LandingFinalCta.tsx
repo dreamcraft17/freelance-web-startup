@@ -33,7 +33,7 @@ export function LandingFinalCta({ t, locale }: { t: Translator; locale: AppLocal
           >
             {t("landing.finalCta.secondary")}
           </Link>
-          <Link href={jobsPath as Route} className="text-center text-sm font-bold text-[#3525cd] hover:underline sm:text-right">
+          <Link href={jobsPath as Route} className="text-center text-sm font-bold text-nw-brand hover:underline sm:text-right">
             {t("landing.finalCta.tertiary")}
           </Link>
         </div>

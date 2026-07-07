@@ -22,7 +22,7 @@ export default async function TermsPage() {
         <p className="mt-4">{t("marketing.terms.body2")}</p>
         <p className="mt-4">
           {t("marketing.terms.questions")}{" "}
-          <Link href={helpPath as Route} className="font-semibold text-[#3525cd] hover:underline">
+          <Link href={helpPath as Route} className="font-semibold text-nw-brand hover:underline">
             {t("marketing.terms.helpLink")}
           </Link>
           .

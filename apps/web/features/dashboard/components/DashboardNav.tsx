@@ -70,7 +70,7 @@ export function DashboardNav({ items, variant, appearance = "default" }: Dashboa
               className={cn(
                 "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-[13px] font-medium transition-colors",
                 isActive
-                  ? "bg-[#3525cd] text-white shadow-sm shadow-[#3525cd]/25"
+                  ? "bg-nw-brand text-white shadow-sm shadow-nw-brand/25"
                   : "bg-slate-100/90 text-slate-600 hover:bg-slate-200/90 hover:text-slate-900"
               )}
             >
@@ -108,7 +108,7 @@ export function DashboardNav({ items, variant, appearance = "default" }: Dashboa
               <p
                 className={cn(
                   "mb-1.5 px-2 text-[11px] font-semibold uppercase tracking-wider",
-                  appearance === "premium" ? "text-[#3525cd]/65" : "text-slate-400",
+                  appearance === "premium" ? "text-nw-brand/65" : "text-slate-400",
                   index === 0 ? (appearance === "premium" ? "mt-3" : "mt-0.5") : "mt-5"
                 )}
               >
@@ -124,8 +124,8 @@ export function DashboardNav({ items, variant, appearance = "default" }: Dashboa
                   "border border-transparent hover:border-slate-200/80 hover:bg-slate-50/90",
                 isActive
                   ? appearance === "premium"
-                    ? "border-[#3525cd]/25 bg-[#3525cd]/[0.08] font-semibold text-[#3525cd]"
-                    : "border-l-[3px] border-l-[#3525cd] bg-[#3525cd]/[0.09] font-semibold text-[#3525cd] shadow-sm ring-1 ring-[#3525cd]/10"
+                    ? "border-nw-brand/25 bg-nw-brand/[0.08] font-semibold text-nw-brand"
+                    : "border-l-[3px] border-l-nw-brand bg-nw-brand/[0.09] font-semibold text-nw-brand shadow-sm ring-1 ring-nw-brand/10"
                   : appearance === "default"
                     ? "border-l-[3px] border-l-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                     : "text-slate-600 hover:border-slate-200/70 hover:bg-white hover:text-slate-900",
@@ -133,7 +133,7 @@ export function DashboardNav({ items, variant, appearance = "default" }: Dashboa
               )}
             >
               {Icon ? (
-                <Icon className={cn("h-[18px] w-[18px] shrink-0", isActive ? "text-[#3525cd]" : "text-slate-400")} aria-hidden />
+                <Icon className={cn("h-[18px] w-[18px] shrink-0", isActive ? "text-nw-brand" : "text-slate-400")} aria-hidden />
               ) : null}
               <span className={cn(variant === "sidebar" ? "truncate" : "")}>{t(item.labelKey)}</span>
             </Link>

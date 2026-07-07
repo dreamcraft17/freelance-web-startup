@@ -147,7 +147,7 @@ export function SaveJobButton({
     >
       {appearance === "icon" ? (
         <Bookmark
-          className={["h-4 w-4", saved ? "fill-[#3525cd] text-[#3525cd]" : "text-slate-500"].join(" ")}
+          className={["h-4 w-4", saved ? "fill-nw-brand text-nw-brand" : "text-slate-500"].join(" ")}
           aria-hidden
         />
       ) : (

@@ -41,19 +41,19 @@ export default async function LoginPage({ searchParams }: PageProps) {
           >
             <Link
               href={withPublicLocale(locale, "/privacy") as Route}
-              className="truncate font-medium text-slate-600 underline-offset-4 hover:text-[#3525cd] hover:underline sm:whitespace-normal"
+              className="truncate font-medium text-slate-600 underline-offset-4 hover:text-nw-brand hover:underline sm:whitespace-normal"
             >
               {t("footer.privacy")}
             </Link>
             <Link
               href={withPublicLocale(locale, "/terms") as Route}
-              className="truncate font-medium text-slate-600 underline-offset-4 hover:text-[#3525cd] hover:underline sm:whitespace-normal"
+              className="truncate font-medium text-slate-600 underline-offset-4 hover:text-nw-brand hover:underline sm:whitespace-normal"
             >
               {t("footer.terms")}
             </Link>
             <Link
               href={helpPath as Route}
-              className="truncate font-medium text-slate-600 underline-offset-4 hover:text-[#3525cd] hover:underline sm:whitespace-normal"
+              className="truncate font-medium text-slate-600 underline-offset-4 hover:text-nw-brand hover:underline sm:whitespace-normal"
             >
               {t("footer.help")}
             </Link>

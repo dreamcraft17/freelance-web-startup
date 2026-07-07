@@ -102,10 +102,10 @@ function PreviewList({
     <div className="rounded-2xl border border-slate-200 bg-white">
       <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
         <p className="flex items-center gap-2 text-sm font-bold text-slate-900">
-          <Icon className="h-4 w-4 text-[#3525cd]" aria-hidden />
+          <Icon className="h-4 w-4 text-nw-brand" aria-hidden />
           {title}
         </p>
-        <Link href={ctaHref} className="text-xs font-semibold text-[#3525cd] hover:underline">
+        <Link href={ctaHref} className="text-xs font-semibold text-nw-brand hover:underline">
           {ctaLabel}
         </Link>
       </div>
@@ -128,7 +128,7 @@ function PreviewList({
                 </span>
                 <span className="text-xs font-semibold text-slate-700">{t(row.locationKey)}</span>
                 <span className="text-xs font-bold text-slate-900">{t(row.priceKey)}</span>
-                <Link href={row.href} className="text-[11px] font-semibold text-[#3525cd] hover:underline">
+                <Link href={row.href} className="text-[11px] font-semibold text-nw-brand hover:underline">
                   {rowActionLabel}
                 </Link>
               </div>

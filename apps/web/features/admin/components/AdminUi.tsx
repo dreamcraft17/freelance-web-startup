@@ -54,7 +54,7 @@ export function AdminInsightPanel({
         {viewAllHref ? (
           <Link
             href={viewAllHref}
-            className="shrink-0 text-xs font-medium text-[#3525cd] hover:underline"
+            className="shrink-0 text-xs font-medium text-nw-brand hover:underline"
           >
             View all
           </Link>

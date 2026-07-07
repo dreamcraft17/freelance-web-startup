@@ -305,7 +305,7 @@ export function ClientJobsManager({
                         className={cn(
                           "transition hover:bg-slate-50/60",
                           hasNewProposal(job)
-                            ? "bg-[#3525cd]/[0.05]"
+                            ? "bg-nw-brand/[0.05]"
                             : isNeedsAttention(job)
                               ? "bg-amber-50/30"
                               : undefined
@@ -315,13 +315,13 @@ export function ClientJobsManager({
                           <div className="space-y-1">
                             <Link
                               href={`${jobsBrowseRoot}/${job.id}` as Route}
-                              className="font-semibold text-slate-900 hover:text-[#3525cd]"
+                              className="font-semibold text-slate-900 hover:text-nw-brand"
                             >
                               {job.title}
                             </Link>
                             <div className="flex flex-wrap items-center gap-1.5">
                               {hasNewProposal(job) ? (
-                                <span className="rounded-md border border-[#3525cd]/20 bg-[#3525cd]/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#3525cd]">
+                                <span className="rounded-md border border-nw-brand/20 bg-nw-brand/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-nw-brand">
                                   New proposal
                                 </span>
                               ) : null}
@@ -424,7 +424,7 @@ export function ClientJobsManager({
                     </div>
                     <div className="mt-2 flex flex-wrap items-center gap-1.5">
                       {hasNewProposal(job) ? (
-                        <span className="rounded-md border border-[#3525cd]/20 bg-[#3525cd]/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#3525cd]">
+                        <span className="rounded-md border border-nw-brand/20 bg-nw-brand/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-nw-brand">
                           New proposal
                         </span>
                       ) : null}

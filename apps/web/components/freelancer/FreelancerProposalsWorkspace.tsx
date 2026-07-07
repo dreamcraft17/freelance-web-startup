@@ -42,7 +42,7 @@ function rowTone(status: string): string {
     case BidStatus.ACCEPTED:
       return "border-emerald-200/90 bg-emerald-50/50";
     case BidStatus.SHORTLISTED:
-      return "border-[#3525cd]/20 bg-[#3525cd]/[0.05]";
+      return "border-nw-brand/20 bg-nw-brand/[0.05]";
     case BidStatus.REJECTED:
       return "border-red-200/80 bg-red-50/45";
     default:
@@ -207,12 +207,12 @@ export function FreelancerProposalsWorkspace({
               aria-selected={active}
               onClick={() => setFilter(f.key)}
               className={cn(
-                "whitespace-nowrap rounded-lg px-3 py-2 text-sm font-semibold transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/30",
-                active ? "bg-white text-[#3525cd] shadow-sm ring-1 ring-slate-200/90" : "text-slate-600 hover:bg-white/70 hover:text-slate-900"
+                "whitespace-nowrap rounded-lg px-3 py-2 text-sm font-semibold transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-nw-brand/30",
+                active ? "bg-white text-nw-brand shadow-sm ring-1 ring-slate-200/90" : "text-slate-600 hover:bg-white/70 hover:text-slate-900"
               )}
             >
               {f.label}
-              <span className={cn("ml-1.5 tabular-nums text-xs", active ? "text-[#3525cd]/80" : "text-slate-400")}>
+              <span className={cn("ml-1.5 tabular-nums text-xs", active ? "text-nw-brand/80" : "text-slate-400")}>
                 {count}
               </span>
             </button>

@@ -12,7 +12,7 @@ export function LandingUseCases({ t, locale }: { t: Translator; locale: AppLocal
   return (
     <section className="nw-section-mist mt-2">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-14">
-      <div className="mb-6 flex items-end justify-between gap-4 border-b-2 border-[#3525cd]/15 pb-5">
+      <div className="mb-6 flex items-end justify-between gap-4 border-b-2 border-nw-brand/15 pb-5">
         <div>
           <p className="nw-section-title">{t("landing.useCases.kicker")}</p>
           <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-950 sm:text-2xl">{t("landing.useCases.title")}</h2>
@@ -22,8 +22,8 @@ export function LandingUseCases({ t, locale }: { t: Translator; locale: AppLocal
         </div>
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-5">
-        <article className="border border-slate-200/90 border-t-[3px] border-t-[#3525cd] bg-white p-5 shadow-sm">
-          <p className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em] text-[#3525cd]">
+        <article className="border border-slate-200/90 border-t-[3px] border-t-nw-brand bg-white p-5 shadow-sm">
+          <p className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em] text-nw-brand">
             <MapPin className="h-3.5 w-3.5" aria-hidden />
             {t("landing.useCases.onsite.kicker")}
           </p>
@@ -48,14 +48,14 @@ export function LandingUseCases({ t, locale }: { t: Translator; locale: AppLocal
         </article>
       </div>
 
-      <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-[#3525cd]/15 pt-6 text-sm font-bold">
-        <Link href={freelancersPath as Route} className="text-[#3525cd] transition hover:underline">
+      <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-nw-brand/15 pt-6 text-sm font-bold">
+        <Link href={freelancersPath as Route} className="text-nw-brand transition hover:underline">
           {t("landing.useCases.ctaFreelancers")}
         </Link>
-        <Link href={jobsPath as Route} className="text-[#3525cd] transition hover:underline">
+        <Link href={jobsPath as Route} className="text-nw-brand transition hover:underline">
           {t("landing.useCases.ctaJobs")}
         </Link>
-        <Link href={howPath as Route} className="text-slate-700 transition hover:text-[#3525cd] hover:underline">
+        <Link href={howPath as Route} className="text-slate-700 transition hover:text-nw-brand hover:underline">
           {t("landing.useCases.ctaHow")}
         </Link>
       </div>

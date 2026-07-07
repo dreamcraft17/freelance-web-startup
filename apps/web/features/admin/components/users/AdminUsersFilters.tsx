@@ -24,7 +24,7 @@ export function AdminUsersFilters({ role, status, q }: AdminUsersFiltersProps) {
         <select
           name="role"
           defaultValue={role ?? ""}
-          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-slate-900 shadow-sm focus:border-[#3525cd] focus:outline-none focus:ring-1 focus:ring-[#3525cd]"
+          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-slate-900 shadow-sm focus:border-nw-brand focus:outline-none focus:ring-1 focus:ring-nw-brand"
         >
           <option value="">All roles</option>
           {ROLE_OPTIONS.map((r) => (
@@ -40,7 +40,7 @@ export function AdminUsersFilters({ role, status, q }: AdminUsersFiltersProps) {
         <select
           name="status"
           defaultValue={status ?? ""}
-          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-slate-900 shadow-sm focus:border-[#3525cd] focus:outline-none focus:ring-1 focus:ring-[#3525cd]"
+          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-slate-900 shadow-sm focus:border-nw-brand focus:outline-none focus:ring-1 focus:ring-nw-brand"
         >
           <option value="">All statuses</option>
           {STATUS_OPTIONS.map((s) => (
@@ -59,7 +59,7 @@ export function AdminUsersFilters({ role, status, q }: AdminUsersFiltersProps) {
           defaultValue={q ?? ""}
           placeholder="Filter by email…"
           autoComplete="off"
-          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-[#3525cd] focus:outline-none focus:ring-1 focus:ring-[#3525cd]"
+          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-nw-brand focus:outline-none focus:ring-1 focus:ring-nw-brand"
         />
       </label>
 

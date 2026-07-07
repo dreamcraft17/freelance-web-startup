@@ -51,7 +51,7 @@ export function FreelancerDashboardHero({
           <div className="pt-2">
             <Link
               href={browseJobsHref}
-              className="group inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-[#3525cd] px-5 py-2.5 text-[13px] font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-[#2b1da8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/35 focus-visible:ring-offset-2"
+              className="group inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-nw-brand px-5 py-2.5 text-[13px] font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-[#2b1da8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-nw-brand/35 focus-visible:ring-offset-2"
             >
               <Compass className="h-5 w-5" aria-hidden />
               {browseJobsCta}

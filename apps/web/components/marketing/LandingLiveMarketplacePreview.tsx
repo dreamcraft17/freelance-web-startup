@@ -35,7 +35,7 @@ export async function LandingLiveMarketplacePreview() {
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
               href={jobsBase as Route}
-              className="inline-flex min-h-11 items-center justify-center rounded-xl bg-[#3525cd] px-5 text-sm font-semibold text-white transition hover:bg-[#2b1da8]"
+              className="inline-flex min-h-11 items-center justify-center rounded-xl bg-nw-brand px-5 text-sm font-semibold text-white transition hover:bg-[#2b1da8]"
             >
               {t("landing.livePreview.ctaJobs")}
             </Link>
@@ -94,7 +94,7 @@ export async function LandingLiveMarketplacePreview() {
                     ) : null}
                     <Link
                       href={withPublicLocale(locale, `/freelancers/${f.username}`) as Route}
-                      className="text-[11px] font-semibold text-[#3525cd] hover:underline"
+                      className="text-[11px] font-semibold text-nw-brand hover:underline"
                     >
                       {t("landing.preview.rowActionOpen")}
                     </Link>
@@ -126,7 +126,7 @@ export async function LandingLiveMarketplacePreview() {
                     <span className="text-xs font-semibold text-slate-700">{j.workMode}</span>
                     <Link
                       href={withPublicLocale(locale, `/jobs/${j.slug}`) as Route}
-                      className="text-[11px] font-semibold text-[#3525cd] hover:underline"
+                      className="text-[11px] font-semibold text-nw-brand hover:underline"
                     >
                       {t("landing.preview.rowActionOpen")}
                     </Link>
@@ -160,10 +160,10 @@ function PreviewCard({
     <div className="rounded-2xl border border-slate-200 bg-white">
       <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
         <p className="flex items-center gap-2 text-sm font-bold text-slate-900">
-          <Icon className="h-4 w-4 text-[#3525cd]" aria-hidden />
+          <Icon className="h-4 w-4 text-nw-brand" aria-hidden />
           {title}
         </p>
-        <Link href={ctaHref} className="text-xs font-semibold text-[#3525cd] hover:underline">
+        <Link href={ctaHref} className="text-xs font-semibold text-nw-brand hover:underline">
           {ctaLabel}
         </Link>
       </div>

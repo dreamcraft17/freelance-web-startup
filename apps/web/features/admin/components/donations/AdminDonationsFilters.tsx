@@ -24,7 +24,7 @@ export function AdminDonationsFilters({
         <select
           name="provider"
           defaultValue={provider ?? ""}
-          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-slate-900 shadow-sm focus:border-[#3525cd] focus:outline-none focus:ring-1 focus:ring-[#3525cd]"
+          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-slate-900 shadow-sm focus:border-nw-brand focus:outline-none focus:ring-1 focus:ring-nw-brand"
         >
           <option value="">All</option>
           {providerOptions.map((p) => (
@@ -40,7 +40,7 @@ export function AdminDonationsFilters({
         <select
           name="currency"
           defaultValue={currency ?? ""}
-          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-slate-900 shadow-sm focus:border-[#3525cd] focus:outline-none focus:ring-1 focus:ring-[#3525cd]"
+          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-slate-900 shadow-sm focus:border-nw-brand focus:outline-none focus:ring-1 focus:ring-nw-brand"
         >
           <option value="">All</option>
           {currencyOptions.map((c) => (
@@ -59,7 +59,7 @@ export function AdminDonationsFilters({
           defaultValue={q ?? ""}
           placeholder="Donor email…"
           autoComplete="off"
-          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-[#3525cd] focus:outline-none focus:ring-1 focus:ring-[#3525cd]"
+          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-nw-brand focus:outline-none focus:ring-1 focus:ring-nw-brand"
         />
       </label>
 

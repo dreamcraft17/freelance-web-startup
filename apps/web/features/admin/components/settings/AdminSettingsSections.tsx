@@ -93,7 +93,7 @@ export function EnvironmentInfoCard({ nodeEnv, vercelEnv }: EnvironmentInfoCardP
         <div className="border-t border-slate-100 pt-3">
           <p className="text-xs text-slate-600">
             Monetization toggles and resolved values:{" "}
-            <Link href={"/admin/feature-flags" as Route} className="font-medium text-[#3525cd] hover:underline">
+            <Link href={"/admin/feature-flags" as Route} className="font-medium text-nw-brand hover:underline">
               Feature flags
             </Link>
           </p>

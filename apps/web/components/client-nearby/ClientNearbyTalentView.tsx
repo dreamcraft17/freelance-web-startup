@@ -109,11 +109,11 @@ export function ClientNearbyTalentView({
       <section className="nw-card-trust overflow-hidden p-6 md:p-7">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div className="flex min-w-0 gap-4">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#3525cd] text-white shadow-lg shadow-[#3525cd]/25">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-nw-brand text-white shadow-lg shadow-nw-brand/25">
               <Navigation className="h-6 w-6" aria-hidden />
             </span>
             <div className="min-w-0">
-              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#3525cd]">Local talent</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-nw-brand">Local talent</p>
               <h2 className="mt-1 text-xl font-semibold tracking-tight text-slate-900 md:text-2xl">
                 Discover freelancers near you
               </h2>
@@ -127,12 +127,12 @@ export function ClientNearbyTalentView({
           {areaLabel ? (
             <div className="flex shrink-0 flex-col rounded-lg border border-slate-200 bg-white px-4 py-3 shadow-sm lg:min-w-[12rem] lg:text-right">
               <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-slate-500 lg:justify-end">
-                <MapPin className="h-3.5 w-3.5 text-[#3525cd]" aria-hidden />
+                <MapPin className="h-3.5 w-3.5 text-nw-brand" aria-hidden />
                 Your anchor
               </span>
               <span className="mt-1 text-sm font-semibold text-slate-900">{areaLabel}</span>
               {discovery === "geo" ? (
-                <span className="mt-2 inline-flex items-center justify-center rounded-full bg-[#3525cd]/10 px-2.5 py-1 text-xs font-semibold text-[#3525cd] ring-1 ring-[#3525cd]/20 lg:self-end">
+                <span className="mt-2 inline-flex items-center justify-center rounded-full bg-nw-brand/10 px-2.5 py-1 text-xs font-semibold text-nw-brand ring-1 ring-nw-brand/20 lg:self-end">
                   Radius · {radiusKm} km
                 </span>
               ) : (
@@ -161,7 +161,7 @@ export function ClientNearbyTalentView({
             type="search"
             defaultValue={searchDefaults.q}
             placeholder="Name, headline, or keywords…"
-            className="flex h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus-visible:border-[#3525cd]/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/20"
+            className="flex h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus-visible:border-nw-brand/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-nw-brand/20"
           />
         </div>
         <div className="w-full space-y-1.5 md:w-44">
@@ -172,7 +172,7 @@ export function ClientNearbyTalentView({
             id="client-nearby-mode"
             name="workMode"
             defaultValue={searchDefaults.workMode}
-            className="flex h-10 w-full rounded-lg border border-slate-200 bg-white px-2 text-sm text-slate-900 shadow-sm focus-visible:border-[#3525cd]/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/20"
+            className="flex h-10 w-full rounded-lg border border-slate-200 bg-white px-2 text-sm text-slate-900 shadow-sm focus-visible:border-nw-brand/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-nw-brand/20"
           >
             <option value="">Any</option>
             <option value="REMOTE">Remote</option>
@@ -192,7 +192,7 @@ export function ClientNearbyTalentView({
               id="client-nearby-radius"
               name="radiusKm"
               defaultValue={String(searchDefaults.radiusKm)}
-              className="flex h-10 w-full rounded-lg border border-slate-200 bg-white px-2 text-sm text-slate-900 shadow-sm focus-visible:border-[#3525cd]/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/20"
+              className="flex h-10 w-full rounded-lg border border-slate-200 bg-white px-2 text-sm text-slate-900 shadow-sm focus-visible:border-nw-brand/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-nw-brand/20"
             >
               {[25, 50, 75, 100, 150, 200].map((r) => (
                 <option key={r} value={String(r)}>
@@ -210,7 +210,7 @@ export function ClientNearbyTalentView({
         <div className="flex flex-wrap gap-2 md:ml-auto">
           <button
             type="submit"
-            className="inline-flex h-10 items-center justify-center rounded-lg bg-[#3525cd] px-5 text-sm font-semibold text-white shadow-md shadow-[#3525cd]/20 transition hover:bg-[#2d1fb0]"
+            className="inline-flex h-10 items-center justify-center rounded-lg bg-nw-brand px-5 text-sm font-semibold text-white shadow-md shadow-nw-brand/20 transition hover:bg-nw-brand/90"
           >
             Apply filters
           </button>
@@ -245,12 +245,12 @@ export function ClientNearbyTalentView({
                   href={`/freelancers/${f.username}` as Route}
                   className={cn(
                     "flex h-full flex-col rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition",
-                    "ring-1 ring-slate-900/[0.02] hover:border-[#3525cd]/30 hover:shadow-md",
+                    "ring-1 ring-slate-900/[0.02] hover:border-nw-brand/30 hover:shadow-md",
                     f.distanceKm != null && f.distanceKm <= 15 ? "ring-2 ring-emerald-200/70" : ""
                   )}
                 >
                   <div className="flex items-start gap-3">
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#3525cd]/10 text-sm font-bold text-[#3525cd] ring-1 ring-[#3525cd]/15">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-nw-brand/10 text-sm font-bold text-nw-brand ring-1 ring-nw-brand/15">
                       {initials(f.fullName)}
                     </span>
                     <div className="min-w-0 flex-1">
@@ -262,7 +262,7 @@ export function ClientNearbyTalentView({
                         {dist}
                       </span>
                     ) : (
-                      <span className="shrink-0 rounded-full bg-[#3525cd]/10 px-2.5 py-1 text-xs font-semibold text-[#3525cd] ring-1 ring-[#3525cd]/15">
+                      <span className="shrink-0 rounded-full bg-nw-brand/10 px-2.5 py-1 text-xs font-semibold text-nw-brand ring-1 ring-nw-brand/15">
                         Area match
                       </span>
                     )}

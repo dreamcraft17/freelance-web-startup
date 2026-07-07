@@ -97,7 +97,7 @@ function TypeIcon({ type }: { type: string }) {
   const common = "h-5 w-5 shrink-0";
   switch (type) {
     case NotificationType.NEW_MESSAGE:
-      return <MessageSquare className={cn(common, "text-[#3525cd]")} aria-hidden />;
+      return <MessageSquare className={cn(common, "text-nw-brand")} aria-hidden />;
     case NotificationType.BID_SUBMITTED:
     case NotificationType.BID_SHORTLISTED:
       return <Briefcase className={cn(common, "text-slate-700")} aria-hidden />;
@@ -252,7 +252,7 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
               className={cn(
                 "rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors duration-200 ring-1",
                 active
-                  ? "bg-[#3525cd] text-white ring-[#3525cd] shadow-sm"
+                  ? "bg-nw-brand text-white ring-nw-brand shadow-sm"
                   : "nw-chip nw-chip-muted rounded-full normal-case tracking-normal ring-slate-200/90 hover:bg-white"
               )}
             >
@@ -287,11 +287,11 @@ export function NotificationsCenter({ items }: NotificationsCenterProps) {
         <section aria-labelledby="notif-unread-heading" className="space-y-3">
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-[#3525cd]" aria-hidden />
+              <span className="h-2 w-2 rounded-full bg-nw-brand" aria-hidden />
               <h2 id="notif-unread-heading" className="nw-type-section">
                 {t("notifications.unreadLabel")}
               </h2>
-              <span className="rounded-full bg-[#3525cd]/10 px-2 py-0.5 text-xs font-semibold tabular-nums text-[#3525cd] ring-1 ring-[#3525cd]/10">
+              <span className="rounded-full bg-nw-brand/10 px-2 py-0.5 text-xs font-semibold tabular-nums text-nw-brand ring-1 ring-nw-brand/10">
                 {unread.length}
               </span>
             </div>
@@ -412,19 +412,19 @@ function NotificationRow({
         onClick={onActivate}
         disabled={busy}
         className={cn(
-          "flex w-full gap-2.5 px-3.5 py-3 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/30 focus-visible:ring-offset-2 md:gap-3 md:px-4 md:py-3",
+          "flex w-full gap-2.5 px-3.5 py-3 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-nw-brand/30 focus-visible:ring-offset-2 md:gap-3 md:px-4 md:py-3",
           isUnread
-            ? "border-l-[3px] border-l-[#3525cd] bg-[#3525cd]/[0.035] hover:bg-[#3525cd]/[0.06]"
+            ? "border-l-[3px] border-l-nw-brand bg-nw-brand/[0.035] hover:bg-nw-brand/[0.06]"
             : "border-l-[3px] border-l-transparent bg-transparent hover:bg-slate-100/60"
         )}
       >
         <span
           className={cn(
             "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-sm ring-1",
-            isUnread ? "bg-white ring-[#3525cd]/12" : "bg-white ring-slate-200/70"
+            isUnread ? "bg-white ring-nw-brand/12" : "bg-white ring-slate-200/70"
           )}
         >
-          {busy ? <Loader2 className="h-5 w-5 animate-spin text-[#3525cd]" aria-hidden /> : <TypeIcon type={item.type} />}
+          {busy ? <Loader2 className="h-5 w-5 animate-spin text-nw-brand" aria-hidden /> : <TypeIcon type={item.type} />}
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1">

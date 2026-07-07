@@ -176,7 +176,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
             required
             placeholder={t("auth.login.emailPlaceholder")}
             disabled={loading}
-            className="block w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-900 shadow-sm outline-none transition-colors placeholder:text-slate-400 focus:border-[#3525cd] focus:ring-2 focus:ring-[#3525cd]/35 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-60"
+            className="block w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-900 shadow-sm outline-none transition-colors placeholder:text-slate-400 focus:border-nw-brand focus:ring-2 focus:ring-nw-brand/35 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-60"
           />
         </div>
 
@@ -187,7 +187,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
             </label>
             <Link
               href={"/forgot-password" as Route}
-              className="text-xs font-medium text-[#3525cd] hover:text-[#4f46e5]"
+              className="text-xs font-medium text-nw-brand hover:text-[#4f46e5]"
             >
               {t("auth.login.forgot")}
             </Link>
@@ -201,7 +201,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
               autoComplete="current-password"
               required
               disabled={loading}
-              className="block w-full rounded-lg border border-slate-200 bg-white py-3 pl-3 pr-11 text-sm text-slate-900 shadow-sm outline-none transition-colors focus:border-[#3525cd] focus:ring-2 focus:ring-[#3525cd]/35 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-60"
+              className="block w-full rounded-lg border border-slate-200 bg-white py-3 pl-3 pr-11 text-sm text-slate-900 shadow-sm outline-none transition-colors focus:border-nw-brand focus:ring-2 focus:ring-nw-brand/35 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-60"
             />
             <button
               type="button"
@@ -220,7 +220,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
           type="submit"
           data-testid="login-submit"
           disabled={loading}
-          className="flex w-full items-center justify-center rounded-lg bg-[#3525cd] px-4 py-3 text-sm font-semibold text-white shadow-md transition-colors hover:bg-[#4f46e5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3525cd] disabled:pointer-events-none disabled:opacity-60"
+          className="flex w-full items-center justify-center rounded-lg bg-nw-brand px-4 py-3 text-sm font-semibold text-white shadow-md transition-colors hover:bg-nw-brand/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nw-brand disabled:pointer-events-none disabled:opacity-60"
         >
           {loading ? (
             <span className="mr-2 h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/60 border-t-white" aria-hidden />
@@ -251,7 +251,7 @@ export function LoginForm({ returnUrl, intent = "continue" }: LoginFormProps) {
 
       <p className="text-center text-sm text-slate-500">
         {t("auth.login.dontHaveAccount")}{" "}
-        <Link href={signUpHref as Route} className="font-semibold text-[#3525cd] hover:text-[#4f46e5]">
+        <Link href={signUpHref as Route} className="font-semibold text-nw-brand hover:text-[#4f46e5]">
           {t("auth.login.signUp")}
         </Link>
       </p>

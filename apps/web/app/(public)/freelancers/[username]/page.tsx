@@ -229,7 +229,7 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
   return (
     <div className={`${NW_PAGE_WRAP} nw-page-stack`}>
       <nav className="mb-5 text-sm text-slate-500">
-        <Link href={freelancersBrowseRoot as Route} className="font-medium text-[#3525cd] underline-offset-4 hover:underline">
+        <Link href={freelancersBrowseRoot as Route} className="font-medium text-nw-brand underline-offset-4 hover:underline">
           {t("public.freelancers.pageTitle")}
         </Link>
         <span className="mx-2 text-slate-300">/</span>
@@ -244,12 +244,12 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
             />
 
             {isProfileOwner ? (
-              <div className="mb-5 rounded-xl border border-[#3525cd]/20 bg-[#f4f2ff] px-4 py-3">
-                <p className="text-sm font-bold text-[#2a1daa]">{t("public.freelancerProfile.ownerBannerTitle")}</p>
+              <div className="mb-5 rounded-xl border border-nw-brand/20 bg-[#f4f2ff] px-4 py-3">
+                <p className="text-sm font-bold text-nw-brand">{t("public.freelancerProfile.ownerBannerTitle")}</p>
                 <p className="mt-1 text-xs font-medium text-slate-700">{t("public.freelancerProfile.ownerBannerBody")}</p>
                 <Link
                   href={workspaceProfileEdit}
-                  className="mt-2 inline-flex text-xs font-bold text-[#3525cd] hover:underline"
+                  className="mt-2 inline-flex text-xs font-bold text-nw-brand hover:underline"
                 >
                   {t("public.freelancerProfile.ownerBannerCta")}
                 </Link>
@@ -277,7 +277,7 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
 
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <p className={`${NW_SECTION_KICKER} text-[#3525cd]/90`}>{t("public.freelancerProfile.heroKicker")}</p>
+                  <p className={`${NW_SECTION_KICKER} text-nw-brand/90`}>{t("public.freelancerProfile.heroKicker")}</p>
                   {verified ? (
                     <span className={`${NW_BADGE_PRIMARY} inline-flex items-center gap-1 font-bold`}>
                       <ShieldCheck className="h-3 w-3" aria-hidden />
@@ -353,7 +353,7 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
                         href={workspaceMessages}
                         intent="send-message"
                         unauthenticatedTo="login"
-                        className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-[#3525cd] px-5 text-sm font-bold text-white shadow-sm transition hover:bg-[#2b1daa] sm:min-w-[12rem]"
+                        className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-nw-brand px-5 text-sm font-bold text-white shadow-sm transition hover:bg-[#2b1daa] sm:min-w-[12rem]"
                       >
                         <MessageCircle className="h-4 w-4 shrink-0" aria-hidden />
                         {t("public.freelancerProfile.primaryCta")}
@@ -428,7 +428,7 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
               <ul className="mt-5 space-y-5">
                 {[...servicesByCategory.entries()].map(([category, names]) => (
                   <li key={category}>
-                    <p className="nw-type-micro text-[#3525cd]/90">{category}</p>
+                    <p className="nw-type-micro text-nw-brand/90">{category}</p>
                     <div className="mt-2 flex flex-wrap gap-2">
                       {names.map((name) => (
                         <span key={name} className={NW_CHIP_SKILL}>
@@ -512,7 +512,7 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
                         href={item.mediaUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3525cd]/35"
+                        className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-nw-brand/35"
                       >
                         {isImage ? (
                           // eslint-disable-next-line @next/next/no-img-element -- user-provided external media URL
@@ -547,7 +547,7 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
               <p className={NW_SECTION_KICKER}>{t("public.freelancerProfile.portfolioSectionTitle")}</p>
               <p className="mt-2 text-sm font-semibold text-slate-800">{t("public.freelancerProfile.portfolioEmptyOwnerTitle")}</p>
               <p className="mt-1 text-sm text-slate-600">{t("public.freelancerProfile.portfolioEmptyOwnerBody")}</p>
-              <Link href={workspaceProfileEdit} className="mt-3 inline-flex text-sm font-bold text-[#3525cd] hover:underline">
+              <Link href={workspaceProfileEdit} className="mt-3 inline-flex text-sm font-bold text-nw-brand hover:underline">
                 {t("public.freelancerProfile.portfolioEmptyOwnerCta")}
               </Link>
             </section>
@@ -581,7 +581,7 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
                     <li key={review.id} className="rounded-xl border border-slate-200/90 bg-white p-4 shadow-sm">
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div className="min-w-0">
-                          <p className="text-xs font-bold uppercase tracking-wide text-[#3525cd]/90">
+                          <p className="text-xs font-bold uppercase tracking-wide text-nw-brand/90">
                             {t("public.freelancerProfile.reviewClientFeedback")}
                           </p>
                           {jobTitle ? (
@@ -640,7 +640,7 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
                 href={workspaceMessages}
                 intent="send-message"
                 unauthenticatedTo="login"
-                className="mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#3525cd] px-5 text-sm font-bold text-white transition hover:bg-[#2b1daa]"
+                className="mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-nw-brand px-5 text-sm font-bold text-white transition hover:bg-[#2b1daa]"
               >
                 <MessageCircle className="h-4 w-4" aria-hidden />
                 {t("public.freelancerProfile.primaryCta")}
@@ -718,7 +718,7 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
                 href={workspaceMessages}
                 intent="send-message"
                 unauthenticatedTo="login"
-                className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#3525cd] px-4 text-sm font-bold text-white shadow-sm transition hover:bg-[#2b1daa]"
+                className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-nw-brand px-4 text-sm font-bold text-white shadow-sm transition hover:bg-[#2b1daa]"
               >
                 <MessageCircle className="h-4 w-4 shrink-0" aria-hidden />
                 {t("public.freelancerProfile.primaryCta")}
@@ -749,7 +749,7 @@ export default async function FreelancerPublicProfilePage({ params }: PageProps)
               href={workspaceMessages}
               intent="send-message"
               unauthenticatedTo="login"
-              className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-[#3525cd] px-3 text-sm font-bold text-white"
+              className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-nw-brand px-3 text-sm font-bold text-white"
             >
               <MessageCircle className="h-4 w-4 shrink-0" aria-hidden />
               {t("public.freelancerProfile.primaryCtaShort")}

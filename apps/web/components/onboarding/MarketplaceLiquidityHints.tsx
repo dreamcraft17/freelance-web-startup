@@ -19,7 +19,7 @@ export function MarketplaceLiquidityHints({ title, intro, bullets, footer }: Pro
       <ul className="mt-2.5 space-y-2 text-[12px] leading-relaxed text-slate-700 md:text-[13px]">
         {bullets.map((line, idx) => (
           <li key={idx} className="flex gap-2">
-            <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#3525cd]" aria-hidden />
+            <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-nw-brand" aria-hidden />
             <span>{line}</span>
           </li>
         ))}

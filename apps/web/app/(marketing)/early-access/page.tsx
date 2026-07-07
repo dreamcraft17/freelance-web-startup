@@ -34,7 +34,7 @@ export default async function EarlyAccessPage() {
           <h2 className="text-base font-semibold text-slate-900">{t("marketing.earlyAccess.evolvingTitle")}</h2>
           <p className="mt-2">
             {t("marketing.earlyAccess.evolvingPrefix")}{" "}
-            <Link href={helpPath as Route} className="font-semibold text-[#3525cd] hover:underline">
+            <Link href={helpPath as Route} className="font-semibold text-nw-brand hover:underline">
               {t("nav.help")}
             </Link>{" "}
             {t("marketing.earlyAccess.evolvingSuffix")}
@@ -57,7 +57,7 @@ export default async function EarlyAccessPage() {
         </Link>
         <Link
           href={jobsPath as Route}
-          className="inline-flex justify-center rounded-lg border border-transparent px-6 py-3 text-center text-sm font-semibold text-[#3525cd] hover:underline"
+          className="inline-flex justify-center rounded-lg border border-transparent px-6 py-3 text-center text-sm font-semibold text-nw-brand hover:underline"
         >
           {t("marketing.earlyAccess.ctaJobs")}
         </Link>

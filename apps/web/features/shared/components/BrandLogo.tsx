@@ -22,11 +22,11 @@ export function BrandLogo({
   return (
     <Link
       href={href}
-      className={`inline-flex items-center outline-none ring-offset-2 focus-visible:ring-2 focus-visible:ring-[#3525cd] ${className}`.trim()}
+      className={`inline-flex items-center outline-none ring-offset-2 focus-visible:ring-2 focus-visible:ring-nw-brand ${className}`.trim()}
       aria-label="NearWork home"
     >
       {failed ? (
-        <span className="text-sm font-semibold tracking-tight text-[#3525cd]">NearWork</span>
+        <span className="text-sm font-semibold tracking-tight text-nw-brand">NearWork</span>
       ) : (
         <img src="/logo/logo_EN.png" alt={alt} className={imageClassName} onError={() => setFailed(true)} />
       )}

@@ -22,7 +22,7 @@ export type AdminUserRow = {
 function Pill({ children, tone }: { children: string; tone: "slate" | "indigo" }) {
   const cls =
     tone === "indigo"
-      ? "bg-[#3525cd]/10 text-[#2d1fa8] ring-1 ring-[#3525cd]/15"
+      ? "bg-nw-brand/10 text-[#2d1fa8] ring-1 ring-nw-brand/15"
       : "bg-slate-100 text-slate-800 ring-1 ring-slate-200/80";
   return (
     <span className={`nw-chip inline-flex max-w-full truncate font-mono normal-case tracking-normal ${cls}`}>

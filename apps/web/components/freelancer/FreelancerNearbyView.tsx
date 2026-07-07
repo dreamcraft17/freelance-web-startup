@@ -94,11 +94,11 @@ export function FreelancerNearbyView({
       <div className="nw-card-trust p-5 md:p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex min-w-0 gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#3525cd] text-white shadow-md">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-nw-brand text-white shadow-md">
               <Navigation className="h-5 w-5" aria-hidden />
             </span>
             <div className="min-w-0">
-              <p className="text-xs font-semibold uppercase tracking-wide text-[#3525cd]">NearWork Nearby</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-nw-brand">NearWork Nearby</p>
               <h2 className="mt-1 text-lg font-semibold text-slate-900">Discovery anchored to you</h2>
               <p className="mt-1 text-sm leading-relaxed text-slate-600">
                 {discovery === "geo"
@@ -110,12 +110,12 @@ export function FreelancerNearbyView({
           {areaLabel ? (
             <div className="flex shrink-0 flex-col items-stretch rounded-lg border border-slate-200 bg-white px-4 py-3 text-left shadow-sm sm:items-end sm:text-right">
               <span className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-slate-500">
-                <MapPin className="h-3.5 w-3.5 text-[#3525cd]" aria-hidden />
+                <MapPin className="h-3.5 w-3.5 text-nw-brand" aria-hidden />
                 Your area
               </span>
               <span className="mt-1 text-sm font-semibold text-slate-900">{areaLabel}</span>
               {discovery === "geo" ? (
-                <span className="mt-2 inline-flex items-center rounded-full bg-[#3525cd]/10 px-2.5 py-0.5 text-xs font-semibold text-[#3525cd] ring-1 ring-[#3525cd]/20">
+                <span className="mt-2 inline-flex items-center rounded-full bg-nw-brand/10 px-2.5 py-0.5 text-xs font-semibold text-nw-brand ring-1 ring-nw-brand/20">
                   Radius · {radiusKm} km
                 </span>
               ) : null}
@@ -184,7 +184,7 @@ export function FreelancerNearbyView({
         <div className="flex gap-2 md:ml-auto">
           <button
             type="submit"
-            className="inline-flex h-9 items-center justify-center rounded-md bg-[#3525cd] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#2d1fb0]"
+            className="inline-flex h-9 items-center justify-center rounded-md bg-nw-brand px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-nw-brand/90"
           >
             Apply
           </button>
@@ -216,7 +216,7 @@ export function FreelancerNearbyView({
                 <Link
                   href={`${jobsBrowseRoot}/${job.id}` as Route}
                   className={cn(
-                    "block rounded-xl border border-slate-200/90 bg-white p-4 shadow-sm transition hover:border-[#3525cd]/25 hover:shadow-md md:p-5",
+                    "block rounded-xl border border-slate-200/90 bg-white p-4 shadow-sm transition hover:border-nw-brand/25 hover:shadow-md md:p-5",
                     job.distanceKm != null && job.distanceKm <= 15
                       ? "ring-1 ring-emerald-200/60"
                       : "ring-1 ring-slate-100/80"
@@ -236,7 +236,7 @@ export function FreelancerNearbyView({
                           {dist} away
                         </span>
                       ) : (
-                        <span className="inline-flex items-center rounded-full bg-[#3525cd]/10 px-2.5 py-1 text-xs font-semibold text-[#3525cd] ring-1 ring-[#3525cd]/15">
+                        <span className="inline-flex items-center rounded-full bg-nw-brand/10 px-2.5 py-1 text-xs font-semibold text-nw-brand ring-1 ring-nw-brand/15">
                           Area match
                         </span>
                       )}

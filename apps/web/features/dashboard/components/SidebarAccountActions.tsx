@@ -31,7 +31,7 @@ export function SidebarAccountActions({ compact = false }: SidebarAccountActions
           className={cn(
             "flex items-center gap-2 rounded-lg py-2 pl-3 pr-2.5 text-[13px] font-medium leading-snug transition-colors",
             settingsActive
-              ? "border-l-[3px] border-l-[#3525cd] bg-[#3525cd]/[0.09] font-semibold text-[#3525cd] shadow-sm ring-1 ring-[#3525cd]/10"
+              ? "border-l-[3px] border-l-nw-brand bg-nw-brand/[0.09] font-semibold text-nw-brand shadow-sm ring-1 ring-nw-brand/10"
               : "border-l-[3px] border-l-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900"
           )}
         >
