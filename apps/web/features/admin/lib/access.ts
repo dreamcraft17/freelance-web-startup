@@ -23,6 +23,8 @@ export type AdminPageKey =
   | "verification"
   | "reviews"
   | "reports"
+  | "appeals"
+  | "analytics"
   | "donations"
   | "subscriptions"
   | "feature-flags"
@@ -40,6 +42,8 @@ const FULL: AdminPageKey[] = [
   "verification",
   "reviews",
   "reports",
+  "appeals",
+  "analytics",
   "donations",
   "subscriptions",
   "feature-flags",
@@ -56,14 +60,15 @@ const SUPPORT: AdminPageKey[] = [
   "verification",
   "reviews",
   "reports",
+  "appeals",
   "settings"
 ];
 
 /** MODERATOR: jobs, verification, reviews, reports (+ overview) — no settings per matrix */
-const MODERATION: AdminPageKey[] = ["overview", "jobs", "verification", "reviews", "reports"];
+const MODERATION: AdminPageKey[] = ["overview", "jobs", "verification", "reviews", "reports", "appeals"];
 
 /** FINANCE_ADMIN: donations, subscriptions, feature-flags, settings (+ overview) */
-const FINANCE: AdminPageKey[] = ["overview", "donations", "subscriptions", "feature-flags", "settings"];
+const FINANCE: AdminPageKey[] = ["overview", "donations", "subscriptions", "analytics", "feature-flags", "settings"];
 
 /**
  * Human-readable matrix (single source of truth for product docs).
@@ -86,6 +91,8 @@ const PATH_SEGMENT_TO_PAGE: Record<string, AdminPageKey> = {
   verification: "verification",
   reviews: "reviews",
   reports: "reports",
+  appeals: "appeals",
+  analytics: "analytics",
   donations: "donations",
   subscriptions: "subscriptions",
   "feature-flags": "feature-flags",

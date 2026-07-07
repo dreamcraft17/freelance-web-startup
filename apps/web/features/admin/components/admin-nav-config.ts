@@ -19,6 +19,8 @@ export const ADMIN_NAV_ITEMS: AdminNavItem[] = [
   { href: "/admin/verification", label: "Verification", section: "verification", group: "Operations" },
   { href: "/admin/reviews", label: "Reviews", section: "reviews", group: "Operations" },
   { href: "/admin/reports", label: "Reports", section: "reports", group: "Operations" },
+  { href: "/admin/appeals", label: "Appeals", section: "appeals", group: "Operations" },
+  { href: "/admin/analytics", label: "Analytics", section: "analytics", group: "Finance" },
   { href: "/admin/donations", label: "Donations", section: "donations", group: "Finance" },
   { href: "/admin/subscriptions", label: "Subscriptions", section: "subscriptions", group: "Finance" },
   { href: "/admin/feature-flags", label: "Feature Flags", section: "feature-flags", group: "Platform" },
