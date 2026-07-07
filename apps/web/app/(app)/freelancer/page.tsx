@@ -20,6 +20,7 @@ import {
   type FreelancerDashboardContract,
   type FreelancerOpenJob
 } from "@/components/dashboard/FreelancerDashboard";
+import { RecommendedJobsWidget } from "@/components/dashboard/RecommendedJobsWidget";
 
 function firstName(fullName: string): string | null {
   const t = fullName.trim();
@@ -371,7 +372,9 @@ export default async function FreelancerDashboardPage() {
   ];
 
   return (
-    <FreelancerDashboard
+    <div className="space-y-6">
+      <RecommendedJobsWidget freelancerUserId={session.userId} locale={locale} />
+      <FreelancerDashboard
       locale={locale}
       welcomeTitle={welcomeTitle}
       subtitle={subtitle}
@@ -519,5 +522,6 @@ export default async function FreelancerDashboardPage() {
           }))
       }}
     />
+    </div>
   );
 }
