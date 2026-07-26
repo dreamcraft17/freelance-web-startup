@@ -1,463 +1,215 @@
-# 🚀 Freelance-Web — Hyperlocal Freelance SaaS Platform
+# NearWork
 
-> **Doc revision:** v107
-> Last synchronized: 2026-06-19 — moderation SLA, escalation worker, dedupe, and staff audit trail.
+**NearWork** adalah marketplace freelance untuk merekrut: klien memasang lowongan, freelancer mengirim proposal, dan percakapan tetap terikat pada job yang sama — remote, on-site, maupun hybrid (hyperlocal).
 
-Freelance-Web adalah platform marketplace freelance berbasis SaaS yang menggabungkan konsep:
-- Upwork / Freelancer (bidding system)
-- Fastwork (service-based)
-- Marketplace jasa lokal (hyperlocal discovery)
+| | |
+|---|---|
+| Owner | Dozer (CEO + Tech Lead) |
+| Company | DN Tech (PT. Dozer Napitupulu Technology) |
+| Brand | NearWork |
+| Package | `freelance-marketplace-saas` · folder `NearWorks/` |
+| Status | **V2 Foundation** · MVP+ operasional · PSP production = Conditional (MOCK tanpa key) |
+| Docs | **[Index](./docs/00_INDEX.md)** · [Cara pakai](./docs/USER-GUIDE.md) · [Cara kerja](./docs/HOW-IT-WORKS.md) · [Deploy](./docs/DEPLOYMENT.md) |
+| PRD berikutnya | **[NEXT-PRD-BRIEF.md](./docs/NEXT-PRD-BRIEF.md)** |
+| UpdatedAt | 26 Juli 2026 |
+| License | Private — internal use only |
 
-Platform ini dirancang untuk mendukung **semua jenis freelance**, bukan hanya programmer:
-- Digital services (dev, design, marketing)
-- Creative (photo, video, content)
-- Professional (consulting, tutoring)
-- Local services (event, beauty, handyman, dll)
-
----
-
-## ✨ Core Features
-
-- **Trust & safety operations:** report intake dengan active-ticket dedupe, priority/SLA berbasis kategori, moderation desk notifications, audit trail, dan worker escalation untuk tiket overdue. Queue `/admin/reports` menampilkan deadline serta status attention.
-
-### 🔹 Locale / i18n (apps/web)
-
-- Kamus JSON: `apps/web/locales/en.json`, `apps/web/locales/id.json`.
-- Preferensi: cookie **`lang`** (`en` \| `id`); API: `POST /api/locale` dengan body JSON `{ "locale": "en" | "id" }`.
-- **Workspace routes:** permukaan `/client`, `/freelancer`, `/messages`, `/notifications`, `/settings` dialihkan ke **`/<lang>/…`** di URL publik; middleware melakukan rewrite ke file route yang sama dan menyetel header locale. `/admin` tidak di-prefix.
-- Provider: `I18nProvider` di root layout; server helpers: `getAppLocale()`, `getServerTranslator()`.
-- SEO routes: `app/[locale]` untuk halaman publik (`/en/*`, `/id/*`) dengan metadata per-locale + `alternates.languages` (`en`, `id`, `x-default`).
-- Cakupan terbaru: halaman detail job (`/jobs/[jobId]`) termasuk form proposal + review owner, workspace `/messages`, legal (`/terms`, `/privacy`), forbidden, dan nearby search sudah membaca kamus EN/ID; struktur `public.jobDetail` di `id.json` selaras dengan `en.json` (label status job/bid).
-- **UGC translation (jobs only):** saat job dibuat, server mendeteksi bahasa (`id`/`en`) lalu menyimpan teks asli + terjemahan cache (`titleId`, `titleEn`, `descriptionId`, `descriptionEn`, `language`) agar render per-locale tidak memanggil API setiap request.
-- Integrasi translate berjalan **server-side only** via `GOOGLE_TRANSLATE_API_KEY` (jangan expose ke frontend).
-- Homepage publik (`/[locale]`) memakai metadata SEO per bahasa untuk marketplace terstruktur (lokal/remote/hybrid + alur job/proposal/chat), hero dengan CTA terpisah klien vs freelancer, kartu alur proses menggantikan persona demo, serta section penjelasan cara kerja, manfaat audiens, trust, dan early-access.
-- Homepage publik menambahkan lapisan marketplace yang lebih aktif: category browse lane horizontal di bawah search, hero trust cues + quick browse link, dan listing preview row-style dengan atribut operasional (harga, lokasi, tags, action links) agar entry ke discovery lebih terasa seperti produk live.
-- Refinement terbaru menambah activity signals ringan di row preview, merapikan alignment data untuk compare cepat, mempertegas category lane sebagai navigasi, dan menambah cue urgensi operasional di hero tanpa elemen dekoratif berlebih.
-- Pass lanjutan memperkuat confidence memilih: tiap row punya alasan pemilihan singkat, top rows diberi penekanan ringan, CTA utama per-row dibuat lebih tegas daripada aksi sekunder, dan harga dilengkapi konteks value.
-- Upgrade struktur terbaru memecah layout hero menjadi komposisi asimetris, menambahkan mini visual board fungsional, mengubah kategori ke grid entry points berbasis ikon, dan menambah thumbnail-style anchors di listing agar eksplorasi terasa lebih aktif.
-- Ditambahkan juga activity strip kompak di bawah hero untuk menampilkan sinyal live + shortcut eksplorasi (trending lanes, nearby/remote filters, active briefs) agar user langsung punya langkah berikutnya.
-- Panel metrik publik di hero dan angka sistem mentah di strip aktivitas kini dihapus agar landing tetap fokus pada aksi pengguna (search, browse, choose, open listings), bukan analytics internal.
-- Iterasi terbaru menambah mode switch `hire/work`, quick filters search (nearby/remote/budget), dan CTA hierarchy yang lebih tegas (satu primary action per mode) agar user lebih cepat masuk ke aksi.
-- Mode `hire/work` kini juga persist di URL (`?intent=hire|work`) agar state tetap konsisten saat refresh/share link, sekaligus menjaga sinkronisasi mode switch dan CTA tanpa flicker client-state.
-- Perilaku bahasa publik kini default ke Indonesia (`id`) untuk pengunjung baru; preferensi yang sudah dipilih user tetap dihormati melalui cookie `lang`, dan redirect locale dilakukan server-side untuk menghindari flicker.
-- Refinement terbaru: routing locale publik sekarang memakai urutan URL locale -> cookie preferensi -> fallback `id`; `Accept-Language` tidak lagi dipakai untuk override default first-visit behavior.
-- Form login kini punya feedback loading yang lebih jelas (overlay + indikator proses + lock interaksi) agar user tahu sistem sedang memproses saat klik masuk.
-- Pola overlay loading auth juga diekstrak ke komponen reusable agar mudah diterapkan ke register/forgot-password tanpa duplikasi.
-- Flow register dan forgot-password kini memakai pola submit overlay yang sama (fullscreen dim + centered status + disabled controls + anti double-submit) dengan copy loading terlokalisasi per halaman.
-- Konsistensi i18n auth diperketat: seluruh teks user-facing pada login/register/forgot-password kini dibaca dari kamus locale (`en`/`id`), termasuk label form, helper copy, role descriptions, dan pesan error register.
-- Copy konteks redirect setelah register kini lebih human-friendly: user melihat tujuan seperti `halaman profil Anda` / `your profile page`, bukan path teknis seperti `/freelancer/profile`.
-- Homepage locale kini default ke intent `hire` (bukan neutral) agar first paint konsisten dengan hero target, termasuk emphasis headline dan CTA recruiter-first.
-- Footer marketing publik diperluas ke pola multi-kolom (brand + social, product/company/support links, newsletter field, locale marker) agar komposisi halaman utama lebih dekat dengan referensi final.
-- Halaman publik `/freelancers` kini dipoles sebagai directory yang lebih decision-oriented: hasil ditata dalam row comparison layout, rate context (`starting at`) lebih tegas, sinyal pilih cepat (nearby/available/popular/top-rated) ditampilkan ringkas, dan CTA utama per hasil dipusatkan ke `View profile`.
-- Refinement lanjutan menekankan alasan pemilihan nyata per freelancer (`why choose this`) berbasis data (review strength, volume hire proxy, nearby fit, budget fit), menambah hierarchy subtle untuk top matches (`Best match` / `Recommended`), serta menaikkan visibilitas rating agar keputusan user lebih percaya diri.
-- Halaman publik detail freelancer (`/freelancers/[username]`) kini ditata ulang menjadi conversion surface: top summary menonjolkan trust + pricing + availability, section `why choose this` berbasis data nyata, skills/reviews dipindah ke struktur keputusan, dan CTA utama difokuskan ke aksi kontak.
-- Penyesuaian lanjutan mengurangi nuansa “social profile”: handle/identity visual sekunder dihapus dari hero, label sumber review dibuat netral untuk konteks proyek terverifikasi, dan aksi “save” tidak lagi mengganggu jalur keputusan utama client.
-- Final language pass memperkuat tone evaluasi hiring: label section di profile detail kini berfokus ke kerja (`Work summary`, `Service scope`, `Relevant experience`), bukan terminologi profile personal.
-- Refinement CTA final: aksi utama profile freelancer diperjelas menjadi `Start discussion`, ditopang reassurance copy (“diskusi dulu sebelum komitmen”) dan panel aksi sticky di desktop agar jalur konversi tetap terlihat tanpa scroll panjang.
-- Halaman publik `/jobs` kini dipoles sebagai job board yang lebih decision-first: filter budget + recency ditambahkan, row hasil menampilkan signal `why apply`, waktu posting, kategori kerja, confidence line proposal-context, dan CTA utama `View job` yang lebih tegas untuk alur scan -> compare -> apply.
-- Halaman detail job (`/jobs/[jobId]`) kini menampilkan top decision section yang lebih konversi-oriented untuk freelancer: budget/lokasi/mode/posting time + sinyal “worth applying”, panel CTA `Send proposal` yang terlihat di atas (sticky desktop), dan reassurance bahwa proposal memulai diskusi tanpa komitmen instan.
-- Panel `Send proposal` untuk freelancer login sekarang ditingkatkan dari CTA-only menjadi form terstruktur ringan (intro, pendekatan, timeline/ketersediaan, harga, estimasi hari) dengan placeholder guidance dan loading overlay saat submit agar proses apply lebih jelas dan minim ragu.
-- Form proposal tersebut kini punya autosave draft lokal berbasis `jobId + userId` (tanpa perubahan backend/API), memulihkan teks saat user kembali ke halaman, dan menghapus draft otomatis setelah submit sukses.
-- Setelah proposal terkirim, UX sekarang memberi next-step yang jelas ke percakapan kerja; bila thread job tersedia, user bisa langsung membuka `Open conversation` dan melihat konteks job/proposal di halaman `Messages`.
-- Jalur handoff tersebut kini menyertakan query `from=proposal`; halaman `Messages` menampilkan banner konteks singkat saat dibuka lewat jalur ini, lalu query dapat dibersihkan saat banner ditutup.
-- Untuk sisi client, dashboard + jobs list kini mempertegas sinyal proposal masuk per job dan owner job detail menambahkan ringkasan tindakan agar alur “ada proposal baru -> review -> chat -> shortlist/accept” lebih langsung.
-- Halaman `/client/jobs` sekarang punya quick filter `Needs review` agar client bisa langsung fokus ke job yang butuh tindakan hari ini, lengkap dengan empty state khusus saat belum ada item review.
-- UX notifikasi dipoles agar aktivitas penting (proposal masuk, pesan baru, bid accepted, update kontrak) lebih mudah dipindai dan selalu punya tujuan aksi yang jelas; dashboard role juga menampilkan cue perhatian yang lebih eksplisit.
-- Halaman notifikasi kini menyediakan filter kategori ringan (`All`, `Proposals`, `Messages`, `Contracts`) di sisi client untuk membantu triage cepat tanpa perubahan API/backend.
-- Setiap chip kategori notifikasi sekarang menampilkan jumlah item berdasarkan data yang sudah dimuat (tanpa request tambahan) untuk membantu scanning volume aktivitas lebih cepat.
-- Alur inti kini punya feedback langkah-lanjut lebih jelas: setelah posting job owner melihat konfirmasi + next action, dan saat membuka conversation dari review proposal, Messages menampilkan banner konteks agar transisi job -> chat tidak terasa putus.
-- Redirect pasca-sukses utama kini dipacing singkat (~400ms) agar transisi terasa lebih halus: publish job dan submit proposal tidak lagi terasa “langsung lompat”.
-- Empty state `/jobs` kini lebih actionable saat belum ada lowongan: headline aksi jelas, CTA prioritas, contoh use case posting, dan arahan berbasis role agar user tahu langkah berikutnya.
-- Homepage publik diperbarui agar lebih “live”: search jadi fokus utama, indikator aktivitas marketplace tampil ringkas, kategori menjadi grid card klik-besar, dan preview listing dipisah menjadi rail `Active freelancers` + `Recent jobs` yang ringan.
-- Micro-pass hero menajamkan keputusan 3 detik pertama: mode `hire/work` lebih langsung terbaca, CTA utama lebih menonjol, dan elemen teks kecil yang tidak kritikal dikurangi.
-- Refinement lanjutan memperkuat conversion cues: satu activity bar yang lebih bersih, kategori dengan contoh use-case nyata, sinyal urgency halus di preview rows, serta final CTA yang lebih action-oriented.
-- Pass energi marketplace terbaru menajamkan wording outcome-driven dan menjaga bukti aktivitas tetap jujur (tanpa angka palsu), sehingga halaman terasa aktif namun tetap product-first.
-- Refinement copywriting terbaru menambahkan proof lines langsung di bawah search + placeholder contoh layanan yang lebih konkret untuk mempercepat orientasi user.
-- Brand voice terbaru menyelaraskan copy homepage + surface publik kunci ke positioning NearWork sebagai **structured freelance marketplace**: alur job -> proposal -> discussion dibuat lebih eksplisit, trust line dipertegas (`All proposals and chats stay tied to the job`), CTA publik dipraktiskan (`Find freelancers`, `Post a job`, `Start discussion`), dan microcopy empty/reassurance dipangkas agar langsung actionable.
-- Hero homepage kini didesain ulang ke split layout yang lebih “live marketplace”: copy + CTA + search premium di kiri dan visual scenario slider di kanan (scene kerja nyata berbasis aset lokal ringan), plus activity line human-readable dengan fallback aman saat metrik rendah agar tidak memberi kesan platform sepi.
-- Micro-pass terbaru menjaga struktur hero tetap sama namun memoles ritme visual: spacing lebih lapang di desktop, stack mobile lebih rapi, trust/activity line lebih sekunder, input search lebih nyaman dipakai, dan slider controls/overlay dibuat lebih halus agar tidak terasa dekoratif.
-- Iterasi final hero menghapus komponen slider sepenuhnya untuk fokus produk yang lebih cepat: area kanan sekarang menjadi panel marketplace ringan berisi sinyal aktivitas nyata/fallback aman + sample rows struktural, tanpa menambah fitur dekoratif.
-- Safety pass lanjutan: panel marketplace kini menampilkan baris aktivitas dari data nyata saat tersedia; jika tidak ada data, panel menandai **Example activity** dan menampilkan copy fallback netral (tanpa identitas pengguna fiktif).
-- Trust pass final: panel tidak lagi menampilkan sample people/rows saat data kosong; hanya row real berbasis data listing yang dirender, atau fallback copy aman jika data belum tersedia.
-- Refinement `/freelancers` terbaru mengurangi kesan “dead empty marketplace”: headline dibuat lebih outcome-driven, quick chips ditambahkan di atas list, empty state diperkecil dan diarahkan ke aksi, skeleton rows ditampilkan saat hasil kosong, serta panel CTA sidebar disederhanakan fokus ke `Complete profile`.
-- Pass lanjutan `/freelancers` memoles kualitas marketplace list: setiap row menonjolkan role + 1-line value statement + trust/rating + location/work mode + starting price + signals keputusan, CTA tetap satu (`View profile`), dan mode kosong kini menampilkan `Example freelancers` agar user tetap memahami struktur perbandingan sebelum data masuk.
-- Redesign terbaru `/freelancers` menggeser halaman menjadi tool hiring cepat: search bar dominan + quick tags, filter kiri yang ringkas/collapsible, list kandidat tengah dengan hierarchy keputusan (`Nama > Harga > Status > Rating`), panel kanan live insights, CTA utama `Chat`, serta section `Job terbaru dari klien` di bawah listing untuk menjaga continuity aksi.
-- Redesign terbaru `/jobs` mengubah halaman lowongan menjadi board operasional: search bar dominan + quick tags, struktur 3 kolom (filter kiri, list tengah, insight kanan), row lowongan berorientasi scan cepat (judul/client/lokasi/budget/waktu + badge urgensi), dan CTA utama `Apply` dengan `Lihat detail` sebagai aksi sekunder.
-- Pass **2026-05-09** menaikkan `/jobs` ke experience marketplace premium: hero gradien penuh + kartu pencarian mengambang, kartu lowongan dengan nama klien/verifikasi/skill/jumlah proposal nyata, pulse aktivitas dari job & bid terbaru, filter sheet mobile, strip insight tanpa metrik respons palsu; warna primer UI selaras brand `#3525cd`.
-- Navigasi global kini memiliki feedback transisi halaman: progress bar tipis di atas layar saat route berubah, dim/fade halus pada konten selama perpindahan, dan skeleton fallback global agar perpindahan tidak terasa “kedip”/blank.
-- Homepage final kini tetap clean namun tidak kosong: toggle dua mode, headline/CTA/search dinamis, visual context cards di sisi kanan hero, search penuh (keyword+lokkasi+kategori+chips), value strip 3 poin, dan CTA bawah—tanpa list job/freelancer atau panel data-heavy.
-- Micro-pass terbaru menyelaraskan proporsi dan ritme landing agar lebih “plek ketiplek” dengan referensi final: skala headline, shape visual kanan, quick chips bar, serta band CTA.
-- Audit struktur repository terbaru menstandarkan `apps/web` ke pola root-level (`app`, `components`, `features`, `lib`, `server`, `locales`, `public`) tanpa source runtime di `apps/web/src`; alias `@src/*` dipertahankan sementara sebagai compatibility alias ke root path agar import lama tidak memecah build.
-- Landing homepage publik terbaru kini mengikuti pendekatan visual mockup SaaS modern: hero dua kolom dengan lavender accent halus, search card penuh, sidebar right-signal cards, kategori + live preview lebih compact, CTA bawah premium, serta navbar/footer yang lebih bersih.
-
-### 🔹 Marketplace Core
-- Client dapat membuat job/project
-- Freelancer dapat submit bid/proposal
-- Quota-based system (tanpa wajib subscribe untuk bidding)
-- Contract lifecycle (basic)
-
-### 🔹 Hyperlocal Discovery
-- Cari freelancer berdasarkan lokasi (lat/lng + radius)
-- Filter:
-  - city
-  - category
-  - work mode (REMOTE / ONSITE / HYBRID)
-- Support freelancer dengan service radius
-
-### 🔹 Subscription & Quota
-- Free tier:
-  - max active bids
-  - max active contracts
-- Pro tier:
-  - lebih banyak quota
-  - fitur tambahan (future-ready)
-- SubscriptionService membaca plan dari database
-
-### 🔹 Auth & Security
-- Cookie-based JWT session (`acme_session`), HS256 via `jose`
-- **Production:** `apps/web/instrumentation.ts` requires `SESSION_SECRET` (min 16 chars; prefer 32+ random bytes)
-- **CSRF:** double-submit cookie + `X-CSRF-Token` on mutations (see `server/security/csrf.ts`)
-- **Rate limits:** in-memory sliding windows per IP/user on auth, public reads, discovery, and sensitive mutations (`apps/web/server/security/`)
-- **Public discovery:** dedicated limits + light scrape heuristics on `GET /api/search/*` and `GET /api/jobs` (`public-discovery-guard.ts`)
-- **HTTP headers:** baseline security headers + optional HSTS via `NEARWORK_ENABLE_HSTS=1` in `apps/web/next.config.ts`
-- Middleware protection untuk route sensitif
-- Role-based access: CLIENT, FREELANCER, ADMIN (+ staff roles untuk `/admin`)
-
-### 🔹 Search
-- Keyword search
-- Filter category / city / work mode
-- Pagination support
+> Nama kerja monorepo: **Freelance-web**. Produk ke pengguna: **NearWork**.
 
 ---
 
-## 🧱 Tech Stack
+## Apa yang diselesaikan?
 
-### Frontend & App
-- Next.js 15 (App Router)
-- TypeScript
-- Tailwind CSS
-- shadcn/ui
+| Masalah | Jawaban di NearWork |
+|---------|---------------------|
+| Hiring freelance tersebar di chat | Job → proposal → chat terikat job → hire → kontrak |
+| Butuh jasa lokal & remote | Filter kota, radius, work mode (`REMOTE` / `ONSITE` / `HYBRID`) |
+| Kuota & paket tidak jelas | Plan FREE / PRO / AGENCY + enforcement kuota |
+| Abuse & laporan | Trust & safety: reports, SLA, escalate worker, appeals |
+| Escrow / bayar | V2 escrow + Stripe/Midtrans APIs (MOCK tanpa PSP key) |
 
-### Backend
-- Next.js Route Handlers (API)
-- Service Layer Architecture
-- Policy Layer (authorization rules)
-
-### Database
-- PostgreSQL
-- Prisma ORM
-
-### Auth
-- JWT (jose)
-- Cookie session
+**Bukan:** direktori kontak saja, ERP, atau app admin terpisah (`apps/admin` = stub; admin nyata = `/admin` di web).
 
 ---
 
-## 📁 Monorepo Structure
+## Fitur (ringkas)
+
+Detail Available / Conditional / Roadmap: **[FEATURE-CATALOG.md](./docs/FEATURE-CATALOG.md)**.
+
+- [x] Auth cookie JWT (`acme_session`) + CSRF + rate limits + RBAC
+- [x] Jobs, bids/proposals, contracts, profiles, saved items, reviews
+- [x] Messaging & notifikasi in-app (EN/ID)
+- [x] Public discovery `/jobs`, `/freelancers`, nearby search
+- [x] i18n EN/ID (default publik **`id`**) + SEO locale routes
+- [x] Admin workspace `/admin` (moderasi, verification, appeals, analytics, …)
+- [x] Worker: SLA escalation, escrow/boost expiry, recommendations, payouts
+- [x] V2 foundation: escrow, boosts, wallet, Stripe/Midtrans routes, AI match batch
+- [ ] Production PSP harden (webhook crypto) — lihat [SECURITY.md](./docs/SECURITY.md)
+- [ ] Forgot-password email, WebSocket messaging, agency multi-seat UX
+
+**Default lokal tanpa PSP keys:** checkout **MOCK** — aman untuk demo tanpa uang nyata.
+
+---
+
+## Inventori codebase (snapshot)
+
+| Area | Angka |
+|------|-------|
+| App pages (`page.tsx`) | ~**52** |
+| API route modules | ~**52** |
+| Prisma models | **42** |
+| Apps | `web` (produk) · `worker` · `admin` (stub) |
+| Spec | NearWork V2 PRD / SRS / SDD |
+
+Status: [IMPLEMENTATION-STATUS.md](./docs/IMPLEMENTATION-STATUS.md) · baseline: [CURRENT-IMPLEMENTATION.md](./docs/CURRENT-IMPLEMENTATION.md).
+
+---
+
+## Tech stack
+
+| Layer | Teknologi |
+|-------|-----------|
+| Monorepo | pnpm 9 · Turborepo 2 · Node 20.x |
+| App | Next.js 15 App Router · React 19 · TypeScript 5.7 |
+| UI | Tailwind 3.4 · Radix · tokens `nw-*` |
+| API | Route Handlers `app/api/*` |
+| Domain | Service → Policy → Repository (Prisma) |
+| DB | PostgreSQL · Prisma 5.22 |
+| Auth | JWT (`jose`) cookie + bcrypt |
+| Worker | `apps/worker` (Node/tsx) |
+| Deploy web | Vercel (`@acme/web`) |
+| Tests | Vitest · HTTP E2E · GitHub Actions |
+
+### Struktur
+
+```
 apps/
-web/ # Main Next.js app
-admin/ # (future) Admin panel
-worker/ # (future) background jobs
-
+  web/       # UI + /api + /admin  ← produk utama
+  worker/    # background sweeps (wajib di produksi)
+  admin/     # stub only — jangan dipakai sebagai admin live
 packages/
-database/ # Prisma schema + migrations
-types/ # Shared types & enums
-utils/ # Utilities
-validators/ # Zod schemas
-config/ # Constants & plan configs
+  database/  # Prisma schema, migrations, seed
+  config/    # plans, flags, V2 pricing
+  types/ validators/ utils/
+docs/        # living docs — mulai dari docs/00_INDEX.md
+```
 
-docs/ # Product & architecture docs (see docs/DOCUMENTATION-MAINTENANCE.md when editing)
-
-### `apps/web` convention
-
-- Root-level Next.js App Router structure is the standard for this repo.
-- Keep runtime code in:
-  - `apps/web/app`
-  - `apps/web/components`
-  - `apps/web/features`
-  - `apps/web/lib`
-  - `apps/web/server`
-- Do not add a parallel `apps/web/src` runtime tree.
-
+Layering: `route → service → policy → repository → Postgres`.  
+Tanpa business logic di UI atau route handler.
 
 ---
 
-## 🧠 Architecture Overview
+## Quick start
 
-### Layered Architecture
-Route (API)
-↓
-Service Layer
-↓
-Policy Layer (rules)
-↓
-Repository (Prisma)
-↓
-Database
-
-
-### Key Principles
-- ❌ No business logic in UI
-- ❌ No business logic in route handlers
-- ✅ Centralized policy & quota logic
-- ✅ Clear separation of concerns
-
----
-
-## 🔐 Authentication & Authorization
-
-### Session
-- Cookie: `acme_session`
-- Contains:
-  - userId
-  - role
-  - accountStatus
-
-### Middleware
-Melindungi route:
-/client/*
-/freelancer/*
-/messages/*
-/notifications/*
-/settings/*
-
-
-### Policy Layer
-- `requireAuth()`
-- `requireRole()`
-- `requireActiveAccount()`
-
----
-
-## 📊 Core Domain Models
-
-- User
-- FreelancerProfile
-- ClientProfile
-- Job
-- Bid
-- Contract
-- SubscriptionPlan
-- UserSubscription
-- Review (partial)
-- MessageThread / Message (partial)
-- Notification (partial)
-
----
-
-## ⚙️ Setup & Installation
-
-### 1. Install dependencies
+**Prasyarat:** Node 20.x, pnpm 9, PostgreSQL 14+.
 
 ```bash
+cd NearWorks
 pnpm install
-```
-
-### 2. Environment variables
-
-```bash
 cp packages/database/env.example.txt .env
-```
+# Wajib: DATABASE_URL, SESSION_SECRET (≥16 chars; prod pakai openssl rand -base64 32)
 
-Set at minimum `DATABASE_URL` and `SESSION_SECRET` (strong random; use `openssl rand -base64 32` in production).
-
-### 3. Prisma client
-
-```bash
 pnpm db:generate
-```
-
-### 4. Migrations
-
-```bash
-pnpm db:migrate:deploy
-```
-
-Development iterations:
-
-```bash
 pnpm db:migrate
+pnpm db:seed                 # non-prod only
+
+pnpm --filter @acme/web dev  # http://localhost:3000
+# Terminal 2 (opsional lokal / wajib prod untuk SLA+escrow):
+pnpm --filter @acme/worker dev
 ```
 
-### 5. Run the app
+`pnpm dev` menjalankan semua package yang punya task `dev` (web + admin stub + worker). Worker membaca **root** `.env` / `.env.local` (bukan `apps/web/.env.local`).
 
-```bash
-pnpm dev
-```
-
-This starts **all** packages that define a `dev` task (web, admin, worker, etc.). The **worker** reads `DATABASE_URL` from the **monorepo root** `.env` or `.env.local` (it does not load `apps/web/.env.local` automatically). If you only need the web UI, run:
-
-```bash
-pnpm --filter @acme/web dev
-```
-
-**Local dev — common noise in logs**
-
-| Symptom | What it usually means |
-|--------|------------------------|
-| `DATABASE_URL` / Prisma errors in **`@acme/worker`** | Root env missing or worker not needed — use root `.env` with `DATABASE_URL`, or run web-only (above). Without DB, the worker idles after a clear warning. |
-| `EMAXCONNSESSION` / `max clients reached` (pool ~15) | Hosted Postgres pooler session limit; reduce concurrent dev tabs/processes, or use a connection string / tier with a higher pool, or a **direct** (non-pooler) URL for local dev. |
-| `Cannot find module './…js'` / **`MODULE_NOT_FOUND`** (mis. **`vendor-chunks/jose@…`**, **`lucide-react@…`**, `tailwind-merge`) pada route publik (`/help`, `/pricing`) atau API (500 HTML) | **Umumnya cache `.next` rusak setelah Fast Refresh / upgrade** — **`pnpm --filter @acme/web dev:fresh`**. `serverExternalPackages` memuat `jose`, `clsx`, `tailwind-merge`; **`lucide-react` tidak di-externalize** (Next 15: konflik `transpilePackages`) — untuk chunk lucide, **clean + restart**. |
-
-### Type checking
-
-```bash
-pnpm exec tsc --noEmit -p apps/web
-```
-
-### Common scripts
+### Scripts
 
 | Script | Purpose |
 |--------|---------|
-| `pnpm dev` | Dev server |
-| `pnpm build` | Production build |
-| `pnpm start` | Production start |
-| `pnpm db:generate` | Regenerate Prisma Client |
-| `pnpm db:migrate` | Dev migrations |
-| `pnpm db:migrate:deploy` | Prod/CI migrations |
+| `pnpm --filter @acme/web dev` | Dev web saja |
+| `pnpm build` | Production build (turbo) |
+| `pnpm db:migrate` / `db:migrate:deploy` | Migrasi |
 | `pnpm db:studio` | Prisma Studio |
-| `pnpm test` | Alias to unit tests |
-| `pnpm test:unit` | Vitest unit tests for policies/services/helpers/validators |
-| `pnpm test:e2e` | Build web + `next start` (port **3041** default), lalu HTTP smoke CSRF auth→job→bid→messages→report (`SKIP_E2E_BUILD=1`/`E2E_PORT`). Prefer **`DATABASE_URL_TEST`** (isolated DB); runner meng-override `DATABASE_URL` untuk proses build + server. Memuat otomatis **`.env`**, **`.env.local`** (root), dan **`apps/web/.env.local`** bila variabel belum ada di shell. |
-| `pnpm test:all` | Run unit then e2e |
+| `pnpm test:unit` | Vitest |
+| `pnpm test:e2e` | Build + `next start` :3041 + HTTP smoke |
+| `pnpm test:all` | Unit lalu E2E |
+| `pnpm --filter @acme/web typecheck` | Typecheck web |
 
-**CI (GitHub):** push atau PR ke `main` menjalankan workflow **CI** — typecheck, lint web, unit tests, lalu job integrasi (Postgres service, migrate, seed, build web, E2E HTTP). Detail: `docs/deploy-checklist.md`, `audit.md`.
+**E2E:** set `DATABASE_URL_TEST` ke Postgres throwaway (disarankan). Jangan tulis smoke ke DB staging publik. Detail: [DEPLOYMENT.md](./docs/DEPLOYMENT.md).
 
-### Testing quickstart
+**CI:** push/PR ke `main` → typecheck, lint, unit, Postgres migrate/seed/build/E2E.
 
-- Unit: `pnpm test:unit`
-- E2E:
-  1) Set **`DATABASE_URL_TEST`** ke Postgres sekali pakai (disarankan) atau set `DATABASE_URL` hanya ke DB test; **`SESSION_SECRET`** (≥16 karakter), migrasi (`pnpm db:migrate`), seed kategori/admin (`pnpm db:seed`) pada **DB test yang sama**
-  2) jalankan `pnpm test:e2e` — harness akan **`pnpm --filter @acme/web build`** lalu **`next start`** di **`127.0.0.1:3041`** (atur `E2E_PORT`). Untuk lewati rebuild: **`SKIP_E2E_BUILD=1 pnpm test:e2e`**
-  3) Smoke manual terhadap dev yang sedang jalan: **`BASE_URL=http://127.0.0.1:3000 node --test scripts/e2e-marketplace-flow.mjs`** — setelah ragu pada `.next`, pakai **`pnpm --filter @acme/web clean`** atau lebih baik pakai harness di langkah (2)
-- Manual / localhost: gunakan **`pnpm dev`** untuk alur produk penuh di browser; tidak ada suite browser otomatis di repo ini.
-- Keep test traffic off production / shared public staging:
-  - jalankan `pnpm test:e2e` hanya dengan **`DATABASE_URL_TEST`** atau `DATABASE_URL` yang mengarah ke DB throwaway — jangan menulis data tes ke DB staging publik pengunjung
-- Moderation/admin queue assertions in e2e:
-  - set `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` (or use seed defaults)
-  - run `pnpm db:seed` on test/staging DB only.
+### Troubleshooting lokal
+
+| Gejala | Biasanya |
+|--------|----------|
+| Worker Prisma / `DATABASE_URL` | Root `.env` kosong — isi atau jalankan web-only |
+| `EMAXCONNSESSION` / pool limit | Kurangi tab/proses, atau naikkan pool / pakai URL direct |
+| `Cannot find module './vendor-chunks/…'` | Cache `.next` rusak → `pnpm --filter @acme/web clean` lalu `dev` / `dev:fresh` |
 
 ---
 
-## 🚧 Current status
+## Deploy (Vercel)
 
-### Implemented
+Target hanya **`@acme/web`**. Checklist: [deploy-checklist.md](./docs/deploy-checklist.md) · [DEPLOYMENT.md](./docs/DEPLOYMENT.md).
 
-- Auth (JWT cookie), CSRF on mutations, rate limits on sensitive routes
-- Job creation & listing; public discovery with layered limits (`public-discovery-guard`)
-- Bid submission + quota enforcement; subscription plan resolution
-- Profile CRUD; search with validation caps
-- Messaging, notifications, reviews, saved items, verification (maturity varies by area)
-- NearWork UI tokens + compact marketing footer
-
-### In progress / roadmap
-
-- Full production billing provider
-- Trust & safety reporting depth
-- Broader package typecheck parity
-
-### Production checklist
-
-- Set `SESSION_SECRET` and `DATABASE_URL`
-- Run `pnpm db:migrate:deploy`
-- HTTPS + review `next.config.ts` security headers / optional `NEARWORK_ENABLE_HSTS`
-- `pnpm exec tsc --noEmit -p apps/web`
-- Smoke: register → login → create job → submit bid → (opsional) utas `JOB` + pesan pertama — lihat `scripts/e2e-marketplace-flow.mjs`
-
----
-
-## 📚 Documentation
-
-**Index lengkap:** [`docs/00_INDEX.md`](docs/00_INDEX.md) — living docs setara dnPeople/auto (overview, architecture, API, feature catalog, guides, deploy, security, next PRD).
-
-Topic docs live in **`docs/`**. See **`docs/DOCUMENTATION-MAINTENANCE.md`** for which files to touch when you change security, UI, or APIs.
-
-- **Production deploy gate (commands + env)** → [`docs/deploy-checklist.md`](docs/deploy-checklist.md) · [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)
-- **Apa produk ini (non-teknis)?** → [`docs/apa-itu-nearwork.md`](docs/apa-itu-nearwork.md)
-- **User / Admin guides** → [`docs/USER-GUIDE.md`](docs/USER-GUIDE.md) · [`docs/ADMIN-GUIDE.md`](docs/ADMIN-GUIDE.md)
-- **Baseline & status** → [`docs/CURRENT-IMPLEMENTATION.md`](docs/CURRENT-IMPLEMENTATION.md) · [`docs/FEATURE-CATALOG.md`](docs/FEATURE-CATALOG.md)
-- **PRD berikutnya** → [`docs/NEXT-PRD-BRIEF.md`](docs/NEXT-PRD-BRIEF.md)
-
-### Vercel (monorepo → `apps/web`)
-
-**Commit `pnpm-lock.yaml`.** It must not be gitignored: without it, Turbo warns and Vercel can fall back to **npm** (~few dozen packages), which skips workspace linking and omits devDependencies your Next build needs (`tailwindcss`, Radix, etc.).
-
-**Recommended project settings (fixes unstyled `/login` + `/_next/static` 307 on deploy)**
-
-Use one of these two valid setups (see [Vercel + Turborepo](https://vercel.com/docs/monorepos/turborepo)):
+**Option A (recommended)** — Root Directory = `apps/web`:
 
 | Setting | Value |
-|--------|--------|
-| **Mode** | **Option A (recommended)** |
-| **Root Directory** | **`apps/web`** |
-| **Framework Preset** | Next.js |
-| **Install Command** | **`cd ../.. && pnpm install`** (already in **`apps/web/vercel.json`**) |
-| **Build Command** | **`cd ../.. && pnpm exec turbo run build --filter=@acme/web`** (same file) |
-| **Output Directory** | *(empty — framework default)* |
+|---------|--------|
+| Install | `cd ../.. && pnpm install` |
+| Build | `cd ../.. && pnpm exec turbo run build --filter=@acme/web` |
+| Output | *(kosong — default Next)* |
 
-Option B (root deploy) tetap valid:
+**Option B** — Root = repo: Output = `apps/web/.next`.
 
-| Setting | Value |
-|--------|--------|
-| **Mode** | **Option B** |
-| **Root Directory** | repository root |
-| **Install Command** | `pnpm install` |
-| **Build Command** | `pnpm exec turbo run build --filter=@acme/web` |
-| **Output Directory** | `apps/web/.next` |
-
-Do not mix **Root Directory = `apps/web`** with **Output Directory = `apps/web/.next`**; that mismatch can break artifact lookup paths.
-
-**Prisma:** `@acme/database` runs **`postinstall`: `prisma generate`** — no DB connection required for generate.
-
-**Environment variables:** **`DATABASE_URL`**, **`SESSION_SECRET`** (≥16 chars), **`NEXT_PUBLIC_*`** as needed. Never commit secrets.
-
-**Registry errors (`ERR_INVALID_THIS` / `URLSearchParams`):** remove env **`ENABLE_EXPERIMENTAL_COREPACK`** from the Vercel project; keep **`engines.node`** as **`20.x`** in root `package.json`.
-🎯 Roadmap
-Phase 1 (Core Stabilization)
-Fix typecheck
-Complete job detail page
-Middleware coverage
-Phase 2 (User Experience)
-Messaging
-Notifications
-Saved items
-Reviews
-Phase 3 (SaaS Features)
-Subscription billing
-Boosted listings
-Analytics dashboard
-Phase 4 (Advanced)
-Smart matching (AI-based)
-Realtime messaging
-Escrow & payments
-Admin moderation panel
-🤝 Contributing
-
-Internal project.
-Follow rules:
-
-keep logic in service layer
-do not mix UI with business logic
-use policy layer for rules
-📄 License
-
-Private / Internal use.
-
+Jangan campur Root=`apps/web` + Output=`apps/web/.next`. Commit **`pnpm-lock.yaml`**. Env minimal: `DATABASE_URL`, `SESSION_SECRET`, `NEXT_PUBLIC_*` yang dibutuhkan. Deploy **worker** terpisah untuk SLA/escrow.
 
 ---
 
-# 🔥 Tips biar README ini makin “kelas SaaS”
+## Dokumentasi
 
-Kalau kamu mau naik level:
+Mulai dari **[docs/00_INDEX.md](./docs/00_INDEX.md)**.
 
-Tambahin nanti:
-- 📸 screenshot UI
-- 🎥 demo GIF
-- 🌐 live demo link
-- 🧾 API docs (Swagger/Postman)
+| File | Untuk |
+|------|--------|
+| [apa-itu-nearwork.md](./docs/apa-itu-nearwork.md) | Produk non-teknis |
+| [USER-GUIDE.md](./docs/USER-GUIDE.md) / [ADMIN-GUIDE.md](./docs/ADMIN-GUIDE.md) | Cara pakai |
+| [HOW-IT-WORKS.md](./docs/HOW-IT-WORKS.md) / [ARCHITECTURE.md](./docs/ARCHITECTURE.md) | Alur & arsitektur |
+| [API.md](./docs/API.md) | Endpoint `/api/*` |
+| [FEATURE-CATALOG.md](./docs/FEATURE-CATALOG.md) | Status fitur |
+| [CURRENT-IMPLEMENTATION.md](./docs/CURRENT-IMPLEMENTATION.md) | Baseline teknis |
+| [SECURITY.md](./docs/SECURITY.md) | Auth + temuan webhook |
+| [NEXT-PRD-BRIEF.md](./docs/NEXT-PRD-BRIEF.md) | **Dasar menulis PRD berikutnya** |
+| [NEARWORK_V2_PRD.md](./docs/NEARWORK_V2_PRD.md) | Spek V2 |
+| [DOCUMENTATION-MAINTENANCE.md](./docs/DOCUMENTATION-MAINTENANCE.md) | Aturan sync `.md` ↔ kode |
+| [`features.md`](./features.md) / [`audit.md`](./audit.md) | Inventaris panjang / risiko |
 
 ---
 
-Kalau kamu mau next step:
-👉 aku bisa bantu bikin **README versi “startup-ready” (buat investor / landing repo)**  
-👉 atau **docs folder lengkap (PRD, architecture, API spec, business rules)**
+## Status & roadmap
+
+| Phase | Status |
+|-------|--------|
+| Core marketplace (auth, jobs, bids, messages, admin) | ✅ Done |
+| i18n, trust & safety MVP, CI/E2E | ✅ Done |
+| V2 foundation (escrow, PSP APIs, boosts, appeals, recommendations) | ✅ Done (PSP Conditional) |
+| Production PSP harden + GA billing | 🔄 Open — [NEXT-PRD-BRIEF](./docs/NEXT-PRD-BRIEF.md) |
+| Realtime messaging / agency seats | Roadmap |
+
+---
+
+## Contributing
+
+Internal project. Ikuti:
+
+- Logic di **service** layer; authz di **policy**
+- Jangan campur business logic di UI
+- Update living docs relevan + naikkan `Doc revision` (lihat `DOCUMENTATION-MAINTENANCE.md`)
+
+## License
+
+Private / internal use · DN Tech.
+
+---
+
+> **Doc revision:** v108  
+> Last synchronized: 2026-07-26 — README dirapikan ke gaya produk + tautan suite docs kanonik.
