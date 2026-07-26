@@ -19,10 +19,20 @@ export async function register(): Promise<void> {
     );
   }
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL?.trim();
+  // Prefer explicit public URL; on Vercel fall back to VERCEL_URL so preview/prod
+  // boots without a hard 500 when NEXT_PUBLIC_APP_URL is not yet configured.
+  const appUrl =
+    process.env.NEXT_PUBLIC_APP_URL?.trim() ||
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
+    (process.env.VERCEL_URL?.trim() ? `https://${process.env.VERCEL_URL.trim()}` : "");
   if (!appUrl) {
     throw new Error(
-      "NextWork: NEXT_PUBLIC_APP_URL must be set in production (e.g. https://app.example.com)."
+      "NextWork: set NEXT_PUBLIC_APP_URL in production (e.g. https://app.example.com), or deploy on Vercel so VERCEL_URL is available."
+    );
+  }
+  if (!process.env.NEXT_PUBLIC_APP_URL?.trim() && process.env.VERCEL_URL?.trim()) {
+    console.warn(
+      `[nextwork] NEXT_PUBLIC_APP_URL unset — using https://${process.env.VERCEL_URL.trim()} for checkout/canonical URLs. Set NEXT_PUBLIC_APP_URL to your stable domain.`
     );
   }
 }
