@@ -14,10 +14,10 @@ export async function generateMetadata({
   return localizedMetadata({
     locale: resolved,
     path: "/how-it-works",
-    title: resolved === "id" ? "Cara kerja | NearWork" : "How it works | NearWork",
+    title: resolved === "id" ? "Cara kerja | NextWork" : "How it works | NextWork",
     description:
       resolved === "id"
-        ? "Pelajari alur NearWork dari brief, proposal, hingga kolaborasi."
-        : "Learn the NearWork flow from brief and proposals to delivery."
+        ? "Pelajari alur NextWork dari brief, proposal, hingga kolaborasi."
+        : "Learn the NextWork flow from brief and proposals to delivery."
   });
 }

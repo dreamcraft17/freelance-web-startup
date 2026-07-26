@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { AccountStatus } from "@acme/types";
 import { canAccessAdminPage, isStaffRole } from "@/features/admin/lib/access";
+import { NEXTWORK_LOCALE_HEADER, envFlagIsOne } from "@/lib/env-flags";
 import { LOCALE_COOKIE } from "@/lib/i18n/constants";
 import { resolveNavigationLocale } from "@/lib/i18n/navigation-locale";
 import { resolveLocale } from "@/lib/i18n/resolve-locale";
@@ -19,7 +20,7 @@ const SEO_PREFIX_PATH = /^\/(jobs|freelancers|how-it-works|pricing|early-access|
 
 function localeDebugEnabled(): boolean {
   if (process.env.NODE_ENV === "production") return false;
-  return process.env.NEARWORK_DEBUG_LOCALE === "1";
+  return envFlagIsOne("NEXTWORK_DEBUG_LOCALE", "NEARWORK_DEBUG_LOCALE");
 }
 
 function localeCookieOptions() {
@@ -40,7 +41,7 @@ function preferredLocale(request: NextRequest): AppLocale {
   if (localeDebugEnabled()) {
     const urlLocaleMatch = request.nextUrl.pathname.match(LOCALE_PREFIX);
     const urlLocale = urlLocaleMatch?.[1]?.toLowerCase() ?? "none";
-    console.info("[nearwork][locale-debug]", {
+    console.info("[nextwork][locale-debug]", {
       pathname: request.nextUrl.pathname,
       urlLocale,
       langCookie: cookieLocale ?? "none",
@@ -134,7 +135,7 @@ export default async function middleware(request: NextRequest) {
     const rewriteUrl = request.nextUrl.clone();
     rewriteUrl.pathname = internalPath;
     const wsHeaders = new Headers(request.headers);
-    wsHeaders.set("x-nearwork-locale", wsLocale);
+    wsHeaders.set(NEXTWORK_LOCALE_HEADER, wsLocale);
     const rewriteResponse = NextResponse.rewrite(rewriteUrl, {
       request: { headers: wsHeaders }
     });
@@ -155,7 +156,7 @@ export default async function middleware(request: NextRequest) {
   if (localeMatch?.[1]) {
     const locale = localeMatch[1].toLowerCase() as "en" | "id";
     const requestHeaders = new Headers(request.headers);
-    requestHeaders.set("x-nearwork-locale", locale);
+    requestHeaders.set(NEXTWORK_LOCALE_HEADER, locale);
     const response = NextResponse.next({
       request: {
         headers: requestHeaders

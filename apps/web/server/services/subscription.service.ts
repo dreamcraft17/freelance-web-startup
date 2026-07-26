@@ -11,6 +11,7 @@ import { SubscriptionStatus } from "@acme/types";
 import { db, PaymentIntentKind } from "@acme/database";
 import { DomainError, NotFoundError } from "@/server/errors/domain-errors";
 import { PaymentService } from "@/server/services/payment.service";
+import { assertPaidPlansRouteEnabled } from "@/server/lib/monetization-guard";
 
 export { MONETIZATION_PRICING_PLACEHOLDER } from "@acme/config";
 
@@ -89,6 +90,7 @@ export class SubscriptionService {
    * Creates a **PENDING** {@link PaymentIntent} (MOCK provider) and returns `checkoutUrl` to the mock checkout page.
    */
   async initiateSubscriptionCheckout(userId: string, input: CreateSubscriptionDto) {
+    assertPaidPlansRouteEnabled();
     const normalizedCode = input.planCode.trim().toUpperCase();
     const plan = await db.subscriptionPlan.findFirst({
       where: { code: normalizedCode, isActive: true },
@@ -146,14 +148,19 @@ export class SubscriptionService {
   }
 
   async upgradeSubscription(userId: string, planId: string, paymentMethod: "stripe" | "midtrans" | "mock") {
-    const plan = await db.subscriptionPlan.findFirst({
-      where: { id: planId, isActive: true }
-    });
+    assertPaidPlansRouteEnabled();
+    const plan =
+      (await db.subscriptionPlan.findFirst({ where: { id: planId, isActive: true } })) ??
+      (await db.subscriptionPlan.findFirst({ where: { code: planId.toUpperCase(), isActive: true } }));
     if (!plan) {
       throw new NotFoundError("Subscription plan not found");
     }
 
-    if (paymentMethod !== "mock") {
+    if (paymentMethod === "mock") {
+      if (process.env.NODE_ENV === "production") {
+        throw new DomainError("Mock payment is not allowed in production", "MOCK_PAYMENT_FORBIDDEN", 403);
+      }
+    } else {
       const session = await this.payments.createPendingCheckoutSession({
         userId,
         kind: PaymentIntentKind.SUBSCRIPTION_PLAN,
@@ -196,5 +203,25 @@ export class SubscriptionService {
         });
 
     return { paymentRequired: false, subscription };
+  }
+
+  /** Marks auto-renew off at period end; access continues until `currentPeriodEnd`. */
+  async cancelSubscriptionAtPeriodEnd(userId: string) {
+    const row = await this.findQualifyingSubscription(userId);
+    if (!row) {
+      throw new NotFoundError("No active subscription to cancel");
+    }
+
+    const subscription = await db.userSubscription.update({
+      where: { id: row.id },
+      data: { cancelAtPeriodEnd: true }
+    });
+
+    return {
+      subscriptionId: subscription.id,
+      status: subscription.status,
+      cancelAtPeriodEnd: subscription.cancelAtPeriodEnd,
+      currentPeriodEnd: subscription.currentPeriodEnd.toISOString()
+    };
   }
 }

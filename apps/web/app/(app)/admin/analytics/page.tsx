@@ -12,7 +12,7 @@ export default async function AdminAnalyticsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="nw-type-page-title text-slate-900">Analytics</h1>
-        <p className="nw-type-body mt-1 text-slate-600">NearWork V2 marketplace metrics (real data).</p>
+        <p className="nw-type-body mt-1 text-slate-600">NextWork V2 marketplace metrics (real data).</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

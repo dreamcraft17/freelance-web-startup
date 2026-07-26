@@ -1,4 +1,4 @@
-/** Shared Tailwind snippets for NearWork marketplace surfaces (V2 brand, calm neutrals). */
+/** Shared Tailwind snippets for NextWork marketplace surfaces (V2 brand, calm neutrals). */
 
 export const NW_PAGE_WRAP = "mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-12";
 

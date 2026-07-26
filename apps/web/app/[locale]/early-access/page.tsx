@@ -14,10 +14,10 @@ export async function generateMetadata({
   return localizedMetadata({
     locale: resolved,
     path: "/early-access",
-    title: resolved === "id" ? "Akses awal | NearWork" : "Early access | NearWork",
+    title: resolved === "id" ? "Akses awal | NextWork" : "Early access | NextWork",
     description:
       resolved === "id"
-        ? "NearWork sedang berkembang dengan job nyata, freelancer nyata, dan batas produk yang transparan."
-        : "NearWork is shipping in public with real jobs, real freelancers, and transparent product limits."
+        ? "NextWork sedang berkembang dengan job nyata, freelancer nyata, dan batas produk yang transparan."
+        : "NextWork is shipping in public with real jobs, real freelancers, and transparent product limits."
   });
 }

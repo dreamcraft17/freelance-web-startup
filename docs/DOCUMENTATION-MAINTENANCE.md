@@ -1,4 +1,4 @@
-# Documentation maintenance (NearWork)
+# Documentation maintenance (NextWork)
 
 > **Doc revision:** v27  
 > Last synchronized: 2026-07-26 (suite docs kanonik: 00_INDEX + living docs pola dnPeople/auto).
@@ -11,7 +11,7 @@
 2. **Perbarui isi** setiap file itu agar selaras dengan kode.
 3. Di **setiap file `.md` yang Anda sentuh**, naikkan **`Doc revision`** (+1) dan sesuaikan **`Last synchronized`**.
 
-**Sweep minimum (AI):** untuk satu perubahan produk, jangan berhenti di satu file. **Ikuti tabel “What to update”** baris per baris: jika baris itu relevan dengan diff, buka file yang tercantum dan sinkronkan (bukan hanya `features.md`). Contoh: UI publik + auth chrome → setidaknya `features.md`, `ui-redesign.md`, `docs/application-overview.md`, `audit.md`, `README.md`, `docs/auth-session-persistence.md`, `docs/apa-itu-nearwork.md` bila copy pengguna terdampak; perubahan Prisma/pool → tambahkan `packages/database/README.md` + `audit.md` jika risiko operasional.
+**Sweep minimum (AI):** untuk satu perubahan produk, jangan berhenti di satu file. **Ikuti tabel “What to update”** baris per baris: jika baris itu relevan dengan diff, buka file yang tercantum dan sinkronkan (bukan hanya `features.md`). Contoh: UI publik + auth chrome → setidaknya `features.md`, `ui-redesign.md`, `docs/application-overview.md`, `audit.md`, `README.md`, `docs/auth-session-persistence.md`, `docs/apa-itu-nextwork.md` bila copy pengguna terdampak; perubahan Prisma/pool → tambahkan `packages/database/README.md` + `audit.md` jika risiko operasional.
 
 > “Semua MD” = **semua file Markdown yang relevan dengan perubahan itu**, bukan seluruh repo kecuali memang ada instruksi audit dokumen penuh.
 
@@ -44,13 +44,13 @@ When you change **product behavior**, **security**, **UI patterns**, **env/deplo
 | Database / Prisma / migrations | `packages/database/README.md`, `audit.md` if risk-related |
 | Deploy / env / release gate | `docs/deploy-checklist.md`, `README.md` if operator-facing |
 | Roles / billing / taxonomy | Matching file under `docs/*.md` |
-| **Positioning / “produk apa ini?”** (bahasa non-teknis) | `docs/apa-itu-nearwork.md` (+ tautan di `README.md` bagian Documentation) |
+| **Positioning / “produk apa ini?”** (bahasa non-teknis) | `docs/apa-itu-nextwork.md` (+ tautan di `README.md` bagian Documentation) |
 
 ## Repo map
 
 - **Start here:** [`docs/00_INDEX.md`](./00_INDEX.md) — index living docs (PROJECT-OVERVIEW, ARCHITECTURE, API, FEATURE-CATALOG, CURRENT-IMPLEMENTATION, USER/ADMIN guides, DEPLOYMENT, SECURITY, NEXT-PRD-BRIEF, …).
 - **Root:** `README.md`, `audit.md`, `features.md`, `ui-redesign.md`, `credential.md` (dev seed notes only — **never** put production secrets here; file is gitignored from commits when using local-only copies).
-- **`docs/`:** product and engineering references — termasuk **`docs/apa-itu-nearwork.md`** untuk penjelasan produk singkat dan **`docs/deploy-checklist.md`** untuk gate deploy produksi.
+- **`docs/`:** product and engineering references — termasuk **`docs/apa-itu-nextwork.md`** untuk penjelasan produk singkat dan **`docs/deploy-checklist.md`** untuk gate deploy produksi.
 - **`packages/*/README.md`:** package-specific setup.
 
 ### Living docs suite (sync like dnPeople/auto)

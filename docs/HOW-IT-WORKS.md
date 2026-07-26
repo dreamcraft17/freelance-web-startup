@@ -1,4 +1,4 @@
-# NearWork — How It Works
+# NextWork — How It Works
 
 > **Doc revision:** v1  
 > Last synchronized: 2026-07-26
@@ -9,7 +9,7 @@ Penjelasan alur produk end-to-end. Arsitektur teknis: [ARCHITECTURE.md](./ARCHIT
 
 ## 1. Positioning
 
-NearWork = **marketplace hiring**, bukan direktori kontak:
+NextWork = **marketplace hiring**, bukan direktori kontak:
 
 **Job → Proposal → Chat terikat job → Hire → Kontrak (± escrow) → Review**
 

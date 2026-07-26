@@ -1,4 +1,4 @@
--- NearWork V2 — Supabase / PostgreSQL (idempotent)
+-- NextWork V2 — Supabase / PostgreSQL (idempotent)
 -- Jalankan di SQL Editor Supabase. Aman di-run ulang (IF NOT EXISTS / duplicate_object).
 
 -- =============================================================================

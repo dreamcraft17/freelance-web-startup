@@ -27,7 +27,7 @@ export async function GET(request: Request, context: RouteContext) {
     const jobId = params.jobId?.trim();
     if (!jobId) return jsonFail("Invalid job id", 400, "INVALID_ID");
     const locale = await getAppLocale();
-    const data = await jobService.getJobByIdForPublic(jobId, locale);
+    const data = await jobService.getJobByIdForPublic(jobId, locale, { incrementView: true });
     if (!data) return jsonFail("Job not found", 404, "NOT_FOUND");
     return jsonOk(data);
   });

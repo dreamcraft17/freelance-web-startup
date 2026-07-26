@@ -1,5 +1,4 @@
-import { createHash, timingSafeEqual } from "node:crypto";
-import { V2_PRICING, isStripeConfigured } from "@acme/config";
+import { V2_PRICING, getEscrowManualReviewThresholdIdr, isStripeConfigured } from "@acme/config";
 import type { Prisma } from "@acme/database";
 import {
   ContractPaymentStatus,
@@ -13,6 +12,8 @@ import {
   db
 } from "@acme/database";
 import { DomainError, NotFoundError, PolicyDeniedError } from "../errors/domain-errors";
+import { verifyStripeWebhookSignature } from "../security/payment-webhook-crypto";
+import { notifyEscrowPaymentRequired } from "./money-notification.service";
 
 const ESCROW_FEE_RATE = V2_PRICING.escrowFeeRate;
 
@@ -178,6 +179,13 @@ export class StripePaymentService {
       });
     });
 
+    await notifyEscrowPaymentRequired({
+      clientUserId: contract.clientUserId,
+      contractId: contract.id,
+      amountCents: totalCents,
+      currency: currency.toUpperCase()
+    });
+
     return {
       client_secret: clientSecret,
       payment_intent_id: stripeIntentId ?? `mock_${contract.id}`,
@@ -193,21 +201,33 @@ export class StripePaymentService {
     if (!webhookSecret) {
       throw new DomainError("Stripe webhook not configured", "STRIPE_WEBHOOK_NOT_CONFIGURED", 503);
     }
-    if (!signatureHeader || !this.verifyStripeSignature(rawBody, signatureHeader, webhookSecret)) {
+    if (!verifyStripeWebhookSignature(rawBody, signatureHeader, webhookSecret)) {
       throw new DomainError("Invalid Stripe signature", "STRIPE_SIGNATURE_INVALID", 400);
     }
 
     const event = JSON.parse(rawBody) as {
       id: string;
       type: string;
-      data: { object: { id: string; status?: string; amount?: number; metadata?: Record<string, string> } };
+      data: {
+        object: {
+          id: string;
+          status?: string;
+          amount?: number;
+          currency?: string;
+          metadata?: Record<string, string>;
+        };
+      };
     };
 
     const isNew = await recordWebhookOnce("stripe", event.id, event.type);
     if (!isNew) return { received: true };
 
     if (event.type === "payment_intent.succeeded") {
-      await this.markPaymentSucceeded(event.data.object.id, event.data.object.metadata?.contractId);
+      const obj = event.data.object;
+      await this.markPaymentSucceeded(obj.id, obj.metadata?.contractId, {
+        amount: obj.amount,
+        currency: obj.currency
+      });
     } else if (event.type === "payment_intent.payment_failed") {
       await this.markPaymentFailed(event.data.object.id, event.data.object.metadata?.contractId);
     }
@@ -215,26 +235,11 @@ export class StripePaymentService {
     return { received: true };
   }
 
-  private verifyStripeSignature(payload: string, header: string, secret: string): boolean {
-    const parts = Object.fromEntries(
-      header.split(",").map((p) => {
-        const [k, v] = p.split("=");
-        return [k, v];
-      })
-    ) as Record<string, string>;
-    const timestamp = parts.t;
-    const sig = parts.v1;
-    if (!timestamp || !sig) return false;
-    const signed = `${timestamp}.${payload}`;
-    const expected = createHash("sha256").update(`${signed}${secret}`).digest("hex");
-    try {
-      return timingSafeEqual(Buffer.from(sig), Buffer.from(expected));
-    } catch {
-      return sig === expected;
-    }
-  }
-
-  async markPaymentSucceeded(stripeIntentId: string, contractIdHint?: string): Promise<void> {
+  async markPaymentSucceeded(
+    stripeIntentId: string,
+    contractIdHint?: string,
+    psp?: { amount?: number; currency?: string }
+  ): Promise<void> {
     const intent = await db.paymentIntent.findFirst({
       where: {
         OR: [{ stripeIntentId }, ...(contractIdHint ? [{ contractId: contractIdHint }] : [])]
@@ -242,38 +247,94 @@ export class StripePaymentService {
     });
     if (!intent?.contractId) return;
 
+    if (psp?.amount != null && psp.amount !== intent.amountCents) {
+      throw new DomainError(
+        `Stripe amount mismatch: expected ${intent.amountCents}, got ${psp.amount}`,
+        "STRIPE_AMOUNT_MISMATCH",
+        400
+      );
+    }
+    if (psp?.currency && psp.currency.toLowerCase() !== intent.currency.toLowerCase()) {
+      throw new DomainError(
+        `Stripe currency mismatch: expected ${intent.currency}, got ${psp.currency}`,
+        "STRIPE_CURRENCY_MISMATCH",
+        400
+      );
+    }
+
+    const meta = (intent.metadata ?? {}) as { baseCents?: number; feeCents?: number };
+    const baseCents =
+      typeof meta.baseCents === "number"
+        ? meta.baseCents
+        : Math.round(intent.amountCents / (1 + ESCROW_FEE_RATE));
+    const feeCents =
+      typeof meta.feeCents === "number" ? meta.feeCents : Math.round(baseCents * ESCROW_FEE_RATE);
+
+    const currencyUpper = intent.currency.toUpperCase();
+    const needsManualReview =
+      currencyUpper === "IDR" && baseCents >= getEscrowManualReviewThresholdIdr();
+
     await db.$transaction(async (tx: Prisma.TransactionClient) => {
       await tx.paymentIntent.update({
         where: { id: intent.id },
-        data: { status: PaymentIntentStatus.SUCCEEDED }
+        data: {
+          status: PaymentIntentStatus.SUCCEEDED,
+          ...(needsManualReview
+            ? {
+                metadata: {
+                  ...(typeof intent.metadata === "object" && intent.metadata !== null
+                    ? (intent.metadata as Record<string, unknown>)
+                    : {}),
+                  pendingManualReview: true,
+                  manualReviewReason: "Amount exceeds escrow auto-lock threshold"
+                } as Prisma.InputJsonValue
+              }
+            : {})
+        }
       });
       await tx.contract.update({
         where: { id: intent.contractId! },
         data: {
           status: ContractStatus.IN_PROGRESS,
           paymentStatus: ContractPaymentStatus.CONFIRMED,
-          escrowStatus: EscrowStatus.LOCKED
+          escrowStatus: needsManualReview ? EscrowStatus.NONE : EscrowStatus.LOCKED,
+          escrowAmountCents: baseCents
         }
       });
-      await tx.escrowTransaction.create({
-        data: {
-          contractId: intent.contractId!,
-          type: EscrowTransactionType.LOCK,
-          amount: intent.amountCents,
-          reason: "Payment confirmed — escrow locked",
-          createdBy: "system"
-        }
-      });
+      if (!needsManualReview) {
+        await tx.escrowTransaction.create({
+          data: {
+            contractId: intent.contractId!,
+            type: EscrowTransactionType.LOCK,
+            amount: baseCents,
+            reason: "Payment confirmed — escrow locked",
+            createdBy: "system"
+          }
+        });
+      }
       await tx.paymentTransaction.create({
         data: {
           contractId: intent.contractId!,
           type: PaymentTransactionType.CHARGE,
           amount: intent.amountCents,
           currency: intent.currency,
-          fee: Math.round(intent.amountCents * ESCROW_FEE_RATE),
+          fee: feeCents,
           status: PaymentTransactionStatus.SUCCEEDED,
           provider: intent.provider,
           providerTxnId: stripeIntentId
+        }
+      });
+      await tx.auditLog.create({
+        data: {
+          actorId: null,
+          action: needsManualReview ? "PAYMENT_PENDING_ESCROW_REVIEW" : "PAYMENT_SUCCEEDED",
+          targetType: "Contract",
+          targetId: intent.contractId!,
+          metadata: {
+            providerTxnId: stripeIntentId,
+            amountCents: intent.amountCents,
+            needsManualReview
+          } as object
         }
       });
     });

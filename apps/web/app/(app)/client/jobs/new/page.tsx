@@ -23,7 +23,7 @@ export default async function ClientNewJobPage() {
     return (
       <div className="mx-auto max-w-2xl space-y-6 pb-10">
         <header className="border-b border-slate-200/80 pb-6">
-          <p className="text-xs font-medium uppercase tracking-[0.14em] text-slate-500">NearWork · Client</p>
+          <p className="text-xs font-medium uppercase tracking-[0.14em] text-slate-500">NextWork · Client</p>
           <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">Post a new job</h1>
           <p className="mt-2 text-sm leading-relaxed text-slate-600">
             Complete your client profile before publishing roles so freelancers see a trustworthy company context.

@@ -1,5 +1,6 @@
 import type { Route } from "next";
 import Link from "next/link";
+import { envFlag } from "@/lib/env-flags";
 import { getServerTranslator } from "@/lib/i18n/server-translator";
 import { withPublicLocale } from "@/lib/i18n/locale-path";
 
@@ -8,7 +9,7 @@ export default async function HelpPage() {
   const howPath = withPublicLocale(locale, "/how-it-works");
   const earlyAccessPath = withPublicLocale(locale, "/early-access");
   const pricingPath = withPublicLocale(locale, "/pricing");
-  const supportEmail = process.env.NEARWORK_SUPPORT_EMAIL?.trim() ?? "";
+  const supportEmail = envFlag("NEXTWORK_SUPPORT_EMAIL", "NEARWORK_SUPPORT_EMAIL") ?? "";
 
   const helpTopics = [
     { title: t("marketing.help.topic1Title"), blurb: t("marketing.help.topic1Body") },

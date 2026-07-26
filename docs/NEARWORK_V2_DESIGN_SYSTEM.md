@@ -1,4 +1,4 @@
-# NearWork V2 — UI/UX Design Document
+# NextWork V2 — UI/UX Design Document
 
 > **Doc revision:** v3  
 > Last synchronized: 2026-07-07 (full UI implementation status)
@@ -14,7 +14,7 @@
 
 ## Executive Summary
 
-NearWork V2 redesign fokus pada **conversion optimization** & **trust building**, mengadopsi best practices dari Fastwork (UX lokal), Upwork (trust signal), & Fiverr (simplicity). Target: **mobilefirst responsive**, **fast loading**, **intuitive payment flow**, **clear trust indicators**.
+NextWork V2 redesign fokus pada **conversion optimization** & **trust building**, mengadopsi best practices dari Fastwork (UX lokal), Upwork (trust signal), & Fiverr (simplicity). Target: **mobilefirst responsive**, **fast loading**, **intuitive payment flow**, **clear trust indicators**.
 
 **Key Improvements:**
 1. ✅ Cleaner landing page (hero → search → social proof)
@@ -172,12 +172,12 @@ TrendingUp:    TrendingUp (analytics)
 - **Upwork:** Hero → featured freelancers → how it works → pricing
 - **Fiverr:** Hero → categories → gigs → social proof
 
-**NearWork V2 Landing Page Structure:**
+**NextWork V2 Landing Page Structure:**
 
 ```
 ┌─────────────────────────────────────────┐
 │   NAVBAR (sticky)                       │
-│  NearWork | [Jobs] [Freelancers] [Help] │
+│  NextWork | [Jobs] [Freelancers] [Help] │
 │                                [Login] [Sign Up]
 │                                                  │
 ├─────────────────────────────────────────┤
@@ -270,7 +270,7 @@ TrendingUp:    TrendingUp (analytics)
 
 ┌─────────────────────────────────────────┐
 │  FOOTER                                 │
-│  © 2026 NearWork. [Terms] [Privacy] [Contact] │
+│  © 2026 NextWork. [Terms] [Privacy] [Contact] │
 │  [Social Links]                         │
 └─────────────────────────────────────────┘
 ```
@@ -287,7 +287,7 @@ TrendingUp:    TrendingUp (analytics)
 **Desktop Header (sticky):**
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│ 🎯 NearWork  [Search Jobs] [Freelancers] [Help] [Notifications]│
+│ 🎯 NextWork  [Search Jobs] [Freelancers] [Help] [Notifications]│
 │                                          [Profile ▼] [Logout] │
 └──────────────────────────────────────────────────────────────┘
 ```
@@ -295,7 +295,7 @@ TrendingUp:    TrendingUp (analytics)
 **Mobile Header (sticky):**
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│ ☰  NearWork                    [🔔] [👤]                     │
+│ ☰  NextWork                    [🔔] [👤]                     │
 └──────────────────────────────────────────────────────────────┘
 
 [If menu open]
@@ -897,7 +897,7 @@ look forward to working with you.
 ## 4. Comparison with Competitor UX
 
 ### 4.1 Fastwork (Indonesia Local UX)
-**What NearWork should adopt:**
+**What NextWork should adopt:**
 - ✅ Simple category browsing (no complex filters initially)
 - ✅ Fast checkout (Midtrans integration feels native)
 - ✅ Job card shows **response time** (builds trust)
@@ -905,12 +905,12 @@ look forward to working with you.
 - ✅ Mobile-first (Fastwork dominates on mobile)
 
 **Gap to Fix:**
-- ❌ V1 NearWork has cluttered dashboard
+- ❌ V1 NextWork has cluttered dashboard
 - ❌ Payment options too limited (add Midtrans VA, e-wallet)
 - ❌ Trust signals weak (add response time, verified badge visibility)
 
 ### 4.2 Upwork (Trust & Professionalism)
-**What NearWork should adopt:**
+**What NextWork should adopt:**
 - ✅ Escrow system (transparent, builds confidence)
 - ✅ Comprehensive freelancer profiles (portfolio, reviews, earnings)
 - ✅ Dispute resolution process (fair, documented)
@@ -923,7 +923,7 @@ look forward to working with you.
 - ❌ Commission breakdown unclear (add transparent fee display)
 
 ### 4.3 Fiverr (Simplicity & Gig Economy)
-**What NearWork should adopt:**
+**What NextWork should adopt:**
 - ✅ Package pricing (tiered options: Basic, Standard, Premium)
 - ✅ Fast bid/purchase flow (3 clicks max)
 - ✅ Clear delivery timeline (calendar, countdown)

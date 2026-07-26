@@ -14,10 +14,10 @@ export async function generateMetadata({
   return localizedMetadata({
     locale: resolved,
     path: "/pricing",
-    title: resolved === "id" ? "Harga | NearWork" : "Pricing | NearWork",
+    title: resolved === "id" ? "Harga | NextWork" : "Pricing | NextWork",
     description:
       resolved === "id"
-        ? "Model harga NearWork: sederhana, transparan, dan bertahap selama early access."
-        : "NearWork pricing model: simple, transparent, and evolving during early access."
+        ? "Model harga NextWork: sederhana, transparan, dan bertahap selama early access."
+        : "NextWork pricing model: simple, transparent, and evolving during early access."
   });
 }

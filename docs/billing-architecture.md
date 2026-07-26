@@ -1,7 +1,7 @@
 # Billing Architecture
 
 > **Doc revision:** v2  
-> Last synchronized: 2026-07-07 (NearWork V2: Stripe/Midtrans escrow, payouts, boosts).
+> Last synchronized: 2026-07-07 (NextWork V2: Stripe/Midtrans escrow, payouts, boosts).
 
 ## V2 payment stack
 

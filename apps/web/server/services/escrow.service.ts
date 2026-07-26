@@ -12,6 +12,7 @@ import type { AuthActor } from "../domain/auth-actor";
 import { DomainError, PolicyDeniedError } from "../errors/domain-errors";
 import { ContractPolicy } from "../policies/contract.policy";
 import { ContractRepository } from "../repositories/contract.repository";
+import { notifyEscrowReleased, notifyEscrowWorkSubmitted } from "./money-notification.service";
 
 function addDays(from: Date, days: number): Date {
   const d = new Date(from.getTime());
@@ -89,6 +90,8 @@ export class EscrowService {
         });
       }
     }
+
+    await notifyEscrowWorkSubmitted({ clientUserId: row.clientUserId, contractId });
 
     return {
       contractId,
@@ -181,66 +184,27 @@ export class EscrowService {
       }
     });
 
+    await notifyEscrowReleased({
+      freelancerUserId: row.freelancerUserId,
+      contractId,
+      releasedCents: releaseAmount
+    });
+    await db.auditLog.create({
+      data: {
+        actorId: actorUserId,
+        action: "ESCROW_RELEASED",
+        targetType: "Contract",
+        targetId: contractId,
+        metadata: { releasedCents: releaseAmount, holdbackCents: holdback, reason } as object
+      }
+    });
+
     return { contractId, releasedCents: releaseAmount, holdbackCents: holdback };
   }
 
+  /** Delegates to canonical money-jobs used by apps/worker. */
   async processAutoReleases(): Promise<{ processed: number }> {
-    const now = new Date();
-
-    const staleReview = await db.contract.findMany({
-      where: {
-        status: ContractStatus.IN_REVIEW,
-        workReviewDeadline: { lte: now },
-        escrowStatus: EscrowStatus.LOCKED,
-        deletedAt: null
-      },
-      take: 50
-    });
-
-    for (const c of staleReview) {
-      await this.releasePartialEscrow(c.id, "system", "Auto-release after review window");
-    }
-
-    const partial = await db.contract.findMany({
-      where: {
-        escrowStatus: EscrowStatus.PARTIAL_RELEASED,
-        escrowReleasedAt: null,
-        workSubmittedAt: { lte: addDays(now, -(V2_PRICING.workReviewDays + V2_PRICING.chargebackHoldDays)) },
-        deletedAt: null
-      },
-      take: 50
-    });
-
-    for (const c of partial) {
-      const holdbackTx = await db.escrowTransaction.findFirst({
-        where: { contractId: c.id, type: EscrowTransactionType.LOCK },
-        orderBy: { createdAt: "desc" }
-      });
-      const holdback = holdbackTx?.amount ?? 0;
-      if (holdback > 0) {
-        await db.$transaction(async (tx: Prisma.TransactionClient) => {
-          await tx.escrowTransaction.create({
-            data: {
-              contractId: c.id,
-              type: EscrowTransactionType.FULL_RELEASE,
-              amount: holdback,
-              reason: "Holdback released after chargeback window",
-              createdBy: "system"
-            }
-          });
-          await tx.contract.update({
-            where: { id: c.id },
-            data: { escrowStatus: EscrowStatus.FULLY_RELEASED, escrowReleasedAt: now }
-          });
-          await tx.freelancerWallet.upsert({
-            where: { userId: c.freelancerUserId },
-            create: { userId: c.freelancerUserId, balanceCents: holdback, currency: c.currency ?? "IDR" },
-            update: { balanceCents: { increment: holdback } }
-          });
-        });
-      }
-    }
-
-    return { processed: staleReview.length + partial.length };
+    const { processEscrowAutoReleases } = await import("@acme/database");
+    return processEscrowAutoReleases();
   }
 }

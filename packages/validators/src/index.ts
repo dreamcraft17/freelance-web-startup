@@ -59,6 +59,8 @@ export const updateJobSchema = z
     message: "At least one of title, description, or status is required"
   });
 
+const attachmentUrlsSchema = z.array(z.string().url()).max(5).optional();
+
 export const createJobSchema = z.object({
   title: z.string().min(3).max(180),
   description: z.string().min(30).max(12000),
@@ -70,7 +72,9 @@ export const createJobSchema = z.object({
   budgetMax: z.number().nonnegative().optional(),
   currency: jobMarketplaceCurrencySchema,
   city: z.string().max(120).optional(),
-  bidDeadline: z.string().datetime().optional()
+  bidDeadline: z.string().datetime().optional(),
+  /** Client-provided file URLs (MVP; no server upload). */
+  attachmentUrls: attachmentUrlsSchema
 });
 
 export const submitBidSchema = z.object({
@@ -203,7 +207,9 @@ export const createMessageThreadSchema = z
   });
 
 export const postMessageSchema = z.object({
-  body: z.string().min(1).max(20000)
+  body: z.string().min(1).max(20000),
+  /** Client-provided file URLs (MVP; no server upload). */
+  attachmentUrls: attachmentUrlsSchema
 });
 
 export const staffReviewVerificationSchema = z.object({
@@ -335,7 +341,7 @@ export type StaffSetJobModerationDto = z.infer<typeof staffSetJobModerationSchem
 export type StaffSetUserModerationDto = z.infer<typeof staffSetUserModerationSchema>;
 export type AdminReportsQueryDto = z.infer<typeof adminReportsQuerySchema>;
 
-// --- NearWork V2 ---
+// --- NextWork V2 ---
 
 export const createStripeIntentSchema = z.object({
   contractId: z.string().min(1),
@@ -408,3 +414,10 @@ export type CreateAppealDto = z.infer<typeof createAppealSchema>;
 export type ReviewAppealDto = z.infer<typeof reviewAppealSchema>;
 export type CreatePayoutRequestDto = z.infer<typeof createPayoutRequestSchema>;
 export type CreateBankAccountDto = z.infer<typeof createBankAccountSchema>;
+
+export const resolveDisputeSchema = z.object({
+  decision: z.enum(["FAVOR_CLIENT", "FAVOR_FREELANCER", "SPLIT"]),
+  resolution: z.string().max(4000).optional()
+});
+
+export type ResolveDisputeDto = z.infer<typeof resolveDisputeSchema>;

@@ -33,7 +33,7 @@ export function AdminTopBar({ pageTitle, staffRole, onOpenMobileNav }: AdminTopB
         </button>
 
         <div className="min-w-0 flex-1">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">NearWork · Internal</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">NextWork · Internal</p>
           <h1 className="truncate text-base font-semibold leading-tight tracking-tight text-slate-900 sm:text-[17px]">
             {pageTitle}
           </h1>

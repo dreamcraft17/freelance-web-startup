@@ -49,7 +49,7 @@ export async function MarketingSiteFooter() {
         <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-3">
             <Link href="/" className="text-sm font-bold tracking-tight text-slate-900 hover:text-nw-brand">
-              NearWork
+              NextWork
             </Link>
             <p className="mt-2 max-w-xs text-sm leading-relaxed text-slate-500">{t("footer.tagline")}</p>
             <div className="mt-4 flex items-center gap-2">

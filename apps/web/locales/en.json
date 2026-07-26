@@ -258,7 +258,7 @@
       "contractsEmptyBody": "What: no active hire records. Why: contracts open after you accept a bid. Next: review proposals on your job, shortlist, then accept when ready.",
       "contractsEmptyPrimary": "Review open jobs",
       "contractsEmptySecondary": "Browse freelancers",
-      "nearworkKicker": "NearWork · Client",
+      "nearworkKicker": "NextWork · Client",
       "welcomeBackFallback": "Welcome back",
       "summaryHeading": "At a glance",
       "summarySub": "Counts from live hiring activity—not estimates.",
@@ -408,7 +408,7 @@
       "openJobsTitle": "Open & recommended jobs",
       "openJobsSubtitle": "{{count}} roles on the board",
       "openJobsSeeAll": "See all",
-      "heroTrustCaption": "NearWork · freelancer workspace",
+      "heroTrustCaption": "NextWork · freelancer workspace",
       "heroMotivation": "Clients skim profiles fast—lead with relevance, clear timelines, and calm follow‑through.",
       "heroStatProposals": "Proposals submitted",
       "heroStatProposalsHintSetup": "Create a profile to start sending proposals tied to briefs.",
@@ -417,7 +417,7 @@
       "heroStatContractsHintZero": "Accept a bid moves work into an active engagement.",
       "heroStatReviews": "Review signal",
       "heroStatReviewsEmpty": "Stars appear once clients finish work together—keep shipping great outcomes.",
-      "heroStatReviewsHint": "{{count}} reviews on NearWork",
+      "heroStatReviewsHint": "{{count}} reviews on NextWork",
       "heroStatSaved": "Saved by clients",
       "heroStatSavedEmptyHint": "When clients bookmark you, it surfaces here.",
       "trustVerified": "Verified profile",
@@ -433,7 +433,7 @@
       "pulseProfileLabel": "Profile",
       "pulseAwaitingLabel": "Awaiting your reply",
       "playbookTitle": "Proposal playbook",
-      "playbookIntro": "What makes NearWork chats move: structure, specificity, and client-first language.",
+      "playbookIntro": "What makes NextWork chats move: structure, specificity, and client-first language.",
       "playbookFooter": "Every thread stays tied to the job—reference the brief, keep updates short, and confirm next steps.",
       "playbookS1Title": "Personal, but brief",
       "playbookS1Body": "Open with how you read the problem and one relevant proof point—skip generic intros.",
@@ -444,7 +444,7 @@
       "playbookS4Title": "Honest scope & rate",
       "playbookS4Body": "Price to what you can deliver well—clear assumptions beat surprise change orders.",
       "snapshotTitle": "Last 7 days",
-      "snapshotSubtitle": "Counts from your NearWork account.",
+      "snapshotSubtitle": "Counts from your NextWork account.",
       "snapshotBidUpdatesLabel": "Proposal touches (7d)",
       "snapshotAcceptedLabel": "Accepted proposals",
       "snapshotAwaitingLabel": "Threads awaiting reply",
@@ -517,7 +517,7 @@
     "help": "Help",
     "contact": "Contact",
     "tagline": "Job board for freelance hires—local and remote.",
-    "copyright": "© {{year}} NearWork",
+    "copyright": "© {{year}} NextWork",
     "newsletterTitle": "Get tips and product updates",
     "newsletterEmailPlaceholder": "Your email",
     "newsletterSubscribe": "Subscribe"
@@ -705,7 +705,7 @@
           },
           "hire": {
             "title": "Hire when it fits",
-            "body": "Continue the engagement in NearWork."
+            "body": "Continue the engagement in NextWork."
           }
         }
       },
@@ -760,7 +760,7 @@
         "title": "Trusted by freelancers and clients",
         "body": "Real profiles, job-thread messaging, and escrow-ready checkout as V2 rolls out.",
         "quote": "I posted a brief in the morning and had three comparable proposals the same day.",
-        "quoteAuthor": "NearWork early-access client",
+        "quoteAuthor": "NextWork early-access client",
         "stats": {
           "freelancers": "Freelancers",
           "jobs": "Open jobs",
@@ -799,7 +799,7 @@
       "faq": {
         "q1": "How does escrow work?",
         "a1": "When you pay for a contract, funds are held until you approve delivered work or a dispute is resolved.",
-        "q2": "What fees does NearWork charge?",
+        "q2": "What fees does NextWork charge?",
         "a2": "Escrow and payout fees are shown before checkout—no hidden charges at the last step.",
         "q3": "Can I work remotely or on-site?",
         "a3": "Yes. Each job lists work mode and location so you can filter for remote, hybrid, or on-site work.",
@@ -1017,7 +1017,7 @@
     "dashboardSearchAria": "Search jobs by keyword",
     "inboxAria": "Messages",
     "notificationsAria": "Notifications",
-    "communityCardTitle": "Shape NearWork together",
+    "communityCardTitle": "Shape NextWork together",
     "communityCardBody": "We are early access: feedback and help content keep hires tied to real jobs—billing stays transparent when it launches.",
     "communityCardCta": "Visit help center"
   },
@@ -1072,7 +1072,7 @@
     "signOutError": "Could not sign out"
   },
   "publicHeader": {
-    "homeAria": "NearWork home"
+    "homeAria": "NextWork home"
   },
   "locale": {
     "en": "EN",
@@ -1174,7 +1174,7 @@
       "resultMany": "{{count}} open jobs",
       "resultHint": "Title + budget at a glance—open for the full brief.",
       "sidebarKicker": "For clients",
-      "sidebarTitle": "Hiring on NearWork?",
+      "sidebarTitle": "Hiring on NextWork?",
       "sidebarBody": "Post a brief with budget and location so the right people can send proposals.",
       "sidebarPrimary": "Post a job",
       "sidebarSecondary": "Browse freelancers instead",
@@ -1202,7 +1202,7 @@
       "savedJobShort": "Saved",
       "verifiedClient": "Verified",
       "matchForYou": "Great match",
-      "matchForYouHint": "Based on listing freshness, budget, or a featured boost on NearWork—not an automated score.",
+      "matchForYouHint": "Based on listing freshness, budget, or a featured boost on NextWork—not an automated score.",
       "proposalsCount": "{{count}} proposals",
       "proposalsSingular": "1 proposal",
       "proposalsMetaHint": "Submitted proposals on this job (updates as freelancers apply).",
@@ -1325,7 +1325,7 @@
       "exampleHook": "Short value statement appears here so clients can compare quickly.",
       "exampleMeta": "Rating, reviews, location, and work mode are shown in each real listing.",
       "examplePrice": "Starting price",
-      "trustTitle": "Why use NearWork",
+      "trustTitle": "Why use NextWork",
       "trustOne": "Profiles, proposals, and chats stay tied to each job.",
       "trustTwo": "Nearby and remote filters help narrow options faster.",
       "trustThree": "Compare service fit before you open full profile details.",
@@ -1337,7 +1337,7 @@
       "categoryHint": "Matches anyone with at least one skill in that category.",
       "workModeHint": "Use on-site/hybrid for local work, remote for async delivery.",
       "cityPlaceholder": "e.g. Jakarta",
-      "cityHint": "NearWork treats city as a first-class signal for on-site and hybrid work—add yours to discover nearby freelancers.",
+      "cityHint": "NextWork treats city as a first-class signal for on-site and hybrid work—add yours to discover nearby freelancers.",
       "rateGuideLabel": "Rate guide:",
       "rateGuideBody": "Cards show each freelancer's starting hourly rate (or rate on request) so you can compare budget fit before opening profiles.",
       "filterBudgetLabel": "Budget",
@@ -1476,7 +1476,7 @@
       "languagesNotOnProfile": "This freelancer has not added spoken/written languages to their profile. You can confirm fit in conversation.",
       "portfolioSectionTitle": "Portfolio",
       "reviewsSectionKicker": "Social proof",
-      "reviewsSectionLead": "Reviews come from completed work on NearWork when clients leave feedback.",
+      "reviewsSectionLead": "Reviews come from completed work on NextWork when clients leave feedback.",
       "reviewClientFeedback": "Client feedback",
       "reviewWorkedTogether": "Worked together on",
       "reviewProjectContextUnknown": "Project context is not attached to this review.",
@@ -1547,13 +1547,13 @@
         "on_leave": "On leave"
       },
       "servicesTitle": "Services",
-      "servicesSubtitle": "Skills grouped how they appear on NearWork—it reflects what this freelancer emphasizes.",
+      "servicesSubtitle": "Skills grouped how they appear on NextWork—it reflects what this freelancer emphasizes.",
       "servicesUncategorized": "General skills",
       "portfolioTitle": "Recent work samples",
       "portfolioSubtitle": "Pieces shared on this profile (opens in a new tab).",
       "portfolioOpen": "View media",
-      "completedHiresSingular": "completed hire on NearWork",
-      "completedHiresPlural": "completed hires on NearWork",
+      "completedHiresSingular": "completed hire on NextWork",
+      "completedHiresPlural": "completed hires on NextWork",
       "snapshotCompleted": "Completed hires",
       "snapshotCompletedHint": "Finished contracts attributed to this account.",
       "reviewProject": "Project"
@@ -1565,13 +1565,13 @@
       "competitionMid": "Moderate competition",
       "competitionLow": "Few proposals so far",
       "clientTrustTitle": "About the client",
-      "clientTrustLead": "Signals from this NearWork account—no fabricated ratings.",
+      "clientTrustLead": "Signals from this NextWork account—no fabricated ratings.",
       "clientMemberSince": "Member since",
       "clientProfileActivity": "Profile last updated",
       "clientCompletedHiresLabel": "Completed hires",
       "clientOpenRolesLabel": "Open roles (public)",
       "clientReviewsLine": "{{rating}} avg · {{count}} reviews as client",
-      "clientReviewsNone": "No client reviews yet on NearWork.",
+      "clientReviewsNone": "No client reviews yet on NextWork.",
       "clientVerificationPending": "Verification pending",
       "aboutProjectTitle": "Brief",
       "whatClientNeedsTitle": "What the client shared",
@@ -1826,7 +1826,7 @@
   },
   "marketing": {
     "earlyAccess": {
-      "sectionTitle": "NearWork",
+      "sectionTitle": "NextWork",
       "pageTitle": "Early access",
       "description": "We are shipping in public: real jobs, real freelancers, and honest limits—while we finish payments and edge cases.",
       "whyTitle": "Why early access exists",
@@ -1845,7 +1845,7 @@
     "pricing": {
       "sectionTitle": "Pricing",
       "pageTitle": "Simple and honest",
-      "descriptionPrefix": "NearWork is in",
+      "descriptionPrefix": "NextWork is in",
       "earlyAccessBold": "early access",
       "descriptionSuffix": "Posting jobs, sending proposals, and hiring through job threads is free while we grow the network. We will announce any paid platform access here before it applies.",
       "currentlyFreeTitle": "Free during early access",
@@ -1855,7 +1855,7 @@
       "futureTitle": "Later: optional add-ons",
       "futureBody": "We may introduce paid extras (for example boosted visibility or team tooling). We will not turn on charges for existing workflows without a clear, published price list.",
       "ctaTitle": "Explore or join",
-      "ctaBody": "Try the job board and freelancer directory, then sign up if NearWork fits how you hire or find work.",
+      "ctaBody": "Try the job board and freelancer directory, then sign up if NextWork fits how you hire or find work.",
       "ctaPrimary": "Post a job",
       "ctaRegister": "Create an account",
       "ctaJobs": "Browse jobs",
@@ -1865,11 +1865,11 @@
     "help": {
       "sectionTitle": "Help",
       "pageTitle": "Help & contact",
-      "description": "NearWork is a small product in early access. We are not a 24/7 support desk yet—this page explains how to reach us and what we can help with.",
+      "description": "NextWork is a small product in early access. We are not a 24/7 support desk yet—this page explains how to reach us and what we can help with.",
       "contactTitle": "Contact",
       "contactBody": "For questions, bugs, or trust and safety issues, email the address below (set by your deployment). We read everything; response time depends on volume while the team is small.",
-      "contactNote": "Operators: set NEARWORK_SUPPORT_EMAIL on the server (see deploy checklist).",
-      "contactNoEmail": "Support email is not configured for this deployment yet. Use Early access to reach the team, or ask your administrator to set NEARWORK_SUPPORT_EMAIL.",
+      "contactNote": "Operators: set NEXTWORK_SUPPORT_EMAIL on the server (see deploy checklist).",
+      "contactNoEmail": "Support email is not configured for this deployment yet. Use Early access to reach the team, or ask your administrator to set NEXTWORK_SUPPORT_EMAIL.",
       "contactEarlyAccessCta": "Open early access",
       "topicsTitle": "Help topics (outline)",
       "topicsBody": "Full articles can live here later; for now these are the buckets we expect to document.",
@@ -1891,8 +1891,8 @@
     },
     "how": {
       "sectionTitle": "How it works",
-      "pageTitle": "How NearWork works",
-      "description": "NearWork connects clients and freelancers around briefs, proposals, and delivery—with your city and work mode in the loop when place matters. The product is real; the roadmap is still open.",
+      "pageTitle": "How NextWork works",
+      "description": "NextWork connects clients and freelancers around briefs, proposals, and delivery—with your city and work mode in the loop when place matters. The product is real; the roadmap is still open.",
       "clientsTitle": "For clients",
       "clientsSubtitle": "When you need talent for a defined piece of work.",
       "clientsStep1Title": "Post a brief",
@@ -1900,7 +1900,7 @@
       "clientsStep2Title": "Receive proposals",
       "clientsStep2Body": "Freelancers respond with proposals on your job. You compare scope, price, and timing in one place instead of scattered threads.",
       "clientsStep3Title": "Hire and coordinate delivery",
-      "clientsStep3Body": "Choose who fits, align on milestones, and keep decisions next to the work. The details depend on your project—NearWork is the shared starting line, not a replacement for how you run delivery day to day.",
+      "clientsStep3Body": "Choose who fits, align on milestones, and keep decisions next to the work. The details depend on your project—NextWork is the shared starting line, not a replacement for how you run delivery day to day.",
       "freelancersTitle": "For freelancers",
       "freelancersSubtitle": "When you want briefs that respect how and where you work.",
       "freelancersStep1Title": "Create a profile",
@@ -1912,7 +1912,7 @@
       "nearbyTitle": "Nearby vs remote",
       "nearbyBody": "Nearby fits shoots, installs, on-site support, and anything that needs someone in a place. Remote fits work that ships online. Hybrid sits in between. You pick the mode per job or per profile so expectations stay explicit.",
       "earlyAccessTitle": "Early access",
-      "earlyAccessBody": "NearWork is still in early access: features and coverage will grow, and some flows will change as we learn from real usage. We are not pretending the marketplace is complete—we are inviting people who are okay building with us.",
+      "earlyAccessBody": "NextWork is still in early access: features and coverage will grow, and some flows will change as we learn from real usage. We are not pretending the marketplace is complete—we are inviting people who are okay building with us.",
       "earlyAccessLink": "Read what early access means today →",
       "ctaTitle": "Ready to try it?",
       "ctaBody": "Create an account to post or bid, or explore the public board first—no hype, just the same product everyone else sees.",
@@ -1924,7 +1924,7 @@
     "terms": {
       "title": "Terms of service",
       "subtitle": "Draft placeholder for early access. Replace with counsel-reviewed terms before charging money at scale.",
-      "body1": "By using NearWork during early access you agree to use the product responsibly: no fraudulent listings, no harassment, and no attempts to bypass platform safety controls we add over time.",
+      "body1": "By using NextWork during early access you agree to use the product responsibly: no fraudulent listings, no harassment, and no attempts to bypass platform safety controls we add over time.",
       "body2": "Payments and dispute resolution may rely on third-party providers; final legal language will describe those relationships clearly.",
       "questions": "Questions?",
       "helpLink": "Help & contact"
@@ -1932,7 +1932,7 @@
     "privacy": {
       "title": "Privacy policy",
       "subtitle": "Draft placeholder for early access. Replace with counsel-reviewed text before production marketing.",
-      "body1": "NearWork processes account data (email, name, role) and content you post (jobs, bids, messages) to run the marketplace. We use cookies for signed-in sessions. We do not sell personal data to third parties in this early-access build.",
+      "body1": "NextWork processes account data (email, name, role) and content you post (jobs, bids, messages) to run the marketplace. We use cookies for signed-in sessions. We do not sell personal data to third parties in this early-access build.",
       "questions": "For questions, use",
       "helpLink": "Help & contact"
     }
@@ -1977,7 +1977,7 @@
     "registerForm": {
       "badge": "Start onboarding",
       "title": "Create your account",
-      "subtitle": "Join NearWork to hire or get hired",
+      "subtitle": "Join NextWork to hire or get hired",
       "afterCreate": "After you create your account, we'll take you to",
       "returnDestinationProfile": "your profile page",
       "returnDestinationMessages": "your messages page",
@@ -2036,7 +2036,7 @@
       "login": {
         "saveJob": "Log in to save this job.",
         "saveFreelancer": "Log in to save this freelancer.",
-        "sendMessage": "Log in to message on NearWork.",
+        "sendMessage": "Log in to message on NextWork.",
         "submitBid": "Log in to submit your bid.",
         "postJob": "Log in to post a job.",
         "protected": "Log in to continue to that page."

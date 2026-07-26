@@ -1,15 +1,15 @@
-# NearWork UI/UX Design Brief
+# NextWork UI/UX Design Brief
 
 > **Doc revision:** v1  
 > Last synchronized: 2026-05-01 (initial design brief for AI/human UI/UX designers).
 
-Dokumen ini adalah acuan desain untuk designer UI/UX (baik human maupun AI) agar output konsisten dengan karakter produk NearWork.
+Dokumen ini adalah acuan desain untuk designer UI/UX (baik human maupun AI) agar output konsisten dengan karakter produk NextWork.
 
 ---
 
 ## 1) Product Context (Wajib Dipahami)
 
-NearWork adalah marketplace freelance terstruktur:
+NextWork adalah marketplace freelance terstruktur:
 
 - Fokus utama: **job -> proposal -> chat -> keputusan hiring** tetap dalam satu alur.
 - Posisi produk: **tool kerja harian**, bukan landing promo.
@@ -218,5 +218,5 @@ Desain dianggap siap jika:
 - hierarchy tindakan jelas,
 - tidak ada visual gimmick AI-template,
 - bisa diimplementasikan tanpa mengubah logic backend,
-- konsisten dengan style sistem NearWork.
+- konsisten dengan style sistem NextWork.
 

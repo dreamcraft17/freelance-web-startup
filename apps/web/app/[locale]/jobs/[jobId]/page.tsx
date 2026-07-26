@@ -14,10 +14,10 @@ export async function generateMetadata({
   return localizedMetadata({
     locale: resolved,
     path: `/jobs/${jobId}`,
-    title: resolved === "id" ? "Detail lowongan | NearWork" : "Job details | NearWork",
+    title: resolved === "id" ? "Detail lowongan | NextWork" : "Job details | NextWork",
     description:
       resolved === "id"
-        ? "Lihat detail lowongan, brief, dan proposal yang tersedia di NearWork."
-        : "View job details, brief, and proposals available on NearWork."
+        ? "Lihat detail lowongan, brief, dan proposal yang tersedia di NextWork."
+        : "View job details, brief, and proposals available on NextWork."
   });
 }

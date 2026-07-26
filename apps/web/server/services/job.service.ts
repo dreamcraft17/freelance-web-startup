@@ -101,8 +101,11 @@ export class JobService {
   async getJobByIdForPublic(
     jobId: string,
     locale: AppLocale | "source" = "en",
-    opts?: { viewerUserId?: string; viewerIsStaff?: boolean }
+    opts?: { viewerUserId?: string; viewerIsStaff?: boolean; incrementView?: boolean }
   ) {
+    if (opts?.incrementView) {
+      void this.jobRepo.incrementViewCount(jobId);
+    }
     return this.jobRepo.findByIdPublic(jobId, locale, opts);
   }
 

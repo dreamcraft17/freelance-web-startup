@@ -12,7 +12,7 @@ export default async function AdminAppealsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="nw-type-page-title text-slate-900">Suspension appeals</h1>
-        <p className="nw-type-body mt-1 text-slate-600">Review freelancer appeals (NearWork V2 trust & safety).</p>
+        <p className="nw-type-body mt-1 text-slate-600">Review freelancer appeals (NextWork V2 trust & safety).</p>
       </div>
       <Card className="nw-card p-4">
         <AdminAppealsClient initialAppeals={JSON.parse(JSON.stringify(appeals))} />

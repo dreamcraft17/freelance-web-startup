@@ -1,4 +1,4 @@
-# NearWork UI Redesign Audit + Design Language
+# NextWork UI Redesign Audit + Design Language
 
 > **Doc revision:** v101  
 > Last synchronized: 2026-07-07 (V2 full pass: global brand migration, shadcn primitives, mobile nav, wizard, public surfaces).
@@ -9,7 +9,7 @@ Build a grounded, practical, product-first UI across public and authenticated su
 
 ## Progress update (April 2026)
 
-### 2026-07-07 — NearWork V2 full implementation pass
+### 2026-07-07 — NextWork V2 full implementation pass
 
 - **Brand migration:** seluruh `#3525cd` → token `nw-brand` / CSS vars di `apps/web`.
 - **UI primitives:** `dialog`, `alert`, `badge`, `select`, `toast` (+ `ToastProvider` di root layout).
@@ -19,7 +19,7 @@ Build a grounded, practical, product-first UI across public and authenticated su
 - **Freelancer dashboard:** `SubscriptionLimitsBanner` + upgrade CTA.
 - **Theme:** dark mode toggle tetap di Settings.
 
-### 2026-07-07 — NearWork V2 design system (implementation)
+### 2026-07-07 — NextWork V2 design system (implementation)
 
 - **Tokens:** `globals.css` + `tailwind.config.ts` — primary blue `#0066CC`, teal/orange/semantic palette, 8px spacing scale, V2 typography utilities (`nw-v2-h1`…), touch targets (min 44px), dark mode CSS vars.
 - **Fonts:** Inter (sans) + Fira Code (prices) via root `layout.tsx`.
@@ -77,7 +77,7 @@ Build a grounded, practical, product-first UI across public and authenticated su
 
 ### 2026-05-09 — Global design system pass (tokens + primitives + client dashboard)
 
-- **`app/globals.css`:** `--primary` / `--ring` diselaraskan ke indigo NearWork; `--radius` sedikit lebih besar; utilitas baru **`nw-card`**, **`nw-card-elevated`**, **`nw-card-trust`**, **`nw-card-inset`**, **`nw-type-*`**, **`nw-stack*`**, **`nw-chip` / `nw-chip-brand` / `nw-chip-muted`**, **`nw-chip-quiet`**, **`nw-cta-secondary`**, **`nw-link-action`**, **`nw-app-header`**; `nw-surface` + `nw-empty-state` disempurnakan.
+- **`app/globals.css`:** `--primary` / `--ring` diselaraskan ke indigo NextWork; `--radius` sedikit lebih besar; utilitas baru **`nw-card`**, **`nw-card-elevated`**, **`nw-card-trust`**, **`nw-card-inset`**, **`nw-type-*`**, **`nw-stack*`**, **`nw-chip` / `nw-chip-brand` / `nw-chip-muted`**, **`nw-chip-quiet`**, **`nw-cta-secondary`**, **`nw-link-action`**, **`nw-app-header`**; `nw-surface` + `nw-empty-state` disempurnakan.
 - **`tailwind.config.ts`:** `fontSize` (`nw-lead`, `nw-body`, `nw-caption`), `boxShadow` (`nw-card`, `nw-card-hover`, `nw-elevated`), `transitionDuration.nw`.
 - **Komponen:** `Button` (tinggi default 40px, `rounded-lg`, secondary border); `Card` (`rounded-xl`, `shadow-nw-card`); `EmptyStateCard` memakai rail `nw-empty-state`; `DashboardStatCard` / `DashboardEmptyState` mengikuti kartu/stack baru.
 - **Client dashboard:** hero + panel memakai utilitas NW; quick actions + hero CTA + badge proposal + meta job + status kontrak/bid memakai **kamus** (`dashboard.client.*` termasuk `jobStatus` / `bidStatus` / `contractStatus`); link Settings locale-aware (`withWorkspaceLocale`).
@@ -138,7 +138,7 @@ Build a grounded, practical, product-first UI across public and authenticated su
 
 - Full-width **hero**: soft violet gradient, trust row, abstract “opportunity density” panel (non-data illustrative), elevated **search card** (keyword, location, category, primary CTA), popular chips + **work-mode chips** including “any mode”.
 - **Three-column** layout retained with **floating** filter column (accordion, category/budget/posted/work mode — posted windows are real query params), **mobile filter sheet** (drawer-style, touch-friendly).
-- **Job cards**: NearWork indigo CTAs, bookmark/save (**real** saved state when logged in via server-resolved ids), **verified client** badge from `ClientProfile.verificationStatus`, **exact proposal count** from `_count.bids`, skill chips from `JobSkill`, heuristic “great match” chip with honest tooltip (freshness/budget/featured—not ML).
+- **Job cards**: NextWork indigo CTAs, bookmark/save (**real** saved state when logged in via server-resolved ids), **verified client** badge from `ClientProfile.verificationStatus`, **exact proposal count** from `_count.bids`, skill chips from `JobSkill`, heuristic “great match” chip with honest tooltip (freshness/budget/featured—not ML).
 - **Marketplace pulse**: recent **open jobs** with per-row `createdAt`, recent **bids** with freelancer name + timestamp; **insights** strip drops fabricated “avg response” in favor of three **live aggregates** (open public jobs, bids 24h, freelancers available) + footnote.
 - i18n: new `public.jobs.*` strings (EN/ID) for hero, pulse, notifications CTA, chips; listing data paths extended in `SearchService`/`JobService` (SSR-friendly; no new client-only data layers).
 
@@ -258,7 +258,7 @@ Build a grounded, practical, product-first UI across public and authenticated su
 
 - Komponen `HeroScenarioSlider` dihapus dari landing hero untuk mengurangi distraksi visual dan memperkuat fokus ke aksi produk.
 - Area kanan hero diganti panel “live marketplace” yang ringan: tiga sinyal status + dua sample rows berbentuk struktural (bukan dekoratif).
-- Gaya panel dijaga netral (`border + spacing`, tanpa gradient/glow/shadow berlebih) agar tetap sejalan dengan identitas NearWork yang clean dan terstruktur.
+- Gaya panel dijaga netral (`border + spacing`, tanpa gradient/glow/shadow berlebih) agar tetap sejalan dengan identitas NextWork yang clean dan terstruktur.
 
 ### 2026-04-26 — Hero visual rhythm micro-polish
 
@@ -276,7 +276,7 @@ Build a grounded, practical, product-first UI across public and authenticated su
 
 ### 2026-04-25 — Brand voice + positioning pass (structured marketplace)
 
-- Copy homepage dan surface publik utama diselaraskan ke positioning NearWork: **structured freelance marketplace**, bukan marketplace generik.
+- Copy homepage dan surface publik utama diselaraskan ke positioning NextWork: **structured freelance marketplace**, bukan marketplace generik.
 - Hero line sekarang lebih menonjolkan alur kerja (`post job -> review proposals -> start discussion`) alih-alih wording marketplace umum.
 - Signature trust line dipertegas konsisten: **“All proposals and chats stay tied to the job.”**
 - CTA publik dibuat lebih konkret dan task-driven (`Find freelancers`, `Post a job`, `Start discussion`).

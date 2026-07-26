@@ -41,7 +41,7 @@
 
 ### Addendum 2026-04-18
 
-- **Produksi / edge:** baseline security headers + optional HSTS (`NEARWORK_ENABLE_HSTS`) di `apps/web/next.config.ts`; `instrumentation.ts` memvalidasi `SESSION_SECRET` saat `NODE_ENV=production`.
+- **Produksi / edge:** baseline security headers + optional HSTS (`NEXTWORK_ENABLE_HSTS`) di `apps/web/next.config.ts`; `instrumentation.ts` memvalidasi `SESSION_SECRET` saat `NODE_ENV=production`.
 - **Discovery publik:** limiter khusus + fingerprint query + skor UA ringan pada `GET /api/search/*` dan `GET /api/jobs` (`public-discovery-guard.ts`); validator discovery (`MAX_PUBLIC_DISCOVERY_PAGE`, panjang string query).
 - **UI publik:** landing hero marketplace (stage putih, kategori horizontal ikon, preview baris); footer marketing **kompak** berkolom (Product / Company / Legal / Support) + strip copyright.
 - **Dokumentasi:** panduan sinkronisasi file `.md` di `docs/DOCUMENTATION-MAINTENANCE.md`.
@@ -50,7 +50,7 @@
 
 ## 1) Ringkasan eksekutif
 
-NearWork sudah berada di fase **MVP+ operasional**:
+NextWork sudah berada di fase **MVP+ operasional**:
 
 - core marketplace aktif (jobs, bids, contracts, messages, notifications, reviews, saved items, taxonomy, search),
 - auth cookie-based stabil (`acme_session`),
@@ -149,7 +149,7 @@ Sudah benar-benar staff-only:
 
 ### 5.2 Seed dev & E2E
 
-- `packages/database/prisma/seed.ts`: admin dev (`admin@nearwork.local` default), **taxonomy** (kategori/skill untuk create job), dan **akun E2E tetap** (`e2e.client@nearwork.local`, `e2e.freelancer@nearwork.local`, password `NearWorkE2eDev123!` default) — override via `SEED_ADMIN_*`, `SEED_E2E_*`.
+- `packages/database/prisma/seed.ts`: admin dev (`admin@nearwork.local` default), **taxonomy** (kategori/skill untuk create job), dan **akun E2E tetap** (`e2e.client@nearwork.local`, `e2e.freelancer@nearwork.local`, password `NextWorkE2eDev123!` default) — override via `SEED_ADMIN_*`, `SEED_E2E_*`.
 - Root script `pnpm db:seed` sudah tersedia; wajib di DB test yang sama sebelum `pnpm test:e2e` (kategori + admin untuk assert laporan).
 - Setelah E2E, `e2e-test-accounts.local.md` (gitignored) mencatat URL/thread dari run terakhir untuk cek manual browser.
 
@@ -183,7 +183,7 @@ Rekomendasi: freeze satu brand source-of-truth (PNG atau SVG final) + token ukur
 Sudah ada:
 
 - `app/loading.tsx` global + route-level skeleton di discovery, workspace, dan admin utama,
-- utilitas `nw-skeleton*` / `LoadingSkeleton` selaras token NearWork.
+- utilitas `nw-skeleton*` / `LoadingSkeleton` selaras token NextWork.
 
 Residual:
 

@@ -1,9 +1,9 @@
-# NearWork — Feature Catalog
+# NextWork — Feature Catalog
 
 > **Doc revision:** v1  
 > Last synchronized: 2026-07-26  
-> Spec: NearWork V2 Foundation + MVP marketplace  
-> Path: `NearWorks/`
+> Spec: NextWork V2 Foundation + MVP + **current-scope DoD**  
+> Path: `nextwork/`
 
 ## Cara membaca
 
@@ -75,13 +75,16 @@ Inventaris changelog UI panjang: [`../features.md`](../features.md).
 
 | Fitur | Kapabilitas | Surface | Status |
 |-------|-------------|---------|--------|
-| Plans FREE/PRO/AGENCY | Entitlements + quota | `/pricing`, subscriptions API | Available |
-| Subscription upgrade | PaymentIntent + mock URL | `/api/subscriptions/upgrade` | Conditional (MOCK tanpa PSP) |
-| Stripe PaymentIntent | Create + webhook | `/api/payments/stripe/*` | Conditional (keys + harden webhook) |
-| Midtrans Snap | Create + notification | `/api/payments/midtrans/*` | Conditional (keys + harden webhook) |
-| Escrow lifecycle | Lock → review → release | `/api/escrow/*` + worker | Available (MOCK payment OK) |
-| Boosts | Catalog + featured flags | `/api/boosts` | Available |
-| Wallet / payouts | Bank account + batch | `/api/payouts/wallet` | Conditional (MOCK receipts) |
+| Plans FREE/PRO/AGENCY | Seeded entitlements + quota | `/pricing`, subscriptions API | Available |
+| Subscription upgrade / cancel | Paid gate + cancelAtPeriodEnd | `/api/subscriptions/*` | Conditional (MOCK tanpa PSP) |
+| Checkout UI | Stripe.js confirm + Snap + mock simulate | `/checkout/mock` | Available (PSP keys Conditional) |
+| Stripe PaymentIntent | Create + webhook amount check | `/api/payments/stripe/*` | Conditional (keys) — HMAC Available |
+| Midtrans Snap | Create + notification amount check | `/api/payments/midtrans/*` | Conditional (keys) — signature Available |
+| Escrow lifecycle | Lock → 5d review → 80/20 holdback | `/api/escrow/*` + money-jobs | Available |
+| Boosts | Paid activation + FEATURE_* guards | `/api/boosts` | Available |
+| Wallet / payouts | Request → admin approve → worker SENT | `/api/payouts/*`, `/admin/payouts` | Available (MOCK receipts) |
+| Disputes / refunds | Admin resolve FAVOR_* / SPLIT | `/admin/disputes` | Available |
+| Reconciliation | PSP vs PaymentTransaction flags | `/admin/reconciliation` | Available |
 | Donations | Record donation | `/api/donations` | Available (MOCK; abuse risk) |
 | Recommendations | Daily batch + dashboard | Worker + `/api/recommendations` | Available |
 
@@ -132,7 +135,8 @@ Inventaris changelog UI panjang: [`../features.md`](../features.md).
 
 | Fitur | Catatan |
 |-------|---------|
-| Production PSP hardening | Signature verify benar, invoice PDF, reconciliation |
+| Production PSP LIVE ops | Keys + webhook register + pilot txs — [PAYMENT-RUNBOOK.md](./PAYMENT-RUNBOOK.md) |
+| Invoice PDF / reconciliation dashboard | |
 | Real bank payout API | Ganti MOCK receipt |
 | WebSocket / realtime messaging | Ganti polling |
 | Forgot-password email | Backend + provider |
@@ -142,4 +146,4 @@ Inventaris changelog UI panjang: [`../features.md`](../features.md).
 
 ## Ringkasan produk
 
-NearWork = **marketplace freelance** (browse-first) dengan **job-bound hiring flow**, **admin trust & safety**, dan **fondasi V2** (escrow/boost/recommendations). Billing production = Conditional.
+NextWork = **marketplace freelance** (browse-first) dengan **job-bound hiring flow**, **admin trust & safety**, dan **fondasi V2** (escrow/boost/recommendations). Billing production = Conditional.

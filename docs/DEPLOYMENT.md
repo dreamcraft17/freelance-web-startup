@@ -1,4 +1,4 @@
-# NearWork — Deployment
+# NextWork — Deployment
 
 > **Doc revision:** v1  
 > Last synchronized: 2026-07-26  
@@ -7,7 +7,7 @@
 ## Lokal
 
 ```bash
-cd NearWorks
+cd nextwork
 pnpm install
 # Salin packages/database/env.example.txt → .env di root
 # Wajib: DATABASE_URL, SESSION_SECRET (≥16 chars)
@@ -91,8 +91,8 @@ Tanpa worker: SLA overdue & escrow auto-release tidak berjalan.
 | `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` | PSP | Tanpa ini → MOCK |
 | `MIDTRANS_SERVER_KEY` / `MIDTRANS_IS_PRODUCTION` | PSP | Tanpa ini → MOCK |
 | `GOOGLE_TRANSLATE_API_KEY` | Opsional | UGC job translate |
-| `NEARWORK_SUPPORT_EMAIL` | Opsional | `/help` |
-| `NEARWORK_ENABLE_HSTS` | Opsional | `1` untuk HSTS |
+| `NEXTWORK_SUPPORT_EMAIL` | Opsional | `/help` (legacy: `NEARWORK_SUPPORT_EMAIL`) |
+| `NEXTWORK_ENABLE_HSTS` | Opsional | `1` untuk HSTS (legacy: `NEARWORK_ENABLE_HSTS`) |
 | `FEATURE_*` | Opsional | Monetization toggles |
 | `DATABASE_URL_TEST` | CI/E2E | Isolasi tes |
 | `SEED_*` | Seed only | **Jangan prod** |

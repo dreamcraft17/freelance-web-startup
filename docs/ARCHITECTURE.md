@@ -1,4 +1,4 @@
-# NearWork — Architecture
+# NextWork — Architecture
 
 > **Doc revision:** v1  
 > Last synchronized: 2026-07-26  
@@ -82,7 +82,7 @@ Identity · Taxonomy · Jobs/Bids/Contracts · Messaging/Notifications · Moneti
 | Staff RBAC `/admin` + `protectStaff` | ✅ |
 | Rate limits in-memory | ⚠️ Per-instance (bukan Redis) |
 | CSP | ❌ Belum |
-| HSTS | Opt-in `NEARWORK_ENABLE_HSTS=1` |
+| HSTS | Opt-in `NEXTWORK_ENABLE_HSTS=1` |
 | Webhook Stripe/Midtrans | ⚠️ Perlu harden — [SECURITY.md](./SECURITY.md) |
 
 ## Batasan sadar

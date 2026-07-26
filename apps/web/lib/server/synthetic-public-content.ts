@@ -1,16 +1,21 @@
 import type { Prisma } from "@acme/database";
+import { envFlagIsOne } from "@/lib/env-flags";
 
 /**
  * Hide automation / HTTP E2E / legacy browser-test shaped rows from **public** listings and
  * marketing aggregates on deployed hosts (Vercel preview/staging/production).
  *
  * Local dev (no `VERCEL`): visible by default so `pnpm test:e2e` can assert on created jobs.
- * Force hide locally: `NEARWORK_HIDE_SYNTHETIC_PUBLIC_LISTINGS=1`
- * Force show on Vercel: `NEARWORK_SHOW_SYNTHETIC_PUBLIC_LISTINGS=1` (debug only)
+ * Force hide locally: `NEXTWORK_HIDE_SYNTHETIC_PUBLIC_LISTINGS=1` (legacy: `NEARWORK_*`)
+ * Force show on Vercel: `NEXTWORK_SHOW_SYNTHETIC_PUBLIC_LISTINGS=1` (debug only)
  */
 export function publicSyntheticListingsHidden(): boolean {
-  if (process.env.NEARWORK_SHOW_SYNTHETIC_PUBLIC_LISTINGS === "1") return false;
-  if (process.env.NEARWORK_HIDE_SYNTHETIC_PUBLIC_LISTINGS === "1") return true;
+  if (envFlagIsOne("NEXTWORK_SHOW_SYNTHETIC_PUBLIC_LISTINGS", "NEARWORK_SHOW_SYNTHETIC_PUBLIC_LISTINGS")) {
+    return false;
+  }
+  if (envFlagIsOne("NEXTWORK_HIDE_SYNTHETIC_PUBLIC_LISTINGS", "NEARWORK_HIDE_SYNTHETIC_PUBLIC_LISTINGS")) {
+    return true;
+  }
   return process.env.VERCEL === "1";
 }
 

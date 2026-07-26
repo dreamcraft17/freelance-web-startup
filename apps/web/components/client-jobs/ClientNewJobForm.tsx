@@ -200,7 +200,7 @@ export function ClientNewJobForm({ categories }: ClientNewJobFormProps) {
               <ArrowLeft className="h-4 w-4" aria-hidden />
               Back to my jobs
             </Link>
-            <p className="text-xs font-medium uppercase tracking-[0.14em] text-slate-500">NearWork · Client</p>
+            <p className="text-xs font-medium uppercase tracking-[0.14em] text-slate-500">NextWork · Client</p>
             <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900 md:text-[1.65rem]">
               Post a new job
             </h1>

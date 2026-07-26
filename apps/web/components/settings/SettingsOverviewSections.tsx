@@ -10,7 +10,7 @@ export function AccountSettingsSection() {
       <SettingsSectionCard
         icon={User}
         title="Account"
-        description="Your NearWork identity—sign-in, security, and billing—centralized for every role you use on the platform."
+        description="Your NextWork identity—sign-in, security, and billing—centralized for every role you use on the platform."
         headingId="settings-account-heading"
       >
         <ul className="space-y-2.5 text-sm leading-relaxed text-slate-600">
@@ -50,7 +50,7 @@ export function PreferencesSettingsSection() {
       <SettingsSectionCard
         icon={SlidersHorizontal}
         title="Workspace preferences"
-        description="Defaults, digests, and how NearWork surfaces updates while you hire or work with clients."
+        description="Defaults, digests, and how NextWork surfaces updates while you hire or work with clients."
         headingId="settings-preferences-heading"
       >
         <div className="space-y-4 text-sm leading-relaxed text-slate-600">

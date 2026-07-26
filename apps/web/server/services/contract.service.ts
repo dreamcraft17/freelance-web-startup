@@ -19,6 +19,8 @@ function serializeContract(row: {
   currency: string | null;
   startDate: Date | null;
   endDate: Date | null;
+  escrowStatus?: string | null;
+  escrowAmountCents?: number | null;
   createdAt: Date;
   updatedAt: Date;
 }) {
@@ -30,6 +32,8 @@ function serializeContract(row: {
     status: row.status as ContractStatus,
     amount: num(row.amount),
     currency: row.currency,
+    escrowStatus: row.escrowStatus ?? null,
+    escrowAmountCents: row.escrowAmountCents ?? null,
     startDate: row.startDate?.toISOString() ?? null,
     endDate: row.endDate?.toISOString() ?? null,
     createdAt: row.createdAt.toISOString(),
@@ -61,6 +65,7 @@ export class ContractService {
     const row = await this.contractRepo.requireById(contractId);
     ContractPolicy.assertActorMayCompleteContract(actor, row.clientUserId, row.freelancerUserId);
     ContractPolicy.assertContractCompletable(row.status as ContractStatus);
+    ContractPolicy.assertEscrowAllowsDirectComplete(row.escrowStatus);
 
     const updated = await this.contractRepo.markCompletedAtomic(contractId);
     return serializeContract(updated);

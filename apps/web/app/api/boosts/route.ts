@@ -26,13 +26,13 @@ export async function POST(request: Request) {
     const parsed = await parseJson(request, purchaseBoostSchema);
     if (!parsed.ok) return parsed.response;
 
-    const boost = await service.activateBoost({
+    const result = await service.purchaseBoost({
       userId: gate.actor.userId,
       productCode: parsed.data.productCode,
       targetType: parsed.data.targetType as BoostTargetType,
       targetId: parsed.data.targetId,
-      paymentTxnId: parsed.data.paymentMethod === "mock" ? `mock_${Date.now()}` : undefined
+      paymentMethod: parsed.data.paymentMethod
     });
-    return jsonOk({ boost }, 201);
+    return jsonOk(result, result.paymentRequired ? 200 : 201);
   });
 }

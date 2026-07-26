@@ -5,7 +5,7 @@
 
 PostgreSQL access via **Prisma**: schema, migrations, and generated client.
 
-Migration `20260707120000_nearwork_v2` adds NearWork V2 tables: `PaymentTransaction`, `EscrowTransaction`, `ContractDispute`, `BoostProduct`, `Boost`, `Recommendation`, `UserSuspension`, `SuspensionAppeal`, `BankAccount`, `FreelancerWallet`, `PayoutRequest`, `WebhookEvent`, `UserExperiment`; extends `Contract` with escrow/payment fields and `PaymentIntent` with PSP ids.
+Migration `20260707120000_nearwork_v2` adds NextWork V2 tables: `PaymentTransaction`, `EscrowTransaction`, `ContractDispute`, `BoostProduct`, `Boost`, `Recommendation`, `UserSuspension`, `SuspensionAppeal`, `BankAccount`, `FreelancerWallet`, `PayoutRequest`, `WebhookEvent`, `UserExperiment`; extends `Contract` with escrow/payment fields and `PaymentIntent` with PSP ids.
 
 Migration `20260619090000_moderation_sla_escalation` menambah canonical subject key, priority, deadline SLA, dan escalation state pada laporan.
 
@@ -100,8 +100,8 @@ Admin defaults (override with env — never commit real secrets):
 
 | Variable | Default |
 |----------|---------|
-| `SEED_ADMIN_EMAIL` | `admin@nearwork.local` |
-| `SEED_ADMIN_PASSWORD` | `NearWorkAdminDev123!` |
+| `SEED_ADMIN_EMAIL` | `admin@nextwork.local` |
+| `SEED_ADMIN_PASSWORD` | `NextWorkAdminDev123!` |
 
 Example:
 

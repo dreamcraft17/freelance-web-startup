@@ -21,7 +21,7 @@ export async function PublicSiteHeader() {
     <header className="border-b border-slate-200 bg-white">
       <div className="mx-auto flex h-[3.25rem] max-w-6xl items-center justify-between gap-3 px-4 md:px-6">
         <Link href={`/${locale}` as Route} className="shrink-0" aria-label={t("publicHeader.homeAria")}>
-          <BrandLogo imageClassName="h-8 w-auto" alt="NearWork logo" />
+          <BrandLogo imageClassName="h-8 w-auto" alt="NextWork logo" />
         </Link>
         <div className="flex min-w-0 items-center gap-1 sm:gap-2">
           <Link

@@ -1,5 +1,4 @@
-import { createHash } from "node:crypto";
-import { V2_PRICING, isMidtransConfigured } from "@acme/config";
+import { V2_PRICING, getEscrowManualReviewThresholdIdr, isMidtransConfigured } from "@acme/config";
 import type { Prisma } from "@acme/database";
 import {
   ContractPaymentStatus,
@@ -13,7 +12,9 @@ import {
   db
 } from "@acme/database";
 import { DomainError, NotFoundError, PolicyDeniedError } from "../errors/domain-errors";
+import { verifyMidtransNotificationSignature } from "../security/payment-webhook-crypto";
 import { StripePaymentService } from "./stripe-payment.service";
+import { notifyEscrowPaymentRequired } from "./money-notification.service";
 
 function contractAmountCents(amount: { toString(): string } | null | undefined): number {
   if (amount == null) return 0;
@@ -57,7 +58,7 @@ export class MidtransPaymentService {
     const baseCents = contractAmountCents(contract.amount);
     const feeCents = Math.round(baseCents * V2_PRICING.escrowFeeRate);
     const grossAmount = baseCents + feeCents;
-    const orderId = `NW-${contract.id.slice(0, 12)}-${Date.now()}`;
+    const orderId = `NTW-${contract.id.slice(0, 12)}-${Date.now()}`;
 
     const serverKey = process.env.MIDTRANS_SERVER_KEY?.trim();
     if (!serverKey || !isMidtransConfigured()) {
@@ -135,6 +136,13 @@ export class MidtransPaymentService {
       });
     });
 
+    await notifyEscrowPaymentRequired({
+      clientUserId: contract.clientUserId,
+      contractId: contract.id,
+      amountCents: grossAmount,
+      currency: (contract.currency ?? "IDR").toUpperCase()
+    });
+
     return {
       snap_token: body.token,
       snap_redirect_url: body.redirect_url,
@@ -145,18 +153,27 @@ export class MidtransPaymentService {
   async handleNotification(body: {
     order_id: string;
     transaction_status: string;
+    status_code?: string;
     gross_amount: string;
     signature_key?: string;
     transaction_id: string;
   }): Promise<{ received: boolean }> {
     const serverKey = process.env.MIDTRANS_SERVER_KEY?.trim() ?? "";
-    if (body.signature_key) {
-      const expected = createHash("sha512")
-        .update(`${body.order_id}${body.transaction_status}${body.gross_amount}${serverKey}`)
-        .digest("hex");
-      if (expected !== body.signature_key) {
-        throw new DomainError("Invalid Midtrans signature", "MIDTRANS_SIGNATURE_INVALID", 400);
-      }
+    if (!serverKey) {
+      throw new DomainError("Midtrans webhook not configured", "MIDTRANS_WEBHOOK_NOT_CONFIGURED", 503);
+    }
+    if (
+      !body.signature_key ||
+      !body.status_code ||
+      !verifyMidtransNotificationSignature({
+        orderId: body.order_id,
+        statusCode: body.status_code,
+        grossAmount: body.gross_amount,
+        serverKey,
+        signatureKey: body.signature_key
+      })
+    ) {
+      throw new DomainError("Invalid Midtrans signature", "MIDTRANS_SIGNATURE_INVALID", 400);
     }
 
     const isNew = await recordWebhookOnce("midtrans", body.transaction_id, body.transaction_status);
@@ -167,8 +184,17 @@ export class MidtransPaymentService {
     });
     if (!intent?.contractId) return { received: true };
 
+    const gross = Number(body.gross_amount);
+    if (Number.isFinite(gross) && Math.round(gross) !== intent.amountCents) {
+      throw new DomainError(
+        `Midtrans amount mismatch: expected ${intent.amountCents}, got ${gross}`,
+        "MIDTRANS_AMOUNT_MISMATCH",
+        400
+      );
+    }
+
     if (body.transaction_status === "settlement" || body.transaction_status === "capture") {
-      await this.markSettlement(intent.contractId, intent.id, body.transaction_id, intent.amountCents, intent.currency);
+      await this.markSettlement(intent.contractId, intent.id, body.transaction_id, intent);
     } else if (body.transaction_status === "expire") {
       await db.contract.update({
         where: { id: intent.contractId },
@@ -194,40 +220,83 @@ export class MidtransPaymentService {
     contractId: string,
     intentId: string,
     txnId: string,
-    amountCents: number,
-    currency: string
+    intent: { amountCents: number; currency: string; metadata: unknown }
   ): Promise<void> {
+    const meta = (intent.metadata ?? {}) as { baseCents?: number; feeCents?: number };
+    const baseCents =
+      typeof meta.baseCents === "number"
+        ? meta.baseCents
+        : Math.round(intent.amountCents / (1 + V2_PRICING.escrowFeeRate));
+    const feeCents =
+      typeof meta.feeCents === "number"
+        ? meta.feeCents
+        : Math.round(baseCents * V2_PRICING.escrowFeeRate);
+
+    const currencyUpper = intent.currency.toUpperCase();
+    const needsManualReview =
+      currencyUpper === "IDR" && baseCents >= getEscrowManualReviewThresholdIdr();
+
     await db.$transaction(async (tx: Prisma.TransactionClient) => {
       await tx.paymentIntent.update({
         where: { id: intentId },
-        data: { status: PaymentIntentStatus.SUCCEEDED }
+        data: {
+          status: PaymentIntentStatus.SUCCEEDED,
+          ...(needsManualReview
+            ? {
+                metadata: {
+                  ...(typeof intent.metadata === "object" && intent.metadata !== null
+                    ? (intent.metadata as Record<string, unknown>)
+                    : {}),
+                  pendingManualReview: true,
+                  manualReviewReason: "Amount exceeds escrow auto-lock threshold"
+                } as Prisma.InputJsonValue
+              }
+            : {})
+        }
       });
       await tx.contract.update({
         where: { id: contractId },
         data: {
           status: ContractStatus.IN_PROGRESS,
           paymentStatus: ContractPaymentStatus.CONFIRMED,
-          escrowStatus: EscrowStatus.LOCKED
+          escrowStatus: needsManualReview ? EscrowStatus.NONE : EscrowStatus.LOCKED,
+          escrowAmountCents: baseCents
         }
       });
-      await tx.escrowTransaction.create({
-        data: {
-          contractId,
-          type: EscrowTransactionType.LOCK,
-          amount: amountCents,
-          reason: "Midtrans settlement — escrow locked",
-          createdBy: "system"
-        }
-      });
+      if (!needsManualReview) {
+        await tx.escrowTransaction.create({
+          data: {
+            contractId,
+            type: EscrowTransactionType.LOCK,
+            amount: baseCents,
+            reason: "Midtrans settlement — escrow locked",
+            createdBy: "system"
+          }
+        });
+      }
       await tx.paymentTransaction.create({
         data: {
           contractId,
           type: PaymentTransactionType.CHARGE,
-          amount: amountCents,
-          currency,
+          amount: intent.amountCents,
+          currency: intent.currency,
+          fee: feeCents,
           status: PaymentTransactionStatus.SUCCEEDED,
           provider: "MIDTRANS",
           providerTxnId: txnId
+        }
+      });
+      await tx.auditLog.create({
+        data: {
+          actorId: null,
+          action: needsManualReview ? "PAYMENT_PENDING_ESCROW_REVIEW" : "PAYMENT_SUCCEEDED",
+          targetType: "Contract",
+          targetId: contractId,
+          metadata: {
+            providerTxnId: txnId,
+            amountCents: intent.amountCents,
+            needsManualReview
+          } as object
         }
       });
     });

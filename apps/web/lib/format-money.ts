@@ -81,7 +81,7 @@ function fallbackShownAmount(amount: number, currency: string): string {
 }
 
 /**
- * Displays an amount using the supplied **ISO currency** (job/contract/etc.) with **NearWork locale** conventions.
+ * Displays an amount using the supplied **ISO currency** (job/contract/etc.) with **NextWork locale** conventions.
  */
 export function formatMoneyAmount(amount: unknown, currency: string, options: FormatMoneyOptions): string {
   const n = coerceMoneyNumber(amount);

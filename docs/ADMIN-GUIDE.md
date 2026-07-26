@@ -1,4 +1,4 @@
-# NearWork — Admin Guide
+# NextWork — Admin Guide
 
 > **Doc revision:** v1  
 > Last synchronized: 2026-07-26  

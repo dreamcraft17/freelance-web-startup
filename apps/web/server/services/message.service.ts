@@ -5,6 +5,18 @@ import type { CreateMessageThreadDto, PostMessageDto } from "@acme/validators";
 import { NotFoundError, PolicyDeniedError } from "../errors/domain-errors";
 import { NotificationService } from "./notification.service";
 
+function readAttachmentUrls(metadata: unknown): string[] {
+  if (typeof metadata !== "object" || metadata === null || Array.isArray(metadata)) return [];
+  const urls = (metadata as { attachmentUrls?: unknown }).attachmentUrls;
+  if (!Array.isArray(urls)) return [];
+  return urls.filter((u): u is string => typeof u === "string");
+}
+
+function messageMetadataFromInput(attachmentUrls?: string[]) {
+  if (!attachmentUrls?.length) return undefined;
+  return { attachmentUrls };
+}
+
 export class MessageService {
   constructor(private readonly notifications = new NotificationService()) {}
 
@@ -340,7 +352,8 @@ export class MessageService {
         body: true,
         createdAt: true,
         senderId: true,
-        isSystem: true
+        isSystem: true,
+        metadata: true
       }
     });
 
@@ -351,7 +364,8 @@ export class MessageService {
         body: m.body,
         createdAt: m.createdAt.toISOString(),
         senderId: m.senderId,
-        isSystem: m.isSystem
+        isSystem: m.isSystem,
+        attachmentUrls: readAttachmentUrls(m.metadata)
       }))
     };
   }
@@ -365,14 +379,16 @@ export class MessageService {
           threadId,
           senderId: actor.userId,
           body: input.body,
-          isSystem: false
+          isSystem: false,
+          metadata: messageMetadataFromInput(input.attachmentUrls)
         },
         select: {
           id: true,
           body: true,
           createdAt: true,
           senderId: true,
-          isSystem: true
+          isSystem: true,
+          metadata: true
         }
       });
       await tx.messageThread.update({
@@ -404,7 +420,8 @@ export class MessageService {
       body: message.body,
       createdAt: message.createdAt.toISOString(),
       senderId: message.senderId,
-      isSystem: message.isSystem
+      isSystem: message.isSystem,
+      attachmentUrls: readAttachmentUrls(message.metadata)
     };
   }
 }

@@ -1,29 +1,31 @@
-# NearWork — Docs Index (repo)
+# NextWork — Docs Index (repo)
 
 **Owner:** Dozer (CEO + Tech Lead)  
 **Company:** DN Tech (PT. Dozer Napitupulu Technology)  
-**Brand:** NearWork  
+**Brand:** NextWork  
 **Package:** `freelance-marketplace-saas`  
-**Local path:** `NearWorks/`  
+**Local path:** `nextwork/`  
 **UpdatedAt:** 26 Juli 2026  
-**Status:** **V2 Foundation** · MVP+ operasional · PSP production = Conditional (MOCK tanpa key)  
+**Status:** **V2 Foundation + v2.1 webhook harden** · PSP LIVE = Conditional (keys + runbook)  
 **Codebase:** ~52 pages · ~52 API routes · **42** Prisma models · CI (typecheck + unit + E2E)  
 **Contact:** info@dntech.id  
-**Wiki mirror:** `company-wiki/docs/products/nearwork/`
+**Wiki mirror:** `company-wiki/docs/products/nextwork/`
 
 ### Mulai di sini
 
 | Peran | Baca dulu |
 |-------|-----------|
-| **Paham produk (non-teknis)** | [apa-itu-nearwork.md](./apa-itu-nearwork.md) |
+| **Paham produk (non-teknis)** | [apa-itu-nextwork.md](./apa-itu-nextwork.md) |
 | **Pakai app harian** | [USER-GUIDE.md](./USER-GUIDE.md) |
 | **Staff / admin** | [ADMIN-GUIDE.md](./ADMIN-GUIDE.md) |
 | **Paham alur sistem** | [HOW-IT-WORKS.md](./HOW-IT-WORKS.md) |
 | **Deploy** | [DEPLOYMENT.md](./DEPLOYMENT.md) · [deploy-checklist.md](./deploy-checklist.md) |
+| **Payments LIVE** | [PAYMENT-RUNBOOK.md](./PAYMENT-RUNBOOK.md) |
 | **PRD berikutnya** | [NEXT-PRD-BRIEF.md](./NEXT-PRD-BRIEF.md) |
 | **Baseline panjang** | [CURRENT-IMPLEMENTATION.md](./CURRENT-IMPLEMENTATION.md) |
 
-> **Spek V2:** [NEARWORK_V2_PRD.md](./NEARWORK_V2_PRD.md) · [NEARWORK_V2_SRS.md](./NEARWORK_V2_SRS.md) · [NEARWORK_V2_SDD.md](./NEARWORK_V2_SDD.md)  
+> **Spek produk:** [prd/NEXTWORK_PRD_V3.md](./prd/NEXTWORK_PRD_V3.md) · [prd/NEXTWORK_SRS_V1.md](./prd/NEXTWORK_SRS_V1.md) · [prd/NEXTWORK_SDD_V1.md](./prd/NEXTWORK_SDD_V1.md)  
+> **Spek V2 historis:** [NEARWORK_V2_PRD.md](./NEARWORK_V2_PRD.md) · [NEARWORK_V2_SRS.md](./NEARWORK_V2_SRS.md) · [NEARWORK_V2_SDD.md](./NEARWORK_V2_SDD.md)  
 > **Inventaris fitur hidup (root):** [`../features.md`](../features.md) · **Audit risiko:** [`../audit.md`](../audit.md)
 
 | File | Deskripsi |
@@ -38,7 +40,8 @@
 | [USER-GUIDE.md](./USER-GUIDE.md) | Panduan client & freelancer |
 | [ADMIN-GUIDE.md](./ADMIN-GUIDE.md) | Panduan staff `/admin` |
 | [DEPLOYMENT.md](./DEPLOYMENT.md) | Lokal, Vercel, worker, env |
-| [SECURITY.md](./SECURITY.md) | Auth, CSRF, RBAC, temuan audit |
+| [PAYMENT-RUNBOOK.md](./PAYMENT-RUNBOOK.md) | **v2.1** PSP webhook LIVE checklist |
+| [SECURITY.md](./SECURITY.md) | Auth, CSRF, RBAC, webhook status |
 | [CHANGELOG.md](./CHANGELOG.md) | Riwayat living docs / produk |
 | [NEXT-PRD-BRIEF.md](./NEXT-PRD-BRIEF.md) | Briefing PRD berikutnya (post-V2 foundation) |
 | [application-overview.md](./application-overview.md) | Peta route & update surface UI (panjang) |
@@ -89,7 +92,7 @@
 ## Sync ke wiki
 
 ```bash
-cp NearWorks/docs/*.md company-wiki/docs/products/nearwork/docs/
+cp nextwork/docs/*.md company-wiki/docs/products/nextwork/docs/
 # Update 00_INDEX.md di wiki jika status berubah
 ```
 

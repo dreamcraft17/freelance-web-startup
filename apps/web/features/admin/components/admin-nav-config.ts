@@ -23,6 +23,9 @@ export const ADMIN_NAV_ITEMS: AdminNavItem[] = [
   { href: "/admin/analytics", label: "Analytics", section: "analytics", group: "Finance" },
   { href: "/admin/donations", label: "Donations", section: "donations", group: "Finance" },
   { href: "/admin/subscriptions", label: "Subscriptions", section: "subscriptions", group: "Finance" },
+  { href: "/admin/disputes", label: "Disputes", section: "disputes", group: "Finance" },
+  { href: "/admin/payouts", label: "Payouts", section: "payouts", group: "Finance" },
+  { href: "/admin/reconciliation", label: "Reconciliation", section: "reconciliation", group: "Finance" },
   { href: "/admin/feature-flags", label: "Feature Flags", section: "feature-flags", group: "Platform" },
   { href: "/admin/settings", label: "Settings", section: "settings", group: "Platform" }
 ];

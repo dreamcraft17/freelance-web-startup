@@ -1,6 +1,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { NextConfig } from "next";
+import { envFlagIsOne } from "./lib/env-flags";
 
 //const workspaceRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 
@@ -25,7 +26,7 @@ function buildSecurityHeaders(): { key: string; value: string }[] {
     },
     { key: "X-Frame-Options", value: "DENY" }
   ];
-  if (process.env.NEARWORK_ENABLE_HSTS === "1") {
+  if (envFlagIsOne("NEXTWORK_ENABLE_HSTS", "NEARWORK_ENABLE_HSTS")) {
     headers.push({
       key: "Strict-Transport-Security",
       value: "max-age=15552000; includeSubDomains"

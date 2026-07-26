@@ -1,4 +1,4 @@
-# NearWork V2 — Software Design Document (SDD)
+# NextWork V2 — Software Design Document (SDD)
 
 **Document Version:** 1.0  
 **Last Updated:** 2026-07-07  
@@ -626,7 +626,7 @@ export async function payoutHandler(job: Job) {
         accountNumber: payout.freelancer.bankAccount.accountNumber,
         accountName: payout.freelancer.bankAccount.accountName,
         amount: payout.amount,
-        description: 'NearWork earnings payout'
+        description: 'NextWork earnings payout'
       });
       
       // Update payout record

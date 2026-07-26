@@ -27,6 +27,9 @@ export type AdminPageKey =
   | "analytics"
   | "donations"
   | "subscriptions"
+  | "disputes"
+  | "payouts"
+  | "reconciliation"
   | "feature-flags"
   | "settings";
 
@@ -46,6 +49,9 @@ const FULL: AdminPageKey[] = [
   "analytics",
   "donations",
   "subscriptions",
+  "disputes",
+  "payouts",
+  "reconciliation",
   "feature-flags",
   "settings"
 ];
@@ -67,8 +73,18 @@ const SUPPORT: AdminPageKey[] = [
 /** MODERATOR: jobs, verification, reviews, reports (+ overview) — no settings per matrix */
 const MODERATION: AdminPageKey[] = ["overview", "jobs", "verification", "reviews", "reports", "appeals"];
 
-/** FINANCE_ADMIN: donations, subscriptions, feature-flags, settings (+ overview) */
-const FINANCE: AdminPageKey[] = ["overview", "donations", "subscriptions", "analytics", "feature-flags", "settings"];
+/** FINANCE_ADMIN: donations, subscriptions, disputes, payouts, reconciliation, feature-flags, settings (+ overview) */
+const FINANCE: AdminPageKey[] = [
+  "overview",
+  "donations",
+  "subscriptions",
+  "disputes",
+  "payouts",
+  "reconciliation",
+  "analytics",
+  "feature-flags",
+  "settings"
+];
 
 /**
  * Human-readable matrix (single source of truth for product docs).
@@ -95,6 +111,9 @@ const PATH_SEGMENT_TO_PAGE: Record<string, AdminPageKey> = {
   analytics: "analytics",
   donations: "donations",
   subscriptions: "subscriptions",
+  disputes: "disputes",
+  payouts: "payouts",
+  reconciliation: "reconciliation",
   "feature-flags": "feature-flags",
   settings: "settings"
 };

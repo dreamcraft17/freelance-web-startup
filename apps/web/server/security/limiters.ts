@@ -39,6 +39,9 @@ export const reviewPostUserLimiter = new SlidingWindowRateLimiter();
 /** Staff PATCH verification */
 export const staffVerificationPatchUserLimiter = new SlidingWindowRateLimiter();
 
+/** Payment provider webhooks (Stripe, Midtrans) — per IP */
+export const paymentWebhookIpLimiter = new SlidingWindowRateLimiter();
+
 /** Mutations per IP (layer under user limits) */
 export const sensitiveMutateIpLimiter = new SlidingWindowRateLimiter();
 

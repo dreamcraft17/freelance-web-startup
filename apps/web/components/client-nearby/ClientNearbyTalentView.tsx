@@ -294,7 +294,7 @@ export function ClientNearbyTalentView({
                         review{f.reviewCount === 1 ? "" : "s"}
                       </span>
                     ) : (
-                      <span>New to NearWork</span>
+                      <span>New to NextWork</span>
                     )}
                   </div>
                 </Link>

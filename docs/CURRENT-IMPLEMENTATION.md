@@ -1,11 +1,11 @@
-# NearWork — Current Implementation Baseline
+# NextWork — Current Implementation Baseline
 
 | Metadata | Value |
 |----------|-------|
 | Snapshot date | 26 Juli 2026 |
 | Purpose | Baseline untuk PRD berikutnya (jangan rebuild yang sudah ada) |
 | Spec baseline | MVP marketplace + **V2 Foundation** (escrow/PSP APIs/boosts/appeals/recommendations) |
-| Local path | `NearWorks/` |
+| Local path | `nextwork/` |
 | Owner | Dozer · DN Tech |
 | Runtime web | Next.js 15 on Vercel |
 | Runtime worker | Node process terpisah |
@@ -59,11 +59,11 @@
 | Stripe real | `STRIPE_SECRET_KEY` + `STRIPE_WEBHOOK_SECRET` (+ **fix verify HMAC**) |
 | Midtrans real | `MIDTRANS_SERVER_KEY` (+ harden signature required) |
 | Job UGC translate | `GOOGLE_TRANSLATE_API_KEY` |
-| HSTS | `NEARWORK_ENABLE_HSTS=1` |
+| HSTS | `NEXTWORK_ENABLE_HSTS=1` |
 | Paid features early-access | `FEATURE_*` flags |
 | Worker in prod | Deploy `@acme/worker` dengan `DATABASE_URL` |
 | E2E isolated DB | `DATABASE_URL_TEST` |
-| Support email on /help | `NEARWORK_SUPPORT_EMAIL` |
+| Support email on /help | `NEXTWORK_SUPPORT_EMAIL` |
 | Production secrets | `SESSION_SECRET` kuat; **jangan seed default admin ke prod** |
 
 Default lokal tanpa PSP keys: **MOCK checkout** — aman demo tanpa uang nyata.

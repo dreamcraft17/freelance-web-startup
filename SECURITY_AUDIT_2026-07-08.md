@@ -1,4 +1,4 @@
-# NearWork Security Audit
+# NextWork Security Audit
 
 Tanggal audit: 2026-07-08  
 Scope: audit statis source/config lokal pada folder `nextwork`  
@@ -130,8 +130,8 @@ Masalah:
 
 Seed memakai default:
 
-- Email admin: `admin@nearwork.local`
-- Password admin: `NearWorkAdminDev123!`
+- Email admin: `admin@nextwork.local`
+- Password admin: `NextWorkAdminDev123!`
 
 Seed juga mencetak password fixture E2E ke stdout.
 
@@ -187,7 +187,7 @@ Lokasi:
 Kondisi saat ini:
 
 - Sudah ada `X-DNS-Prefetch-Control`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, `X-Frame-Options`.
-- `Strict-Transport-Security` hanya aktif jika `NEARWORK_ENABLE_HSTS=1`.
+- `Strict-Transport-Security` hanya aktif jika `NEXTWORK_ENABLE_HSTS=1`.
 - Belum ada Content-Security-Policy.
 
 Dampak:

@@ -1,4 +1,5 @@
 import { ContractStatus, UserRole } from "@acme/types";
+import { EscrowStatus } from "@acme/database";
 import type { AuthActor } from "../domain/auth-actor";
 import { DomainError, PolicyDeniedError } from "../errors/domain-errors";
 
@@ -47,6 +48,20 @@ export const ContractPolicy = {
     }
     if (!CONTRACT_STATUSES_ALLOWED_TO_COMPLETE.includes(status)) {
       throw new PolicyDeniedError("Contract cannot be completed in its current status");
+    }
+  },
+
+  /**
+   * Funds still locked in escrow must complete via submit → review → release,
+   * not the generic POST /contracts/:id/complete shortcut.
+   */
+  assertEscrowAllowsDirectComplete(escrowStatus: string | null | undefined): void {
+    if (escrowStatus === EscrowStatus.LOCKED || escrowStatus === EscrowStatus.DISPUTED) {
+      throw new DomainError(
+        "Escrow is locked — submit and approve work (or resolve dispute) before completing",
+        "ESCROW_LOCKED_COMPLETE_FORBIDDEN",
+        409
+      );
     }
   }
 } as const;

@@ -139,7 +139,7 @@ export function MarketingNavBar({
             href={`/${locale}` as Route}
             className="inline-flex max-w-[min(86vw,280px)] items-center outline-none transition duration-200 hover:opacity-[0.88] motion-reduce:transition-none sm:max-w-[min(64vw,330px)] lg:max-w-[350px] xl:max-w-[400px]"
             imageClassName="h-10 w-auto object-contain object-left sm:h-10 lg:h-12 lg:max-h-[3rem]"
-            alt="NearWork"
+            alt="NextWork"
           />
         </div>
 

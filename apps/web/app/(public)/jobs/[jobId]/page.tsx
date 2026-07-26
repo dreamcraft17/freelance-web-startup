@@ -198,7 +198,8 @@ export default async function JobDetailPage({ params, searchParams }: PageProps)
   const jobService = new JobService();
   const job = await jobService.getJobByIdForPublic(jobId, forceOriginal ? "source" : locale, {
     viewerUserId: session?.userId,
-    viewerIsStaff: Boolean(session && isStaffRole(session.role))
+    viewerIsStaff: Boolean(session && isStaffRole(session.role)),
+    incrementView: true
   });
   if (!job) notFound();
 

@@ -65,7 +65,7 @@ export function FreelancerNearbyView({
     return (
       <DashboardEmptyState
         tone="elevated"
-        kicker="NearWork Nearby"
+        kicker="NextWork Nearby"
         icon={MapPin}
         title="Add a freelancer profile to use Nearby"
         description="Nearby uses your saved city or map pin to surface open roles. Set your location on your profile, then return here for a focused local feed."
@@ -82,7 +82,7 @@ export function FreelancerNearbyView({
         kicker="Location"
         icon={Radar}
         title="We need a place to anchor Nearby"
-        description="Add a city or set your map coordinates on your profile. NearWork will match open jobs in that area—or within a radius when a pin is saved."
+        description="Add a city or set your map coordinates on your profile. NextWork will match open jobs in that area—or within a radius when a pin is saved."
         action={{ label: "Update profile location", href: wp("/freelancer/profile") }}
         secondaryAction={{ label: "Browse all jobs", href: jobsBrowseRoot as Route }}
       />
@@ -98,7 +98,7 @@ export function FreelancerNearbyView({
               <Navigation className="h-5 w-5" aria-hidden />
             </span>
             <div className="min-w-0">
-              <p className="text-xs font-semibold uppercase tracking-wide text-nw-brand">NearWork Nearby</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-nw-brand">NextWork Nearby</p>
               <h2 className="mt-1 text-lg font-semibold text-slate-900">Discovery anchored to you</h2>
               <p className="mt-1 text-sm leading-relaxed text-slate-600">
                 {discovery === "geo"

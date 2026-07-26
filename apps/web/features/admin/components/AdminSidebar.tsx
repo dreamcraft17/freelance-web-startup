@@ -47,7 +47,7 @@ export function AdminSidebar({ items, pathname, mobileOpen, onCloseMobile }: Adm
     <>
       <div className="flex h-[52px] shrink-0 items-center justify-between gap-2 border-b border-slate-200/90 px-3">
         <div className="min-w-0">
-          <BrandLogo href={"/admin" as Route} imageClassName="h-6 w-auto opacity-95" alt="NearWork" />
+          <BrandLogo href={"/admin" as Route} imageClassName="h-6 w-auto opacity-95" alt="NextWork" />
           <p className="mt-0.5 truncate text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
             Internal admin
           </p>

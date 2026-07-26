@@ -64,7 +64,7 @@ export function DashboardShell({
       <header className="nw-app-header md:hidden">
         <div className="flex items-start justify-between gap-3 border-b border-slate-100/80 px-3 pb-2.5 pt-3">
           <div>
-            <BrandLogo imageClassName="h-5 w-auto" alt="NearWork logo" />
+            <BrandLogo imageClassName="h-5 w-auto" alt="NextWork logo" />
             <p className="mt-0.5 text-[11px] text-slate-500">{t("workspace.label")}</p>
           </div>
           <div className="flex shrink-0 items-center gap-2">

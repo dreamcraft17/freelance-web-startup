@@ -5,6 +5,25 @@ import { NotFoundError } from "../errors/domain-errors";
 import type { AppLocale } from "@/lib/i18n/types";
 import { excludeSyntheticPublicJobsWhere, mergeJobWhere } from "@/lib/server/synthetic-public-content";
 
+function fileNameFromUrl(url: string): string {
+  try {
+    const name = new URL(url).pathname.split("/").pop()?.trim();
+    if (name && name.length > 0) return name.slice(0, 255);
+  } catch {
+    /* ignore */
+  }
+  return "attachment";
+}
+
+function jobAttachmentsFromUrls(urls?: string[]) {
+  if (!urls?.length) return undefined;
+  return urls.map((fileUrl) => ({
+    fileUrl,
+    fileName: fileNameFromUrl(fileUrl),
+    mimeType: "application/octet-stream"
+  }));
+}
+
 function slugifyTitle(title: string): string {
   const base = title
     .slice(0, 80)
@@ -135,7 +154,11 @@ export class JobRepository {
         workMode: dto.workMode,
         city: dto.city,
         bidDeadline: dto.bidDeadline ? new Date(dto.bidDeadline) : undefined,
-        status: JobStatus.OPEN
+        status: JobStatus.OPEN,
+        attachments: (() => {
+          const rows = jobAttachmentsFromUrls(dto.attachmentUrls);
+          return rows ? { create: rows } : undefined;
+        })()
       }
     });
   }
@@ -183,6 +206,11 @@ export class JobRepository {
         createdAt: true,
         isFeatured: true,
         featuredUntil: true,
+        viewCount: true,
+        attachments: {
+          where: { deletedAt: null },
+          select: { id: true, fileUrl: true, fileName: true, mimeType: true, sizeBytes: true }
+        },
         category: {
           select: { id: true, name: true, slug: true }
         },
@@ -264,6 +292,13 @@ export class JobRepository {
     return db.job.update({
       where: { id: jobId },
       data
+    });
+  }
+
+  async incrementViewCount(jobId: string): Promise<void> {
+    await db.job.updateMany({
+      where: { id: jobId, deletedAt: null },
+      data: { viewCount: { increment: 1 } }
     });
   }
 

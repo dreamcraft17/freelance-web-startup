@@ -27,7 +27,7 @@ export async function POST(request: Request) {
     const data = await service.createContractSnap({
       userId: gate.actor.userId,
       contractId: parsed.data.contractId,
-      clientEmail: user?.email ?? "client@nearwork.local",
+      clientEmail: user?.email ?? "client@nextwork.local",
       clientName: user?.clientProfile?.displayName ?? "Client"
     });
     return jsonOk(data);

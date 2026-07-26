@@ -1,4 +1,4 @@
-# Apa itu NearWork?
+# Apa itu NextWork?
 
 > **Doc revision:** v8  
 > Last synchronized: 2026-07-26 (tautan ke suite docs kanonik `00_INDEX`).
@@ -7,11 +7,11 @@ Dokumen ini menjawab secara singkat: **produk ini apa**, **untuk siapa**, dan **
 
 ---
 
-## NearWork dalam satu kalimat
+## NextWork dalam satu kalimat
 
-**NearWork** adalah **marketplace freelance untuk merekrut**: **klien** memasang lowongan (job), **freelancer** mengirim proposal, dan percakapan tetap terikat pada lowongan yang sama—untuk kerja **remote** maupun **di lokasi (on-site / hybrid)**.
+**NextWork** adalah **marketplace freelance untuk merekrut**: **klien** memasang lowongan (job), **freelancer** mengirim proposal, dan percakapan tetap terikat pada lowongan yang sama—untuk kerja **remote** maupun **di lokasi (on-site / hybrid)**.
 
-Repo monorepo ini (nama kerja: **Freelance-web**) adalah **aplikasi web** yang menjalankan produk NearWork (UI, API, database, autentikasi).
+Repo monorepo ini (nama kerja: **Freelance-web**) adalah **aplikasi web** yang menjalankan produk NextWork (UI, API, database, autentikasi).
 
 Pengguna dapat memilih **Bahasa Indonesia** atau **English** pada antarmuka (preferensi tersimpan untuk kunjungan berikutnya).
 
@@ -21,7 +21,7 @@ Awal rilis: dasbor klien/freelancer dan beberapa halaman publik memberi **checkl
 
 ## Untuk siapa?
 
-| Peran | Siapa mereka? | Apa yang mereka lakukan di NearWork? |
+| Peran | Siapa mereka? | Apa yang mereka lakukan di NextWork? |
 |--------|----------------|--------------------------------------|
 | **Client** | Individu atau bisnis yang butuh jasa | Membuat job, membandingkan bid, memilih freelancer, mengelola kontrak dan komunikasi terkait pekerjaan. |
 | **Freelancer** | Penyedia jasa profesional / kreator / teknisi | Membangun profil publik, mencari job yang cocok, mengirim proposal, menegosiasikan dan mengerjakan melalui alur platform. |
@@ -40,7 +40,7 @@ Awal rilis: dasbor klien/freelancer dan beberapa halaman publik memberi **checkl
 
 ## Lingkup jenis pekerjaan
 
-NearWork dirancang untuk **berbagai jenis freelance**, tidak terbatas ke IT:
+NextWork dirancang untuk **berbagai jenis freelance**, tidak terbatas ke IT:
 
 - digital (desain, konten, pemasaran),
 - kreatif (foto, video),
@@ -65,5 +65,5 @@ Filter seperti **kota**, **mode kerja** (remote / on-site / hybrid), dan **kateg
 
 ## Nama & merek
 
-- **NearWork** — nama produk yang ditampilkan ke pengguna.
+- **NextWork** — nama produk yang ditampilkan ke pengguna.
 - **Freelance-web** — nama umum monorepo / proyek pengembangan di repositori ini.

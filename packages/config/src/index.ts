@@ -24,5 +24,6 @@ export {
   BOOST_PRODUCT_DEFS,
   V2_EXPERIMENT_KEYS,
   isStripeConfigured,
-  isMidtransConfigured
+  isMidtransConfigured,
+  getEscrowManualReviewThresholdIdr
 } from "./v2-pricing";

@@ -14,10 +14,10 @@ export async function generateMetadata({
   return localizedMetadata({
     locale: resolved,
     path: "/help",
-    title: resolved === "id" ? "Bantuan | NearWork" : "Help | NearWork",
+    title: resolved === "id" ? "Bantuan | NextWork" : "Help | NextWork",
     description:
       resolved === "id"
-        ? "Pusat bantuan NearWork untuk akun, lowongan, proposal, dan profil freelancer."
-        : "NearWork help center for accounts, jobs, proposals, and freelancer profiles."
+        ? "Pusat bantuan NextWork untuk akun, lowongan, proposal, dan profil freelancer."
+        : "NextWork help center for accounts, jobs, proposals, and freelancer profiles."
   });
 }

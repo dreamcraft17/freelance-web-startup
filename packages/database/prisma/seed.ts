@@ -127,8 +127,8 @@ async function seedTaxonomy() {
 }
 
 async function seedAdmin() {
-  const email = (process.env.SEED_ADMIN_EMAIL ?? "admin@nearwork.local").toLowerCase().trim();
-  const password = process.env.SEED_ADMIN_PASSWORD ?? "NearWorkAdminDev123!";
+  const email = (process.env.SEED_ADMIN_EMAIL ?? "admin@nextwork.local").toLowerCase().trim();
+  const password = process.env.SEED_ADMIN_PASSWORD ?? "NextWorkAdminDev123!";
 
   if (password.length < 8) {
     throw new Error("SEED_ADMIN_PASSWORD must be at least 8 characters");
@@ -157,13 +157,13 @@ async function seedAdmin() {
 
 /** Stable client + freelancer for manual QA and `pnpm test:e2e` (login, job, bid, Messages). */
 async function seedE2eFixtures() {
-  const clientEmail = (process.env.SEED_E2E_CLIENT_EMAIL ?? "e2e.client@nearwork.local")
+  const clientEmail = (process.env.SEED_E2E_CLIENT_EMAIL ?? "e2e.client@nextwork.local")
     .toLowerCase()
     .trim();
-  const freelancerEmail = (process.env.SEED_E2E_FREELANCER_EMAIL ?? "e2e.freelancer@nearwork.local")
+  const freelancerEmail = (process.env.SEED_E2E_FREELANCER_EMAIL ?? "e2e.freelancer@nextwork.local")
     .toLowerCase()
     .trim();
-  const password = process.env.SEED_E2E_PASSWORD ?? "NearWorkE2eDev123!";
+  const password = process.env.SEED_E2E_PASSWORD ?? "NextWorkE2eDev123!";
   const freelancerUsername = (process.env.SEED_E2E_FREELANCER_USERNAME ?? "e2e_freelancer").trim();
 
   if (password.length < 8) {
@@ -280,6 +280,76 @@ async function seedBoostProducts() {
   }
 }
 
+async function seedSubscriptionPlans() {
+  const plans = [
+    {
+      code: "FREE",
+      name: "Free",
+      billingCycle: "MONTHLY" as const,
+      priceCents: 0,
+      currency: "IDR",
+      entitlements: {
+        maxActiveBids: 5,
+        maxActiveAcceptedContracts: 2,
+        analyticsTier: "LIMITED",
+        hasBoost: false,
+        hasPremiumBadge: false
+      }
+    },
+    {
+      code: "PRO",
+      name: "Pro",
+      billingCycle: "MONTHLY" as const,
+      priceCents: 199_000,
+      currency: "IDR",
+      entitlements: {
+        maxActiveBids: 30,
+        maxActiveAcceptedContracts: 10,
+        analyticsTier: "ADVANCED",
+        hasBoost: true,
+        hasPremiumBadge: true
+      }
+    },
+    {
+      code: "AGENCY",
+      name: "Agency",
+      billingCycle: "MONTHLY" as const,
+      priceCents: 499_000,
+      currency: "IDR",
+      entitlements: {
+        maxActiveBids: 200,
+        maxActiveAcceptedContracts: 75,
+        analyticsTier: "AGENCY",
+        hasBoost: true,
+        hasPremiumBadge: true
+      }
+    }
+  ];
+
+  for (const p of plans) {
+    await prisma.subscriptionPlan.upsert({
+      where: { code: p.code },
+      create: {
+        code: p.code,
+        name: p.name,
+        billingCycle: p.billingCycle,
+        priceCents: p.priceCents,
+        currency: p.currency,
+        entitlements: p.entitlements,
+        isActive: true
+      },
+      update: {
+        name: p.name,
+        billingCycle: p.billingCycle,
+        priceCents: p.priceCents,
+        currency: p.currency,
+        entitlements: p.entitlements,
+        isActive: true
+      }
+    });
+  }
+}
+
 async function main() {
   if (!process.env.DATABASE_URL?.trim()) {
     throw new Error(
@@ -291,6 +361,7 @@ async function main() {
   const admin = await seedAdmin();
   const e2e = await seedE2eFixtures();
   await seedBoostProducts();
+  await seedSubscriptionPlans();
 
   // eslint-disable-next-line no-console
   console.log(
@@ -306,6 +377,10 @@ async function main() {
       `  userId:   ${admin.id}`,
       "",
       "  Log in at /login then open /admin",
+      "",
+      "[seed] Dev login domain: all seeded accounts use @nextwork.local (override via SEED_* env).",
+      "",
+      "[seed] Subscription plans: FREE / PRO / AGENCY",
       "",
       "[seed] E2E fixture accounts (manual + pnpm test:e2e):",
       `  client:      ${e2e.clientEmail}`,

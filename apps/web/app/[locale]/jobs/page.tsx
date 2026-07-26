@@ -4,12 +4,12 @@ import { localizedMetadata, normalizeLocale } from "@/lib/i18n/seo";
 
 const copy = {
   en: {
-    title: "Jobs | NearWork",
-    description: "Browse open jobs and proposals from clients on NearWork."
+    title: "Jobs | NextWork",
+    description: "Browse open jobs and proposals from clients on NextWork."
   },
   id: {
-    title: "Lowongan | NearWork",
-    description: "Jelajahi lowongan terbuka dan proposal klien di NearWork."
+    title: "Lowongan | NextWork",
+    description: "Jelajahi lowongan terbuka dan proposal klien di NextWork."
   }
 } as const;
 

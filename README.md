@@ -1,26 +1,26 @@
-# NearWork
+# NextWork
 
-**NearWork** adalah marketplace freelance untuk merekrut: klien memasang lowongan, freelancer mengirim proposal, dan percakapan tetap terikat pada job yang sama — remote, on-site, maupun hybrid (hyperlocal).
+**NextWork** adalah marketplace freelance untuk merekrut: klien memasang lowongan, freelancer mengirim proposal, dan percakapan tetap terikat pada job yang sama — remote, on-site, maupun hybrid (hyperlocal).
 
 | | |
 |---|---|
 | Owner | Dozer (CEO + Tech Lead) |
 | Company | DN Tech (PT. Dozer Napitupulu Technology) |
-| Brand | NearWork |
-| Package | `freelance-marketplace-saas` · folder `NearWorks/` |
-| Status | **V2 Foundation** · MVP+ operasional · PSP production = Conditional (MOCK tanpa key) |
-| Docs | **[Index](./docs/00_INDEX.md)** · [Cara pakai](./docs/USER-GUIDE.md) · [Cara kerja](./docs/HOW-IT-WORKS.md) · [Deploy](./docs/DEPLOYMENT.md) |
+| Brand | NextWork |
+| Package | `freelance-marketplace-saas` · folder `nextwork/` |
+| Status | **V2 + v2.1 webhook harden** · PSP LIVE = Conditional (MOCK tanpa key) |
+| Docs | **[Index](./docs/00_INDEX.md)** · [Payment runbook](./docs/PAYMENT-RUNBOOK.md) · [Cara pakai](./docs/USER-GUIDE.md) · [Deploy](./docs/DEPLOYMENT.md) |
 | PRD berikutnya | **[NEXT-PRD-BRIEF.md](./docs/NEXT-PRD-BRIEF.md)** |
 | UpdatedAt | 26 Juli 2026 |
 | License | Private — internal use only |
 
-> Nama kerja monorepo: **Freelance-web**. Produk ke pengguna: **NearWork**.
+> Nama kerja monorepo: **Freelance-web**. Produk ke pengguna: **NextWork**.
 
 ---
 
 ## Apa yang diselesaikan?
 
-| Masalah | Jawaban di NearWork |
+| Masalah | Jawaban di NextWork |
 |---------|---------------------|
 | Hiring freelance tersebar di chat | Job → proposal → chat terikat job → hire → kontrak |
 | Butuh jasa lokal & remote | Filter kota, radius, work mode (`REMOTE` / `ONSITE` / `HYBRID`) |
@@ -44,7 +44,8 @@ Detail Available / Conditional / Roadmap: **[FEATURE-CATALOG.md](./docs/FEATURE-
 - [x] Admin workspace `/admin` (moderasi, verification, appeals, analytics, …)
 - [x] Worker: SLA escalation, escrow/boost expiry, recommendations, payouts
 - [x] V2 foundation: escrow, boosts, wallet, Stripe/Midtrans routes, AI match batch
-- [ ] Production PSP harden (webhook crypto) — lihat [SECURITY.md](./docs/SECURITY.md)
+- [x] **v2.1:** Stripe HMAC + Midtrans signature required — [PAYMENT-RUNBOOK.md](./docs/PAYMENT-RUNBOOK.md)
+- [ ] Production LIVE keys + pilot txs + invoice PDF / bank payout
 - [ ] Forgot-password email, WebSocket messaging, agency multi-seat UX
 
 **Default lokal tanpa PSP keys:** checkout **MOCK** — aman untuk demo tanpa uang nyata.
@@ -59,7 +60,7 @@ Detail Available / Conditional / Roadmap: **[FEATURE-CATALOG.md](./docs/FEATURE-
 | API route modules | ~**52** |
 | Prisma models | **42** |
 | Apps | `web` (produk) · `worker` · `admin` (stub) |
-| Spec | NearWork V2 PRD / SRS / SDD |
+| Spec | NextWork V2 PRD / SRS / SDD |
 
 Status: [IMPLEMENTATION-STATUS.md](./docs/IMPLEMENTATION-STATUS.md) · baseline: [CURRENT-IMPLEMENTATION.md](./docs/CURRENT-IMPLEMENTATION.md).
 
@@ -104,7 +105,7 @@ Tanpa business logic di UI atau route handler.
 **Prasyarat:** Node 20.x, pnpm 9, PostgreSQL 14+.
 
 ```bash
-cd NearWorks
+cd nextwork
 pnpm install
 cp packages/database/env.example.txt .env
 # Wajib: DATABASE_URL, SESSION_SECRET (≥16 chars; prod pakai openssl rand -base64 32)
@@ -171,7 +172,7 @@ Mulai dari **[docs/00_INDEX.md](./docs/00_INDEX.md)**.
 
 | File | Untuk |
 |------|--------|
-| [apa-itu-nearwork.md](./docs/apa-itu-nearwork.md) | Produk non-teknis |
+| [apa-itu-nextwork.md](./docs/apa-itu-nextwork.md) | Produk non-teknis |
 | [USER-GUIDE.md](./docs/USER-GUIDE.md) / [ADMIN-GUIDE.md](./docs/ADMIN-GUIDE.md) | Cara pakai |
 | [HOW-IT-WORKS.md](./docs/HOW-IT-WORKS.md) / [ARCHITECTURE.md](./docs/ARCHITECTURE.md) | Alur & arsitektur |
 | [API.md](./docs/API.md) | Endpoint `/api/*` |

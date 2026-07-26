@@ -92,7 +92,7 @@ export function DashboardNav({ items, variant, appearance = "default" }: Dashboa
           appearance === "premium" ? "mx-2 border-slate-200/60 pb-5" : ""
         )}
       >
-        <BrandLogo imageClassName="h-6 w-auto" alt="NearWork logo" />
+        <BrandLogo imageClassName="h-6 w-auto" alt="NextWork logo" />
         <p className="mt-1 text-xs leading-snug text-slate-500">{t("workspace.label")}</p>
       </div>
       {items.map((item, index) => {

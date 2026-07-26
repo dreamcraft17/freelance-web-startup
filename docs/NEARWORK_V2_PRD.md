@@ -1,4 +1,4 @@
-# NearWork V2 — Product Requirements Document (PRD)
+# NextWork V2 — Product Requirements Document (PRD)
 
 **Document Version:** 1.0  
 **Last Updated:** 2026-07-07  
@@ -10,7 +10,7 @@
 
 ## Executive Summary
 
-NearWork V2 transisi dari **MVP+ early-access** ke **production-grade SaaS marketplace** dengan fokus pada:
+NextWork V2 transisi dari **MVP+ early-access** ke **production-grade SaaS marketplace** dengan fokus pada:
 
 1. **Monetization Engine** — Billing real-time, payment gateway (Stripe/Midtrans), invoice management
 2. **Trust & Safety Scale** — Multi-level moderation, appeal workflow, automated SLA enforcement

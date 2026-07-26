@@ -1,8 +1,8 @@
-# NearWork — User Guide
+# NextWork — User Guide
 
 > **Doc revision:** v1  
 > Last synchronized: 2026-07-26  
-> Produk non-teknis: [apa-itu-nearwork.md](./apa-itu-nearwork.md)
+> Produk non-teknis: [apa-itu-nextwork.md](./apa-itu-nextwork.md)
 
 Panduan singkat untuk **client** dan **freelancer**. Staff: [ADMIN-GUIDE.md](./ADMIN-GUIDE.md).
 

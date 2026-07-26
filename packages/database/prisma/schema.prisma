@@ -563,6 +563,9 @@ model Job {
   isFeatured    Boolean   @default(false)
   featuredUntil DateTime?
 
+  /// Public detail page views (incremented on GET /api/jobs/:id).
+  viewCount Int @default(0)
+
   metadata Json?
 
   /// Hidden from public discovery by staff (owner may still see listing in app).
@@ -988,6 +991,9 @@ model Message {
 
   body     String  @db.Text
   isSystem Boolean @default(false)
+
+  /// Optional client-provided attachment URLs (MVP; no upload storage).
+  metadata Json?
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

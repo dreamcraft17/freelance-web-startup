@@ -211,7 +211,7 @@ export function FreelancerProfileEditor({
               <CardDescription className="mt-1 text-slate-600">
                 {mode === "create"
                   ? "Create your freelancer identity. You can refine everything later."
-                  : "This is what powers proposals and your public NearWork presence."}
+                  : "This is what powers proposals and your public NextWork presence."}
               </CardDescription>
               {mode === "edit" && form.username ? (
                 <p className="mt-2 text-sm">
@@ -237,7 +237,7 @@ export function FreelancerProfileEditor({
       <Card className="rounded-xl border-slate-200/90 shadow-sm shadow-slate-900/[0.04]">
         <CardHeader className="pb-3 pt-5">
           <CardTitle className={sectionCardTitle}>Basic info</CardTitle>
-          <CardDescription className={sectionCardDesc}>How clients see your name and @handle on NearWork.</CardDescription>
+          <CardDescription className={sectionCardDesc}>How clients see your name and @handle on NextWork.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4 pb-6">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -413,7 +413,7 @@ export function FreelancerProfileEditor({
             </p>
             <p className="mx-auto mt-2 max-w-md text-sm text-slate-600">
               Portfolio management is not wired to this page yet. When it is, you will add images and case studies
-              without leaving NearWork.
+              without leaving NextWork.
             </p>
           </div>
         </CardContent>

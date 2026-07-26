@@ -12,7 +12,7 @@ export default function SettingsPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-8 pb-12">
       <header className="border-b border-slate-200/80 pb-4">
-        <p className="nw-type-micro">NearWork</p>
+        <p className="nw-type-micro">NextWork</p>
         <h1 className="nw-type-display mt-1.5 text-slate-900">Settings</h1>
         <p className="nw-type-body mt-2 max-w-xl">
           Your account, company profile, saved hiring lists, and preferences—organized like a product workspace, not a

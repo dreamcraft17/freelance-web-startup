@@ -66,9 +66,9 @@ function mapPrismaOperationalError(error: unknown): NextResponse | null {
 function logUnhandledApiError(error: unknown): void {
   if (process.env.NODE_ENV === "production") {
     const name = error instanceof Error ? error.name : typeof error;
-    console.error("[nearwork:api] unhandled_error", { name });
+    console.error("[nextwork:api] unhandled_error", { name });
   } else {
-    console.error("[nearwork:api] unhandled_error", error);
+    console.error("[nextwork:api] unhandled_error", error);
   }
 }
 

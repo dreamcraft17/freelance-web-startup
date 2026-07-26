@@ -1,4 +1,4 @@
-# NearWork V2 — Software Requirements Specification (SRS)
+# NextWork V2 — Software Requirements Specification (SRS)
 
 **Document Version:** 1.0  
 **Last Updated:** 2026-07-07  
@@ -11,7 +11,7 @@
 ## 1. Introduction & Scope
 
 ### 1.1 Purpose
-This SRS details **technical requirements** for NearWork V2, covering:
+This SRS details **technical requirements** for NextWork V2, covering:
 - Functional requirements (payment, billing, escrow, AI matching, moderation)
 - Non-functional requirements (security, performance, scalability)
 - API specifications (endpoints, request/response schemas)
@@ -535,7 +535,7 @@ async processBatchPayout() {
       const receipt = await bankAPI.transfer({
         accountNumber: payout.freelancer.bankAccount.accountNumber,
         amount: payout.amount,
-        description: `NearWork payout for completed contracts`
+        description: `NextWork payout for completed contracts`
       });
       
       // Update status

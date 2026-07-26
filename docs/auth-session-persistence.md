@@ -1,4 +1,4 @@
-# Auth Session Persistence (NearWork Web)
+# Auth Session Persistence (NextWork Web)
 
 > **Doc revision:** v4  
 > Last synchronized: 2026-04-20 (locale cookie `lang` — terpisah dari session).

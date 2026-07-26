@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { APP_LOCALES, type AppLocale, isAppLocale } from "./types";
 
-const DEFAULT_SITE_URL = "https://nearwork.com";
+const DEFAULT_SITE_URL = "https://nextwork.id";
 
 function getSiteUrl(): string {
   const base = process.env.NEXT_PUBLIC_SITE_URL?.trim() || process.env.NEXT_PUBLIC_APP_URL?.trim() || DEFAULT_SITE_URL;

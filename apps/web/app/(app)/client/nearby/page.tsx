@@ -192,7 +192,7 @@ export default async function ClientNearbyTalentPage({
   return (
     <div className="mx-auto max-w-5xl space-y-8 pb-12">
       <header className="border-b border-slate-200/80 pb-6">
-        <p className="text-xs font-medium uppercase tracking-[0.14em] text-slate-500">NearWork · Client</p>
+        <p className="text-xs font-medium uppercase tracking-[0.14em] text-slate-500">NextWork · Client</p>
         <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900 md:text-[1.65rem]">
           Nearby talent
         </h1>

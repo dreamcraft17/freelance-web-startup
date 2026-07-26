@@ -1,13 +1,10 @@
 import {
-  BoostStatus,
-  BoostTargetType,
-  ContractStatus,
-  EscrowStatus,
-  EscrowTransactionType,
-  JobStatus,
-  PayoutRequestStatus,
+  expireStaleBoosts,
+  processBatchPayouts,
+  processEscrowAutoReleases,
   db
 } from "@acme/database";
+import { JobStatus } from "@acme/database";
 
 function addDays(from: Date, days: number): Date {
   const d = new Date(from.getTime());
@@ -15,80 +12,14 @@ function addDays(from: Date, days: number): Date {
   return d;
 }
 
-export async function processEscrowAutoReleases() {
-  const now = new Date();
-  let processed = 0;
-
-  const staleReview = await db.contract.findMany({
-    where: {
-      status: ContractStatus.IN_REVIEW,
-      workReviewDeadline: { lte: now },
-      escrowStatus: EscrowStatus.LOCKED,
-      deletedAt: null
-    },
-    take: 50
-  });
-
-  for (const c of staleReview) {
-    const amount = c.escrowAmountCents ?? 0;
-    const releaseAmount = Math.round(amount * 0.8);
-    await db.$transaction(async (tx) => {
-      await tx.contract.update({
-        where: { id: c.id },
-        data: { status: ContractStatus.COMPLETED, escrowStatus: EscrowStatus.PARTIAL_RELEASED }
-      });
-      await tx.escrowTransaction.create({
-        data: {
-          contractId: c.id,
-          type: EscrowTransactionType.PARTIAL_RELEASE,
-          amount: releaseAmount,
-          reason: "Auto-release after review window",
-          createdBy: "system"
-        }
-      });
-      await tx.freelancerWallet.upsert({
-        where: { userId: c.freelancerUserId },
-        create: { userId: c.freelancerUserId, balanceCents: releaseAmount, currency: c.currency ?? "IDR" },
-        update: { balanceCents: { increment: releaseAmount } }
-      });
-    });
-    processed++;
-  }
-
-  return { processed };
+/** Delegates to @acme/database money-jobs (canonical escrow + holdback). */
+export async function processEscrowAutoReleasesJob() {
+  return processEscrowAutoReleases();
 }
 
+/** Delegates to @acme/database money-jobs (jobs + profile boosts). */
 export async function processBoostExpiry() {
-  const now = new Date();
-  const expired = await db.boost.findMany({
-    where: { status: BoostStatus.ACTIVE, expiresAt: { lte: now } },
-    take: 200
-  });
-
-  for (const b of expired) {
-    await db.boost.update({
-      where: { id: b.id },
-      data: { status: BoostStatus.EXPIRED, expiredAt: now }
-    });
-    if (b.targetType === BoostTargetType.JOB) {
-      const stillActive = await db.boost.count({
-        where: {
-          targetType: BoostTargetType.JOB,
-          targetId: b.targetId,
-          status: BoostStatus.ACTIVE,
-          expiresAt: { gt: now }
-        }
-      });
-      if (stillActive === 0) {
-        await db.job.update({
-          where: { id: b.targetId },
-          data: { isFeatured: false, featuredUntil: null }
-        });
-      }
-    }
-  }
-
-  return { boosts: expired.length };
+  return expireStaleBoosts();
 }
 
 export async function processDailyRecommendations() {
@@ -137,25 +68,10 @@ export async function processDailyRecommendations() {
   return { freelancersProcessed: freelancers.length, recommendationsCreated: created };
 }
 
-export async function processBatchPayouts() {
-  const pending = await db.payoutRequest.findMany({
-    where: { status: PayoutRequestStatus.PENDING },
-    take: 100
-  });
-
-  let processed = 0;
-  for (const p of pending) {
-    await db.payoutRequest.update({
-      where: { id: p.id },
-      data: {
-        status: PayoutRequestStatus.SENT,
-        sentAt: new Date(),
-        processedAt: new Date(),
-        receiptId: `MOCK-${p.id.slice(0, 8)}`
-      }
-    });
-    processed++;
-  }
-
-  return { processed, failed: 0 };
+/** Only sends admin-approved (PROCESSING) payouts — never auto-SENT from PENDING. */
+export async function processBatchPayoutsJob() {
+  return processBatchPayouts();
 }
+
+// Re-export canonical names expected by main.ts
+export { processEscrowAutoReleasesJob as processEscrowAutoReleases, processBatchPayoutsJob as processBatchPayouts };

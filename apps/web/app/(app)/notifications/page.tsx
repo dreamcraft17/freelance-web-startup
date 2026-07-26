@@ -30,7 +30,7 @@ export default async function NotificationsPage() {
   return (
     <div className="mx-auto max-w-xl space-y-8 pb-12">
       <header className="border-b border-slate-200/70 pb-6">
-        <p className="text-xs font-medium uppercase tracking-[0.12em] text-slate-500">NearWork</p>
+        <p className="text-xs font-medium uppercase tracking-[0.12em] text-slate-500">NextWork</p>
         <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900 md:text-[1.65rem]">
           {t("nav.notifications")}
         </h1>

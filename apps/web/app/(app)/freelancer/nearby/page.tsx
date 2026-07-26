@@ -150,7 +150,7 @@ export default async function FreelancerNearbyPage({
           Nearby
         </h1>
         <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-600">
-          NearWork Nearby keeps local and hybrid work in focus—anchored to your profile location and the radius you
+          NextWork Nearby keeps local and hybrid work in focus—anchored to your profile location and the radius you
           choose, with the same open roles you will see on the public job board.
         </p>
       </header>

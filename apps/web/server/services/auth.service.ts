@@ -158,4 +158,29 @@ export class AuthService {
       accountStatus: session.accountStatus
     };
   }
+
+  /** Re-issue JWT + DTO when cookie session is valid and user is still active. */
+  async refreshSession(session: SessionPayload): Promise<{ token: string; session: PublicSessionDto }> {
+    const user = await db.user.findFirst({
+      where: { id: session.userId, deletedAt: null },
+      select: { id: true, role: true, accountStatus: true }
+    });
+    if (!user || user.accountStatus !== AccountStatus.ACTIVE) {
+      throw new DomainError("Authentication required", "UNAUTHORIZED", 401);
+    }
+
+    const token = await this.issueSessionToken({
+      id: user.id,
+      role: user.role as UserRole,
+      accountStatus: user.accountStatus as AccountStatus
+    });
+    return {
+      token,
+      session: {
+        userId: user.id,
+        role: user.role as PublicSessionDto["role"],
+        accountStatus: user.accountStatus as PublicSessionDto["accountStatus"]
+      }
+    };
+  }
 }

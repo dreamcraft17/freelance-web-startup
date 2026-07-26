@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import type { NextResponse } from "next/server";
+import { envFlag, envFlagIsOne } from "@/lib/env-flags";
 import { consumeRateLimitOr429 } from "./consume-rate-limit";
 import {
   publicDiscoveryEnumerationLimiter,
@@ -64,19 +65,19 @@ function fingerprintKey(ip: string, fingerprint: string): string {
 
 /**
  * Safe, coarse-grained log line — no scoring rules in API responses; avoid PII in messages.
- * Disable with NEARWORK_DISCOVERY_LOG=0.
+ * Disable with NEXTWORK_DISCOVERY_LOG=0 (legacy: NEARWORK_DISCOVERY_LOG).
  */
 export function logDiscoverySignal(event: string, meta: Record<string, unknown>): void {
-  if (process.env.NEARWORK_DISCOVERY_LOG === "0") return;
-  console.warn(`[nearwork:discovery] ${event}`, { ...meta, ts: Date.now() });
+  if (envFlag("NEXTWORK_DISCOVERY_LOG", "NEARWORK_DISCOVERY_LOG") === "0") return;
+  console.warn(`[nextwork:discovery] ${event}`, { ...meta, ts: Date.now() });
 }
 
 /**
  * Reserved for Turnstile / hCaptcha / edge WAF escalation.
- * No-op unless product later sets NEARWORK_DISCOVERY_CHALLENGE and implements the handshake.
+ * No-op unless product later sets NEXTWORK_DISCOVERY_CHALLENGE and implements the handshake.
  */
 export function noteDiscoveryEscalation(reason: "risk_score" | "enum_pressure", detail?: string): void {
-  if (process.env.NEARWORK_DISCOVERY_CHALLENGE === "1" && process.env.NODE_ENV !== "test") {
+  if (envFlagIsOne("NEXTWORK_DISCOVERY_CHALLENGE", "NEARWORK_DISCOVERY_CHALLENGE") && process.env.NODE_ENV !== "test") {
     logDiscoverySignal("challenge_hook", { reason, detail: detail ? "set" : "none" });
   }
 }

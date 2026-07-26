@@ -1,4 +1,4 @@
-# NearWork — API Reference
+# NextWork — API Reference
 
 > **Doc revision:** v1  
 > Last synchronized: 2026-07-26  
@@ -102,7 +102,7 @@ Discovery endpoints memakai rate limit + anti-scrape ringan.
 | POST | `/api/payments/midtrans/create-snap` | Midtrans Snap |
 | POST | `/api/payments/midtrans/notification` | Midtrans callback |
 
-Tanpa PSP keys → MOCK. **Webhook verification masih perlu harden** sebelum production — [SECURITY.md](./SECURITY.md).
+Tanpa PSP keys → MOCK. Webhook HMAC/signature verification **Available (v2.1)** — LIVE keys Conditional — [SECURITY.md](./SECURITY.md) · [PAYMENT-RUNBOOK.md](./PAYMENT-RUNBOOK.md).
 
 ---
 

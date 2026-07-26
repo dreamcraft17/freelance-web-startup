@@ -16,7 +16,7 @@ export function SettingsSupportBlock() {
     <SettingsSectionCard
       icon={HeartHandshake}
       title="Support & contribution"
-      description="Get help using NearWork or optionally support ongoing development."
+      description="Get help using NextWork or optionally support ongoing development."
       headingId="settings-support-heading"
     >
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between sm:gap-8">

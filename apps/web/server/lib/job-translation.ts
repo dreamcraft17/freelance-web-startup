@@ -47,7 +47,7 @@ export async function translateText(text: string, targetLang: AppLocale): Promis
       cache: "no-store"
     });
     if (!response.ok) {
-      console.warn("[nearwork:translate] translate_failed", { targetLang, status: response.status });
+      console.warn("[nextwork:translate] translate_failed", { targetLang, status: response.status });
       return null;
     }
     const payload = (await response.json()) as {
@@ -55,7 +55,7 @@ export async function translateText(text: string, targetLang: AppLocale): Promis
     };
     return payload.data?.translations?.[0]?.translatedText?.trim() || null;
   } catch {
-    console.warn("[nearwork:translate] translate_exception", { targetLang });
+    console.warn("[nextwork:translate] translate_exception", { targetLang });
     return null;
   }
 }

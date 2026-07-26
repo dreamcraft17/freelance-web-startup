@@ -3,7 +3,7 @@
 > **Doc revision:** v117
 > Last synchronized: 2026-07-07 (V2 design system full UI pass).
 
-## NearWork V2 (Juli 2026)
+## NextWork V2 (Juli 2026)
 
 Foundation V2 sudah land di monorepo — lihat `docs/NEARWORK_V2_*.md` untuk spec lengkap.
 
@@ -21,9 +21,9 @@ Foundation V2 sudah land di monorepo — lihat `docs/NEARWORK_V2_*.md` untuk spe
 | Payouts | wallet + `/api/payouts/wallet`, worker batch |
 | Admin analytics | `/admin/analytics`, `/api/admin/analytics/overview` |
 
-Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
+Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NextWork. Fokus: apa yang sudah dipakai user/staff saat ini, serta placeholder internal yang sudah disiapkan.
 
-> Catatan: penjelasan **produk ini apa** (non-teknis) ada di `docs/apa-itu-nearwork.md`. Detail risiko, gap, dan technical debt tetap di `audit.md`.
+> Catatan: penjelasan **produk ini apa** (non-teknis) ada di `docs/apa-itu-nextwork.md`. Detail risiko, gap, dan technical debt tetap di `audit.md`.
 
 ## Update terbaru (April 2026)
 
@@ -31,7 +31,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 - **2026-05-11 — Voice: profesional dan manusiawi (EN/ID):** microcopy aktivasi, pesan, dashboard, profil freelancer publik, dan detail job memakai bahasa operasional (Messages / Pesan, “Contact freelancer” / “Hubungi freelancer”) menggantikan frasa “start discussion” yang terdengar pitch; bahasa Indonesia formal (hindari “lo”, “nempel”, “diskusi” sebagai CTA); alur landing tetap singkat.
 - **2026-05-11 — Public marketplace copy (operational tone):** kamus `landing.*`, `public.jobs*`, `public.freelancers*`, blok pulse/trust/empty state, dan metadata SEO `/[locale]` dipadatkan agar terasa seperti papan hiring nyata (kurang frasa pemasaran abstrak); struktur `id.json` diselaraskan dengan `en.json` (termasuk `public.jobs.liveFreelancerApply` untuk build typecheck).
-- **2026-05-11 — Loading & skeleton system:** NearWork menambah primitive `nw-skeleton*` + helper komponen loading agar placeholder konsisten dengan hierarki final; route-level `loading.tsx` diperluas ke jobs/detail/freelancers/profile/dashboard/messages/notifications/settings/admin utama; pending feedback lokal diperhalus pada filter nearby freelancer, grouping notifikasi, dan composer messages.
+- **2026-05-11 — Loading & skeleton system:** NextWork menambah primitive `nw-skeleton*` + helper komponen loading agar placeholder konsisten dengan hierarki final; route-level `loading.tsx` diperluas ke jobs/detail/freelancers/profile/dashboard/messages/notifications/settings/admin utama; pending feedback lokal diperhalus pada filter nearby freelancer, grouping notifikasi, dan composer messages.
 - **2026-05-09 — Konvergensi tipografi tahap 2:** detail page `/jobs/[jobId]` dan `/freelancers/[username]` diselaraskan ke `nw-type-*` + ritme card/chip bersama; onboarding cards (`ActivationChecklistCard`, `FreelancerProposalPlaybook`, `MarketplaceLiquidityHints`) dipadatkan dan dipoles editorial; tabel admin inti memakai pill/chip yang lebih konsisten untuk kepadatan operasional.
 - **2026-05-09 — Tipografi & kepadatan editorial:** utilitas `nw-type-*`, `nw-stack*`, chip, dan beberapa panel di `globals.css` dituning untuk hierarki lebih jelas dan kartu marketplace lebih efisien; landing hero, listing `/jobs`, dashboard klien/freelancer, pesan, notifikasi, serta header `/messages` & `/settings` memakai ritme baru tanpa mengubah logika bisnis.
 - **2026-05-09 — Marketplace pulse (data nyata):** agregat ringan di **`PublicStatsService`** (lowongan terbuka publik, proposal 24 jam, freelancer tersedia, posting baru 24 jam, kontrak selesai 7 hari, kategori dengan listing terbanyak); ditampilkan di landing hero, sidebar/board **`/jobs`**, sidebar freelancers, strip **`nw-card-trust`** di dashboard freelancer & klien; empty state board baseline menampilkan kategori yang masih punya listing. **`SearchService`** melampirkan **`shortlistedCount`** per job untuk chip **wawancara** di **`JobsPublicList`** dan cuplikan lowongan di dashboard freelancer.
@@ -42,9 +42,9 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 - **2026-05-09 — Public jobs card & mobile filter sheet:** komponen `JobsPublicList` menata ulang kartu lowongan publik agar lebih scanable (badge status dari data nyata, baris klien + verifikasi, anggaran + jumlah proposal + waktu posting, skill + sinyal heuristik dengan tooltip jujur); CTA ganda “kirim proposal” (auth-aware) vs “lihat brief”. `JobsMarketplaceMobileFilters`: overlay gelap opaque tanpa blur, opsi aktif solid indigo, kontrol lebih thumb-friendly.
 - **2026-05-09 — Landing visual (non-glass):** permukaan hero/bawah-fold memakai **`bg-slate-50`**, **`bg-white`**, **`bg-slate-50`** pada sub-kartu; bayangan **`shadow-sm` / `shadow-md`**; menghapus **`backdrop-blur`** dan overlay **`bg-white/…`** agar tidak menyerupai template AI glassmorphism.
 - **2026-05-09 — E2E smoke harness:** skrip root `pnpm test:e2e` memanggil `scripts/run-e2e-server.mjs` yang menjalankan `pnpm --filter @acme/web build`, menyalakan **`next start`** pada **`127.0.0.1:${E2E_PORT:-3041}`**, menunggu `GET /api/auth/csrf` merespons JSON, lalu menjalankan `scripts/e2e-marketplace-flow.mjs`. Ini menghindari kegagalan palsu (`Cannot find module './….js'`) ketika smoke diarahkan ke proses **`next dev`** dengan artefak `.next` inkremental yang tidak konsisten; pengembangan tetap bisa menjalankan tes mentah dengan **`BASE_URL`** manual. **2026-05-12:** set **`DATABASE_URL_TEST`** ke Postgres throwaway — runner meng-override `DATABASE_URL` untuk proses build + server.
-- **2026-05-09 — Homepage marketplace positioning:** `LandingPage` memuat kategori nyata untuk `<select name="categoryId">`, menambah filter GET `workMode`, menyelaraskan CTA klien (“Pasang lowongan” / EN “Post a job”) vs freelancer (“Browse jobs”), mengganti sidebar/mobile strip persona dengan kartu alur `landing.hero.process.*`, dan menambah blok server `LandingHomeSections` (`landing.home.*`) untuk “How NearWork works”, benefit cards, trust tanpa metrik palsu, serta early-access gratis.
+- **2026-05-09 — Homepage marketplace positioning:** `LandingPage` memuat kategori nyata untuk `<select name="categoryId">`, menambah filter GET `workMode`, menyelaraskan CTA klien (“Pasang lowongan” / EN “Post a job”) vs freelancer (“Browse jobs”), mengganti sidebar/mobile strip persona dengan kartu alur `landing.hero.process.*`, dan menambah blok server `LandingHomeSections` (`landing.home.*`) untuk “How NextWork works”, benefit cards, trust tanpa metrik palsu, serta early-access gratis.
 - **2026-05-09 — Locale-stable discovery links:** CTA dan tautan internal ke board (`/jobs`, `/freelancers`), halaman marketing berSEO (`how-it-works`, `pricing`, `early-access`, `help`), serta banyak jalur dashboard/workspace tidak lagi memakai path tanpa prefix mentah yang memicu redirect middleware berbasis cookie lawas—prefiks **`/en/`** atau **`/id/`** eksplisit memakai util **`apps/web/lib/i18n/locale-path.ts`** + **`workspace-path.ts`**; alur auth/register-return-to job menyimpan **`/<locale>/jobs/:id`**.
-- **2026-05-10 — Locale-prefixed workspace URLs:** permukaan produk `/client`, `/freelancer`, `/messages`, `/notifications`, dan `/settings` memakai URL peramban `/<lang>/…` (sesuai cookie/route EN/ID). Middleware menulis ulang ke rute App Router internal yang sama, menyetel `x-nearwork-locale`, dan mengarahkan URL tanpa prefix ke preferensi bahasa. Shell dashboard + auth nav membangun link dengan `withWorkspaceLocale`; default home role (`homePathForSessionRole`) mengikuti locale aktif.
+- **2026-05-10 — Locale-prefixed workspace URLs:** permukaan produk `/client`, `/freelancer`, `/messages`, `/notifications`, dan `/settings` memakai URL peramban `/<lang>/…` (sesuai cookie/route EN/ID). Middleware menulis ulang ke rute App Router internal yang sama, menyetel `x-nextwork-locale`, dan mengarahkan URL tanpa prefix ke preferensi bahasa. Shell dashboard + auth nav membangun link dengan `withWorkspaceLocale`; default home role (`homePathForSessionRole`) mengikuti locale aktif.
 - **2026-05-10 — In-app notifications localized:** `NotificationService` menyimpan `_nwCopy` (bid diterima/disetujui, pesan baru, hasil verifikasi); `listForActor(actor, locale)` dan `GET /api/notifications` mem-format judul/bodi dengan kamus aktif. UI `/notifications` memakai `notifications.activity.*`, `notifications.time.*`, dan `notifications.openRelated`.
 - **2026-05-10 — Marketing/localized-home EN-ID parity:** komponen `LandingHero` memakai `useI18n()` dan blok `landing.hero.*` (+ `landing.home.*` untuk section bawah); navbar pemasaran (guest/signed-in) memakai `nav.*`; footer newsletter `footer.newsletter*`; quick-search freelancer mengikuti `public.freelancers.quickTerm*`; cetakan landing lain (`LandingCategoryChips`, `LandingLiveMarketplacePreview`, `LandingFinalCta`) menyambung ke kunci kamus yang sudah ada.
 - **2026-05-11 — Job currency vs UI locale:** anggaran, proposal, dan kontrak memakai **`Job.currency`** (validasi API **IDR/USD** saja). Bahasa path **`/en`** vs **`/id`** hanya mengatur **cara angka ditampilkan** (Intl `en-US` vs `id-ID`); tidak mengganti USD menjadi IDR. Daftar job memakai notasi ringkas **hanya untuk IDR** (`rb`/`jt` di ID, gaya K/M di EN). Default kolom DB **`Job.currency`** = **IDR** (baris lama tetap sesuai nilai tersimpan; fallback tampilan kosong = USD). Helper **`formatMoney` / `formatBudgetRange`** di `format-money.ts`.
@@ -150,7 +150,7 @@ Dokumen ini merangkum fitur aktif dan struktur teknis terbaru di monorepo NearWo
 
 ## 1) Ringkasan produk
 
-NearWork adalah marketplace freelance SaaS dengan area publik + workspace per role:
+NextWork adalah marketplace freelance SaaS dengan area publik + workspace per role:
 
 - Publik: discovery jobs/freelancers, marketing pages, auth.
 - User app: workspace `CLIENT`, `FREELANCER`, shared tools (`messages`, `notifications`, `settings`).
@@ -347,7 +347,7 @@ Compat:
 Seed admin dev:
 
 - Seed script: `packages/database/prisma/seed.ts`
-- default (dev): `admin@nearwork.local` / `NearWorkAdminDev123!`
+- default (dev): `admin@nearwork.local` / `NextWorkAdminDev123!`
 - override via env: `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`
 
 ### 5.2 `packages/config`

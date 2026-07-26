@@ -14,10 +14,10 @@ export async function generateMetadata({
   return localizedMetadata({
     locale: resolved,
     path: `/freelancers/${username}`,
-    title: resolved === "id" ? "Profil freelancer | NearWork" : "Freelancer profile | NearWork",
+    title: resolved === "id" ? "Profil freelancer | NextWork" : "Freelancer profile | NextWork",
     description:
       resolved === "id"
-        ? "Lihat profil freelancer, keahlian, dan detail penawaran di NearWork."
-        : "View freelancer profile, skills, and proposal details on NearWork."
+        ? "Lihat profil freelancer, keahlian, dan detail penawaran di NextWork."
+        : "View freelancer profile, skills, and proposal details on NextWork."
   });
 }

@@ -13,7 +13,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const firaCode = Fira_Code({ subsets: ["latin"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
-  title: "NearWork | Early access",
+  title: "NextWork | Early access",
   description:
     "Find freelancers near you or anywhere: design, photography, video editing, writing, tutoring, marketing, local services, and more. Post jobs, compare bids, and collaborate in one place.",
   icons: {

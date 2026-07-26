@@ -184,41 +184,27 @@ export class PayoutService {
     return payout;
   }
 
-  async processBatchPayouts(): Promise<{ processed: number; failed: number }> {
-    const pending = await db.payoutRequest.findMany({
-      where: { status: PayoutRequestStatus.PENDING, requestedAt: { lte: new Date() } },
-      take: 100
-    });
-
-    let processed = 0;
-    let failed = 0;
-
-    for (const p of pending) {
-      try {
-        await db.payoutRequest.update({
-          where: { id: p.id },
-          data: {
-            status: PayoutRequestStatus.SENT,
-            sentAt: new Date(),
-            processedAt: new Date(),
-            receiptId: `MOCK-${p.id.slice(0, 8)}`
-          }
-        });
-        processed++;
-      } catch {
-        failed++;
-        await db.payoutRequest.update({
-          where: { id: p.id },
-          data: {
-            retryCount: { increment: 1 },
-            lastError: "Batch payout failed",
-            status: p.retryCount >= 2 ? PayoutRequestStatus.FAILED : PayoutRequestStatus.PENDING
-          }
-        });
-      }
+  /** Approve a PENDING payout so the worker may send it (PROCESSING → SENT). */
+  async approvePayout(payoutId: string, actorUserId: string) {
+    const row = await db.payoutRequest.findFirst({ where: { id: payoutId } });
+    if (!row) throw new NotFoundError("Payout request not found");
+    if (row.status !== PayoutRequestStatus.PENDING) {
+      throw new DomainError("Only PENDING payouts can be approved", "PAYOUT_NOT_PENDING", 409);
     }
+    return db.payoutRequest.update({
+      where: { id: payoutId },
+      data: {
+        status: PayoutRequestStatus.PROCESSING,
+        processedAt: new Date(),
+        lastError: null
+      }
+    });
+  }
 
-    return { processed, failed };
+  /** Only sends admin-approved (PROCESSING) payouts via canonical money-jobs. */
+  async processBatchPayouts(): Promise<{ processed: number; failed: number }> {
+    const { processBatchPayouts } = await import("@acme/database");
+    return processBatchPayouts();
   }
 
   async addBankAccount(

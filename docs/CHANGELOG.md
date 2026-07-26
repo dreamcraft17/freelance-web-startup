@@ -1,11 +1,26 @@
-# NearWork — Changelog (living docs / produk)
+# NextWork — Changelog (living docs / produk)
 
-> **Doc revision:** v1  
-> Last synchronized: 2026-07-26
+> **Doc revision:** v2  
+> Last synchronized: 2026-07-26 (v2.1 payment harden done; next = v2.2)
 
 Changelog ini merangkum milestone produk & dokumentasi. Detail UI pass: [`../features.md`](../features.md). Audit: [`../audit.md`](../audit.md).
 
 ---
+
+## 2026-07-26 — Current-scope 100% (code-as-truth)
+
+- Money safety: escrow complete bypass blocked; worker delegates to `@acme/database` money-jobs (holdback); boost/sub require payment; webhook amount/currency + fee from base; seed FREE/PRO/AGENCY.
+- Checkout: `@stripe/stripe-js` confirmPayment + Midtrans Snap; server-priced totals (no fake PPN); mock simulate dev-only.
+- Ops/finance: admin disputes/refunds, payout approval before SENT, money notifications, AuditLog, reconciliation view; optional high-value escrow manual review threshold.
+- Residual: `POST /api/auth/refresh`, message/job attachment URLs, job `viewCount`, subscription cancel, FEATURE_* route guards, webhook rate limits, prod `NEXT_PUBLIC_APP_URL` assert.
+- Living docs + PRD/SRS/SDD synced. **LIVE PSP keys remain Conditional** — [PAYMENT-RUNBOOK.md](./PAYMENT-RUNBOOK.md).
+
+## 2026-07-26 — Brand NextWork + v2.1 payment harden
+
+- Brand rename user-facing **NearWork → NextWork**; env `NEXTWORK_*` (fallback `NEARWORK_*`); locale header `x-nextwork-locale`.
+- Stripe webhook: HMAC-SHA256 + timestamp tolerance; Midtrans: signature wajib (`status_code`).
+- Unit tests: `payment-webhook-crypto.unit.test.ts`.
+- Spek PRD/SRS/SDD v3/v1 di `docs/prd/NEXTWORK_*.md`; runbook [PAYMENT-RUNBOOK.md](./PAYMENT-RUNBOOK.md).
 
 ## 2026-07-26 — Docs suite kanonik
 
@@ -17,7 +32,7 @@ Changelog ini merangkum milestone produk & dokumentasi. Detail UI pass: [`../fea
 - Audit statis: fondasi auth/CSRF/RBAC baik; temuan critical pada Midtrans/Stripe webhook verify + seed hygiene + CSP/rate-limit.
 - Dokumen: `SECURITY_AUDIT_2026-07-08.md`.
 
-## 2026-07-07 — NearWork V2 Foundation
+## 2026-07-07 — NextWork V2 Foundation
 
 - Schema/migration V2: escrow, boosts, recommendations, appeals, wallet/payout, webhook events.
 - Stripe + Midtrans APIs dengan MOCK fallback.
@@ -56,5 +71,5 @@ Changelog ini merangkum milestone produk & dokumentasi. Detail UI pass: [`../fea
 | Spek | Status |
 |------|--------|
 | MVP marketplace | Implemented |
-| NearWork V2 Foundation | Implemented (PSP Conditional) |
+| NextWork V2 Foundation | Implemented (PSP Conditional) |
 | V2 GA / production billing | Open — [NEXT-PRD-BRIEF.md](./NEXT-PRD-BRIEF.md) |

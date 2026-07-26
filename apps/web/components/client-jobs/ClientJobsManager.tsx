@@ -172,7 +172,7 @@ export function ClientJobsManager({
     <div className="mx-auto max-w-5xl space-y-8 pb-10">
       <header className="flex flex-col gap-5 border-b border-slate-200/80 pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0 space-y-2">
-          <p className="text-xs font-medium uppercase tracking-[0.14em] text-slate-500">NearWork · Client</p>
+          <p className="text-xs font-medium uppercase tracking-[0.14em] text-slate-500">NextWork · Client</p>
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900 md:text-[1.65rem]">My jobs</h1>
           <p className="max-w-xl text-sm leading-relaxed text-slate-600">
             Manage listings, track proposals, and open roles when you are ready for freelancers.

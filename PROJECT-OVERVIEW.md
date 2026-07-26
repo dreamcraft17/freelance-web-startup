@@ -1,4 +1,4 @@
-# NearWork — Ringkasan Proyek
+# NextWork — Ringkasan Proyek
 
 > **Doc revision:** v3  
 > Last synchronized: 2026-07-26 (pointer ke suite docs kanonik di `docs/`)
@@ -7,17 +7,17 @@ Dokumen ini merangkum **produk apa ini**, **fitur-fiturnya**, **tech stack**, da
 
 **Mulai dari index docs:** [`docs/00_INDEX.md`](./docs/00_INDEX.md) · mirror kanonik: [`docs/PROJECT-OVERVIEW.md`](./docs/PROJECT-OVERVIEW.md)
 
-**NearWork V2 specs:** `docs/NEARWORK_V2_PRD.md`, `docs/NEARWORK_V2_SRS.md`, `docs/NEARWORK_V2_SDD.md`
+**NextWork V2 specs:** `docs/NEARWORK_V2_PRD.md`, `docs/NEARWORK_V2_SRS.md`, `docs/NEARWORK_V2_SDD.md`
 
 ---
 
-## Apa itu NearWork?
+## Apa itu NextWork?
 
-**NearWork** adalah **marketplace freelance untuk merekrut** — klien memasang lowongan (job), freelancer mengirim proposal, dan percakapan tetap terikat pada lowongan yang sama. Platform mendukung kerja **remote**, **on-site**, dan **hybrid**.
+**NextWork** adalah **marketplace freelance untuk merekrut** — klien memasang lowongan (job), freelancer mengirim proposal, dan percakapan tetap terikat pada lowongan yang sama. Platform mendukung kerja **remote**, **on-site**, dan **hybrid**.
 
-Repositori ini (nama kerja: **Freelance-web**, package: `freelance-marketplace-saas`) adalah monorepo yang menjalankan seluruh produk NearWork: UI, API, database, dan autentikasi.
+Repositori ini (nama kerja: **Freelance-web**, package: `freelance-marketplace-saas`) adalah monorepo yang menjalankan seluruh produk NextWork: UI, API, database, dan autentikasi.
 
-NearWork menggabungkan konsep:
+NextWork menggabungkan konsep:
 
 - **Upwork / Freelancer** — sistem bidding & proposal
 - **Fastwork** — layanan berbasis jasa
@@ -36,7 +36,7 @@ Platform dirancang untuk **semua jenis freelance**, bukan hanya IT:
 
 ## Untuk Siapa?
 
-| Peran | Fungsi di NearWork |
+| Peran | Fungsi di NextWork |
 |-------|-------------------|
 | **Client** | Posting job, review proposal, hire freelancer, kelola kontrak & pesan |
 | **Freelancer** | Bangun profil publik, cari job, kirim proposal, negosiasi & kerja |
@@ -160,7 +160,7 @@ packages/
 
 ### Status Saat Ini: **V2 Foundation / Pre-production PSP**
 
-NearWork V2 foundation sudah diimplementasikan di codebase (Juli 2026):
+NextWork V2 foundation sudah diimplementasikan di codebase (Juli 2026):
 
 - ✅ Schema & migration V2 (escrow, boosts, recommendations, appeals, wallet/payout)
 - ✅ Stripe + Midtrans payment APIs (MOCK fallback tanpa env key)
@@ -218,7 +218,7 @@ Timeline target GA: **Q1 2027** (lihat V2 PRD).
 | `docs/USER-GUIDE.md` / `ADMIN-GUIDE.md` | Panduan pengguna & staff |
 | `docs/DEPLOYMENT.md` / `SECURITY.md` | Deploy & keamanan |
 | `docs/NEXT-PRD-BRIEF.md` | Brief PRD berikutnya |
-| `docs/apa-itu-nearwork.md` | Penjelasan produk non-teknis |
+| `docs/apa-itu-nextwork.md` | Penjelasan produk non-teknis |
 | `features.md` | Inventaris fitur lengkap |
 | `docs/application-overview.md` | Gambaran aplikasi & peta route |
 | `audit.md` | Audit teknis, risiko, gap |

@@ -277,14 +277,14 @@ function fixtureAccountsFromEnv() {
   const password =
     process.env.SEED_E2E_PASSWORD ??
     process.env.E2E_FIXTURE_PASSWORD ??
-    "NearWorkE2eDev123!";
+    "NextWorkE2eDev123!";
   return {
     client: {
       label: "Klien (seed E2E)",
       email: (
         process.env.SEED_E2E_CLIENT_EMAIL ??
         process.env.E2E_CLIENT_EMAIL ??
-        "e2e.client@nearwork.local"
+        "e2e.client@nextwork.local"
       )
         .toLowerCase()
         .trim(),
@@ -296,7 +296,7 @@ function fixtureAccountsFromEnv() {
       email: (
         process.env.SEED_E2E_FREELANCER_EMAIL ??
         process.env.E2E_FREELANCER_EMAIL ??
-        "e2e.freelancer@nearwork.local"
+        "e2e.freelancer@nextwork.local"
       )
         .toLowerCase()
         .trim(),
@@ -305,8 +305,8 @@ function fixtureAccountsFromEnv() {
     },
     admin: {
       label: "Admin (seed)",
-      email: (process.env.SEED_ADMIN_EMAIL ?? "admin@nearwork.local").toLowerCase().trim(),
-      password: process.env.SEED_ADMIN_PASSWORD ?? "NearWorkAdminDev123!",
+      email: (process.env.SEED_ADMIN_EMAIL ?? "admin@nextwork.local").toLowerCase().trim(),
+      password: process.env.SEED_ADMIN_PASSWORD ?? "NextWorkAdminDev123!",
       role: "ADMIN"
     }
   };
@@ -324,7 +324,7 @@ function writeE2eAccountsReport() {
   e2eReport.generatedAt = new Date().toISOString();
   const f = e2eReport.fixtureAccounts;
   const lines = [
-    "# Akun E2E NearWork (cek manual)",
+    "# Akun E2E NextWork (cek manual)",
     "",
     `**Dibuat:** ${e2eReport.generatedAt}`,
     `**Base URL:** ${e2eReport.baseUrl}`,
@@ -664,8 +664,8 @@ test("full marketplace flow (register → reviews & aggregates)", async () => {
   const createdReportId = report.body.data?.id;
   assert.ok(createdReportId);
 
-  const adminEmail = (process.env.SEED_ADMIN_EMAIL ?? "admin@nearwork.local").toLowerCase().trim();
-  const adminPassword = process.env.SEED_ADMIN_PASSWORD ?? "NearWorkAdminDev123!";
+  const adminEmail = (process.env.SEED_ADMIN_EMAIL ?? "admin@nextwork.local").toLowerCase().trim();
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD ?? "NextWorkAdminDev123!";
   const adminLogin = await api("/api/auth/login", {
     method: "POST",
     json: { email: adminEmail, password: adminPassword }

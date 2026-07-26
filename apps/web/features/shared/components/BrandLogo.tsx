@@ -15,7 +15,7 @@ export function BrandLogo({
   href = "/",
   className = "",
   imageClassName = "h-8 w-auto",
-  alt = "NearWork"
+  alt = "NextWork"
 }: BrandLogoProps) {
   const [failed, setFailed] = useState(false);
 
@@ -23,10 +23,10 @@ export function BrandLogo({
     <Link
       href={href}
       className={`inline-flex items-center outline-none ring-offset-2 focus-visible:ring-2 focus-visible:ring-nw-brand ${className}`.trim()}
-      aria-label="NearWork home"
+      aria-label="NextWork home"
     >
       {failed ? (
-        <span className="text-sm font-semibold tracking-tight text-nw-brand">NearWork</span>
+        <span className="text-sm font-semibold tracking-tight text-nw-brand">NextWork</span>
       ) : (
         <img src="/logo/logo_EN.png" alt={alt} className={imageClassName} onError={() => setFailed(true)} />
       )}

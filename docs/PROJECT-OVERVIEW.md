@@ -1,23 +1,23 @@
-# NearWork — Project Overview
+# NextWork — Project Overview
 
 > **Doc revision:** v1  
 > Last synchronized: 2026-07-26 (suite docs kanonik; audit codebase V2 foundation)
 
 **Owner:** Dozer · DN Tech  
-**Path:** `NearWorks/`  
+**Path:** `nextwork/`  
 **Status:** V2 Foundation / Pre-production PSP
 
 Dokumen ini merangkum **produk apa ini**, **untuk siapa**, **stack**, dan **fase**. Detail teknis: [CURRENT-IMPLEMENTATION.md](./CURRENT-IMPLEMENTATION.md). Fitur: [FEATURE-CATALOG.md](./FEATURE-CATALOG.md).
 
 ---
 
-## Apa itu NearWork?
+## Apa itu NextWork?
 
-**NearWork** adalah **marketplace freelance untuk merekrut** — klien memasang lowongan (job), freelancer mengirim proposal, dan percakapan tetap terikat pada lowongan yang sama. Mendukung kerja **remote**, **on-site**, dan **hybrid**.
+**NextWork** adalah **marketplace freelance untuk merekrut** — klien memasang lowongan (job), freelancer mengirim proposal, dan percakapan tetap terikat pada lowongan yang sama. Mendukung kerja **remote**, **on-site**, dan **hybrid**.
 
 Monorepo (package: `freelance-marketplace-saas`) menjalankan UI, API, database, auth, dan worker.
 
-| Konsep | Peran di NearWork |
+| Konsep | Peran di NextWork |
 |--------|-------------------|
 | Upwork / Freelancer | Bidding & proposal |
 | Fastwork | Layanan berbasis jasa |
@@ -25,7 +25,7 @@ Monorepo (package: `freelance-marketplace-saas`) menjalankan UI, API, database, 
 
 Bukan hanya IT: digital, kreatif, profesional, jasa lokal (event, perbaikan, beauty, dll.).
 
-Versi non-teknis: [apa-itu-nearwork.md](./apa-itu-nearwork.md).
+Versi non-teknis: [apa-itu-nextwork.md](./apa-itu-nextwork.md).
 
 ---
 

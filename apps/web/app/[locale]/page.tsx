@@ -6,12 +6,12 @@ import { localizedMetadata, normalizeLocale } from "@/lib/i18n/seo";
 
 const copy = {
   en: {
-    title: "NearWork — Hire freelancers & find work (Indonesia-first)",
+    title: "NextWork — Hire freelancers & find work (Indonesia-first)",
     description:
       "Post a job or browse open roles. Proposals and messages stay on the job thread. Filter by skill, category, city, and work mode."
   },
   id: {
-    title: "NearWork — Rekrut freelancer & cari kerja Lepas / Freelancer",
+    title: "NextWork — Rekrut freelancer & cari kerja Lepas / Freelancer",
     description:
       "Pasang lowongan atau cari role terbuka. Proposal dan chat menempel ke utas lowongan. Filter skill, kategori, kota, dan mode kerja."
   }

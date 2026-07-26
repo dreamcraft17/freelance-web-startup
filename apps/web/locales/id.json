@@ -258,7 +258,7 @@
       "contractsEmptyBody": "Apa: belum ada rekor hire aktif. Mengapa: kontrak terbuka setelah Anda terima bid. Berikutnya: tinjau proposal di job Anda, shortlist, lalu terima ketika siap.",
       "contractsEmptyPrimary": "Tinjau lowongan terbuka",
       "contractsEmptySecondary": "Jelajahi freelancer",
-      "nearworkKicker": "NearWork · Client",
+      "nearworkKicker": "NextWork · Client",
       "welcomeBackFallback": "Selamat datang kembali",
       "summaryHeading": "Ringkasannya",
       "summarySub": "Angka aktual dari aktivitas hiring Anda.",
@@ -408,7 +408,7 @@
       "openJobsTitle": "Lowongan terbuka & rekomendasi",
       "openJobsSubtitle": "{{count}} role di papan",
       "openJobsSeeAll": "Lihat semua",
-      "heroTrustCaption": "NearWork · ruang freelancer",
+      "heroTrustCaption": "NextWork · ruang freelancer",
       "heroMotivation": "Klien memindai profil cepat—utamakan relevansi, timeline jelas, dan tindak lanjut yang sopan.",
       "heroStatProposals": "Proposal terkirim",
       "heroStatProposalsHintSetup": "Lengkapi profil untuk mulai kirim proposal terikat pada brief.",
@@ -417,7 +417,7 @@
       "heroStatContractsHintZero": "Kontrak membuka aktivitas tetap begitu ada bid yang diterima.",
       "heroStatReviews": "Sinyal ulasan",
       "heroStatReviewsEmpty": "Bintang muncul setelah pekerjaan selesai—jaga komunikasi profesional tiap milestone.",
-      "heroStatReviewsHint": "{{count}} ulasan di NearWork",
+      "heroStatReviewsHint": "{{count}} ulasan di NextWork",
       "heroStatSaved": "Disimpan klien",
       "heroStatSavedEmptyHint": "Peringkat simpanan klien muncul di sini ketika Anda masuk radar mereka.",
       "trustVerified": "Profil terverifikasi",
@@ -433,7 +433,7 @@
       "pulseProfileLabel": "Profil",
       "pulseAwaitingLabel": "Menunggu balasan Anda",
       "playbookTitle": "Panduan proposal",
-      "playbookIntro": "Yang bikin percakapan NearWork gerak: struktur, spesifik, dan bahasa memprioritaskan klien.",
+      "playbookIntro": "Yang bikin percakapan NextWork gerak: struktur, spesifik, dan bahasa memprioritaskan klien.",
       "playbookFooter": "Setiap utas terikat pada job—kutip brief secara singkat dan konfirmasi langkah lanjutan.",
       "playbookS1Title": "Profesional dalam singkatnya",
       "playbookS1Body": "Buka dengan bagaimana Anda memahami masalah satu bukti yang relevan—hindari perkenalan boilerplate.",
@@ -444,7 +444,7 @@
       "playbookS4Title": "Scope & tarif realistis",
       "playbookS4Body": "Harga sesuai yang bisa Anda lakukan dengan baik—asumsi jelas daripada kejutan revisi besar.",
       "snapshotTitle": "7 hari terakhir",
-      "snapshotSubtitle": "Angka dari akun NearWork Anda.",
+      "snapshotSubtitle": "Angka dari akun NextWork Anda.",
       "snapshotBidUpdatesLabel": "Sentuhan proposal (7h)",
       "snapshotAcceptedLabel": "Proposal yang diterima",
       "snapshotAwaitingLabel": "Utas menunggu balasan",
@@ -517,7 +517,7 @@
     "help": "Bantuan",
     "contact": "Kontak",
     "tagline": "Marketplace freelance untuk pekerjaan lokal dan jarak jauh.",
-    "copyright": "© {{year}} NearWork",
+    "copyright": "© {{year}} NextWork",
     "newsletterTitle": "Dapatkan tips dan update terbaru",
     "newsletterEmailPlaceholder": "Email Anda",
     "newsletterSubscribe": "Berlangganan"
@@ -705,7 +705,7 @@
           },
           "hire": {
             "title": "Rekrut jika cocok",
-            "body": "Lanjutkan di NearWork."
+            "body": "Lanjutkan di NextWork."
           }
         }
       },
@@ -760,7 +760,7 @@
         "title": "Dipercaya freelancer dan klien",
         "body": "Profil nyata, chat di thread job, dan checkout siap escrow seiring peluncuran V2.",
         "quote": "Saya posting brief pagi hari dan dapat tiga proposal sebanding di hari yang sama.",
-        "quoteAuthor": "Klien early access NearWork",
+        "quoteAuthor": "Klien early access NextWork",
         "stats": {
           "freelancers": "Freelancer",
           "jobs": "Lowongan terbuka",
@@ -799,7 +799,7 @@
       "faq": {
         "q1": "Bagaimana escrow bekerja?",
         "a1": "Saat Anda membayar kontrak, dana ditahan sampai pekerjaan disetujui atau sengketa diselesaikan.",
-        "q2": "Biaya apa yang dikenakan NearWork?",
+        "q2": "Biaya apa yang dikenakan NextWork?",
         "a2": "Biaya escrow dan payout ditampilkan sebelum checkout—tanpa biaya tersembunyi.",
         "q3": "Bisa kerja remote atau on-site?",
         "a3": "Ya. Setiap job menampilkan mode kerja dan lokasi untuk filter remote, hybrid, atau on-site.",
@@ -1017,7 +1017,7 @@
     "dashboardSearchAria": "Cari lowongan dengan kata kunci",
     "inboxAria": "Pesan",
     "notificationsAria": "Notifikasi",
-    "communityCardTitle": "Ikut membentuk NearWork",
+    "communityCardTitle": "Ikut membentuk NextWork",
     "communityCardBody": "Kami di akses awal: umpan balik dan bantuan tetap menjaga hire terikat pekerjaan nyata—tagihan akan transparan saat rilis.",
     "communityCardCta": "Buka pusat bantuan"
   },
@@ -1072,7 +1072,7 @@
     "signOutError": "Tidak dapat keluar"
   },
   "publicHeader": {
-    "homeAria": "Beranda NearWork"
+    "homeAria": "Beranda NextWork"
   },
   "locale": {
     "en": "EN",
@@ -1174,7 +1174,7 @@
       "resultMany": "{{count}} lowongan terbuka",
       "resultHint": "Judul + anggaran terlihat cepat—buka untuk brief lengkap.",
       "sidebarKicker": "Untuk klien",
-      "sidebarTitle": "Sedang merekrut di NearWork?",
+      "sidebarTitle": "Sedang merekrut di NextWork?",
       "sidebarBody": "Pasang brief dengan anggaran dan lokasi agar orang yang tepat bisa mengirim proposal.",
       "sidebarPrimary": "Pasang lowongan",
       "sidebarSecondary": "Lihat freelancer sebagai alternatif",
@@ -1202,7 +1202,7 @@
       "savedJobShort": "Tersimpan",
       "verifiedClient": "Terverifikasi",
       "matchForYou": "Cocok untukmu",
-      "matchForYouHint": "Berdasarkan kesegaran listing, budget, atau boost fitur di NearWork—bukan skor otomatis.",
+      "matchForYouHint": "Berdasarkan kesegaran listing, budget, atau boost fitur di NextWork—bukan skor otomatis.",
       "proposalsCount": "{{count}} proposal",
       "proposalsSingular": "1 proposal",
       "proposalsMetaHint": "Jumlah proposal terkirim untuk lowongan ini (berubah saat freelancer apply).",
@@ -1325,7 +1325,7 @@
       "exampleHook": "Pernyataan nilai singkat muncul di sini agar klien bisa membandingkan lebih cepat.",
       "exampleMeta": "Rating, ulasan, lokasi, dan mode kerja ditampilkan di setiap listing nyata.",
       "examplePrice": "Harga mulai",
-      "trustTitle": "Mengapa pakai NearWork",
+      "trustTitle": "Mengapa pakai NextWork",
       "trustOne": "Profil, proposal, dan chat tetap terhubung ke setiap lowongan.",
       "trustTwo": "Filter nearby dan remote membantu menyaring kandidat lebih cepat.",
       "trustThree": "Bandingkan kecocokan layanan sebelum membuka detail profil penuh.",
@@ -1337,7 +1337,7 @@
       "categoryHint": "Mencocokkan siapa pun yang punya minimal satu skill di kategori tersebut.",
       "workModeHint": "Pakai on-site/hybrid untuk kerja lokal, remote untuk delivery async.",
       "cityPlaceholder": "mis. Jakarta",
-      "cityHint": "NearWork menjadikan kota sebagai sinyal utama untuk kerja on-site dan hybrid—tambahkan kota untuk menemukan freelancer terdekat.",
+      "cityHint": "NextWork menjadikan kota sebagai sinyal utama untuk kerja on-site dan hybrid—tambahkan kota untuk menemukan freelancer terdekat.",
       "rateGuideLabel": "Panduan tarif:",
       "rateGuideBody": "Kartu menampilkan tarif mulai per jam (atau tarif sesuai kesepakatan) supaya Anda bisa membandingkan kecocokan budget sebelum membuka profil.",
       "filterBudgetLabel": "Budget",
@@ -1476,7 +1476,7 @@
       "languagesNotOnProfile": "Freelancer belum menambahkan bahasa di profil. Konfirmasi cocok lewat percakapan.",
       "portfolioSectionTitle": "Portofolio",
       "reviewsSectionKicker": "Bukti sosial",
-      "reviewsSectionLead": "Ulasan berasal dari pekerjaan selesai di NearWork saat klien memberi feedback.",
+      "reviewsSectionLead": "Ulasan berasal dari pekerjaan selesai di NextWork saat klien memberi feedback.",
       "reviewClientFeedback": "Feedback klien",
       "reviewWorkedTogether": "Bekerja sama pada",
       "reviewProjectContextUnknown": "Konteks proyek tidak terlampir pada ulasan ini.",
@@ -1547,13 +1547,13 @@
         "on_leave": "Sedang cuti"
       },
       "servicesTitle": "Layanan",
-      "servicesSubtitle": "Skill dikelompokkan seperti tampilan di NearWork—mencerminkan penekanan freelancer ini.",
+      "servicesSubtitle": "Skill dikelompokkan seperti tampilan di NextWork—mencerminkan penekanan freelancer ini.",
       "servicesUncategorized": "Skill umum",
       "portfolioTitle": "Contoh kerja terbaru",
       "portfolioSubtitle": "Karya yang dibagikan di profil ini (buka tab baru).",
       "portfolioOpen": "Lihat media",
-      "completedHiresSingular": "proyek selesai via NearWork",
-      "completedHiresPlural": "proyek selesai via NearWork",
+      "completedHiresSingular": "proyek selesai via NextWork",
+      "completedHiresPlural": "proyek selesai via NextWork",
       "snapshotCompleted": "Proyek selesai",
       "snapshotCompletedHint": "Kontrak selesai yang terhubung dengan akun ini.",
       "reviewProject": "Proyek"
@@ -1565,13 +1565,13 @@
       "competitionMid": "Kompetisi sedang",
       "competitionLow": "Proposal masih sedikit",
       "clientTrustTitle": "Tentang klien",
-      "clientTrustLead": "Sinyal dari akun NearWork ini—tanpa rating palsu.",
+      "clientTrustLead": "Sinyal dari akun NextWork ini—tanpa rating palsu.",
       "clientMemberSince": "Anggota sejak",
       "clientProfileActivity": "Profil terakhir diperbarui",
       "clientCompletedHiresLabel": "Kontrak selesai",
       "clientOpenRolesLabel": "Lowongan terbuka (publik)",
       "clientReviewsLine": "Rata-rata {{rating}} · {{count}} ulasan sebagai klien",
-      "clientReviewsNone": "Belum ada ulasan klien di NearWork.",
+      "clientReviewsNone": "Belum ada ulasan klien di NextWork.",
       "clientVerificationPending": "Verifikasi menunggu",
       "aboutProjectTitle": "Brief",
       "whatClientNeedsTitle": "Yang klien bagikan",
@@ -1826,7 +1826,7 @@
   },
   "marketing": {
     "earlyAccess": {
-      "sectionTitle": "NearWork",
+      "sectionTitle": "NextWork",
       "pageTitle": "Akses awal",
       "description": "Kami membangun secara terbuka: lowongan nyata, freelancer nyata, dan batas yang jujur—sambil menyelesaikan pembayaran dan kasus tepi.",
       "whyTitle": "Kenapa akses awal ada",
@@ -1845,7 +1845,7 @@
     "pricing": {
       "sectionTitle": "Harga",
       "pageTitle": "Sederhana dan jujur",
-      "descriptionPrefix": "NearWork sedang dalam",
+      "descriptionPrefix": "NextWork sedang dalam",
       "earlyAccessBold": "akses awal",
       "descriptionSuffix": "Memasang lowongan, mengirim proposal, dan merekrut lewat thread pekerjaan gratis selama kami membesarkan jaringan. Kami akan mengumumkan biaya platform di halaman ini sebelum berlaku.",
       "currentlyFreeTitle": "Gratis selama akses awal",
@@ -1855,7 +1855,7 @@
       "futureTitle": "Nanti: add-on opsional",
       "futureBody": "Kami mungkin menambahkan ekstra berbayar (misalnya peningkatan visibilitas atau alat tim). Kami tidak akan mengaktifkan biaya pada alur yang sudah ada tanpa daftar harga yang jelas.",
       "ctaTitle": "Jelajahi atau gabung",
-      "ctaBody": "Coba papan lowongan dan direktori freelancer, lalu daftar jika NearWork cocok untuk cara Anda merekrut atau mencari kerja.",
+      "ctaBody": "Coba papan lowongan dan direktori freelancer, lalu daftar jika NextWork cocok untuk cara Anda merekrut atau mencari kerja.",
       "ctaPrimary": "Pasang lowongan",
       "ctaRegister": "Buat akun",
       "ctaJobs": "Jelajahi lowongan",
@@ -1865,11 +1865,11 @@
     "help": {
       "sectionTitle": "Bantuan",
       "pageTitle": "Bantuan & kontak",
-      "description": "NearWork adalah produk kecil dalam akses awal. Kami belum menjadi meja dukungan 24/7—halaman ini menjelaskan cara menghubungi kami dan hal yang bisa kami bantu.",
+      "description": "NextWork adalah produk kecil dalam akses awal. Kami belum menjadi meja dukungan 24/7—halaman ini menjelaskan cara menghubungi kami dan hal yang bisa kami bantu.",
       "contactTitle": "Kontak",
       "contactBody": "Untuk pertanyaan, bug, atau isu trust and safety, kirim email ke alamat di bawah (diatur oleh deployment). Kami membaca semuanya; waktu respons bergantung pada volume saat tim masih kecil.",
-      "contactNote": "Operator: set NEARWORK_SUPPORT_EMAIL di server (lihat checklist deploy).",
-      "contactNoEmail": "Email dukungan belum dikonfigurasi untuk deployment ini. Gunakan Akses awal untuk menghubungi tim, atau minta admin menyetel NEARWORK_SUPPORT_EMAIL.",
+      "contactNote": "Operator: set NEXTWORK_SUPPORT_EMAIL di server (lihat checklist deploy).",
+      "contactNoEmail": "Email dukungan belum dikonfigurasi untuk deployment ini. Gunakan Akses awal untuk menghubungi tim, atau minta admin menyetel NEXTWORK_SUPPORT_EMAIL.",
       "contactEarlyAccessCta": "Buka akses awal",
       "topicsTitle": "Topik bantuan (outline)",
       "topicsBody": "Artikel lengkap bisa ditaruh di sini nanti; untuk sekarang ini kelompok topik yang kami rencanakan untuk didokumentasikan.",
@@ -1891,8 +1891,8 @@
     },
     "how": {
       "sectionTitle": "Cara kerja",
-      "pageTitle": "Cara NearWork bekerja",
-      "description": "NearWork menghubungkan klien dan freelancer lewat brief, proposal, dan delivery—dengan konteks kota dan mode kerja saat lokasi penting. Produknya nyata; roadmap masih terbuka.",
+      "pageTitle": "Cara NextWork bekerja",
+      "description": "NextWork menghubungkan klien dan freelancer lewat brief, proposal, dan delivery—dengan konteks kota dan mode kerja saat lokasi penting. Produknya nyata; roadmap masih terbuka.",
       "clientsTitle": "Untuk klien",
       "clientsSubtitle": "Saat Anda butuh talenta untuk pekerjaan yang jelas ruang lingkupnya.",
       "clientsStep1Title": "Pasang brief",
@@ -1900,7 +1900,7 @@
       "clientsStep2Title": "Terima proposal",
       "clientsStep2Body": "Freelancer merespons lowongan Anda dengan proposal. Anda bisa membandingkan ruang lingkup, harga, dan waktu di satu tempat, bukan di thread terpisah.",
       "clientsStep3Title": "Rekrut dan koordinasi pekerjaan",
-      "clientsStep3Body": "Pilih yang paling pas, selaraskan milestone, dan simpan keputusan dekat dengan pekerjaan. Detail bergantung proyek Anda—NearWork adalah garis start bersama, bukan pengganti cara Anda menjalankan delivery harian.",
+      "clientsStep3Body": "Pilih yang paling pas, selaraskan milestone, dan simpan keputusan dekat dengan pekerjaan. Detail bergantung proyek Anda—NextWork adalah garis start bersama, bukan pengganti cara Anda menjalankan delivery harian.",
       "freelancersTitle": "Untuk freelancer",
       "freelancersSubtitle": "Saat Anda ingin brief yang menghormati cara dan lokasi kerja Anda.",
       "freelancersStep1Title": "Buat profil",
@@ -1912,7 +1912,7 @@
       "nearbyTitle": "Nearby vs remote",
       "nearbyBody": "Nearby cocok untuk pemotretan, instalasi, dukungan on-site, dan hal yang butuh orang di lokasi. Remote cocok untuk pekerjaan yang dikirim online. Hybrid ada di tengah. Anda memilih mode per lowongan atau profil agar ekspektasi tetap jelas.",
       "earlyAccessTitle": "Akses awal",
-      "earlyAccessBody": "NearWork masih dalam akses awal: fitur dan cakupan akan bertambah, dan sebagian alur akan berubah seiring pembelajaran dari penggunaan nyata. Kami tidak berpura-pura marketplace sudah lengkap—kami mengajak pengguna yang nyaman membangun bersama kami.",
+      "earlyAccessBody": "NextWork masih dalam akses awal: fitur dan cakupan akan bertambah, dan sebagian alur akan berubah seiring pembelajaran dari penggunaan nyata. Kami tidak berpura-pura marketplace sudah lengkap—kami mengajak pengguna yang nyaman membangun bersama kami.",
       "earlyAccessLink": "Baca arti akses awal saat ini →",
       "ctaTitle": "Siap mencoba?",
       "ctaBody": "Buat akun untuk pasang lowongan atau kirim proposal, atau jelajahi papan publik dulu—tanpa hype, hanya produk yang sama seperti yang dilihat pengguna lain.",
@@ -1924,7 +1924,7 @@
     "terms": {
       "title": "Syarat layanan",
       "subtitle": "Placeholder draf untuk akses awal. Ganti dengan syarat yang sudah ditinjau tim legal sebelum melakukan monetisasi skala penuh.",
-      "body1": "Dengan menggunakan NearWork selama akses awal, Anda setuju menggunakan produk secara bertanggung jawab: tanpa listing penipuan, tanpa pelecehan, dan tanpa upaya menghindari kontrol keamanan platform yang kami tambahkan seiring waktu.",
+      "body1": "Dengan menggunakan NextWork selama akses awal, Anda setuju menggunakan produk secara bertanggung jawab: tanpa listing penipuan, tanpa pelecehan, dan tanpa upaya menghindari kontrol keamanan platform yang kami tambahkan seiring waktu.",
       "body2": "Pembayaran dan penyelesaian sengketa dapat melibatkan penyedia pihak ketiga; bahasa legal final akan menjelaskan hubungan tersebut secara jelas.",
       "questions": "Ada pertanyaan?",
       "helpLink": "Bantuan & kontak"
@@ -1932,7 +1932,7 @@
     "privacy": {
       "title": "Kebijakan privasi",
       "subtitle": "Placeholder draf untuk akses awal. Ganti dengan teks yang sudah ditinjau penasihat sebelum pemasaran produksi.",
-      "body1": "NearWork memproses data akun (email, nama, peran) dan konten yang Anda posting (lowongan, proposal, pesan) untuk menjalankan marketplace. Kami menggunakan cookie untuk sesi masuk. Kami tidak menjual data pribadi ke pihak ketiga dalam build akses-awal ini.",
+      "body1": "NextWork memproses data akun (email, nama, peran) dan konten yang Anda posting (lowongan, proposal, pesan) untuk menjalankan marketplace. Kami menggunakan cookie untuk sesi masuk. Kami tidak menjual data pribadi ke pihak ketiga dalam build akses-awal ini.",
       "questions": "Untuk pertanyaan, gunakan",
       "helpLink": "Bantuan & kontak"
     }
@@ -1977,7 +1977,7 @@
     "registerForm": {
       "badge": "Mulai onboarding",
       "title": "Buat akun Anda",
-      "subtitle": "Gabung NearWork untuk merekrut atau dicari kerja",
+      "subtitle": "Gabung NextWork untuk merekrut atau dicari kerja",
       "afterCreate": "Setelah akun dibuat, kami akan mengarahkan Anda ke",
       "returnDestinationProfile": "halaman profil Anda",
       "returnDestinationMessages": "halaman pesan Anda",
@@ -2036,7 +2036,7 @@
       "login": {
         "saveJob": "Masuk untuk menyimpan lowongan ini.",
         "saveFreelancer": "Masuk untuk menyimpan freelancer ini.",
-        "sendMessage": "Masuk untuk mengirim pesan di NearWork.",
+        "sendMessage": "Masuk untuk mengirim pesan di NextWork.",
         "submitBid": "Masuk untuk mengirim proposal Anda.",
         "postJob": "Masuk untuk memasang lowongan.",
         "protected": "Masuk untuk melanjutkan ke halaman tersebut."

@@ -26,7 +26,7 @@ export default async function RegisterPage({ searchParams }: PageProps) {
             <BrandLogo
               href={withPublicLocale(locale, "/") as Route}
               imageClassName="h-[5.25rem] w-auto max-w-full object-contain sm:h-28 md:h-32"
-              alt="NearWork logo"
+              alt="NextWork logo"
             />
           </div>
 

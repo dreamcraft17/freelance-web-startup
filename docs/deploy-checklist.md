@@ -3,13 +3,13 @@
 > **Doc revision:** v11
 > Last synchronized: 2026-06-19 (moderation escalation worker readiness).
 
-Checklist singkat sebelum merilis NearWork ke lingkungan produksi. Sesuaikan penyedia hosting (mis. Vercel) dengan variabel yang sama di dashboard mereka.
+Checklist singkat sebelum merilis NextWork ke lingkungan produksi. Sesuaikan penyedia hosting (mis. Vercel) dengan variabel yang sama di dashboard mereka.
 
 ## Secrets & connection
 
 - [ ] **`DATABASE_URL`** — string koneksi Postgres produksi (SSL sesuai penyedia). **Jangan** menjalankan harness `pnpm test:e2e` atau skrip HTTP `scripts/e2e-marketplace-flow.mjs` dengan URL ini—gunakan DB sekali pakai / lokal.
 - [ ] **`SESSION_SECRET`** — rahasia acak kuat untuk sesi; jangan reuse dari dev.
-- [ ] **`NEARWORK_SUPPORT_EMAIL`** (disarankan) — alamat inbox dukungan untuk halaman `/help` (server-only). Tanpa ini, halaman menampilkan CTA ke Early access.
+- [ ] **`NEXTWORK_SUPPORT_EMAIL`** (disarankan) — alamat inbox dukungan untuk halaman `/help` (server-only). Tanpa ini, halaman menampilkan CTA ke Early access.
 - [ ] **Listing otomatis / E2E di marketplace publik** — di Vercel (`VERCEL=1`), job & profil yang cocok pola automation (mis. judul berisi `E2E integration`, `Playwright`, username `pw_`) disembunyikan dari board publik dan agregat marketing. Untuk debug: `NEARWORK_SHOW_SYNTHETIC_PUBLIC_LISTINGS=1`. Paksa sembunyikan di lokal: `NEARWORK_HIDE_SYNTHETIC_PUBLIC_LISTINGS=1`.
 
 ## Install & Prisma

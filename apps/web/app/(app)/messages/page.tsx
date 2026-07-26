@@ -161,7 +161,7 @@ export default async function MessagesPage({
   return (
     <div className="mx-auto max-w-6xl nw-page-stack">
       <header className="border-b border-slate-200/80 pb-4">
-        <p className="nw-type-micro">NearWork</p>
+        <p className="nw-type-micro">NextWork</p>
         <h1 className="nw-type-display mt-1 text-slate-900">{t("nav.messages")}</h1>
         <p className="nw-type-body mt-2 max-w-2xl">{t("messages.pageSubtitle")}</p>
       </header>
