@@ -368,10 +368,16 @@ pnpm exec tsc --noEmit -p apps/web
 
 ## 📚 Documentation
 
+**Index lengkap:** [`docs/00_INDEX.md`](docs/00_INDEX.md) — living docs setara dnPeople/auto (overview, architecture, API, feature catalog, guides, deploy, security, next PRD).
+
 Topic docs live in **`docs/`**. See **`docs/DOCUMENTATION-MAINTENANCE.md`** for which files to touch when you change security, UI, or APIs.
 
-- **Production deploy gate (commands + env)** → [`docs/deploy-checklist.md`](docs/deploy-checklist.md)
+- **Production deploy gate (commands + env)** → [`docs/deploy-checklist.md`](docs/deploy-checklist.md) · [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)
 - **Apa produk ini (non-teknis)?** → [`docs/apa-itu-nearwork.md`](docs/apa-itu-nearwork.md)
+- **User / Admin guides** → [`docs/USER-GUIDE.md`](docs/USER-GUIDE.md) · [`docs/ADMIN-GUIDE.md`](docs/ADMIN-GUIDE.md)
+- **Baseline & status** → [`docs/CURRENT-IMPLEMENTATION.md`](docs/CURRENT-IMPLEMENTATION.md) · [`docs/FEATURE-CATALOG.md`](docs/FEATURE-CATALOG.md)
+- **PRD berikutnya** → [`docs/NEXT-PRD-BRIEF.md`](docs/NEXT-PRD-BRIEF.md)
+
 ### Vercel (monorepo → `apps/web`)
 
 **Commit `pnpm-lock.yaml`.** It must not be gitignored: without it, Turbo warns and Vercel can fall back to **npm** (~few dozen packages), which skips workspace linking and omits devDependencies your Next build needs (`tailwindcss`, Radix, etc.).

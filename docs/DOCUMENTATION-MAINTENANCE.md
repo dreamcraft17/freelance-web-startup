@@ -1,7 +1,7 @@
 # Documentation maintenance (NearWork)
 
-> **Doc revision:** v26  
-> Last synchronized: 2026-05-11 (i18n: profesional manusiawi; CTA kontak; tanpa slang ID).
+> **Doc revision:** v27  
+> Last synchronized: 2026-07-26 (suite docs kanonik: 00_INDEX + living docs pola dnPeople/auto).
 
 ## AUTO — wajib untuk AI & kontributor
 
@@ -48,9 +48,22 @@ When you change **product behavior**, **security**, **UI patterns**, **env/deplo
 
 ## Repo map
 
+- **Start here:** [`docs/00_INDEX.md`](./00_INDEX.md) — index living docs (PROJECT-OVERVIEW, ARCHITECTURE, API, FEATURE-CATALOG, CURRENT-IMPLEMENTATION, USER/ADMIN guides, DEPLOYMENT, SECURITY, NEXT-PRD-BRIEF, …).
 - **Root:** `README.md`, `audit.md`, `features.md`, `ui-redesign.md`, `credential.md` (dev seed notes only — **never** put production secrets here; file is gitignored from commits when using local-only copies).
 - **`docs/`:** product and engineering references — termasuk **`docs/apa-itu-nearwork.md`** untuk penjelasan produk singkat dan **`docs/deploy-checklist.md`** untuk gate deploy produksi.
 - **`packages/*/README.md`:** package-specific setup.
+
+### Living docs suite (sync like dnPeople/auto)
+
+| Change type | Also update |
+|-------------|-------------|
+| Fitur baru / status | `FEATURE-CATALOG.md`, `IMPLEMENTATION-STATUS.md`, `CURRENT-IMPLEMENTATION.md`, `CHANGELOG.md` |
+| API contract | `API.md` |
+| Alur user / admin | `USER-GUIDE.md`, `ADMIN-GUIDE.md`, `HOW-IT-WORKS.md` |
+| Deploy / env | `DEPLOYMENT.md`, `deploy-checklist.md` |
+| Security | `SECURITY.md`, root `audit.md` / security audit bila temuan baru |
+| Arah PRD | `NEXT-PRD-BRIEF.md` |
+| Index / overview | `00_INDEX.md`, `PROJECT-OVERVIEW.md` |
 
 ## Metadata baris kedua
 

@@ -1,7 +1,7 @@
 # Apa itu NearWork?
 
-> **Doc revision:** v7  
-> Last synchronized: 2026-05-11 (positioning copy: marketplace hiring operasional, bukan jargon “structured/AI”).
+> **Doc revision:** v8  
+> Last synchronized: 2026-07-26 (tautan ke suite docs kanonik `00_INDEX`).
 
 Dokumen ini menjawab secara singkat: **produk ini apa**, **untuk siapa**, dan **apa yang dilakukan user di dalamnya**—tanpa detail teknis implementasi.
 
@@ -53,10 +53,13 @@ Filter seperti **kota**, **mode kerja** (remote / on-site / hybrid), dan **kateg
 
 ## Di mana detail teknis & fitur lengkap?
 
-- **Ringkasan fitur & modul:** `features.md`
-- **Gambaran aplikasi & route:** `docs/application-overview.md`
-- **Risiko & audit teknis:** `audit.md`
-- **Panduan menjaga dokumen tetap sinkron dengan kode:** `docs/DOCUMENTATION-MAINTENANCE.md`
+- **Index dokumen:** [`00_INDEX.md`](./00_INDEX.md)
+- **Overview & cara kerja:** [`PROJECT-OVERVIEW.md`](./PROJECT-OVERVIEW.md), [`HOW-IT-WORKS.md`](./HOW-IT-WORKS.md)
+- **Panduan pakai:** [`USER-GUIDE.md`](./USER-GUIDE.md)
+- **Ringkasan fitur & modul:** `../features.md`, [`FEATURE-CATALOG.md`](./FEATURE-CATALOG.md)
+- **Gambaran aplikasi & route:** [`application-overview.md`](./application-overview.md)
+- **Risiko & audit teknis:** `../audit.md`, [`SECURITY.md`](./SECURITY.md)
+- **Panduan menjaga dokumen tetap sinkron dengan kode:** [`DOCUMENTATION-MAINTENANCE.md`](./DOCUMENTATION-MAINTENANCE.md)
 
 ---
 

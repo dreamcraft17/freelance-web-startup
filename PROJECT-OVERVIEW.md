@@ -1,9 +1,11 @@
 # NearWork — Ringkasan Proyek
 
-> **Doc revision:** v2  
-> Last synchronized: 2026-07-07 (NearWork V2 foundation implemented)
+> **Doc revision:** v3  
+> Last synchronized: 2026-07-26 (pointer ke suite docs kanonik di `docs/`)
 
 Dokumen ini merangkum **produk apa ini**, **fitur-fiturnya**, **tech stack**, dan **fase pengembangan** saat ini. Untuk detail teknis lebih dalam, lihat `README.md`, `features.md`, dan `audit.md`.
+
+**Mulai dari index docs:** [`docs/00_INDEX.md`](./docs/00_INDEX.md) · mirror kanonik: [`docs/PROJECT-OVERVIEW.md`](./docs/PROJECT-OVERVIEW.md)
 
 **NearWork V2 specs:** `docs/NEARWORK_V2_PRD.md`, `docs/NEARWORK_V2_SRS.md`, `docs/NEARWORK_V2_SDD.md`
 
@@ -206,6 +208,16 @@ Timeline target GA: **Q1 2027** (lihat V2 PRD).
 
 | File | Isi |
 |------|-----|
+| `docs/00_INDEX.md` | **Index semua living docs** |
+| `docs/PROJECT-OVERVIEW.md` | Overview kanonik (mirror) |
+| `docs/ARCHITECTURE.md` | Arsitektur monorepo |
+| `docs/HOW-IT-WORKS.md` | Alur marketplace |
+| `docs/API.md` | Referensi API |
+| `docs/FEATURE-CATALOG.md` | Available / Conditional / Roadmap |
+| `docs/CURRENT-IMPLEMENTATION.md` | Baseline teknis |
+| `docs/USER-GUIDE.md` / `ADMIN-GUIDE.md` | Panduan pengguna & staff |
+| `docs/DEPLOYMENT.md` / `SECURITY.md` | Deploy & keamanan |
+| `docs/NEXT-PRD-BRIEF.md` | Brief PRD berikutnya |
 | `docs/apa-itu-nearwork.md` | Penjelasan produk non-teknis |
 | `features.md` | Inventaris fitur lengkap |
 | `docs/application-overview.md` | Gambaran aplikasi & peta route |
