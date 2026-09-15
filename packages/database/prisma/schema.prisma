@@ -783,6 +783,7 @@ model PaymentIntent {
 
   stripeIntentId  String? @unique @db.VarChar(128)
   midtransOrderId String? @unique @db.VarChar(128)
+  dokuInvoiceNumber String? @unique @db.VarChar(64)
 
   checkoutUrl String @db.Text
 

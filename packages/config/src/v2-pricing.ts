@@ -65,6 +65,10 @@ export function isMidtransConfigured(): boolean {
   return Boolean(process.env.MIDTRANS_SERVER_KEY?.trim());
 }
 
+export function isDokuConfigured(): boolean {
+  return Boolean(process.env.DOKU_CLIENT_ID?.trim() && process.env.DOKU_SECRET_KEY?.trim());
+}
+
 /** Whole IDR units — payments above this skip auto escrow lock pending staff review. */
 export function getEscrowManualReviewThresholdIdr(): number {
   const raw = process.env.FEATURE_ESCROW_MANUAL_REVIEW_THRESHOLD_IDR;

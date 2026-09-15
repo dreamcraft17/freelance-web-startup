@@ -71,6 +71,42 @@ export function verifyMidtransNotificationSignature(input: {
   return timingSafeEqualHex(input.signatureKey, expected);
 }
 
+/** DOKU Checkout request/notification signature using the Non-SNAP header scheme. */
+export function computeDokuSignature(input: {
+  clientId: string;
+  requestId: string;
+  requestTimestamp: string;
+  requestTarget: string;
+  body: string;
+  secretKey: string;
+}): string {
+  const digest = createHash("sha256").update(input.body, "utf8").digest("base64");
+  const component = [
+    `Client-Id:${input.clientId}`,
+    `Request-Id:${input.requestId}`,
+    `Request-Timestamp:${input.requestTimestamp}`,
+    `Request-Target:${input.requestTarget}`,
+    `Digest:${digest}`
+  ].join("\n");
+  return `HMACSHA256=${createHmac("sha256", input.secretKey).update(component, "utf8").digest("base64")}`;
+}
+
+export function verifyDokuSignature(input: {
+  clientId: string;
+  requestId: string;
+  requestTimestamp: string;
+  requestTarget: string;
+  body: string;
+  secretKey: string;
+  signature: string | null | undefined;
+}): boolean {
+  if (!input.signature || !input.secretKey) return false;
+  const expected = computeDokuSignature(input);
+  const a = Buffer.from(input.signature, "utf8");
+  const b = Buffer.from(expected, "utf8");
+  return a.length === b.length && timingSafeEqual(a, b);
+}
+
 function timingSafeEqualHex(a: string, b: string): boolean {
   try {
     const ba = Buffer.from(a, "utf8");

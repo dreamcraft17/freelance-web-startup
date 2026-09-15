@@ -9,7 +9,7 @@ import { EscrowStatus } from "@/components/design-system/EscrowStatus";
 import { PriceBreakdown } from "@/components/design-system/PriceDisplay";
 import { cn } from "@/lib/utils";
 
-type PaymentMethod = "stripe" | "midtrans" | "mock";
+type PaymentMethod = "stripe" | "midtrans" | "doku" | "mock";
 
 type Props = {
   contractId?: string;
@@ -215,6 +215,29 @@ export function PaymentCheckoutPanel({
       }
 
       // Midtrans
+      if (method === "doku") {
+        const res = await fetch("/api/payments/doku/create-checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-CSRF-Token": token },
+          body: JSON.stringify({ contractId: resolvedContractId })
+        });
+        const json = (await res.json()) as { data?: { payment_url?: string }; error?: { message?: string } };
+        if (!res.ok) {
+          setResult("error");
+          setErrorMsg(json.error?.message ?? "Could not create DOKU checkout.");
+          return;
+        }
+        if (json.data?.payment_url) {
+          setResult("redirecting");
+          window.location.href = json.data.payment_url;
+          return;
+        }
+        setResult("error");
+        setErrorMsg("No DOKU payment URL returned.");
+        return;
+      }
+
+      // Midtrans
       const res = await fetch("/api/payments/midtrans/create-snap", {
         method: "POST",
         headers: { "Content-Type": "application/json", "X-CSRF-Token": token },
@@ -281,6 +304,7 @@ export function PaymentCheckoutPanel({
     [
       { id: "stripe" as const, label: "Card (Stripe)", hint: "Debit or credit card" },
       { id: "midtrans" as const, label: "Bank transfer / e-wallet (Midtrans)", hint: "VA, OVO, GoPay" },
+      { id: "doku" as const, label: "Bank transfer / QRIS / e-wallet (DOKU)", hint: "Hosted checkout DOKU" },
       ...(isDev
         ? [{ id: "mock" as const, label: "Mock (dev only)", hint: "Simulate success without PSP" }]
         : [])

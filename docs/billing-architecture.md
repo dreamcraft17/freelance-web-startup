@@ -10,6 +10,7 @@
 | **Contract escrow** | `PaymentIntent` (per contract) + `EscrowTransaction` audit |
 | **Stripe** | `POST /api/payments/stripe/create-intent`, webhook `/api/payments/stripe/webhook` |
 | **Midtrans** | `POST /api/payments/midtrans/create-snap`, callback `/api/payments/midtrans/notification` |
+| **DOKU** | `POST /api/payments/doku/create-checkout`, notification `/api/payments/doku/notification` |
 | **Payouts** | `FreelancerWallet` + `PayoutRequest`; worker batch (`processBatchPayouts`) |
 | **Boosts** | `BoostProduct` catalog + `Boost` records; ranking via existing `isFeatured` / `isBoosted` |
 | **Subscriptions** | Existing `UserSubscription` + `POST /api/subscriptions/upgrade` |

@@ -25,5 +25,6 @@ export {
   V2_EXPERIMENT_KEYS,
   isStripeConfigured,
   isMidtransConfigured,
+  isDokuConfigured,
   getEscrowManualReviewThresholdIdr
 } from "./v2-pricing";

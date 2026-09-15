@@ -32,6 +32,7 @@ Without PSP keys: create-intent / create-snap fall back to **MOCK** checkout at 
 |-----|-----|-----------|
 | Stripe | `POST /api/payments/stripe/webhook` | Header `Stripe-Signature` → HMAC-SHA256(`t.payload`, secret) |
 | Midtrans | `POST /api/payments/midtrans/notification` | Body `signature_key` = SHA512(`order_id + status_code + gross_amount + serverKey`) |
+| DOKU | `POST /api/payments/doku/notification` | Headers `Client-Id`, `Request-Id`, `Request-Timestamp`, `Signature`; HMAC-SHA256 over DOKU request components |
 
 Idempotency: `WebhookEvent` unique on `(provider, externalId)`.
 
@@ -40,6 +41,7 @@ Idempotency: `WebhookEvent` unique on `(provider, externalId)`.
 1. Deploy staging with secrets set.
 2. **Stripe Dashboard** → Developers → Webhooks → add endpoint → events `payment_intent.succeeded`, `payment_intent.payment_failed` → copy signing secret to `STRIPE_WEBHOOK_SECRET`.
 3. **Midtrans** → Settings → Configuration → Payment Notification URL → `https://<host>/api/payments/midtrans/notification`.
+4. **DOKU** → Dashboard → configure the Checkout notification URL to `https://<host>/api/payments/doku/notification`, then set `DOKU_CLIENT_ID`, `DOKU_SECRET_KEY`, and `DOKU_IS_PRODUCTION`.
 4. Confirm worker process is running (escrow holdback / auto-release).
 
 ## Negative tests (must pass)
